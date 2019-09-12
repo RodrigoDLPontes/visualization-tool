@@ -1,0 +1,127 @@
+<html>
+<head>
+<link rel="stylesheet" href="visualPages.css">
+<title> Data Structure Visualization </title>
+<link rel="shortcut icon" href="favicon.ico" />
+</head>
+<body>
+
+<div class="container">
+<div class="header"><h1>Data Structure Visualizations</h1> </div>
+<div class="menu">
+<ul>
+<li> <a href="about.html">About</a> </li>
+<li> <a href="Algorithms.html">Algorithms</a> </li>
+<li> <a href="faq.html"> F.A.Q </a> </li>
+<li> <a href="bugfeature.html"> Known Bugs /<br> &nbsp; &nbsp;  Feature Requests  </a> </li>
+<li> <a href="java/visualization.html"> Java Version </a> </li>
+<li> <a href="flash.html">Flash Version </a> </li>
+<li> <a href="source.html">Create Your Own /<br> &nbsp; &nbsp;  Source Code</a> </li>
+<li> <a href="contact.html"> Contact </a> </li>
+</ul>
+
+<br> <br>
+<div class="about">
+<a href="http://www.cs.usfca.edu/galles"> David Galles </a> <br>
+<a href="http://www.cs.usfca.edu"> Computer Science </a> <br>
+<a href="http://www.usfca.edu"> University of San Francisco </a>  
+</div>
+
+</div>
+
+<div class="content">
+
+<h1>Known Bugs</h1>
+
+There are likely a <em>whole host</em> of bugs and issues with this software -- it should be considred "Beta" for the moment.  Here are
+the ones we know about:
+
+<ul>
+
+<li> <del> DeleteMin fails on a heap with a single element. </del></li>
+<ul>
+<li> Fixed on 12/19/2013 </li>
+</ul>
+<li> <del>None of the visualizations work for older versions of explorer </del>  </li>
+<ul>
+<li> Fixed on 8/23/2012.  Thanks to Stefan German for fiding this one.</li>
+</ul>
+
+
+
+<li> <del>Putting a semicolon in any of the input fields causes the application to die </del>  </li>
+<ul>
+<li> Fixed on 5/3/2011.  Semicolons can no longer be entered.  Thanks to Stefan German for fiding this one.</li>
+</ul>
+<li> <del>BST and AVL trees have broken undos in HTML5 version</del></li>
+<ul>
+<li> Fixed on 5/3/2011.</li>
+</ul>
+
+<li> <del>Find and Delete broken in open hashing 
+
+</del></li>
+<ul>
+<li> Fixed on 5/10/2011. (thanks to Eduardo Bonet, of Santa Catarina Federal University, Brazil, for finding this one!)</li>
+</ul>
+
+
+
+<li> All algorithms that compute an ordering (BST, AVL Trees, etc) don't sort floating point numbers correctly -- 9.2 &gt; 10.3 </li>
+<ul>
+<li> This one is a design decision -- since those algoritms can take <em>any</em> string, the decision was made to sort based on lexicographic order. 
+We tried to mitigate confusion somehwat by automatically converting positive integers into equivalent numbers with leading zeroes, so that positive 
+integers would always be ordered as expected (though negative numbers are alas off).  It turns out that if you are trying to sort a group of any strings,
+ using a mixed comparison strategy gets confusing
+fast -- how should 10.4 compare to 3.1.2?  What about 3A -- is that a string or a hexidecimal number?  
+What about AF? Should BC come before or after AFF?  We made the executive decision to just do string comparisons.
+</ul>
+<li> <del> When running connected components, if you run the algorithm, then undo, then run it again, the application breaks.  We're working on a fix -- 
+the current workaroud is to create a new graph after undo before running the algorithm again.</del></li>
+<ul>
+<li> Fixed on 5/10/2011.</li>
+</ul>
+
+
+<li> <del>Undoing deleting an element from a B-Tree or B+ tree broken 
+
+</del></li>
+<ul>
+<li> Fixed on 6/13/2011.</li>
+</ul>
+
+
+<li> <del>Radix sort broken on Safari browser 
+
+</del></li>
+<ul>
+<li> Fixed on 6/13/2011.</li>
+</ul>
+
+
+
+<li> Various typos </li>
+<ul>
+<li> Please continue to send in any typos you see, and I will correct them as I get to them (at a somewhat lower priority than functionaility 
+bugs, of course).  Typo corrections will not appear on this page.
+</li>
+
+</ul>
+</ul>
+
+
+<h1>Featue Requests</h1>
+
+Find a bug?  Have a feature or new algorithm to request?  Send an email to galles &lt;at&gt; usfca &lt;dot&gt; edu
+
+<br> <br> <br><br> <br> <br><br> <br> <br><br> <br> <br>
+
+
+
+</div>
+<div class="footer">Copyright 2011 <a href = "http://www.cs.usfca.edu/galles">David Galles </a> </div>
+
+</div>
+
+</body>
+</html>

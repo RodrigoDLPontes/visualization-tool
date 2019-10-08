@@ -166,7 +166,8 @@ CocktailSort.prototype.sort = function(params)
         sorted = true;
         for (var i = start; i < end; i++) {
             this.movePointers(i, i + 1);
-            if (parseInt(this.arrayData[i]) > parseInt(this.arrayData[i + 1])) {
+            // Unary + casts a string to an int 
+            if (+this.arrayData[i] > +this.arrayData[i + 1]) {
                 this.swap(i, i + 1);
                 sorted = false;
             }
@@ -176,7 +177,7 @@ CocktailSort.prototype.sort = function(params)
             sorted = true;
             for (var i = end; i > start; i--) {
                 this.movePointers(i - 1, i);
-                if (parseInt(this.arrayData[i]) < parseInt(this.arrayData[i - 1])) {
+                if (+this.arrayData[i] < +this.arrayData[i - 1]) {
                     this.swap(i, i - 1);
                     sorted = false;
                 }

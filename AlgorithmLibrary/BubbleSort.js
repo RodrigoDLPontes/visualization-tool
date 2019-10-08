@@ -166,7 +166,8 @@ BubbleSort.prototype.sort = function(params)
         sorted = true;
         for (var i = 0; i < end; i++) {
             this.movePointers(i, i + 1);
-            if (parseInt(this.arrayData[i]) > parseInt(this.arrayData[i + 1])) {
+            // Unary + casts a string to an int 
+            if (+this.arrayData[i] > +this.arrayData[i + 1]) {
                 this.swap(i, i + 1);
                 sorted = false;
             }

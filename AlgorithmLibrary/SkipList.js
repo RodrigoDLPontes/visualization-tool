@@ -48,8 +48,8 @@ var CF_LABEL_Y = 37;
 var CF_STRING_X = 120;
 var CF_STRING_Y = 37;
 
-var PINF = "\u2212\u221E" // Negative infinity
-var NINF = "\u221E" // Positive infinity
+var NINF = "\u2212\u221E" // Negative infinity
+var PINF = "\u221E" // Positive infinity
 
 function SkipList(am, w, h)
 {
@@ -72,8 +72,6 @@ SkipList.prototype.init = function(am, w, h)
     this.nextIndex = 0;
 
     this.setup();
-
-    this.initialIndex = this.nextIndex;
 }
 
 
@@ -154,16 +152,17 @@ SkipList.prototype.disableUI = function(event)
 
 SkipList.prototype.setup = function()
 {
+    this.commands = new Array();
+
     this.nodeID = [[this.nextIndex++], [this.nextIndex++]];
     this.data = [[Number.NEGATIVE_INFINITY], [Number.POSITIVE_INFINITY]];
     this.size = 0;
 
-    this.cmd("CreateSkipList", this.nodeID[0][0], PINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
+    this.cmd("CreateSkipList", this.nodeID[0][0], NINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
         SKIP_LIST_START_X, SKIP_LIST_START_Y);
-    this.cmd("CreateSkipList", this.nodeID[1][0], NINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
+    this.cmd("CreateSkipList", this.nodeID[1][0], PINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
         SKIP_LIST_START_X + SKIP_LIST_SPACING, SKIP_LIST_START_Y);
     this.cmd("ConnectSkipList", this.nodeID[0][0], this.nodeID[1][0], 3);
-    this.cmd("Step"); // Is this needed?
 
     this.animationManager.StartNewAnimation(this.commands);
     this.animationManager.skipForward();
@@ -172,8 +171,10 @@ SkipList.prototype.setup = function()
 
 SkipList.prototype.reset = function()
 {
+    this.nextIndex = 0;
+    this.nodeID = [[this.nextIndex++], [this.nextIndex++]];
+    this.data = [[Number.NEGATIVE_INFINITY], [Number.POSITIVE_INFINITY]];
     this.size = 0;
-    this.nextIndex = this.initialIndex;
 }
 
 SkipList.prototype.addRandomlyCallback = function(event)
@@ -204,7 +205,7 @@ SkipList.prototype.removeCallback = function(event)
     if (this.removeField.value != "")
     {
         var value = this.removeField.value;
-        this.removeField.value = ""
+        this.removeField.value = "";
         this.implementAction(this.remove.bind(this), value);
     }
 }
@@ -213,7 +214,9 @@ SkipList.prototype.getCallback = function(event)
 {
     if (this.getField.value != "")
     {
-        this.implementAction(this.get.bind(this), "");
+        var value = this.getField.value;
+        this.getField.value = "";
+        this.implementAction(this.get.bind(this), value);
     }
 }
 
@@ -221,8 +224,6 @@ SkipList.prototype.clearCallback = function(event)
 {
     this.implementAction(this.clearAll.bind(this), "");
 }
-
-
 
 SkipList.prototype.add = function(params)
 {
@@ -299,17 +300,23 @@ SkipList.prototype.add = function(params)
     // Traverse and add
     var col = 0;
     var row = this.nodeID[0].length - 1;
-    var foundSpot = false;
 
     var highlightID = this.nextIndex++;
-    this.cmd("CreateHighlightCircle", highlightID, "#FF0000", SKIP_LIST_START_X,
+    this.cmd("CreateHighlightCircle", highlightID, "#FF0000",
+        SKIP_LIST_START_X,
         SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+    this.cmd("SetHighlight", highlightID, 1);
     this.cmd("Step");
 
+    var foundDuplicate = false;
     while(row >= 0)
     {
         // Move right until next element is greater or equal
         var nextCol = this.getNextCol(col, row);
+        if(value == this.data[nextCol][row]) {
+            foundDuplicate = true;
+            break;
+        }
         while(value > this.data[nextCol][row])
         {
             this.cmd("Move", highlightID,
@@ -320,37 +327,48 @@ SkipList.prototype.add = function(params)
             nextCol = this.getNextCol(col, row);
         }
 
-        if(row <= heads)
-        {
-            if(!foundSpot)
-            {
-                foundSpot = true;
-                this.shiftColumns(newCol);
-            }
-            // Having a highlight circle in the previous ID causes an object to be hihglighted (this seems to be an already existing bug)
-            // Creating a random object before it is a workaround
-            this.cmd("CreateCircle", this.nextIndex++, "", -100, -100, 0);
-            this.data[newCol][row] = value;
-            this.nodeID[newCol][row] = this.nextIndex++;
-            this.cmd("CreateSkipList", this.nodeID[newCol][row], value, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
-                SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
-                SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
-            this.cmd("Disconnect", this.nodeID[col][row], this.nodeID[nextCol][row]);
-            this.cmd("ConnectSkipList", this.nodeID[col][row], this.nodeID[newCol][row], 3);
-            this.cmd("ConnectSkipList", this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
-            if(this.nodeID[newCol][row + 1] != null)
-            {
-                this.cmd("ConnectSkipList", this.nodeID[newCol][row + 1], this.nodeID[newCol][row], 1);
-            }
-            this.cmd("Step");
-        }
+        // Move highlight circle downward
         row--;
-        if(row != -1)
+        if(row >= 0)
         {
             this.cmd("Move", highlightID,
                 SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
                 SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
             this.cmd("Step");
+        }
+    }
+
+    // Add nodes bottom-up to the new column if no duplicate has been found
+    if(!foundDuplicate)
+    {
+        this.shiftColumns(newCol);
+        row++;
+        // Having a highlight circle in the previous ID causes an object to look weird (this
+        // seems to be an already existing bug) Creating a random object before it is a workaround
+        this.cmd("CreateCircle", this.nextIndex++, "", -100, -100, 0);
+
+        while(row <= heads) {
+            this.data[newCol][row] = value;
+            this.nodeID[newCol][row] = this.nextIndex++;
+            this.cmd("CreateSkipList", this.nodeID[newCol][row], value, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
+                SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
+                SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+            let prevCol = this.getPrevCol(newCol, row);
+            let nextCol = this.getNextCol(newCol, row);
+            this.cmd("Disconnect", this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
+            this.cmd("ConnectSkipList", this.nodeID[prevCol][row], this.nodeID[newCol][row], 3);
+            this.cmd("ConnectSkipList", this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
+            if(row != 0)
+            {
+                this.cmd("ConnectSkipList", this.nodeID[newCol][row - 1], this.nodeID[newCol][row], 0);
+            }
+            this.cmd("Step");
+
+            this.cmd("Move", highlightID,
+                SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
+                SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+            this.cmd("Step");
+            row++;
         }
     }
 
@@ -468,7 +486,7 @@ SkipList.prototype.remove = function(params)
 
     // Remove empty rows
     // Find tallest column of actual values (not phantoms)
-    var maxHeight = 0;
+    var maxHeight = 1;
     for(var col = 1; col < this.nodeID.length - 1; col++)
     {
         maxHeight = Math.max(maxHeight, this.nodeID[col].length)
@@ -488,6 +506,53 @@ SkipList.prototype.remove = function(params)
     this.cmd("Step");
 
     this.size--;
+
+    return this.commands;
+}
+
+SkipList.prototype.get = function(params)
+{
+    this.commands = new Array();
+
+    var value = parseInt(params);
+
+    var col = 0;
+    var row = this.nodeID[0].length - 1;
+    var nextCol = this.getNextCol(col, row);
+
+    var highlightID = this.nextIndex++;
+    this.cmd("CreateHighlightCircle", highlightID, "#FF0000",
+        SKIP_LIST_START_X,
+        SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+    this.cmd("SetHighlight", highlightID, 1);
+    this.cmd("Step");
+
+    while(row >= 0 && value != this.data[col][row])
+    {
+        // Move right until next element is greater or equal
+        var nextCol = this.getNextCol(col, row);
+        while(value >= this.data[nextCol][row])
+        {
+            this.cmd("Move", highlightID,
+                SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
+                SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+            this.cmd("Step");
+            col = nextCol;
+            nextCol = this.getNextCol(col, row);
+        }
+
+        // Move highlight circle downward if data has not been found
+        if(value != this.data[col][row])
+        {
+            row--;
+            this.cmd("Move", highlightID,
+                SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
+                SKIP_LIST_START_Y - SKIP_LIST_SPACING * row);
+            this.cmd("Step");
+        }
+    }
+
+    this.cmd("Delete", highlightID);
 
     return this.commands;
 }
@@ -532,14 +597,28 @@ SkipList.prototype.getPrevCol = function(col, row)
     return col;
 }
 
-SkipList.prototype.resetNodePositions = function()
-{
-
-}
-
 SkipList.prototype.clearAll = function()
 {
     this.commands = new Array();
+
+    for(var col = 0; col < this.nodeID.length; col++)
+    {
+        for(var row = 0; row < this.nodeID[col].length; row++)
+        {
+            this.cmd("Delete", this.nodeID[col][row]);
+        }
+    }
+
+    this.nodeID = [[this.nextIndex++], [this.nextIndex++]];
+    this.data = [[Number.NEGATIVE_INFINITY], [Number.POSITIVE_INFINITY]];
+    this.size = 0;
+
+    this.cmd("CreateSkipList", this.nodeID[0][0], NINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
+        SKIP_LIST_START_X, SKIP_LIST_START_Y);
+    this.cmd("CreateSkipList", this.nodeID[1][0], PINF, SKIP_LIST_ELEM_SIZE, SKIP_LIST_ELEM_SIZE,
+        SKIP_LIST_START_X + SKIP_LIST_SPACING, SKIP_LIST_START_Y);
+    this.cmd("ConnectSkipList", this.nodeID[0][0], this.nodeID[1][0], 3);
+    this.cmd("Step");
 
     return this.commands;
 }

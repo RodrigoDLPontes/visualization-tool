@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -23,7 +23,68 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', () => {
+    createWindow()
+
+    const isMac = process.platform === 'darwin'
+    const template = [
+      // macOS App Menu
+      ...(isMac ? [{
+        label: app.getName(),
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideothers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
+      }] : []),
+      // File
+      {
+        label: 'File',
+        submenu: [
+          { role: 'close' }
+        ]
+      },
+      // View
+      {
+        label: 'View',
+        submenu: [
+          { role: 'reload' },
+          { role: 'forcereload' },
+          { type: 'separator' },
+          { role: 'resetzoom' },
+          { role: 'zoomin' },
+          { role: 'zoomout' },
+          { type: 'separator' },
+          { role: 'togglefullscreen' }
+        ]
+      },
+      // Window
+      {
+        label: 'Window',
+        submenu: [
+          { role: 'minimize' },
+          { role: 'zoom' },
+          ...(isMac ? [
+            { type: 'separator' },
+            { role: 'front' },
+            { type: 'separator' },
+            { role: 'window' }
+          ] : [
+            { role: 'close' }
+          ])
+        ]
+      }
+    ]
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

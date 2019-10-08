@@ -136,14 +136,14 @@ DoublyLinkedList.prototype.addControls =  function()
     this.controls.push(this.removeBackButton);
 
     // Get's index text field
-    this.getField = addControlToAlgorithmBar("Text", "");
-    this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
-    this.controls.push(this.getField);
+    // this.getField = addControlToAlgorithmBar("Text", "");
+    // this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
+    // this.controls.push(this.getField);
 
     // Get button
-    this.getButton = addControlToAlgorithmBar("Button", "Get");
-    this.getButton.onclick = this.getCallback.bind(this);
-    this.controls.push(this.getButton);
+    // this.getButton = addControlToAlgorithmBar("Button", "Get");
+    // this.getButton.onclick = this.getCallback.bind(this);
+    // this.controls.push(this.getButton);
 
     // Clear button
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
@@ -253,13 +253,13 @@ DoublyLinkedList.prototype.removeBackCallback = function(event)
     }
 }
 
-DoublyLinkedList.prototype.getCallback = function(event)
-{
-    if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-    {
-        this.implementAction(this.get.bind(this), "");
-    }
-}
+// DoublyLinkedList.prototype.getCallback = function(event)
+// {
+//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
+//     {
+//         this.implementAction(this.get.bind(this), "");
+//     }
+// }
 
 DoublyLinkedList.prototype.clearCallback = function(event)
 {
@@ -355,9 +355,10 @@ DoublyLinkedList.prototype.remove = function(index)
 
     this.cmd("SetText", this.leftoverLabelID, "");
 
+    var nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
+    var nodePosY = LINKED_LIST_START_Y;
     this.cmd("CreateLabel", labPopID, "Removing Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
-    this.cmd("CreateLabel", labPopValID, this.arrayData[index], LINKED_LIST_START_X, LINKED_LIST_START_Y);
-
+    this.cmd("CreateLabel", labPopValID, this.arrayData[index], nodePosX, nodePosY);
     this.cmd("Move", labPopValID,  PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
     this.cmd("Step");
 
@@ -386,8 +387,6 @@ DoublyLinkedList.prototype.remove = function(index)
         }
     }
     this.cmd("Step");
-
-    this.cmd("Step");
     this.cmd("Delete", this.linkedListElemID[index]);
 
     for (var i = index; i < this.size; i++)
@@ -400,7 +399,6 @@ DoublyLinkedList.prototype.remove = function(index)
 
     this.cmd("Delete", labPopValID)
     this.cmd("Delete", labPopID);
-    this.cmd("SetText", this.leftoverLabelID, "Removed Value: " + this.arrayData[index]);
 
     return this.commands;
 }

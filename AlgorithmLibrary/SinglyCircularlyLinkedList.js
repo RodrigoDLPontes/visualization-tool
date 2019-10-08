@@ -33,7 +33,7 @@ var LINKED_LIST_ELEM_HEIGHT = 30;
 var LINKED_LIST_INSERT_X = 200;
 var LINKED_LIST_INSERT_Y = 50;
 
-var LINKED_LIST_ELEMS_PER_LINE = 8;
+var LINKED_LIST_ELEMS_PER_LINE = 9;
 var LINKED_LIST_ELEM_SPACING = 100;
 var LINKED_LIST_LINE_SPACING = 100;
 
@@ -50,7 +50,7 @@ var PUSH_LABEL_Y = 30;
 var PUSH_ELEMENT_X = 120;
 var PUSH_ELEMENT_Y = 30;
 
-var SIZE = 32;
+var SIZE = 9;
 
 function CircularlySinglyLinkedList(am, w, h)
 {
@@ -136,14 +136,14 @@ CircularlySinglyLinkedList.prototype.addControls =  function()
     this.controls.push(this.removeBackButton);
 
     // Get's index text field
-    this.getField = addControlToAlgorithmBar("Text", "");
-    this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
-    this.controls.push(this.getField);
+    // this.getField = addControlToAlgorithmBar("Text", "");
+    // this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
+    // this.controls.push(this.getField);
 
     // Get button
-    this.getButton = addControlToAlgorithmBar("Button", "Get");
-    this.getButton.onclick = this.getCallback.bind(this);
-    this.controls.push(this.getButton);
+    // this.getButton = addControlToAlgorithmBar("Button", "Get");
+    // this.getButton.onclick = this.getCallback.bind(this);
+    // this.controls.push(this.getButton);
 
     // Clear button
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
@@ -191,7 +191,7 @@ CircularlySinglyLinkedList.prototype.reset = function()
 
 CircularlySinglyLinkedList.prototype.addIndexCallback = function(event)
 {
-    if (this.addValueField.value != "" && this.addIndexField.value != "")
+    if (this.addValueField.value != "" && this.addIndexField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         var index = this.addIndexField.value;
@@ -206,7 +206,7 @@ CircularlySinglyLinkedList.prototype.addIndexCallback = function(event)
 
 CircularlySinglyLinkedList.prototype.addFrontCallback = function(event)
 {
-    if (this.addValueField.value != "")
+    if (this.addValueField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         this.addValueField.value = ""
@@ -216,7 +216,7 @@ CircularlySinglyLinkedList.prototype.addFrontCallback = function(event)
 
 CircularlySinglyLinkedList.prototype.addBackCallback = function(event)
 {
-    if (this.addValueField.value != "")
+    if (this.addValueField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         this.addValueField.value = ""
@@ -253,13 +253,13 @@ CircularlySinglyLinkedList.prototype.removeBackCallback = function(event)
     }
 }
 
-CircularlySinglyLinkedList.prototype.getCallback = function(event)
-{
-    if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-    {
-        this.implementAction(this.get.bind(this), "");
-    }
-}
+// CircularlySinglyLinkedList.prototype.getCallback = function(event)
+// {
+//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
+//     {
+//         this.implementAction(this.get.bind(this), "");
+//     }
+// }
 
 CircularlySinglyLinkedList.prototype.clearCallback = function(event)
 {
@@ -504,24 +504,18 @@ CircularlySinglyLinkedList.prototype.remove = function(index)
             this.cmd("Disconnect", this.linkedListElemID[index - 1], this.linkedListElemID[index]);
             this.cmd("Connect", this.linkedListElemID[index - 1], this.linkedListElemID[index + 1]);
         }
-    }
-    this.cmd("Step");
+        this.cmd("Step");
 
-    if(index == 0)
-    {
-        this.cmd("Delete", this.linkedListElemID[1]);
-        for (var i = 1; i < this.size; i++)
+        var removedNodeIndex = index == 0 ? 1 : index; // If deleting from front, we need to remove the second node
+        this.cmd("Delete", this.linkedListElemID[removedNodeIndex]);
+        for (var i = removedNodeIndex; i < this.size; i++)
         {
             this.linkedListElemID[i] = this.linkedListElemID[i + 1];
         }
     }
     else
     {
-        this.cmd("Delete", this.linkedListElemID[index]);
-        for (var i = index; i < this.size; i++)
-        {
-            this.linkedListElemID[i] = this.linkedListElemID[i + 1];
-        }
+        this.cmd("Delete", this.linkedListElemID[0]);
     }
 
     for (var i = index; i < this.size; i++)
@@ -533,7 +527,6 @@ CircularlySinglyLinkedList.prototype.remove = function(index)
 
     this.cmd("Delete", labPopValID)
     this.cmd("Delete", labPopID);
-    this.cmd("SetText", this.leftoverLabelID, "Removed Value: " + this.arrayData[index]);
     this.cmd("Step");
 
     return this.commands;

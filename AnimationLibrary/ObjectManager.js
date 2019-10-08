@@ -842,14 +842,14 @@ function ObjectManager()
 		this.Nodes[objectID] = newNode;
 	}
 
-	this.addSkipListObject = function(objectID, nodeLabel, width, height, numLabels, backgroundColor, foregroundColor)
+	this.addSkipListObject = function(objectID, nodeLabel, width, height, labelColor, backgroundColor, foregroundColor)
 	{
 		if (this.Nodes[objectID] != null)
 		{
 			throw new Error("addSkipListObject:Object with same ID already Exists!");
 			return;
 		}
-		var newNode  = new AnimatedSkipList(objectID, nodeLabel, width, height, numLabels, backgroundColor, foregroundColor);
+		var newNode  = new AnimatedSkipList(objectID, nodeLabel, width, height, labelColor, backgroundColor, foregroundColor);
 		this.Nodes[objectID] = newNode;
 	}
 

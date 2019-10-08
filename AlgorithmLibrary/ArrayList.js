@@ -127,14 +127,14 @@ ArrayList.prototype.addControls =  function()
     this.controls.push(this.removeBackButton);
 
     // Get's index text field
-    this.getField = addControlToAlgorithmBar("Text", "");
-    this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
-    this.controls.push(this.getField);
+    // this.getField = addControlToAlgorithmBar("Text", "");
+    // this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
+    // this.controls.push(this.getField);
 
     // Get button
-    this.getButton = addControlToAlgorithmBar("Button", "Get");
-    this.getButton.onclick = this.getCallback.bind(this);
-    this.controls.push(this.getButton);
+    // this.getButton = addControlToAlgorithmBar("Button", "Get");
+    // this.getButton.onclick = this.getCallback.bind(this);
+    // this.controls.push(this.getButton);
 
     // Clear button
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
@@ -188,14 +188,14 @@ ArrayList.prototype.reset = function()
     for (var i = 0; i < SIZE; i++)
     {
         this.arrayData[i] = 0;
-        this.arrayID[i]= this.nextIndex++;
-        this.arrayLabelID[i]= this.nextIndex++;
+        this.arrayID[i] = this.nextIndex++;
+        this.arrayLabelID[i] = this.nextIndex++;
     }
 }
 
 ArrayList.prototype.addIndexCallback = function(event)
 {
-    if (this.addValueField.value != "" && this.addIndexField.value != "")
+    if (this.addValueField.value != "" && this.addIndexField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         var index = this.addIndexField.value;
@@ -210,7 +210,7 @@ ArrayList.prototype.addIndexCallback = function(event)
 
 ArrayList.prototype.addFrontCallback = function(event)
 {
-    if (this.addValueField.value != "")
+    if (this.addValueField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         this.addValueField.value = ""
@@ -220,7 +220,7 @@ ArrayList.prototype.addFrontCallback = function(event)
 
 ArrayList.prototype.addBackCallback = function(event)
 {
-    if (this.addValueField.value != "")
+    if (this.addValueField.value != "" && this.size < SIZE)
     {
         var addVal = this.addValueField.value;
         this.addValueField.value = ""
@@ -257,13 +257,13 @@ ArrayList.prototype.removeBackCallback = function(event)
     }
 }
 
-ArrayList.prototype.getCallback = function(event)
-{
-    if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-    {
-        this.implementAction(this.get.bind(this), "");
-    }
-}
+// ArrayList.prototype.getCallback = function(event)
+// {
+//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
+//     {
+//         this.implementAction(this.get.bind(this), "");
+//     }
+// }
 
 
 ArrayList.prototype.clearCallback = function(event)

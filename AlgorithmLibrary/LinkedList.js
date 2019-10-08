@@ -136,14 +136,14 @@ LinkedList.prototype.addControls =  function()
     this.controls.push(this.removeBackButton);
 
     // Get's index text field
-    this.getField = addControlToAlgorithmBar("Text", "");
-    this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
-    this.controls.push(this.getField);
+    // this.getField = addControlToAlgorithmBar("Text", "");
+    // this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
+    // this.controls.push(this.getField);
 
     // Get button
-    this.getButton = addControlToAlgorithmBar("Button", "Get");
-    this.getButton.onclick = this.getCallback.bind(this);
-    this.controls.push(this.getButton);
+    // this.getButton = addControlToAlgorithmBar("Button", "Get");
+    // this.getButton.onclick = this.getCallback.bind(this);
+    // this.controls.push(this.getButton);
 
     // Clear button
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
@@ -253,13 +253,13 @@ LinkedList.prototype.removeBackCallback = function(event)
     }
 }
 
-LinkedList.prototype.getCallback = function(event)
-{
-    if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-    {
-        this.implementAction(this.get.bind(this), "");
-    }
-}
+// LinkedList.prototype.getCallback = function(event)
+// {
+//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
+//     {
+//         this.implementAction(this.get.bind(this), "");
+//     }
+// }
 
 LinkedList.prototype.clearCallback = function(event)
 {
@@ -349,7 +349,6 @@ LinkedList.prototype.remove = function(index)
     var nodePosY = LINKED_LIST_START_Y;
     this.cmd("CreateLabel", labPopID, "Removing Value: ", PUSH_LABEL_X, PUSH_LABEL_Y);
     this.cmd("CreateLabel", labPopValID, this.arrayData[index], nodePosX, nodePosY);
-
     this.cmd("Move", labPopValID,  PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
     this.cmd("Step");
 
@@ -375,8 +374,6 @@ LinkedList.prototype.remove = function(index)
         }
     }
     this.cmd("Step");
-
-    this.cmd("Step");
     this.cmd("Delete", this.linkedListElemID[index]);
 
     for (var i = index; i < this.size; i++)
@@ -389,7 +386,6 @@ LinkedList.prototype.remove = function(index)
 
     this.cmd("Delete", labPopValID)
     this.cmd("Delete", labPopID);
-    this.cmd("SetText", this.leftoverLabelID, "Removed Value: " + this.arrayData[index]);
 
     return this.commands;
 }

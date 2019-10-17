@@ -144,7 +144,7 @@ InsertionSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",");
+    this.arrayData = params.split(",").map(Number);
     var length = this.arrayData.length;
 
     for (var i = 0; i < length; i++)

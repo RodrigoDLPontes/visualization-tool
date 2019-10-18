@@ -245,6 +245,7 @@ AVL.prototype.doFind = function (tree, value) {
 }
 
 AVL.prototype.insertElement = function (insertedValue) {
+    //console.log("owo");
     this.commands = [];
     this.cmd("SetText", 0, " Inserting " + insertedValue);
 
@@ -260,6 +261,7 @@ AVL.prototype.insertElement = function (insertedValue) {
         this.treeRoot = new AVLNode(insertedValue, treeNodeID, labelID, this.startingX, AVL.STARTING_Y);
         this.treeRoot.height = 0;
     } else {
+        //console.log("I am debugging pls send help");
         treeNodeID = this.nextIndex++;
         labelID = this.nextIndex++;
         this.highlightID = this.nextIndex++;
@@ -271,7 +273,7 @@ AVL.prototype.insertElement = function (insertedValue) {
         this.cmd("CreateLabel", labelID, "", 100 - 20, 100 - 20);
         this.cmd("SetForegroundColor", labelID, AVL.HEIGHT_LABEL_COLOR);
         this.cmd("Step");
-        var insertElem = new AVLNode(insertedValue, treeNodeID, labelID, 100, 100)
+        var insertElem = new AVLNode(insertedValue, treeNodeID, labelID, 100, 100);
 
         this.cmd("SetHighlight", insertElem.graphicID, 0);
         insertElem.height = 0;
@@ -512,9 +514,10 @@ AVL.prototype.insert = function (elem, tree) {
 
     if (elem.data < tree.data) {
         this.cmd("SetText", 0, elem.data + " < " + tree.data + ".  Looking at left subtree");
-    } else {
+    } else if (elem.data > tree.data) {
         this.cmd("SetText", 0, elem.data + " >= " + tree.data + ".  Looking at right subtree");
     }
+
     this.cmd("Step");
     this.cmd("SetHighlight", tree.graphicID, 0);
     this.cmd("SetHighlight", elem.graphicID, 0);
@@ -574,7 +577,7 @@ AVL.prototype.insert = function (elem, tree) {
                 }
             }
         }
-    } else {
+    } else if (elem.data > tree.data){
         if (tree.right == null) {
             this.cmd("SetText", 0, "Found null tree, inserting element");
             this.cmd("SetText", elem.heightLabelID, 0);
@@ -634,9 +637,15 @@ AVL.prototype.insert = function (elem, tree) {
                 }
             }
         }
+    } else {
+        // Detect duplicate
+        this.cmd("CreateHighlightCircle", this.highlightID, AVL.HIGHLIGHT_COLOR, tree.x, tree.y);
+        this.cmd("Move", this.highlightID, tree.x, tree.y);
+        this.cmd("SetText", 0, "Duplicate detected, no need to add anything");
+        this.cmd("Step");
+        this.cmd("Delete", this.highlightID);
+        this.cmd("Delete", elem.graphicID);
     }
-
-
 }
 
 AVL.prototype.deleteElement = function (deletedValue) {

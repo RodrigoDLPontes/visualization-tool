@@ -188,7 +188,7 @@ BFS.prototype.doBFS = function(startVetex)
 					this.cmd("Disconnect", this.circleID[vertex], this.circleID[neighbor]);
 					this.cmd("Connect", this.circleID[vertex], this.circleID[neighbor], BFS_TREE_COLOR, this.curve[vertex][neighbor], 1, "");
 					this.queue[tail] = neighbor;
-					this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + vertex), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
+					this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + neighbor), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
 					tail = (tail + 1) % (this.size);
 					queueSize = queueSize + 1;
 				}

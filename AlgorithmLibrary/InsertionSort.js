@@ -77,7 +77,7 @@ InsertionSort.prototype.addControls =  function()
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 20, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
     this.controls.push(this.listField);
 
     // Sort button

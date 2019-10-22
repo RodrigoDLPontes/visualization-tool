@@ -88,10 +88,10 @@ BFS.prototype.setup = function()
 		this.parentID[i] = this.nextIndex++;
 		this.parentIndexID[i] = this.nextIndex++;
 		this.cmd("CreateRectangle", this.visitedID[i], "F", AUX_ARRAY_WIDTH, AUX_ARRAY_HEIGHT, VISITED_START_X, AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("CreateLabel", this.visitedIndexID[i], i, VISITED_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
+		this.cmd("CreateLabel", this.visitedIndexID[i], String.fromCharCode(65 + i), VISITED_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
 		this.cmd("SetForegroundColor",  this.visitedIndexID[i], VERTEX_INDEX_COLOR);
 		this.cmd("CreateRectangle", this.parentID[i], "", AUX_ARRAY_WIDTH, AUX_ARRAY_HEIGHT, PARENT_START_X, AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("CreateLabel", this.parentIndexID[i], i, PARENT_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
+		this.cmd("CreateLabel", this.parentIndexID[i], String.fromCharCode(65 + i), PARENT_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
 		this.cmd("SetForegroundColor",  this.parentIndexID[i], VERTEX_INDEX_COLOR);
 
 	}
@@ -188,7 +188,7 @@ BFS.prototype.doBFS = function(startVetex)
 					this.cmd("Disconnect", this.circleID[vertex], this.circleID[neighbor]);
 					this.cmd("Connect", this.circleID[vertex], this.circleID[neighbor], BFS_TREE_COLOR, this.curve[vertex][neighbor], 1, "");
 					this.queue[tail] = neighbor;
-					this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + vertex), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
+					this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + neighbor), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
 					tail = (tail + 1) % (this.size);
 					queueSize = queueSize + 1;
 				}

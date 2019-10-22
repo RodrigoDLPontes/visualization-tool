@@ -41,12 +41,13 @@ function addLabelToAlgorithmBar(labelName)
 
 // TODO:  Make this stackable like radio butons
 //        (keep backwards compatible, thought)
-function addCheckboxToAlgorithmBar(boxLabel)
+function addCheckboxToAlgorithmBar(boxLabel, checked)
 {	
 	var element = document.createElement("input");
 
     element.setAttribute("type", "checkbox");
-    element.setAttribute("value", boxLabel);
+	element.setAttribute("value", boxLabel);
+	element.setAttribute("checked", checked);
 	
     var label = document.createTextNode(boxLabel);
 	

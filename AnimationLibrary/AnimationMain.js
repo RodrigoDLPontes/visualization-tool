@@ -222,7 +222,7 @@ function doPlayPause()
     paused = !paused;
     if (paused)
     {
-        playPauseBackButton.setAttribute("value", "play");
+        playPauseBackButton.setAttribute("value", "Play");
         if (skipBackButton.disabled == false)
         {
             stepBackButton.disabled = false;
@@ -231,7 +231,7 @@ function doPlayPause()
     }
     else
     {
-        playPauseBackButton.setAttribute("value", "pause");
+        playPauseBackButton.setAttribute("value", "Pause");
     }
     animationManager.SetPaused(paused);
 }

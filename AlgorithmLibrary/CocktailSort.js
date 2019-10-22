@@ -32,17 +32,7 @@ var ARRAY_ELEM_HEIGHT = 50;
 var ARRRAY_ELEMS_PER_LINE = 15;
 var ARRAY_LINE_SPACING = 130;
 
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 10;
+var lastSwapEnabled = true;
 
 function CocktailSort(am, w, h)
 {
@@ -73,11 +63,11 @@ CocktailSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
     // Sort button
@@ -89,6 +79,11 @@ CocktailSort.prototype.addControls =  function()
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
     this.clearButton.onclick = this.clearCallback.bind(this);
     this.controls.push(this.clearButton);
+
+    // Last swap optimization toggle
+    this.lastSwapCheckbox = addCheckboxToAlgorithmBar("Enable last swap optimization", true)
+    this.lastSwapCheckbox.onclick = this.toggleLastSwap.bind(this);
+    this.controls.push(this.lastSwapCheckbox);
 }
 
 CocktailSort.prototype.setup = function()
@@ -127,6 +122,11 @@ CocktailSort.prototype.clearCallback = function(event)
     this.implementAction(this.clear.bind(this), "");
 }
 
+CocktailSort.prototype.toggleLastSwap = function(event)
+{
+    lastSwapEnabled = !lastSwapEnabled;
+}
+
 CocktailSort.prototype.clear = function()
 {
     this.arrayData = new Array();
@@ -143,7 +143,7 @@ CocktailSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",");
+    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
     var length = this.arrayData.length;
 
     for (var i = 0; i < length; i++)
@@ -162,17 +162,28 @@ CocktailSort.prototype.sort = function(params)
     var sorted = true;
     var start = 0;
     var end = this.arrayData.length - 1;
+    var lastSwapped = 0;
     do {
         sorted = true;
         for (var i = start; i < end; i++) {
             this.movePointers(i, i + 1);
-            // Unary + casts a string to an int 
-            if (+this.arrayData[i] > +this.arrayData[i + 1]) {
+            if (this.arrayData[i] > this.arrayData[i + 1]) {
                 this.swap(i, i + 1);
                 sorted = false;
+                lastSwapped = i;
             }
         }
-        end--;
+        if (lastSwapEnabled) {
+            end = lastSwapped;
+        } else {
+            end--;
+        }
+        if (!sorted) {
+            for (var i = end + 1; i < this.arrayData.length; i++) {
+                this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+            }
+            this.cmd("Step")
+        }
         if (!sorted) {
             sorted = true;
             for (var i = end; i > start; i--) {
@@ -180,15 +191,31 @@ CocktailSort.prototype.sort = function(params)
                 if (+this.arrayData[i] < +this.arrayData[i - 1]) {
                     this.swap(i, i - 1);
                     sorted = false;
+                    lastSwapped = i;
                 }
             }
-            start++;
+            if (lastSwapEnabled) {
+                start = lastSwapped;
+            } else {
+                start++;
+            }
+            if (!sorted) {
+                for (var i = start - 1; i >= 0; i--) {
+                    this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+                }
+                this.cmd("Step")
+            }
         }
     } while (!sorted);
 
     this.cmd("Delete", this.iPointerID);
     this.cmd("Delete", this.jPointerID);
     this.cmd("Step");
+
+    for (var i = 0; i < this.arrayData.length; i++) {
+        this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+    }
+    this.cmd("Step")
 
     return this.commands;
 }
@@ -206,7 +233,6 @@ CocktailSort.prototype.movePointers = function(i, j) {
 CocktailSort.prototype.swap = function(i, j) {
     this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
     this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
-    this.cmd("Step");
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
@@ -217,7 +243,6 @@ CocktailSort.prototype.swap = function(i, j) {
     this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, jYPos);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
-    this.cmd("Step");
     this.cmd("Move", iLabelID, jXPos, jYPos);
     this.cmd("Move", jLabelID, iXPos, iYPos);
     this.cmd("Step");
@@ -225,7 +250,6 @@ CocktailSort.prototype.swap = function(i, j) {
     this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    this.cmd("Step");
     var temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;

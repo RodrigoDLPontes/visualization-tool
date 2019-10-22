@@ -73,11 +73,11 @@ InsertionSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma seperated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma seperated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
     // Sort button
@@ -144,7 +144,7 @@ InsertionSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",").map(Number);
+    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
     var length = this.arrayData.length;
 
     for (var i = 0; i < length; i++)
@@ -169,6 +169,9 @@ InsertionSort.prototype.sort = function(params)
                 break;
             }
         }
+        if (i == 1) this.cmd("SetBackgroundColor", this.arrayID[0], "#2ECC71");
+        this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+        this.cmd("Step");
     }
 
     this.cmd("Delete", this.iPointerID);
@@ -191,7 +194,6 @@ InsertionSort.prototype.movePointers = function(i, j) {
 InsertionSort.prototype.swap = function(i, j) {
     this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
     this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
-    this.cmd("Step");
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
@@ -202,7 +204,6 @@ InsertionSort.prototype.swap = function(i, j) {
     this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, jYPos);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
-    this.cmd("Step");
     this.cmd("Move", iLabelID, jXPos, jYPos);
     this.cmd("Move", jLabelID, iXPos, iYPos);
     this.cmd("Step");
@@ -210,7 +211,6 @@ InsertionSort.prototype.swap = function(i, j) {
     this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    this.cmd("Step");
     var temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;

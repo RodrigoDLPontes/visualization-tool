@@ -39,6 +39,9 @@ One of the ways the tool is distributed is by packaging it into standalone deskt
 
 To quickly run the app, install Electron dependencies through `npm install` on the root directory, then run `npm start`.
 
+### Debugging
+
+A helpful tip for debugging is to enable logging in electron by setting the environment variable.  This allows you to see anything you `console.log()`.  You can do this in Windows command prompt by running `set ELECTRON_ENABLE_LOGGING=1`.
 ### Building and Packaging
 
 To build the apps (on a Unix system), run `./build.sh` from the root directory (assuming you've already run `npm install`).

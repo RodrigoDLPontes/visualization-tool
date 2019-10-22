@@ -73,11 +73,11 @@ InsertionSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma seperated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\")")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 20, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
     this.controls.push(this.listField);
 
     // Sort button

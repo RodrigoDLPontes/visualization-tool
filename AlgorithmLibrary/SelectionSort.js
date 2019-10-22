@@ -73,11 +73,11 @@ InsertionSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
     // Sort button
@@ -144,7 +144,7 @@ InsertionSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",");
+    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
     var length = this.arrayData.length;
 
     for (var i = 0; i < length; i++)
@@ -154,7 +154,7 @@ InsertionSort.prototype.sort = function(params)
         var ypos = ARRAY_START_Y;
         this.cmd("CreateRectangle", this.arrayID[i], this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
     }
-    this.cmd("CreateHighlightCircle", this.iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y);
+    this.cmd("CreateHighlightCircle", this.iPointerID, "#FF0000", ARRAY_START_X, ARRAY_START_Y);
     this.cmd("SetHighlight", this.iPointerID, 1);
     this.cmd("CreateHighlightCircle", this.jPointerID, "#0000FF", ARRAY_START_X + ARRAY_ELEM_WIDTH, ARRAY_START_Y);
     this.cmd("SetHighlight", this.jPointerID, 1);
@@ -167,18 +167,25 @@ InsertionSort.prototype.sort = function(params)
             this.movePointers(smallest, j);
             if (this.arrayData[j] < this.arrayData[smallest]) {
                 this.cmd("SetBackgroundColor", this.arrayID[smallest], "#FFFFFF");
+                this.cmd("Step");
                 smallest = j;
                 this.movePointers(smallest, j);
                 this.cmd("SetBackgroundColor", this.arrayID[smallest], "#FFFF00");
+                this.cmd("Step");
             }
         }
         this.swap(i, smallest);
         this.cmd("SetBackgroundColor", this.arrayID[smallest], "#FFFFFF");
+        this.cmd("Step");
+        this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+        this.cmd("Step");
     }
 
     this.cmd("Delete", this.iPointerID);
     this.cmd("Delete", this.jPointerID);
     this.cmd("Step");
+
+    this.cmd("SetBackgroundColor", this.arrayID[this.arrayID.length - 1], "#2ECC71");
 
     return this.commands;
 }
@@ -204,7 +211,6 @@ InsertionSort.prototype.swap = function(i, j) {
     this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, jYPos);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
-    this.cmd("Step");
     this.cmd("Move", iLabelID, jXPos, jYPos);
     this.cmd("Move", jLabelID, iXPos, iYPos);
     this.cmd("Step");
@@ -212,11 +218,9 @@ InsertionSort.prototype.swap = function(i, j) {
     this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    this.cmd("Step");
     var temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;
-    this.cmd("Step");
 }
 
 // Called by our superclass when we get an animation started event -- need to wait for the

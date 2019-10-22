@@ -73,11 +73,11 @@ QuickSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
     // Sort button
@@ -145,7 +145,7 @@ QuickSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",");
+    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
 
     for (var i = 0; i < this.arrayData.length; i++)
     {

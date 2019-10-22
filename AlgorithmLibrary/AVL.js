@@ -245,7 +245,6 @@ AVL.prototype.doFind = function (tree, value) {
 }
 
 AVL.prototype.insertElement = function (insertedValue) {
-    //console.log("owo");
     this.commands = [];
     this.cmd("SetText", 0, " Inserting " + insertedValue);
 
@@ -261,7 +260,6 @@ AVL.prototype.insertElement = function (insertedValue) {
         this.treeRoot = new AVLNode(insertedValue, treeNodeID, labelID, this.startingX, AVL.STARTING_Y);
         this.treeRoot.height = 0;
     } else {
-        //console.log("I am debugging pls send help");
         treeNodeID = this.nextIndex++;
         labelID = this.nextIndex++;
         this.highlightID = this.nextIndex++;

@@ -32,17 +32,7 @@ var ARRAY_ELEM_HEIGHT = 50;
 var ARRRAY_ELEMS_PER_LINE = 15;
 var ARRAY_LINE_SPACING = 130;
 
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 10;
+var lastSwapEnabled = true;
 
 function BubbleSort(am, w, h)
 {
@@ -73,11 +63,11 @@ BubbleSort.prototype.addControls =  function()
 {
     this.controls = [];
 
-    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\")")
+    addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 80, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
     // Sort button
@@ -89,6 +79,11 @@ BubbleSort.prototype.addControls =  function()
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
     this.clearButton.onclick = this.clearCallback.bind(this);
     this.controls.push(this.clearButton);
+
+    // Last swap optimization toggle
+    this.lastSwapCheckbox = addCheckboxToAlgorithmBar("Enable last swap optimization", true)
+    this.lastSwapCheckbox.onclick = this.toggleLastSwap.bind(this);
+    this.controls.push(this.lastSwapCheckbox);
 }
 
 BubbleSort.prototype.setup = function()
@@ -127,6 +122,11 @@ BubbleSort.prototype.clearCallback = function(event)
     this.implementAction(this.clear.bind(this), "");
 }
 
+BubbleSort.prototype.toggleLastSwap = function(event)
+{
+    lastSwapEnabled = !lastSwapEnabled;
+}
+
 BubbleSort.prototype.clear = function()
 {
     this.commands = new Array();
@@ -144,7 +144,7 @@ BubbleSort.prototype.sort = function(params)
     this.commands = new Array();
 
     this.arrayID = new Array();
-    this.arrayData = params.split(",");
+    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
     var length = this.arrayData.length;
 
     for (var i = 0; i < length; i++)
@@ -162,22 +162,38 @@ BubbleSort.prototype.sort = function(params)
 
     var sorted = true;
     var end = this.arrayData.length - 1;
+    var lastSwapped = 0;
     do {
         sorted = true;
         for (var i = 0; i < end; i++) {
             this.movePointers(i, i + 1);
-            // Unary + casts a string to an int 
-            if (+this.arrayData[i] > +this.arrayData[i + 1]) {
+            if (this.arrayData[i] > this.arrayData[i + 1]) {
                 this.swap(i, i + 1);
                 sorted = false;
+                lastSwapped = i;
             }
         }
-        end--;
+        if (lastSwapEnabled) {
+            end = lastSwapped;
+        } else {
+            end--;
+        }
+        if (!sorted) {
+            for (var i = end + 1; i < this.arrayData.length; i++) {
+                this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+            }
+            this.cmd("Step")
+        }
     } while (!sorted);
 
     this.cmd("Delete", this.iPointerID);
     this.cmd("Delete", this.jPointerID);
     this.cmd("Step");
+
+    for (var i = 0; i < this.arrayData.length; i++) {
+        this.cmd("SetBackgroundColor", this.arrayID[i], "#2ECC71");
+    }
+    this.cmd("Step")
 
     return this.commands;
 }
@@ -194,7 +210,6 @@ BubbleSort.prototype.swap = function(i, j) {
     // Change pointer colors to red
     this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
     this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
-    this.cmd("Step");
     // Create temporary labels and remove text in array
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -204,7 +219,6 @@ BubbleSort.prototype.swap = function(i, j) {
     this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
-    this.cmd("Step");
     // Move labels
     this.cmd("Move", iLabelID, jXPos, ARRAY_START_Y);
     this.cmd("Move", jLabelID, iXPos, ARRAY_START_Y);
@@ -214,7 +228,6 @@ BubbleSort.prototype.swap = function(i, j) {
     this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    this.cmd("Step");
     // Swap data in backend array
     var temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];

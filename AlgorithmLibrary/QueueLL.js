@@ -200,7 +200,7 @@ QueueLL.prototype.dequeueCallback = function(event)
 
 QueueLL.prototype.clearCallback = function(event)
 {
-	this.implementAction(this.clearData.bind(this), "");
+	this.implementAction(this.clearAll.bind(this), "");
 }
 
 		

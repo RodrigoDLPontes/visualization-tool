@@ -426,6 +426,7 @@ SPLAYTREE.prototype.insertElement = function(insertedValue)
 
 SPLAYTREE.prototype.insert = function(elem, tree)
 {
+	var foundDuplicate = false;
 	this.cmd("SetHighlight", tree.graphicID , 1);
 	this.cmd("SetHighlight", elem.graphicID , 1);
 	
@@ -433,14 +434,25 @@ SPLAYTREE.prototype.insert = function(elem, tree)
 	{
 		this.cmd("SetText", 0,  elem.data + " < " + tree.data + ".  Looking at left subtree");				
 	}
-	else
+	else if (elem.data > tree.data)
 	{
 		this.cmd("SetText",  0, elem.data + " >= " + tree.data + ".  Looking at right subtree");				
+	}
+	else
+	{
+		this.cmd("SetText", 0, elem.data + " = " + tree.data + ". Ignoring duplicate");
+		foundDuplicate = true;
 	}
 	this.cmd("Step");
 	this.cmd("SetHighlight", tree.graphicID, 0);
 	this.cmd("SetHighlight", elem.graphicID, 0);
 	
+	if (foundDuplicate)
+	{
+		this.cmd("Delete", elem.graphicID, 0);
+		return;
+	}	
+
 	if (elem.data < tree.data)
 	{
 		if (tree.left == null)

@@ -34,8 +34,7 @@ var ARRAY_LINE_SPACING = 130;
 
 var lastSwapEnabled = true;
 
-function CocktailSort(am, w, h)
-{
+function CocktailSort(am, w, h) {
     this.init(am, w, h);
 }
 
@@ -43,8 +42,7 @@ CocktailSort.prototype = new Algorithm();
 CocktailSort.prototype.constructor = CocktailSort;
 CocktailSort.superclass = Algorithm.prototype;
 
-CocktailSort.prototype.init = function(am, w, h)
-{
+CocktailSort.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
     CocktailSort.superclass.init.call(this, am, w, h);
@@ -59,8 +57,7 @@ CocktailSort.prototype.init = function(am, w, h)
     this.setup();
 }
 
-CocktailSort.prototype.addControls =  function()
-{
+CocktailSort.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
@@ -86,8 +83,7 @@ CocktailSort.prototype.addControls =  function()
     this.controls.push(this.lastSwapCheckbox);
 }
 
-CocktailSort.prototype.setup = function()
-{
+CocktailSort.prototype.setup = function () {
     this.arrayData = new Array();
     this.arrayID = new Array();
     this.displayData = new Array();
@@ -95,8 +91,7 @@ CocktailSort.prototype.setup = function()
     this.jPointerID = this.nextIndex++;
 }
 
-CocktailSort.prototype.reset = function()
-{
+CocktailSort.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -107,10 +102,8 @@ CocktailSort.prototype.reset = function()
     this.nextIndex = 0;
 }
 
-CocktailSort.prototype.sortCallback = function(event)
-{
-    if (this.listField.value != "")
-    {
+CocktailSort.prototype.sortCallback = function (event) {
+    if (this.listField.value != "") {
         this.clear();
         var list = this.listField.value;
         this.listField.value = "";
@@ -118,30 +111,26 @@ CocktailSort.prototype.sortCallback = function(event)
     }
 }
 
-CocktailSort.prototype.clearCallback = function(event)
-{
+CocktailSort.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-CocktailSort.prototype.toggleLastSwap = function(event)
-{
+CocktailSort.prototype.toggleLastSwap = function (event) {
     lastSwapEnabled = !lastSwapEnabled;
 }
 
-CocktailSort.prototype.clear = function()
-{
+CocktailSort.prototype.clear = function () {
     this.arrayData = new Array();
     this.commands = new Array();
     this.displayData = new Array();
-    for(let i = 0; i < this.arrayID.length; i++) {
+    for (let i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
     }
     return this.commands;
 }
 
 
-CocktailSort.prototype.sort = function(params)
-{
+CocktailSort.prototype.sort = function (params) {
     this.commands = new Array();
 
     this.arrayID = new Array();
@@ -160,8 +149,7 @@ CocktailSort.prototype.sort = function(params)
         elemCounts.set(this.arrayData[i], count + 1);
     }
 
-    for (let i = 0; i < length; i++)
-    {
+    for (let i = 0; i < length; i++) {
         this.arrayID[i] = this.nextIndex++;
         var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
@@ -242,7 +230,7 @@ CocktailSort.prototype.sort = function(params)
     return this.commands;
 }
 
-CocktailSort.prototype.movePointers = function(i, j) {
+CocktailSort.prototype.movePointers = function (i, j) {
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
     this.cmd("Move", this.iPointerID, iXPos, iYPos);
@@ -252,7 +240,7 @@ CocktailSort.prototype.movePointers = function(i, j) {
     this.cmd("Step");
 }
 
-CocktailSort.prototype.swap = function(i, j) {
+CocktailSort.prototype.swap = function (i, j) {
     this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
     this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
     var iLabelID = this.nextIndex++;
@@ -290,20 +278,16 @@ CocktailSort.prototype.swap = function(i, j) {
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-CocktailSort.prototype.disableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+CocktailSort.prototype.disableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
 }
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-CocktailSort.prototype.enableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+CocktailSort.prototype.enableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
 }
@@ -311,10 +295,10 @@ CocktailSort.prototype.enableUI = function(event)
 
 var currentAlg;
 
-function init()
-{
+function init() {
     var animManag = initCanvas();
     currentAlg = new CocktailSort(animManag, canvas.width, canvas.height);
 
 }
+
 z

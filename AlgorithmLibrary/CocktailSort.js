@@ -90,6 +90,7 @@ CocktailSort.prototype.setup = function()
 {
     this.arrayData = new Array();
     this.arrayID = new Array();
+    this.displayData = new Array();
     this.iPointerID = this.nextIndex++;
     this.jPointerID = this.nextIndex++;
 }
@@ -131,7 +132,8 @@ CocktailSort.prototype.clear = function()
 {
     this.arrayData = new Array();
     this.commands = new Array();
-    for(var i = 0; i < this.arrayID.length; i++) {
+    this.displayData = new Array();
+    for(let i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
     }
     return this.commands;
@@ -144,14 +146,34 @@ CocktailSort.prototype.sort = function(params)
 
     this.arrayID = new Array();
     this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
+    this.displayData = new Array(this.arrayData.length);
     var length = this.arrayData.length;
 
-    for (var i = 0; i < length; i++)
+    let elemCounts = new Map();
+    let letterMap = new Map();
+
+    for (let i = 0; i < length; i++) {
+        let count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
+        if (count > 0) {
+            letterMap.set(this.arrayData[i], "A");
+        }
+        elemCounts.set(this.arrayData[i], count + 1);
+    }
+
+    for (let i = 0; i < length; i++)
     {
         this.arrayID[i] = this.nextIndex++;
         var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
-        this.cmd("CreateRectangle", this.arrayID[i], this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+
+        let displayData = this.arrayData[i].toString();
+        if (letterMap.has(this.arrayData[i])) {
+            let currChar = letterMap.get(this.arrayData[i]);
+            displayData += currChar;
+            letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
+        }
+        this.displayData[i] = displayData;
+        this.cmd("CreateRectangle", this.arrayID[i], displayData, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
     }
     this.cmd("CreateHighlightCircle", this.iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y);
     this.cmd("SetHighlight", this.iPointerID, 1);
@@ -236,23 +258,31 @@ CocktailSort.prototype.swap = function(i, j) {
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
-    this.cmd("CreateLabel", iLabelID, this.arrayData[i], iXPos, iYPos);
+    this.cmd("CreateLabel", iLabelID, this.displayData[i], iXPos, iYPos);
     var jLabelID = this.nextIndex++;
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var jYPos = ARRAY_START_Y;
-    this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, jYPos);
+    this.cmd("CreateLabel", jLabelID, this.displayData[j], jXPos, jYPos);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
     this.cmd("Move", iLabelID, jXPos, jYPos);
     this.cmd("Move", jLabelID, iXPos, iYPos);
     this.cmd("Step");
-    this.cmd("Settext", this.arrayID[i], this.arrayData[j]);
-    this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
+    this.cmd("Settext", this.arrayID[i], this.displayData[j]);
+    this.cmd("Settext", this.arrayID[j], this.displayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    var temp = this.arrayData[i];
+
+    // Swap actual data
+    let temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;
+
+    // Swap displayed data
+    temp = this.displayData[i];
+    this.displayData[i] = this.displayData[j];
+    this.displayData[j] = temp;
+
     this.cmd("SetForegroundColor", this.iPointerID, "#0000FF");
     this.cmd("SetForegroundColor", this.jPointerID, "#0000FF");
     this.cmd("Step");

@@ -35,7 +35,7 @@ var ARRRAY_ELEMS_PER_LINE = 15;
 var TOP_POS_X = 180;
 var TOP_POS_Y = 100;
 var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
+var TOP_LABEL_Y = 100;
 
 var PUSH_LABEL_X = 50;
 var PUSH_LABEL_Y = 30;
@@ -47,8 +47,7 @@ var SIZE = 10;
 var LARGE_OFFSET = 15;
 var SMALL_OFFSET = 7;
 
-function MergeSort(am, w, h)
-{
+function MergeSort(am, w, h) {
     this.init(am, w, h);
 }
 
@@ -56,8 +55,7 @@ MergeSort.prototype = new Algorithm();
 MergeSort.prototype.constructor = MergeSort;
 MergeSort.superclass = Algorithm.prototype;
 
-MergeSort.prototype.init = function(am, w, h)
-{
+MergeSort.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
     MergeSort.superclass.init.call(this, am, w, h);
@@ -72,8 +70,7 @@ MergeSort.prototype.init = function(am, w, h)
     this.setup();
 }
 
-MergeSort.prototype.addControls =  function()
-{
+MergeSort.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 12 elements)")
@@ -94,8 +91,7 @@ MergeSort.prototype.addControls =  function()
     this.controls.push(this.clearButton);
 }
 
-MergeSort.prototype.setup = function()
-{
+MergeSort.prototype.setup = function () {
     this.arrayData = new Array();
     this.arrayID = new Array();
     this.iPointerID = 0;
@@ -103,8 +99,7 @@ MergeSort.prototype.setup = function()
     this.kPointerID = 0;
 }
 
-MergeSort.prototype.reset = function()
-{
+MergeSort.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -115,10 +110,8 @@ MergeSort.prototype.reset = function()
     this.nextIndex = 0;
 }
 
-MergeSort.prototype.sortCallback = function(event)
-{
-    if (this.listField.value != "")
-    {
+MergeSort.prototype.sortCallback = function (event) {
+    if (this.listField.value != "") {
         this.implementAction(this.clear.bind(this), "");
         var list = this.listField.value;
         this.listField.value = "";
@@ -126,41 +119,58 @@ MergeSort.prototype.sortCallback = function(event)
     }
 }
 
-MergeSort.prototype.clearCallback = function(event)
-{
+MergeSort.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-MergeSort.prototype.clear = function()
-{
+MergeSort.prototype.clear = function () {
     this.commands = new Array();
-    for(var i = 0; i < this.arrayID.length; i++) {
+    for (let i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
     }
     this.arrayData = new Array();
+    this.displayData = new Array();
     this.arrayID = new Array();
     return this.commands;
 }
 
 
-MergeSort.prototype.sort = function(params)
-{
+MergeSort.prototype.sort = function (params) {
     this.commands = new Array();
 
     this.arrayID = new Array();
     this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 12);
+    this.displayData = new Array(this.arrayData.length);
 
-    for (var i = 0; i < this.arrayData.length; i++)
-    {
+    let elemCounts = new Map();
+    let letterMap = new Map();
+
+    for (let i = 0; i < this.arrayData.length; i++) {
+        let count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
+        if (count > 0) {
+            letterMap.set(this.arrayData[i], "A");
+        }
+        elemCounts.set(this.arrayData[i], count + 1);
+    }
+
+    for (let i = 0; i < this.arrayData.length; i++) {
         this.arrayData[i] = parseInt(this.arrayData[i]);
-        var xPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-        var yPos = ARRAY_START_Y;
+        let xPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+        let yPos = ARRAY_START_Y;
         this.arrayID.push(this.nextIndex);
-        this.cmd("CreateRectangle", this.nextIndex++, this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
+
+        let displayData = this.arrayData[i].toString();
+        if (letterMap.has(this.arrayData[i])) {
+            let currChar = letterMap.get(this.arrayData[i]);
+            displayData += currChar;
+            letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
+        }
+        this.displayData[i] = displayData;
+        this.cmd("CreateRectangle", this.nextIndex++, displayData, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
     }
     this.cmd("Step");
 
-    if(this.arrayData.length != 1) {
+    if (this.arrayData.length != 1) {
         var mid = Math.ceil((this.arrayData.length - 1) / 2);
         this.leftHelper(0, mid - 1, -LARGE_OFFSET, 0, 1);
         this.rightHelper(mid, this.arrayData.length - 1, LARGE_OFFSET, 0, 1);
@@ -173,13 +183,12 @@ MergeSort.prototype.sort = function(params)
     return this.commands;
 }
 
-MergeSort.prototype.leftHelper = function(left, right, offset, prevOffset, row)
-{
-    if(left > right) return;
+MergeSort.prototype.leftHelper = function (left, right, offset, prevOffset, row) {
+    if (left > right) return;
 
     var tempArrayID = this.drawArrayAndCopy(left, right, offset, prevOffset, row);
 
-    if(left != right) {
+    if (left != right) {
         var mid = Math.ceil((left + right) / 2);
         var extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
         this.leftHelper(left, mid - 1, offset - extraOffset, offset, row + 1);
@@ -191,13 +200,12 @@ MergeSort.prototype.leftHelper = function(left, right, offset, prevOffset, row)
     }
 }
 
-MergeSort.prototype.rightHelper = function(left, right, offset, prevOffset, row)
-{
-    if(left > right) return;
+MergeSort.prototype.rightHelper = function (left, right, offset, prevOffset, row) {
+    if (left > right) return;
 
     var tempArrayID = this.drawArrayAndCopy(left, right, offset, prevOffset, row);
 
-    if(left != right) {
+    if (left != right) {
         var mid = Math.ceil((left + right) / 2);
         var extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
         this.rightHelper(left, mid - 1, offset, offset, row + 1);
@@ -209,13 +217,11 @@ MergeSort.prototype.rightHelper = function(left, right, offset, prevOffset, row)
     }
 }
 
-MergeSort.prototype.drawArrayAndCopy = function(left, right, offset, prevOffset, row)
-{
+MergeSort.prototype.drawArrayAndCopy = function (left, right, offset, prevOffset, row) {
     var tempArrayID = new Array();
 
     // Display subarray
-    for (var i = left; i <= right; i++)
-    {
+    for (var i = left; i <= right; i++) {
         var xPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X + offset;
         var yPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
         tempArrayID[i] = this.nextIndex;
@@ -225,21 +231,21 @@ MergeSort.prototype.drawArrayAndCopy = function(left, right, offset, prevOffset,
     this.cmd("Step");
 
     // Copy elements from big array to current subarray
-    for (var i = left; i <= right; i++)
-    {
-        this.copyData(i, i, prevOffset, offset, row - 1, row, this.arrayData[i], tempArrayID[i], -1);
+    for (var i = left; i <= right; i++) {
+        this.copyData(i, i, prevOffset, offset, row - 1, row, this.displayData[i], tempArrayID[i], -1);
     }
 
     return tempArrayID;
 }
 
-MergeSort.prototype.merge = function(left, right, mid, row, currOffset, leftOffset, rightOffset, currArrayID)
-{
-    var tempArray = new Array(this.arrayData.length); // Temporary array to store data for sorting
+MergeSort.prototype.merge = function (left, right, mid, row, currOffset, leftOffset, rightOffset, currArrayID) {
+    let tempArray = new Array(this.arrayData.length); // Temporary array to store data for sorting
+    let tempDisplay = new Array(this.arrayData.length);
 
     // Copy data to temporary array
-    for(var i = left; i <= right; i++) {
+    for (var i = left; i <= right; i++) {
         tempArray[i] = this.arrayData[i];
+        tempDisplay[i] = this.displayData[i];
     }
 
     // Create pointers
@@ -262,8 +268,9 @@ MergeSort.prototype.merge = function(left, right, mid, row, currOffset, leftOffs
     var k = left;
     while (i < mid && j <= right) {
         if (tempArray[i] <= tempArray[j]) {
-            this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
+            this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempDisplay[i], currArrayID[k], iPointerID);
             this.arrayData[k] = tempArray[i];
+            this.displayData[k] = tempDisplay[i];
             k++;
             this.movePointer(k, row, currOffset, kPointerID);
             i++;
@@ -271,8 +278,9 @@ MergeSort.prototype.merge = function(left, right, mid, row, currOffset, leftOffs
                 this.movePointer(i, row + 1, leftOffset, iPointerID);
             }
         } else {
-            this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
+            this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempDisplay[j], currArrayID[k], jPointerID);
             this.arrayData[k] = tempArray[j];
+            this.displayData[k] = tempDisplay[i];
             k++;
             this.movePointer(k, row, currOffset, kPointerID);
             j++;
@@ -283,17 +291,23 @@ MergeSort.prototype.merge = function(left, right, mid, row, currOffset, leftOffs
         this.cmd("Step");
     }
     while (i < mid) {
-        this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
-        this.arrayData[k++] = tempArray[i++];
-        if(k <= right) {
+        this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempDisplay[i], currArrayID[k], iPointerID);
+        this.arrayData[k] = tempArray[i];
+        this.displayData[k] = tempDisplay[i];
+        k++;
+        i++;
+        if (k <= right) {
             this.movePointer(i, row + 1, leftOffset, iPointerID);
             this.movePointer(k, row, currOffset, kPointerID);
         }
     }
     while (j <= right) {
-        this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
-        this.arrayData[k++] = tempArray[j++];
-        if(k <= right) {
+        this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempDisplay[j], currArrayID[k], jPointerID);
+        this.arrayData[k] = tempArray[j];
+        this.displayData[k] = tempDisplay[j];
+        j++;
+        k++;
+        if (k <= right) {
             this.movePointer(j, row + 1, rightOffset, jPointerID);
             this.movePointer(k, row, currOffset, kPointerID);
         }
@@ -306,9 +320,8 @@ MergeSort.prototype.merge = function(left, right, mid, row, currOffset, leftOffs
     this.cmd("Step");
 }
 
-MergeSort.prototype.copyData = function(fromIndex, toIndex, fromOffset, toOffset, fromRow, toRow, value, cellID, pointerID)
-{
-    if(pointerID != -1) {
+MergeSort.prototype.copyData = function (fromIndex, toIndex, fromOffset, toOffset, fromRow, toRow, value, cellID, pointerID) {
+    if (pointerID != -1) {
         this.cmd("SetForegroundColor", pointerID, "#FF0000");
         this.cmd("Step");
     }
@@ -322,15 +335,14 @@ MergeSort.prototype.copyData = function(fromIndex, toIndex, fromOffset, toOffset
     this.cmd("Step");
     this.cmd("SetText", cellID, value);
     this.cmd("Delete", labelID);
-    if(pointerID != -1) {
+    if (pointerID != -1) {
         this.cmd("SetBackgroundColor", cellID, "#2ECC71");
         this.cmd("SetForegroundColor", pointerID, "#0000FF");
         this.cmd("Step");
     }
 }
 
-MergeSort.prototype.movePointer = function(index, row, offset, pointerID)
-{
+MergeSort.prototype.movePointer = function (index, row, offset, pointerID) {
     var xPos = index * ARRAY_ELEM_WIDTH + ARRAY_START_X + offset;
     var yPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
     this.cmd("Move", pointerID, xPos, yPos);
@@ -338,20 +350,16 @@ MergeSort.prototype.movePointer = function(index, row, offset, pointerID)
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-MergeSort.prototype.disableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+MergeSort.prototype.disableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
 }
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-MergeSort.prototype.enableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+MergeSort.prototype.enableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
 }
@@ -359,8 +367,7 @@ MergeSort.prototype.enableUI = function(event)
 
 var currentAlg;
 
-function init()
-{
+function init() {
     var animManag = initCanvas();
     currentAlg = new MergeSort(animManag, canvas.width, canvas.height);
 

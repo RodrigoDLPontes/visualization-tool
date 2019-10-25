@@ -34,8 +34,7 @@ var ARRAY_LINE_SPACING = 130;
 
 var lastSwapEnabled = true;
 
-function BubbleSort(am, w, h)
-{
+function BubbleSort(am, w, h) {
     this.init(am, w, h);
 }
 
@@ -43,8 +42,7 @@ BubbleSort.prototype = new Algorithm();
 BubbleSort.prototype.constructor = BubbleSort;
 BubbleSort.superclass = Algorithm.prototype;
 
-BubbleSort.prototype.init = function(am, w, h)
-{
+BubbleSort.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
     BubbleSort.superclass.init.call(this, am, w, h);
@@ -59,8 +57,7 @@ BubbleSort.prototype.init = function(am, w, h)
     this.setup();
 }
 
-BubbleSort.prototype.addControls =  function()
-{
+BubbleSort.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
@@ -86,16 +83,15 @@ BubbleSort.prototype.addControls =  function()
     this.controls.push(this.lastSwapCheckbox);
 }
 
-BubbleSort.prototype.setup = function()
-{
+BubbleSort.prototype.setup = function () {
     this.arrayData = new Array();
     this.arrayID = new Array();
+    this.displayData = new Array();
     this.iPointerID = this.nextIndex++;
     this.jPointerID = this.nextIndex++;
 }
 
-BubbleSort.prototype.reset = function()
-{
+BubbleSort.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -106,10 +102,8 @@ BubbleSort.prototype.reset = function()
     this.nextIndex = 0;
 }
 
-BubbleSort.prototype.sortCallback = function(event)
-{
-    if (this.listField.value != "")
-    {
+BubbleSort.prototype.sortCallback = function (event) {
+    if (this.listField.value != "") {
         this.implementAction(this.clear.bind(this), "");
         var list = this.listField.value;
         this.listField.value = "";
@@ -117,42 +111,56 @@ BubbleSort.prototype.sortCallback = function(event)
     }
 }
 
-BubbleSort.prototype.clearCallback = function(event)
-{
+BubbleSort.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-BubbleSort.prototype.toggleLastSwap = function(event)
-{
+BubbleSort.prototype.toggleLastSwap = function (event) {
     lastSwapEnabled = !lastSwapEnabled;
 }
 
-BubbleSort.prototype.clear = function()
-{
+BubbleSort.prototype.clear = function () {
     this.commands = new Array();
-    for(var i = 0; i < this.arrayID.length; i++) {
+    for (var i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
     }
     this.arrayData = new Array();
     this.arrayID = new Array();
+    this.displayData = new Array();
     return this.commands;
 }
 
 
-BubbleSort.prototype.sort = function(params)
-{
+BubbleSort.prototype.sort = function (params) {
     this.commands = new Array();
 
     this.arrayID = new Array();
     this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
-    var length = this.arrayData.length;
+    let length = this.arrayData.length;
+    let elemCounts = new Map();
+    let letterMap = new Map();
 
-    for (var i = 0; i < length; i++)
-    {
+    for (let i = 0; i < length; i++) {
+        let count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
+        if (count > 0) {
+            letterMap.set(this.arrayData[i], "A");
+        }
+        elemCounts.set(this.arrayData[i], count + 1);
+    }
+
+    for (let i = 0; i < length; i++) {
         this.arrayID[i] = this.nextIndex++;
-        var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-        var ypos = ARRAY_START_Y;
-        this.cmd("CreateRectangle", this.arrayID[i], this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+        let xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+        let ypos = ARRAY_START_Y;
+
+        let displayData = this.arrayData[i].toString();
+        if (letterMap.has(this.arrayData[i])) {
+            let currChar = letterMap.get(this.arrayData[i]);
+            displayData += currChar;
+            letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
+        }
+        this.displayData[i] = displayData;
+        this.cmd("CreateRectangle", this.arrayID[i], displayData, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
     }
     this.cmd("CreateHighlightCircle", this.iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y);
     this.cmd("SetHighlight", this.iPointerID, 1);
@@ -165,7 +173,7 @@ BubbleSort.prototype.sort = function(params)
     var lastSwapped = 0;
     do {
         sorted = true;
-        for (var i = 0; i < end; i++) {
+        for (let i = 0; i < end; i++) {
             this.movePointers(i, i + 1);
             if (this.arrayData[i] > this.arrayData[i + 1]) {
                 this.swap(i, i + 1);
@@ -198,7 +206,7 @@ BubbleSort.prototype.sort = function(params)
     return this.commands;
 }
 
-BubbleSort.prototype.movePointers = function(i, j) {
+BubbleSort.prototype.movePointers = function (i, j) {
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     this.cmd("Move", this.iPointerID, iXPos, ARRAY_START_Y);
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -206,17 +214,17 @@ BubbleSort.prototype.movePointers = function(i, j) {
     this.cmd("Step");
 }
 
-BubbleSort.prototype.swap = function(i, j) {
+BubbleSort.prototype.swap = function (i, j) {
     // Change pointer colors to red
     this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
     this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
     // Create temporary labels and remove text in array
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", iLabelID, this.arrayData[i], iXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
     var jLabelID = this.nextIndex++;
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
     // Move labels
@@ -224,14 +232,18 @@ BubbleSort.prototype.swap = function(i, j) {
     this.cmd("Move", jLabelID, iXPos, ARRAY_START_Y);
     this.cmd("Step");
     // Set text in array and delete temporary labels
-    this.cmd("Settext", this.arrayID[i], this.arrayData[j]);
-    this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
+    this.cmd("Settext", this.arrayID[i], this.displayData[j]);
+    this.cmd("Settext", this.arrayID[j], this.displayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
     // Swap data in backend array
-    var temp = this.arrayData[i];
+    let temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;
+    // Swap data in display array
+    temp = this.displayData[i];
+    this.displayData[i] = this.displayData[j];
+    this.displayData[j] = temp;
     // Reset pointer colors back to blue
     this.cmd("SetForegroundColor", this.iPointerID, "#0000FF");
     this.cmd("SetForegroundColor", this.jPointerID, "#0000FF");
@@ -240,20 +252,16 @@ BubbleSort.prototype.swap = function(i, j) {
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-BubbleSort.prototype.disableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+BubbleSort.prototype.disableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
 }
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-BubbleSort.prototype.enableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+BubbleSort.prototype.enableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
 }
@@ -261,8 +269,7 @@ BubbleSort.prototype.enableUI = function(event)
 
 var currentAlg;
 
-function init()
-{
+function init() {
     var animManag = initCanvas();
     currentAlg = new BubbleSort(animManag, canvas.width, canvas.height);
 

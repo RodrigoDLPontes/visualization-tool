@@ -35,7 +35,7 @@ var ARRAY_LINE_SPACING = 130;
 var TOP_POS_X = 180;
 var TOP_POS_Y = 100;
 var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
+var TOP_LABEL_Y = 100;
 
 var PUSH_LABEL_X = 50;
 var PUSH_LABEL_Y = 30;
@@ -44,8 +44,7 @@ var PUSH_ELEMENT_Y = 30;
 
 var SIZE = 10;
 
-function QuickSort(am, w, h)
-{
+function QuickSort(am, w, h) {
     this.init(am, w, h);
 }
 
@@ -53,8 +52,7 @@ QuickSort.prototype = new Algorithm();
 QuickSort.prototype.constructor = QuickSort;
 QuickSort.superclass = Algorithm.prototype;
 
-QuickSort.prototype.init = function(am, w, h)
-{
+QuickSort.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
     QuickSort.superclass.init.call(this, am, w, h);
@@ -69,8 +67,7 @@ QuickSort.prototype.init = function(am, w, h)
     this.setup();
 }
 
-QuickSort.prototype.addControls =  function()
-{
+QuickSort.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
@@ -91,17 +88,16 @@ QuickSort.prototype.addControls =  function()
     this.controls.push(this.clearButton);
 }
 
-QuickSort.prototype.setup = function()
-{
+QuickSort.prototype.setup = function () {
     this.arrayData = new Array();
+    this.displayData = new Array();
     this.arrayID = new Array();
     this.iPointerID = 0;
     this.jPointerID = 0;
     this.pPointerID = 0;
 }
 
-QuickSort.prototype.reset = function()
-{
+QuickSort.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -112,10 +108,8 @@ QuickSort.prototype.reset = function()
     this.nextIndex = 0;
 }
 
-QuickSort.prototype.sortCallback = function(event)
-{
-    if (this.listField.value != "")
-    {
+QuickSort.prototype.sortCallback = function (event) {
+    if (this.listField.value != "") {
         this.implementAction(this.clear.bind(this), "");
         var list = this.listField.value;
         this.listField.value = "";
@@ -123,37 +117,54 @@ QuickSort.prototype.sortCallback = function(event)
     }
 }
 
-QuickSort.prototype.clearCallback = function(event)
-{
+QuickSort.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-QuickSort.prototype.clear = function()
-{
+QuickSort.prototype.clear = function () {
     this.commands = new Array();
-    for(var i = 0; i < this.arrayID.length; i++) {
+    for (var i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
     }
     this.arrayData = new Array();
     this.arrayID = new Array();
+    this.displayData = new Array();
     return this.commands;
 }
 
 
-QuickSort.prototype.sort = function(params)
-{
+QuickSort.prototype.sort = function (params) {
     this.commands = new Array();
 
     this.arrayID = new Array();
     this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
+    this.displayData = new Array(this.arrayData.length);
 
-    for (var i = 0; i < this.arrayData.length; i++)
-    {
+    let elemCounts = new Map();
+    let letterMap = new Map();
+
+    for (let i = 0; i < this.arrayData.length; i++) {
+        let count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
+        if (count > 0) {
+            letterMap.set(this.arrayData[i], "A");
+        }
+        elemCounts.set(this.arrayData[i], count + 1);
+    }
+
+    for (let i = 0; i < this.arrayData.length; i++) {
         this.arrayData[i] = parseInt(this.arrayData[i]);
         this.arrayID[i] = this.nextIndex++;
         var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
-        this.cmd("CreateRectangle", this.arrayID[i], this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+
+        let displayData = this.arrayData[i].toString();
+        if (letterMap.has(this.arrayData[i])) {
+            let currChar = letterMap.get(this.arrayData[i]);
+            displayData += currChar;
+            letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
+        }
+        this.displayData[i] = displayData;
+        this.cmd("CreateRectangle", this.arrayID[i], displayData, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
     }
 
     this.iPointerID = this.nextIndex++;
@@ -164,19 +175,16 @@ QuickSort.prototype.sort = function(params)
     return this.commands;
 }
 
-QuickSort.prototype.helper = function(left, right)
-{
+QuickSort.prototype.helper = function (left, right) {
     if (left > right) return;
 
     // Hightlight cells in the current sub-array
-    for (var i = left; i <= right; i++)
-    {
+    for (var i = left; i <= right; i++) {
         this.cmd("SetBackgroundColor", this.arrayID[i], "#99CCFF");
     }
     this.cmd("Step");
 
-    if (left == right)
-    {
+    if (left == right) {
         this.cmd("SetBackgroundColor", this.arrayID[left], "#2ECC71");
         this.cmd("Step");
         return;
@@ -203,8 +211,7 @@ QuickSort.prototype.helper = function(left, right)
             i++;
             this.movePointers(i, j);
         }
-        if (i <= j)
-        {
+        if (i <= j) {
             this.cmd("SetForegroundColor", this.iPointerID, "#FF0000");
             this.cmd("Step");
         }
@@ -212,8 +219,7 @@ QuickSort.prototype.helper = function(left, right)
             j--;
             this.movePointers(i, j);
         }
-        if (i <= j)
-        {
+        if (i <= j) {
             this.cmd("SetForegroundColor", this.jPointerID, "#FF0000");
             this.cmd("Step");
         }
@@ -236,8 +242,7 @@ QuickSort.prototype.helper = function(left, right)
     this.cmd("Step");
 
     // Un-hightlight cells in sub-array and set pivot cell to green
-    for (var i = left; i <= right; i++)
-    {
+    for (var i = left; i <= right; i++) {
         this.cmd("SetBackgroundColor", this.arrayID[i], "#FFFFFF");
     }
     this.cmd("SetBackgroundColor", this.arrayID[j], "#2ECC71");
@@ -247,8 +252,7 @@ QuickSort.prototype.helper = function(left, right)
     this.helper(j + 1, right);
 }
 
-QuickSort.prototype.movePointers = function(i, j)
-{
+QuickSort.prototype.movePointers = function (i, j) {
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     this.cmd("Move", this.iPointerID, iXPos, ARRAY_START_Y);
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -256,15 +260,14 @@ QuickSort.prototype.movePointers = function(i, j)
     this.cmd("Step");
 }
 
-QuickSort.prototype.swapPivot = function(pivot, other)
-{
+QuickSort.prototype.swapPivot = function (pivot, other) {
     // Create temporary labels and remove text in array
     var lLabelID = this.nextIndex++;
     var lXPos = other * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", lLabelID, this.arrayData[other], lXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", lLabelID, this.displayData[other], lXPos, ARRAY_START_Y);
     var pLabelID = this.nextIndex++;
     var pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", pLabelID, this.arrayData[pivot], pXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", pLabelID, this.displayData[pivot], pXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[other], "");
     this.cmd("Settext", this.arrayID[pivot], "");
     this.cmd("Step");
@@ -274,26 +277,30 @@ QuickSort.prototype.swapPivot = function(pivot, other)
     this.cmd("Move", lLabelID, pXPos, ARRAY_START_Y);
     this.cmd("Step");
     // Set text in array, and delete temporary labels and pointer
-    this.cmd("Settext", this.arrayID[other], this.arrayData[pivot]);
-    this.cmd("Settext", this.arrayID[pivot], this.arrayData[other]);
+    this.cmd("Settext", this.arrayID[other], this.displayData[pivot]);
+    this.cmd("Settext", this.arrayID[pivot], this.displayData[other]);
     this.cmd("Delete", pLabelID);
     this.cmd("Delete", lLabelID);
     this.cmd("Step");
     // Swap data in backend array
-    var temp = this.arrayData[pivot];
+    let temp = this.arrayData[pivot];
     this.arrayData[pivot] = this.arrayData[other];
     this.arrayData[other] = temp;
+
+    //Swap data in backend display data
+    temp = this.displayData[pivot];
+    this.displayData[pivot] = this.displayData[other];
+    this.displayData[other] = temp;
 }
 
-QuickSort.prototype.swap = function(i, j)
-{
+QuickSort.prototype.swap = function (i, j) {
     // Create temporary labels and remove text in array
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", iLabelID, this.arrayData[i], iXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
     var jLabelID = this.nextIndex++;
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-    this.cmd("CreateLabel", jLabelID, this.arrayData[j], jXPos, ARRAY_START_Y);
+    this.cmd("CreateLabel", jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
     this.cmd("Step");
@@ -302,15 +309,19 @@ QuickSort.prototype.swap = function(i, j)
     this.cmd("Move", jLabelID, iXPos, ARRAY_START_Y);
     this.cmd("Step");
     // Set text in array and delete temporary labels
-    this.cmd("Settext", this.arrayID[i], this.arrayData[j]);
-    this.cmd("Settext", this.arrayID[j], this.arrayData[i]);
+    this.cmd("Settext", this.arrayID[i], this.displayData[j]);
+    this.cmd("Settext", this.arrayID[j], this.displayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
     this.cmd("Step");
     // Swap data in backend array
-    var temp = this.arrayData[i];
+    let temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;
+    //Swap data in backend display data
+    temp = this.displayData[i];
+    this.displayData[i] = this.displayData[j];
+    this.displayData[j] = temp;
     // Reset pointer colors back to blue
     this.cmd("SetForegroundColor", this.iPointerID, "#0000FF");
     this.cmd("SetForegroundColor", this.jPointerID, "#0000FF");
@@ -319,20 +330,16 @@ QuickSort.prototype.swap = function(i, j)
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-QuickSort.prototype.disableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+QuickSort.prototype.disableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
 }
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-QuickSort.prototype.enableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
+QuickSort.prototype.enableUI = function (event) {
+    for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
 }
@@ -340,8 +347,7 @@ QuickSort.prototype.enableUI = function(event)
 
 var currentAlg;
 
-function init()
-{
+function init() {
     var animManag = initCanvas();
     currentAlg = new QuickSort(animManag, canvas.width, canvas.height);
 

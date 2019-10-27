@@ -29,7 +29,7 @@ body {
 }
 
 .VisualizationMainPage #examplesButton {
-	background-image: url('images/examples.png');
+	background-image: url('icons/examples.png');
 	background-repeat: no-repeat;
 	background-size: 30px;
 	background-position: center;

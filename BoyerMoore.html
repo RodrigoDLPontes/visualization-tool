@@ -31,6 +31,7 @@
 		<script type = "application/javascript" src = "AlgorithmLibrary/Algorithm.js"> </script>
 		<script type = "application/javascript" src = "AlgorithmLibrary/BoyerMoore.js"> </script>
 
+		<script type = "application/javascript" src="OtherLibrary/ExamplesToggle.js"> </script>
 
 	 </head>
 
@@ -48,6 +49,7 @@
 					<!-- Table for buttons to control specific animation (insert/find/etc) -->
 					<!-- (filled in by javascript code specific to the animtion) -->
 					<table id="AlgorithmSpecificControls"> </table>
+					<button id="examplesButton" onclick="toggleExamples()"></button>
 				</div>
 
 					<!-- Drawing canvas where all animation is done.  Note:  can be resized in code -->
@@ -59,6 +61,16 @@
 					<!-- (filled in by javascript code, specifically AnimationMain.js)  -->
 
 					<table id="GeneralAnimationControls">  </table>
+				</div>
+
+				<div class="modal" id="examplesModal">
+					<div class="modal-content">
+						<ul>
+							<li>The worst case is when we have a text with only one letter and a pattern with that same
+								letter, but a different first letter (for example, "aaaaaaaaa" for text and "baaaa" for
+								pattern), since we will only mismatch on the last comparison</li>
+						</ul>
+					</div>
 				</div>
 
 			</div> <!-- mainContent -->

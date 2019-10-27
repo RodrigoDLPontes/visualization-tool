@@ -1,5 +1,5 @@
 # Visualization Tool
-This is the Visualization Tool used for CS 1332 which covers all data structures & algorithms taught in class.
+This is the Visualization Tool used for CS 1332 which covers all data structures & algorithms taught in class. It is hosted using Github Pages, and you can visit it at: https://rodrigodlpontes.github.io/visualization-tool/.
 
 ## About
 

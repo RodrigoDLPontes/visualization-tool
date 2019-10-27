@@ -79,20 +79,39 @@ AVL.prototype.init = function (am, w, h) {
 }
 
 AVL.prototype.addControls = function () {
+    this.controls = [];
+
     this.insertField = addControlToAlgorithmBar("Text", "");
     this.insertField.onkeydown = this.returnSubmit(this.insertField, this.insertCallback.bind(this), 4);
+    this.controls.push(this.insertField);
+
     this.insertButton = addControlToAlgorithmBar("Button", "Insert");
     this.insertButton.onclick = this.insertCallback.bind(this);
+    this.controls.push(this.insertButton);
+
     this.deleteField = addControlToAlgorithmBar("Text", "");
     this.deleteField.onkeydown = this.returnSubmit(this.deleteField, this.deleteCallback.bind(this), 4);
+    this.controls.push(this.deleteField);
+
     this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
     this.deleteButton.onclick = this.deleteCallback.bind(this);
+    this.controls.push(this.deleteButton);
+
     this.findField = addControlToAlgorithmBar("Text", "");
     this.findField.onkeydown = this.returnSubmit(this.findField, this.findCallback.bind(this), 4);
+    this.controls.push(this.findField);
+
     this.findButton = addControlToAlgorithmBar("Button", "Find");
     this.findButton.onclick = this.findCallback.bind(this);
+    this.controls.push(this.findButton);
+
     this.printButton = addControlToAlgorithmBar("Button", "Print");
     this.printButton.onclick = this.printCallback.bind(this);
+    this.controls.push(this.printButton);
+
+    this.clearButton = addControlToAlgorithmBar("Button", "Clear");
+    this.clearButton.onclick = this.clearCallback.bind(this);
+    this.controls.push(this.clearButton);
 }
 
 AVL.prototype.reset = function () {
@@ -133,6 +152,10 @@ AVL.prototype.findCallback = function (event) {
 
 AVL.prototype.printCallback = function (event) {
     this.implementAction(this.printTree.bind(this), "");
+}
+
+AVL.prototype.clearCallback = function (event) {
+    this.implementAction(this.clear.bind(this), "");
 }
 
 AVL.prototype.sizeChanged = function (newWidth, newHeight) {
@@ -377,7 +400,7 @@ AVL.prototype.resetHeight = function (tree) {
         if (tree.height != newHeight) {
             tree.height = Math.max(this.getHeight(tree.left), this.getHeight(tree.right)) + 1
             this.cmd("SetText", tree.heightLabelID, newHeight);
-//			this.cmd("SetText",tree.heightLabelID, newHeight);
+            //			this.cmd("SetText",tree.heightLabelID, newHeight);
         }
     }
 }
@@ -439,8 +462,6 @@ AVL.prototype.doubleRotateRight = function (tree) {
     this.resetHeight(B);
 
     this.resizeTree();
-
-
 }
 
 AVL.prototype.doubleRotateLeft = function (tree) {
@@ -502,8 +523,6 @@ AVL.prototype.doubleRotateLeft = function (tree) {
     this.resetHeight(B);
 
     this.resizeTree();
-
-
 }
 
 AVL.prototype.insert = function (elem, tree) {
@@ -567,7 +586,7 @@ AVL.prototype.insert = function (elem, tree) {
 
             }
             if ((tree.right != null && tree.left.height > tree.right.height + 1) ||
-                (tree.right == null && tree.left.height > 1)) {
+                (tree.right == null && tree.left.height > 0)) {
                 if (elem.data < tree.left.data) {
                     this.singleRotateRight(tree);
                 } else {
@@ -575,7 +594,7 @@ AVL.prototype.insert = function (elem, tree) {
                 }
             }
         }
-    } else if (elem.data > tree.data){
+    } else if (elem.data > tree.data) {
         if (tree.right == null) {
             this.cmd("SetText", 0, "Found null tree, inserting element");
             this.cmd("SetText", elem.heightLabelID, 0);
@@ -828,7 +847,7 @@ AVL.prototype.treeDelete = function (tree, valueToDelete) {
                             this.cmd("SetForegroundColor", tmpPar.heightLabelID, AVL.HEIGHT_LABEL_COLOR);
                         }
 
-//28,15,50,7,22,39,55,10,33,42,63,30 .
+                        //28,15,50,7,22,39,55,10,33,42,63,30 .
 
 
                         this.cmd("Step");
@@ -913,7 +932,6 @@ AVL.prototype.treeDelete = function (tree, valueToDelete) {
     } else {
         this.cmd("SetText", 0, "Elemet " + valueToDelete + " not found, could not delete");
     }
-
 }
 
 AVL.prototype.resizeTree = function () {
@@ -929,7 +947,6 @@ AVL.prototype.resizeTree = function () {
         this.animateNewPositions(this.treeRoot);
         this.cmd("Step");
     }
-
 }
 
 AVL.prototype.setNewPositions = function (tree, xPosition, yPosition, side) {
@@ -949,8 +966,8 @@ AVL.prototype.setNewPositions = function (tree, xPosition, yPosition, side) {
         this.setNewPositions(tree.left, xPosition, yPosition + AVL.HEIGHT_DELTA, -1)
         this.setNewPositions(tree.right, xPosition, yPosition + AVL.HEIGHT_DELTA, 1)
     }
-
 }
+
 AVL.prototype.animateNewPositions = function (tree) {
     if (tree != null) {
         this.cmd("Move", tree.graphicID, tree.x, tree.y);
@@ -969,27 +986,37 @@ AVL.prototype.resizeWidths = function (tree) {
     return tree.leftWidth + tree.rightWidth;
 }
 
-
-AVL.prototype.disableUI = function (event) {
-    this.insertField.disabled = true;
-    this.insertButton.disabled = true;
-    this.deleteField.disabled = true;
-    this.deleteButton.disabled = true;
-    this.findField.disabled = true;
-    this.findButton.disabled = true;
-    this.printButton.disabled = true;
+AVL.prototype.clear = function () {
+	this.commands = new Array();
+	this.recClear(this.treeRoot);
+	this.treeRoot = null;
+	return this.commands;
 }
 
-AVL.prototype.enableUI = function (event) {
-    this.insertField.disabled = false;
-    this.insertButton.disabled = false;
-    this.deleteField.disabled = false;
-    this.deleteButton.disabled = false;
-    this.findField.disabled = false;
-    this.findButton.disabled = false;
-    this.printButton.disabled = false;
+AVL.prototype.recClear = function (curr) {
+	if (curr != null) {
+		this.cmd("Delete", curr.graphicID);
+		this.cmd("Delete", curr.heightLabelID);
+		this.recClear(curr.left);
+		this.recClear(curr.right);
+	}
 }
 
+AVL.prototype.disableUI = function(event)
+{
+    for (var i = 0; i < this.controls.length; i++)
+    {
+        this.controls[i].disabled = true;
+    }
+}
+
+AVL.prototype.enableUI = function(event)
+{
+    for (var i = 0; i < this.controls.length; i++)
+    {
+        this.controls[i].disabled = false;
+    }
+}
 
 function AVLNode(val, id, hid, initialX, initialY) {
     this.data = val;

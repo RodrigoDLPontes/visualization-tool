@@ -272,5 +272,4 @@ var currentAlg;
 function init() {
     var animManag = initCanvas();
     currentAlg = new BubbleSort(animManag, canvas.width, canvas.height);
-
 }

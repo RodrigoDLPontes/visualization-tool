@@ -32,18 +32,18 @@ var ARRAY_ELEM_HEIGHT = 50;
 var worstPivotEnabled = false;
 var firstPivotEnabled = false;
 
-function QuickSort(am, w, h) {
+function QuickSelect(am, w, h) {
     this.init(am, w, h);
 }
 
-QuickSort.prototype = new Algorithm();
-QuickSort.prototype.constructor = QuickSort;
-QuickSort.superclass = Algorithm.prototype;
+QuickSelect.prototype = new Algorithm();
+QuickSelect.prototype.constructor = QuickSelect;
+QuickSelect.superclass = Algorithm.prototype;
 
-QuickSort.prototype.init = function (am, w, h) {
+QuickSelect.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
-    QuickSort.superclass.init.call(this, am, w, h);
+    QuickSelect.superclass.init.call(this, am, w, h);
 
     this.addControls();
 
@@ -55,19 +55,26 @@ QuickSort.prototype.init = function (am, w, h) {
     this.setup();
 }
 
-QuickSort.prototype.addControls = function () {
+QuickSelect.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
 
     // List text field
     this.listField = addControlToAlgorithmBar("Text", "");
-    this.listField.onkeydown = this.returnSubmit(this.listField, this.sortCallback.bind(this), 60, false);
+    this.listField.onkeydown = this.returnSubmit(this.listField, this.runCallback.bind(this), 60, false);
     this.controls.push(this.listField);
 
-    // Sort button
-    this.findButton = addControlToAlgorithmBar("Button", "Sort");
-    this.findButton.onclick = this.sortCallback.bind(this);
+    addLabelToAlgorithmBar("kᵗʰ element (1 indexed)");
+
+    // k text field
+    this.kField = addControlToAlgorithmBar("Text", "");
+    this.kField.onkeydown = this.returnSubmit(this.kField, this.runCallback.bind(this), 2, true);
+    this.controls.push(this.kField);
+
+    // Run button
+    this.findButton = addControlToAlgorithmBar("Button", "Run");
+    this.findButton.onclick = this.runCallback.bind(this);
     this.controls.push(this.findButton);
 
     // Clear button
@@ -85,7 +92,7 @@ QuickSort.prototype.addControls = function () {
     this.controls.push(this.firstPivotToggle);
 }
 
-QuickSort.prototype.setup = function () {
+QuickSelect.prototype.setup = function () {
     this.arrayData = new Array();
     this.displayData = new Array();
     this.arrayID = new Array();
@@ -94,7 +101,7 @@ QuickSort.prototype.setup = function () {
     this.pPointerID = 0;
 }
 
-QuickSort.prototype.reset = function () {
+QuickSelect.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -105,20 +112,25 @@ QuickSort.prototype.reset = function () {
     this.nextIndex = 0;
 }
 
-QuickSort.prototype.sortCallback = function (event) {
-    if (this.listField.value != "") {
-        this.implementAction(this.clear.bind(this), "");
-        var list = this.listField.value;
-        this.listField.value = "";
-        this.implementAction(this.sort.bind(this), list);
+QuickSelect.prototype.runCallback = function (event) {
+    if (this.listField.value != "" && this.kField.value != "") {
+        var listStr = this.listField.value;
+        var list = listStr.split(",").map(Number).filter(x => x).slice(0, 18);
+        var k = this.kField.value;
+        if(k > 0 && k <= list.length) {
+            this.implementAction(this.clear.bind(this), "");
+            this.listField.value = "";
+            this.kField.value = "";
+            this.implementAction(this.run.bind(this), listStr + "-" + k);
+        }
     }
 }
 
-QuickSort.prototype.clearCallback = function (event) {
+QuickSelect.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-QuickSort.prototype.clear = function () {
+QuickSelect.prototype.clear = function () {
     this.commands = new Array();
     for (var i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
@@ -130,11 +142,14 @@ QuickSort.prototype.clear = function () {
 }
 
 
-QuickSort.prototype.sort = function (params) {
+QuickSelect.prototype.run = function (params) {
     this.commands = new Array();
 
+    var list = params.split("-")[0];
+    this.k = Number(params.split("-")[1]);
+
     this.arrayID = new Array();
-    this.arrayData = params.split(",").map(Number).filter(x => x).slice(0, 18);
+    this.arrayData = list.split(",").map(Number).filter(x => x).slice(0, 18);
     this.displayData = new Array(this.arrayData.length);
 
     let elemCounts = new Map();
@@ -172,7 +187,7 @@ QuickSort.prototype.sort = function (params) {
     return this.commands;
 }
 
-QuickSort.prototype.helper = function (left, right) {
+QuickSelect.prototype.helper = function (left, right) {
     if (left > right) return;
 
     // Hightlight cells in the current sub-array
@@ -253,14 +268,22 @@ QuickSort.prototype.helper = function (left, right) {
     for (var i = left; i <= right; i++) {
         this.cmd("SetBackgroundColor", this.arrayID[i], "#FFFFFF");
     }
-    this.cmd("SetBackgroundColor", this.arrayID[j], "#2ECC71");
-    this.cmd("Step");
+    if(this.k - 1 == j) {
+        this.cmd("SetBackgroundColor", this.arrayID[j], "#2ECC71");
+        this.cmd("Step")
+    } else {
+        this.cmd("SetBackgroundColor", this.arrayID[j], "#4DA6ff");
+        this.cmd("Step");
 
-    this.helper(left, j - 1);
-    this.helper(j + 1, right);
+        if(this.k - 1 < j) {
+            this.helper(left, j - 1);
+        } else {
+            this.helper(j + 1, right);
+        }
+    }
 }
 
-QuickSort.prototype.movePointers = function (i, j) {
+QuickSelect.prototype.movePointers = function (i, j) {
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     this.cmd("Move", this.iPointerID, iXPos, ARRAY_START_Y);
     var jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -268,7 +291,7 @@ QuickSort.prototype.movePointers = function (i, j) {
     this.cmd("Step");
 }
 
-QuickSort.prototype.swapPivot = function (pivot, other, moveJ) {
+QuickSelect.prototype.swapPivot = function (pivot, other, moveJ) {
     if(pivot == other) return;
     // Create temporary labels and remove text in array
     var lLabelID = this.nextIndex++;
@@ -300,7 +323,7 @@ QuickSort.prototype.swapPivot = function (pivot, other, moveJ) {
     this.displayData[other] = temp;
 }
 
-QuickSort.prototype.swap = function (i, j) {
+QuickSelect.prototype.swap = function (i, j) {
     // Create temporary labels and remove text in array
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -333,19 +356,19 @@ QuickSort.prototype.swap = function (i, j) {
     this.cmd("Step");
 }
 
-QuickSort.prototype.toggleWorstPivot = function (event) {
+QuickSelect.prototype.toggleWorstPivot = function (event) {
     worstPivotEnabled = !worstPivotEnabled;
     this.firstPivotToggle.disabled = worstPivotEnabled;
 }
 
-QuickSort.prototype.toggleFirstPivot = function (event) {
+QuickSelect.prototype.toggleFirstPivot = function (event) {
     firstPivotEnabled = !firstPivotEnabled;
     this.worstPivotToggle.disabled = firstPivotEnabled;
 }
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-QuickSort.prototype.disableUI = function (event) {
+QuickSelect.prototype.disableUI = function (event) {
     for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
@@ -353,7 +376,7 @@ QuickSort.prototype.disableUI = function (event) {
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-QuickSort.prototype.enableUI = function (event) {
+QuickSelect.prototype.enableUI = function (event) {
     for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
@@ -364,6 +387,6 @@ var currentAlg;
 
 function init() {
     var animManag = initCanvas();
-    currentAlg = new QuickSort(animManag, canvas.width, canvas.height);
+    currentAlg = new QuickSelect(animManag, canvas.width, canvas.height);
 
 }

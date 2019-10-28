@@ -44,18 +44,18 @@ var PUSH_ELEMENT_Y = 30;
 
 var SIZE = 10;
 
-function InsertionSort(am, w, h) {
+function SelectionSort(am, w, h) {
     this.init(am, w, h);
 }
 
-InsertionSort.prototype = new Algorithm();
-InsertionSort.prototype.constructor = InsertionSort;
-InsertionSort.superclass = Algorithm.prototype;
+SelectionSort.prototype = new Algorithm();
+SelectionSort.prototype.constructor = SelectionSort;
+SelectionSort.superclass = Algorithm.prototype;
 
-InsertionSort.prototype.init = function (am, w, h) {
+SelectionSort.prototype.init = function (am, w, h) {
     // Call the unit function of our "superclass", which adds a couple of
     // listeners, and sets up the undo stack
-    InsertionSort.superclass.init.call(this, am, w, h);
+    SelectionSort.superclass.init.call(this, am, w, h);
 
     this.addControls();
 
@@ -67,7 +67,7 @@ InsertionSort.prototype.init = function (am, w, h) {
     this.setup();
 }
 
-InsertionSort.prototype.addControls = function () {
+SelectionSort.prototype.addControls = function () {
     this.controls = [];
 
     addLabelToAlgorithmBar("Comma separated list (e.g. \"3,1,2\", max 18 elements)")
@@ -88,7 +88,7 @@ InsertionSort.prototype.addControls = function () {
     this.controls.push(this.clearButton);
 }
 
-InsertionSort.prototype.setup = function () {
+SelectionSort.prototype.setup = function () {
     this.arrayData = new Array();
     this.arrayID = new Array();
     this.displayData = new Array();
@@ -96,7 +96,7 @@ InsertionSort.prototype.setup = function () {
     this.jPointerID = this.nextIndex++;
 }
 
-InsertionSort.prototype.reset = function () {
+SelectionSort.prototype.reset = function () {
     // Reset all of your data structures to *exactly* the state they have immediately after the init
     // function is called.  This method is called whenever an "undo" is performed.  Your data
     // structures are completely cleaned, and then all of the actions *up to but not including* the
@@ -107,7 +107,7 @@ InsertionSort.prototype.reset = function () {
     this.nextIndex = 0;
 }
 
-InsertionSort.prototype.sortCallback = function (event) {
+SelectionSort.prototype.sortCallback = function (event) {
     if (this.listField.value != "") {
         this.implementAction(this.clear.bind(this), "");
         var list = this.listField.value;
@@ -116,11 +116,11 @@ InsertionSort.prototype.sortCallback = function (event) {
     }
 }
 
-InsertionSort.prototype.clearCallback = function (event) {
+SelectionSort.prototype.clearCallback = function (event) {
     this.implementAction(this.clear.bind(this), "");
 }
 
-InsertionSort.prototype.clear = function () {
+SelectionSort.prototype.clear = function () {
     this.commands = new Array();
     for (var i = 0; i < this.arrayID.length; i++) {
         this.cmd("Delete", this.arrayID[i]);
@@ -132,7 +132,7 @@ InsertionSort.prototype.clear = function () {
 }
 
 
-InsertionSort.prototype.sort = function (params) {
+SelectionSort.prototype.sort = function (params) {
     this.commands = new Array();
 
     this.arrayID = new Array();
@@ -165,6 +165,7 @@ InsertionSort.prototype.sort = function (params) {
         this.displayData[i] = displayData;
         this.cmd("CreateRectangle", this.arrayID[i], displayData, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
     }
+
     this.cmd("CreateHighlightCircle", this.iPointerID, "#FF0000", ARRAY_START_X, ARRAY_START_Y);
     this.cmd("SetHighlight", this.iPointerID, 1);
     this.cmd("CreateHighlightCircle", this.jPointerID, "#0000FF", ARRAY_START_X + ARRAY_ELEM_WIDTH, ARRAY_START_Y);
@@ -201,7 +202,7 @@ InsertionSort.prototype.sort = function (params) {
     return this.commands;
 }
 
-InsertionSort.prototype.movePointers = function (i, j) {
+SelectionSort.prototype.movePointers = function (i, j) {
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
     this.cmd("Move", this.iPointerID, iXPos, iYPos);
@@ -211,7 +212,7 @@ InsertionSort.prototype.movePointers = function (i, j) {
     this.cmd("Step");
 }
 
-InsertionSort.prototype.swap = function (i, j) {
+SelectionSort.prototype.swap = function (i, j) {
     var iLabelID = this.nextIndex++;
     var iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     var iYPos = ARRAY_START_Y;
@@ -229,12 +230,10 @@ InsertionSort.prototype.swap = function (i, j) {
     this.cmd("Settext", this.arrayID[j], this.displayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-
     // Swap data in backend array
     let temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
     this.arrayData[j] = temp;
-
     // Swap data in display array
     temp = this.displayData[i];
     this.displayData[i] = this.displayData[j];
@@ -243,7 +242,7 @@ InsertionSort.prototype.swap = function (i, j) {
 
 // Called by our superclass when we get an animation started event -- need to wait for the
 // event to finish before we start doing anything
-InsertionSort.prototype.disableUI = function (event) {
+SelectionSort.prototype.disableUI = function (event) {
     for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = true;
     }
@@ -251,7 +250,7 @@ InsertionSort.prototype.disableUI = function (event) {
 
 // Called by our superclass when we get an animation completed event -- we can
 /// now interact again.
-InsertionSort.prototype.enableUI = function (event) {
+SelectionSort.prototype.enableUI = function (event) {
     for (var i = 0; i < this.controls.length; i++) {
         this.controls[i].disabled = false;
     }
@@ -262,6 +261,6 @@ var currentAlg;
 
 function init() {
     var animManag = initCanvas();
-    currentAlg = new InsertionSort(animManag, canvas.width, canvas.height);
+    currentAlg = new SelectionSort(animManag, canvas.width, canvas.height);
 
 }

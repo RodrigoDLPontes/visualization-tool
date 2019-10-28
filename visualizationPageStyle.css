@@ -28,6 +28,10 @@ body {
 	align-items: center;
 }
 
+.VisualizationMainPage #AlgorithmSpecificControls {
+	vertical-align: middle;
+}
+
 .VisualizationMainPage #examplesButton {
 	background-image: url('icons/examples.png');
 	background-repeat: no-repeat;
@@ -114,7 +118,7 @@ EM {
 	text-decoration: bold;
 }
 
-.modal {
+.VisualizationMainPage .modal {
 	display: none;
 	position: absolute;
 	z-index: 1;
@@ -124,7 +128,7 @@ EM {
 	height: 460px;
 }
   
-.modal-content {
+.VisualizationMainPage .modal-content {
 	background-color: #fefefe;
 	padding: 0px 30px 0px 0px;
 	height: 100%;
@@ -132,13 +136,22 @@ EM {
 	background-color: #F7C245;
 }
 
-li {
+.VisualizationMainPage li {
 	line-height: 1.4em;
 	margin: 0px 0px 15px 0px;
 }
 
-.equation {
+.VisualizationMainPage .equation {
 	font-family: Georgia, 'Times New Roman', Times, serif;
 	text-align: center;
 	margin: 5px 0px;
+}
+
+.VisualizationMainPage .vgroup {
+	display: flex;
+	flex-direction: column;
+}
+
+.VisualizationMainPage .vgroup {
+	display: flex;
 }

@@ -29,20 +29,8 @@ var ARRAY_START_Y = 200;
 var ARRAY_ELEM_WIDTH = 50;
 var ARRAY_ELEM_HEIGHT = 50;
 
-var ARRRAY_ELEMS_PER_LINE = 15;
-var ARRAY_LINE_SPACING = 130;
-
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y = 100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 10;
+var worstPivotEnabled = false;
+var firstPivotEnabled = false;
 
 function QuickSort(am, w, h) {
     this.init(am, w, h);
@@ -86,6 +74,13 @@ QuickSort.prototype.addControls = function () {
     this.clearButton = addControlToAlgorithmBar("Button", "Clear");
     this.clearButton.onclick = this.clearCallback.bind(this);
     this.controls.push(this.clearButton);
+
+    // Toggles
+    this.togglesGroup = addGroupToAlgorithmBar();
+    this.worstPivotToggle = addCheckboxToAlgorithmBar("Pick min element as pivot", false, this.togglesGroup);
+    this.worstPivotToggle.onclick = this.toggleWorstPivot.bind(this);
+    this.firstPivotToggle = addCheckboxToAlgorithmBar("Pick first element as pivot", false, this.togglesGroup);
+    this.firstPivotToggle.onclick = this.toggleFirstPivot.bind(this);
 }
 
 QuickSort.prototype.setup = function () {
@@ -192,7 +187,19 @@ QuickSort.prototype.helper = function (left, right) {
 
     // Create pivot pointer and swap with left-most element
     // To make things more interesting (and clearer), we don't pick the left-most element as pivot
-    var pivot = Math.floor(Math.random() * (right - left)) + left + 1;
+    if (worstPivotEnabled) {
+        var min = left;
+        for (var i = left + 1; i <= right; i++) {
+            if (this.arrayData[i] < this.arrayData[min]) {
+                min = i;
+            }
+        }
+        var pivot = min;
+    } else if (firstPivotEnabled) {
+        var pivot = left;
+    } else {
+        var pivot = Math.floor(Math.random() * (right - left)) + left + 1;
+    }
     var pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
     this.cmd("CreateHighlightCircle", this.pPointerID, "#FFFF00", pXPos, ARRAY_START_Y);
     this.cmd("Step");
@@ -231,13 +238,12 @@ QuickSort.prototype.helper = function (left, right) {
         }
     }
 
+    // Move pivot back and delete pivot pointer
+    this.swapPivot(left, j, true);
+
     // Delete i and j pointers
     this.cmd("Delete", this.iPointerID);
     this.cmd("Delete", this.jPointerID);
-    this.cmd("Step");
-
-    // Move pivot back and delete pivot pointer
-    this.swapPivot(left, j);
     this.cmd("Delete", this.pPointerID);
     this.cmd("Step");
 
@@ -260,7 +266,8 @@ QuickSort.prototype.movePointers = function (i, j) {
     this.cmd("Step");
 }
 
-QuickSort.prototype.swapPivot = function (pivot, other) {
+QuickSort.prototype.swapPivot = function (pivot, other, moveJ) {
+    if(pivot == other) return;
     // Create temporary labels and remove text in array
     var lLabelID = this.nextIndex++;
     var lXPos = other * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -270,23 +277,21 @@ QuickSort.prototype.swapPivot = function (pivot, other) {
     this.cmd("CreateLabel", pLabelID, this.displayData[pivot], pXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[other], "");
     this.cmd("Settext", this.arrayID[pivot], "");
-    this.cmd("Step");
     // Move labels and pivot pointer
     this.cmd("Move", pLabelID, lXPos, ARRAY_START_Y);
     this.cmd("Move", this.pPointerID, lXPos, ARRAY_START_Y);
     this.cmd("Move", lLabelID, pXPos, ARRAY_START_Y);
+    moveJ && this.cmd("Move", this.jPointerID, pXPos, ARRAY_START_Y);
     this.cmd("Step");
     // Set text in array, and delete temporary labels and pointer
     this.cmd("Settext", this.arrayID[other], this.displayData[pivot]);
     this.cmd("Settext", this.arrayID[pivot], this.displayData[other]);
     this.cmd("Delete", pLabelID);
     this.cmd("Delete", lLabelID);
-    this.cmd("Step");
     // Swap data in backend array
     let temp = this.arrayData[pivot];
     this.arrayData[pivot] = this.arrayData[other];
     this.arrayData[other] = temp;
-
     //Swap data in backend display data
     temp = this.displayData[pivot];
     this.displayData[pivot] = this.displayData[other];
@@ -303,7 +308,6 @@ QuickSort.prototype.swap = function (i, j) {
     this.cmd("CreateLabel", jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
     this.cmd("Settext", this.arrayID[i], "");
     this.cmd("Settext", this.arrayID[j], "");
-    this.cmd("Step");
     // Move labels
     this.cmd("Move", iLabelID, jXPos, ARRAY_START_Y);
     this.cmd("Move", jLabelID, iXPos, ARRAY_START_Y);
@@ -313,7 +317,6 @@ QuickSort.prototype.swap = function (i, j) {
     this.cmd("Settext", this.arrayID[j], this.displayData[i]);
     this.cmd("Delete", iLabelID);
     this.cmd("Delete", jLabelID);
-    this.cmd("Step");
     // Swap data in backend array
     let temp = this.arrayData[i];
     this.arrayData[i] = this.arrayData[j];
@@ -326,6 +329,16 @@ QuickSort.prototype.swap = function (i, j) {
     this.cmd("SetForegroundColor", this.iPointerID, "#0000FF");
     this.cmd("SetForegroundColor", this.jPointerID, "#0000FF");
     this.cmd("Step");
+}
+
+QuickSort.prototype.toggleWorstPivot = function (event) {
+    worstPivotEnabled = !worstPivotEnabled;
+    this.firstPivotToggle.disabled = worstPivotEnabled;
+}
+
+QuickSort.prototype.toggleFirstPivot = function (event) {
+    firstPivotEnabled = !firstPivotEnabled;
+    this.worstPivotToggle.disabled = firstPivotEnabled;
 }
 
 // Called by our superclass when we get an animation started event -- need to wait for the

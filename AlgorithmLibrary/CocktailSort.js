@@ -300,5 +300,3 @@ function init() {
     currentAlg = new CocktailSort(animManag, canvas.width, canvas.height);
 
 }
-
-z

@@ -26,23 +26,8 @@
 
 var ARRAY_START_X = 100;
 var ARRAY_START_Y = 30;
-var ARRAY_ELEM_WIDTH = 30;
-var ARRAY_ELEM_HEIGHT = 30;
 
-var ARRRAY_ELEMS_PER_LINE = 15;
-var ARRAY_LINE_SPACING = 130;
-
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 14;
+var MAX_LENGTH = 22;
 
 var LOWER_A_CHAR_CODE = 97;
 
@@ -84,14 +69,14 @@ RabinKarp.prototype.addControls =  function()
 
     // Text text field
     this.textField = addControlToAlgorithmBar("Text", "");
-    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), SIZE, false);
+    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.textField);
 
     addLabelToAlgorithmBar("Pattern")
 
     // Pattern text field
     this.patternField = addControlToAlgorithmBar("Text", "");
-    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), SIZE, false);
+    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.patternField);
 
     // Find button
@@ -156,6 +141,14 @@ RabinKarp.prototype.find = function(params)
     var text = params.split(",")[0].replace(/[^a-zA-Z]/g, "").toLowerCase();
     var pattern = params.split(",")[1].replace(/[^a-zA-Z]/g, "").toLowerCase();
 
+    if(text.length <= 14) {
+        this.cellSize = 30;
+    } else if (text.length <= 17) {
+        this.cellSize = 25;
+    } else {
+        this.cellSize = 20;
+    }
+
     this.textRowID = new Array(text.length);
     this.comparisonMatrixID = new Array(text.length);
     for (var i = 0; i < text.length; i++) {
@@ -164,10 +157,10 @@ RabinKarp.prototype.find = function(params)
 
     for (var i = 0; i < text.length; i++)
     {
-        var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+        var xpos = i * this.cellSize + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
         this.textRowID[i] = this.nextIndex;
-        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), this.cellSize, this.cellSize, xpos, ypos);
         this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
     }
 
@@ -175,14 +168,14 @@ RabinKarp.prototype.find = function(params)
     {
         for (var col = 0; col < text.length; col++)
         {
-            var xpos = col * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var xpos = col * this.cellSize + ARRAY_START_X;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.comparisonMatrixID[row][col] = this.nextIndex;
-            this.cmd("CreateRectangle", this.nextIndex++, "", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+            this.cmd("CreateRectangle", this.nextIndex++, "", this.cellSize, this.cellSize, xpos, ypos);
         }
     }
 
-    var labelsX = ARRAY_START_X + text.length * ARRAY_ELEM_WIDTH + 10;
+    var labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
     this.cmd("CreateLabel", this.baseLabelID, "Base constant = 1", labelsX, BASE_LABEL_Y, 0);
     this.cmd("CreateLabel", this.characterValuesLabelID, "Character values: a = 0, b = 1, ..., z = 25", labelsX, CHARACTER_VALUES_LABEL_Y, 0);
     this.cmd("CreateLabel", this.textHashLabelID, "Text hash:", labelsX, TEXT_HASH_LABEL_START_Y, 0);
@@ -201,7 +194,7 @@ RabinKarp.prototype.find = function(params)
     }
     textCalculation = textCalculation.substring(0, textCalculation.length - 2) + " = " + textHash;
     patternCalculation = patternCalculation.substring(0, patternCalculation.length - 2) + " = " + patternHash;
-    var calculationsX = ARRAY_START_X + text.length * ARRAY_ELEM_WIDTH + 80;
+    var calculationsX = ARRAY_START_X + text.length * this.cellSize + 80;
     this.cmd("CreateLabel", this.textHashCalculationID, textCalculation, calculationsX, TEXT_HASH_LABEL_START_Y, 0);
     this.cmd("CreateLabel", this.patternHashCalculationID, patternCalculation, calculationsX, PATTERN_HASH_LABEL_START_Y, 0);
 
@@ -216,9 +209,9 @@ RabinKarp.prototype.find = function(params)
         }
         this.cmd("Step");
         if (patternHash == textHash) {
-            var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+            var xpos = i * this.cellSize + ARRAY_START_X;
             this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", xpos, ARRAY_START_Y);
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", xpos , ypos);
             this.cmd("Step");
             var j = 0;
@@ -227,9 +220,9 @@ RabinKarp.prototype.find = function(params)
                 j++;
                 if(j != pattern.length)
                 {
-                    xpos = (i + j) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+                    xpos = (i + j) * this.cellSize + ARRAY_START_X;
                     this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-                    ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+                    ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
                     this.cmd("Move", jPointerID, xpos, ypos);
                     this.cmd("Step");
                 }

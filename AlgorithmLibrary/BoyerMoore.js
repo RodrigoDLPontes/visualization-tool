@@ -26,23 +26,8 @@
 
 var ARRAY_START_X = 100;
 var ARRAY_START_Y = 30;
-var ARRAY_ELEM_WIDTH = 30;
-var ARRAY_ELEM_HEIGHT = 30;
 
-var ARRRAY_ELEMS_PER_LINE = 15;
-var ARRAY_LINE_SPACING = 130;
-
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 14;
+var MAX_LENGTH = 22;
 
 var PATTERN_START_Y = 100;
 
@@ -81,14 +66,14 @@ BoyerMoore.prototype.addControls =  function()
 
     // Text text field
     this.textField = addControlToAlgorithmBar("Text", "");
-    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), SIZE, false);
+    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.textField);
 
     addLabelToAlgorithmBar("Pattern")
 
     // Pattern text field
     this.patternField = addControlToAlgorithmBar("Text", "");
-    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), SIZE, false);
+    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.patternField);
 
     // Find button
@@ -158,12 +143,20 @@ BoyerMoore.prototype.find = function(params)
         this.comparisonMatrixID[i] = new Array(text.length);
     }
 
+    if(text.length <= 14) {
+        this.cellSize = 30;
+    } else if (text.length <= 17) {
+        this.cellSize = 25;
+    } else {
+        this.cellSize = 20;
+    }
+
     for (var i = 0; i < text.length; i++)
     {
-        var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+        var xpos = i * this.cellSize + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
         this.textRowID[i] = this.nextIndex;
-        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), this.cellSize, this.cellSize, xpos, ypos);
         this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
     }
 
@@ -171,10 +164,10 @@ BoyerMoore.prototype.find = function(params)
     {
         for (var col = 0; col < text.length; col++)
         {
-            var xpos = col * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var xpos = col * this.cellSize + ARRAY_START_X;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.comparisonMatrixID[row][col] = this.nextIndex;
-            this.cmd("CreateRectangle", this.nextIndex++, "", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+            this.cmd("CreateRectangle", this.nextIndex++, "", this.cellSize, this.cellSize, xpos, ypos);
         }
     }
 
@@ -182,8 +175,8 @@ BoyerMoore.prototype.find = function(params)
 
     var iPointerID = this.nextIndex++;
     var jPointerID = this.nextIndex++;
-    this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", ARRAY_START_X + (pattern.length - 1) * ARRAY_ELEM_WIDTH, ARRAY_START_Y, ARRAY_ELEM_WIDTH / 2);
-    this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", ARRAY_START_X + (pattern.length - 1) * ARRAY_ELEM_WIDTH , ARRAY_START_Y + ARRAY_ELEM_HEIGHT, ARRAY_ELEM_HEIGHT / 2);
+    this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", ARRAY_START_X + (pattern.length - 1) * this.cellSize, ARRAY_START_Y, this.cellSize / 2);
+    this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", ARRAY_START_X + (pattern.length - 1) * this.cellSize , ARRAY_START_Y + this.cellSize, this.cellSize / 2);
 
     var i = 0;
     var j = pattern.length - 1;
@@ -202,9 +195,9 @@ BoyerMoore.prototype.find = function(params)
             this.cmd("Step");
             if (j >= 0)
             {
-                var xpos = (i + j) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+                var xpos = (i + j) * this.cellSize + ARRAY_START_X;
                 this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-                var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+                var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
                 this.cmd("Move", jPointerID, xpos, ypos);
                 this.cmd("Step");
             }
@@ -238,9 +231,9 @@ BoyerMoore.prototype.find = function(params)
         row++;
         if (i <= text.length - pattern.length)
         {
-            var xpos = (i + j) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+            var xpos = (i + j) * this.cellSize + ARRAY_START_X;
             this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.cmd("Move", jPointerID, xpos, ypos);
             this.cmd("Step");
         }
@@ -254,20 +247,20 @@ BoyerMoore.prototype.find = function(params)
 BoyerMoore.prototype.buildLastTable = function(textLength, pattern)
 {
     // Display labels
-    var labelsX = ARRAY_START_X + textLength * ARRAY_ELEM_WIDTH + 10;
+    var labelsX = ARRAY_START_X + textLength * this.cellSize + 10;
     this.cmd("CreateLabel", this.patternTableLableID, "Pattern:", labelsX, PATTERN_START_Y, 0);
     this.cmd("CreateLabel", this.lastTableLabelID, "Last occurence table:", labelsX, LAST_TABLE_START_Y, 0);
 
     // Display pattern table
-    var patternTableStartX = ARRAY_START_X + textLength * ARRAY_ELEM_WIDTH + 80;
+    var patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
     this.patternTableCharacterID = new Array(pattern.length);
     this.patternTableIndexID = new Array(pattern.length);
     for (var i = 0; i < pattern.length; i++) {
-        var xpos = patternTableStartX + i * ARRAY_ELEM_WIDTH;
+        var xpos = patternTableStartX + i * this.cellSize;
         this.patternTableCharacterID[i] = this.nextIndex;
-        this.cmd("CreateRectangle", this.nextIndex++, pattern.charAt(i), ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, PATTERN_START_Y);
+        this.cmd("CreateRectangle", this.nextIndex++, pattern.charAt(i), this.cellSize, this.cellSize, xpos, PATTERN_START_Y);
         this.patternTableIndexID[i] = this.nextIndex;
-        this.cmd("CreateLabel", this.nextIndex++, i, xpos, PATTERN_START_Y + ARRAY_ELEM_HEIGHT);
+        this.cmd("CreateLabel", this.nextIndex++, i, xpos, PATTERN_START_Y + this.cellSize);
     }
 
     // Create empty last occurence table
@@ -280,26 +273,26 @@ BoyerMoore.prototype.buildLastTable = function(textLength, pattern)
     // Display empty last occurence table
     this.lastTableCharacterID = new Array();
     this.lastTableValueID = new Array();
-    var patternTableStartX = ARRAY_START_X + textLength * ARRAY_ELEM_WIDTH + 140;
+    var patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 140;
     var j = 0;
     for (var character in characters)
     {
-        var xpos = patternTableStartX + j * ARRAY_ELEM_WIDTH;
+        var xpos = patternTableStartX + j * this.cellSize;
         this.lastTableCharacterID.push(this.nextIndex);
-        this.cmd("CreateRectangle", this.nextIndex, character, ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, LAST_TABLE_START_Y);
+        this.cmd("CreateRectangle", this.nextIndex, character, this.cellSize, this.cellSize, xpos, LAST_TABLE_START_Y);
         this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
         characters[character] = this.nextIndex;
         this.lastTableValueID.push(this.nextIndex);
-        this.cmd("CreateRectangle", this.nextIndex++, "", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, LAST_TABLE_START_Y + ARRAY_ELEM_HEIGHT);
+        this.cmd("CreateRectangle", this.nextIndex++, "", this.cellSize, this.cellSize, xpos, LAST_TABLE_START_Y + this.cellSize);
         j++;
     }
     // Display "*" entry
-    var xpos = patternTableStartX + j * ARRAY_ELEM_WIDTH;
+    var xpos = patternTableStartX + j * this.cellSize;
     this.lastTableCharacterID.push(this.nextIndex);
-    this.cmd("CreateRectangle", this.nextIndex, "*", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, LAST_TABLE_START_Y);
+    this.cmd("CreateRectangle", this.nextIndex, "*", this.cellSize, this.cellSize, xpos, LAST_TABLE_START_Y);
     this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
     this.lastTableValueID.push(this.nextIndex);
-    this.cmd("CreateRectangle", this.nextIndex++, "-1", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, LAST_TABLE_START_Y + ARRAY_ELEM_HEIGHT);
+    this.cmd("CreateRectangle", this.nextIndex++, "-1", this.cellSize, this.cellSize, xpos, LAST_TABLE_START_Y + this.cellSize);
 
     // Fill out last occurence table
     var lastTable = new Object();

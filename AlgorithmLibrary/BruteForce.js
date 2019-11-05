@@ -26,23 +26,8 @@
 
 var ARRAY_START_X = 100;
 var ARRAY_START_Y = 30;
-var ARRAY_ELEM_WIDTH = 30;
-var ARRAY_ELEM_HEIGHT = 30;
 
-var ARRRAY_ELEMS_PER_LINE = 15;
-var ARRAY_LINE_SPACING = 130;
-
-var TOP_POS_X = 180;
-var TOP_POS_Y = 100;
-var TOP_LABEL_X = 130;
-var TOP_LABEL_Y =  100;
-
-var PUSH_LABEL_X = 50;
-var PUSH_LABEL_Y = 30;
-var PUSH_ELEMENT_X = 120;
-var PUSH_ELEMENT_Y = 30;
-
-var SIZE = 14;
+var MAX_LENGTH = 22;
 
 function BruteForce(am, w, h)
 {
@@ -77,14 +62,14 @@ BruteForce.prototype.addControls =  function()
 
     // Text text field
     this.textField = addControlToAlgorithmBar("Text", "");
-    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), SIZE, false);
+    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.textField);
 
     addLabelToAlgorithmBar("Pattern")
 
     // Pattern text field
     this.patternField = addControlToAlgorithmBar("Text", "");
-    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), SIZE, false);
+    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), MAX_LENGTH, false);
     this.controls.push(this.patternField);
 
     // Find button
@@ -142,6 +127,14 @@ BruteForce.prototype.find = function(params)
     var text = params.split(",")[0];
     var pattern = params.split(",")[1];
 
+    if(text.length <= 14) {
+        this.cellSize = 30;
+    } else if (text.length <= 17) {
+        this.cellSize = 25;
+    } else {
+        this.cellSize = 20;
+    }
+
     this.textRowID = new Array(text.length);
     this.comparisonMatrixID = new Array(text.length);
     for (var i = 0; i < text.length; i++) {
@@ -150,10 +143,10 @@ BruteForce.prototype.find = function(params)
 
     for (var i = 0; i < text.length; i++)
     {
-        var xpos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+        var xpos = i * this.cellSize + ARRAY_START_X;
         var ypos = ARRAY_START_Y;
         this.textRowID[i] = this.nextIndex;
-        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), this.cellSize, this.cellSize, xpos, ypos);
         this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
     }
 
@@ -161,17 +154,17 @@ BruteForce.prototype.find = function(params)
     {
         for (var col = 0; col < text.length; col++)
         {
-            var xpos = col * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var xpos = col * this.cellSize + ARRAY_START_X;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.comparisonMatrixID[row][col] = this.nextIndex;
-            this.cmd("CreateRectangle", this.nextIndex++, "", ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xpos, ypos);
+            this.cmd("CreateRectangle", this.nextIndex++, "", this.cellSize, this.cellSize, xpos, ypos);
         }
     }
 
     var iPointerID = this.nextIndex++;
     var jPointerID = this.nextIndex++;
-    this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y, ARRAY_ELEM_WIDTH / 2);
-    this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", ARRAY_START_X , ARRAY_START_Y + ARRAY_ELEM_HEIGHT, ARRAY_ELEM_HEIGHT / 2);
+    this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y, this.cellSize / 2);
+    this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", ARRAY_START_X , ARRAY_START_Y + this.cellSize, this.cellSize / 2);
 
     var i = 0;
     var j = 0;
@@ -190,9 +183,9 @@ BruteForce.prototype.find = function(params)
             this.cmd("Step");
             if (j != pattern.length)
             {
-                var xpos = (i + j) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+                var xpos = (i + j) * this.cellSize + ARRAY_START_X;
                 this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-                var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+                var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
                 this.cmd("Move", jPointerID, xpos, ypos);
                 this.cmd("Step");
             }
@@ -206,9 +199,9 @@ BruteForce.prototype.find = function(params)
         row++;
         if (i <= text.length - pattern.length)
         {
-            var xpos = (i + j) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+            var xpos = (i + j) * this.cellSize + ARRAY_START_X;
             this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-            var ypos = (row + 1) * ARRAY_ELEM_HEIGHT + ARRAY_START_Y;
+            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
             this.cmd("Move", jPointerID, xpos, ypos);
             this.cmd("Step");
         }

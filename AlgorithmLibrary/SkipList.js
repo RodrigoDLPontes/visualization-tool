@@ -83,7 +83,7 @@ SkipList.prototype.addControls =  function()
 
     // Add's value text field
     this.addValueField = addControlToAlgorithmBar("Text", "");
-    this.addValueField.onkeydown = this.returnSubmit(this.addValueField, this.addRandomlyCallback.bind(this), 4, true);
+    this.addValueField.onkeydown = this.returnSubmit(this.addValueField, this.addRandomAmountCallback.bind(this), 4, true);
     this.controls.push(this.addValueField);
 
     addLabelToAlgorithmBar("with")
@@ -102,10 +102,10 @@ SkipList.prototype.addControls =  function()
 
     addLabelToAlgorithmBar("or")
 
-    // Add randomly button
-    this.addRandomlyButton = addControlToAlgorithmBar("Button", "Add randomly");
-    this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
-    this.controls.push(this.addRandomlyButton);
+    // Add random amount button
+    this.addRandomAmountButton = addControlToAlgorithmBar("Button", "Add random amount");
+    this.addRandomAmountButton.onclick = this.addRandomAmountCallback.bind(this);
+    this.controls.push(this.addRandomAmountButton);
 
     // Remove's text field
     this.removeField = addControlToAlgorithmBar("Text", "");
@@ -177,7 +177,7 @@ SkipList.prototype.reset = function()
     this.size = 0;
 }
 
-SkipList.prototype.addRandomlyCallback = function(event)
+SkipList.prototype.addRandomAmountCallback = function(event)
 {
     if (this.addValueField.value != "")
     {

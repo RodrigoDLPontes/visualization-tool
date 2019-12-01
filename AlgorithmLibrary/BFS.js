@@ -24,240 +24,295 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import {addControlToAlgorithmBar, addLabelToAlgorithmBar} from './Algorithm.js';
-import Graph from './Graph.js';
+import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from "./Algorithm.js";
+import Graph, { VERTEX_INDEX_COLOR } from "./Graph.js";
 
-let AUX_ARRAY_WIDTH = 25;
-let AUX_ARRAY_HEIGHT = 25;
-let AUX_ARRAY_START_Y = 50;
+const AUX_ARRAY_WIDTH = 25;
+const AUX_ARRAY_HEIGHT = 25;
+const AUX_ARRAY_START_Y = 50;
 
-let VISITED_START_X = 475;
-let PARENT_START_X = 400;
+const VISITED_START_X = 475;
+const PARENT_START_X = 400;
 
-let HIGHLIGHT_CIRCLE_COLOR = "#000000";
-let BFS_TREE_COLOR = "#0000FF";
-let BFS_QUEUE_HEAD_COLOR = "#0000FF";
+const HIGHLIGHT_CIRCLE_COLOR = "#000000";
+const BFS_TREE_COLOR = "#0000FF";
+const BFS_QUEUE_HEAD_COLOR = "#0000FF";
 
+const QUEUE_START_X = 30;
+const QUEUE_START_Y = 50;
+const QUEUE_SPACING = 30;
 
-let QUEUE_START_X = 30;
-let QUEUE_START_Y = 50;
-let QUEUE_SPACING = 30;
+class BFS extends Graph {
+	constructor(am, w, h) {
+		super(am, w, h); // TODO:  add no edge label flag to this?
 
-
-class BFS extends Graph{
-	constructor(am, w, h)
-{
-	super(am, w, h); // TODO:  add no edge label flag to this?
-
-	this.init(am);
-	this.showEdgeCosts = false;
-}
-
-// BFS.prototype = new Graph();
-// constructor = BFS;
-// BFS.superclass = Graph.prototype;
-
-addControls()
-{
-	addLabelToAlgorithmBar("Start Vertex: ");
-	this.startField = addControlToAlgorithmBar("Text", "");
-	this.startField.onkeydown = this.returnSubmit(this.startField,  this.startCallback.bind(this), 1, false);
-	this.startField.size = 2;
-	this.startButton = addControlToAlgorithmBar("Button", "Run BFS");
-	this.startButton.onclick = this.startCallback.bind(this);
-	// BFS.superclass.addControls.call(this);
-	super.addControls();
-}
-
-setup()
-{
-	// BFS.superclass.setup.call(this);
-	super.setup();
-	this.messageID = new Array();
-	this.commands = new Array();
-	this.visitedID = new Array(this.size);
-	this.visitedIndexID = new Array(this.size);
-	this.parentID = new Array(this.size);
-	this.parentIndexID = new Array(this.size);
-
-	for (let i = 0; i < this.size; i++)
-	{
-		this.visitedID[i] = this.nextIndex++;
-		this.visitedIndexID[i] = this.nextIndex++;
-		this.parentID[i] = this.nextIndex++;
-		this.parentIndexID[i] = this.nextIndex++;
-		this.cmd("CreateRectangle", this.visitedID[i], "F", AUX_ARRAY_WIDTH, AUX_ARRAY_HEIGHT, VISITED_START_X, AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("CreateLabel", this.visitedIndexID[i], String.fromCharCode(65 + i), VISITED_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("SetForegroundColor",  this.visitedIndexID[i], VERTEX_INDEX_COLOR);
-		this.cmd("CreateRectangle", this.parentID[i], "", AUX_ARRAY_WIDTH, AUX_ARRAY_HEIGHT, PARENT_START_X, AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("CreateLabel", this.parentIndexID[i], String.fromCharCode(65 + i), PARENT_START_X - AUX_ARRAY_WIDTH , AUX_ARRAY_START_Y + i*AUX_ARRAY_HEIGHT);
-		this.cmd("SetForegroundColor",  this.parentIndexID[i], VERTEX_INDEX_COLOR);
-
+		// this.init(am);
+		this.showEdgeCosts = false;
 	}
-	this.cmd("CreateLabel", this.nextIndex++, "Parent", PARENT_START_X - AUX_ARRAY_WIDTH, AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5, 0);
-	this.cmd("CreateLabel", this.nextIndex++, "Visited", VISITED_START_X - AUX_ARRAY_WIDTH, AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5, 0);
-	this.cmd("CreateLabel", this.nextIndex++, "BFS Queue", QUEUE_START_X, QUEUE_START_Y - 30, 0);
-	this.animationManager.setAllLayers([0, this.currentLayer]);
-	this.animationManager.StartNewAnimation(this.commands);
-	this.animationManager.skipForward();
-	this.animationManager.clearHistory();
-	this.highlightCircleL = this.nextIndex++;
-	this.highlightCircleAL = this.nextIndex++;
-	this.highlightCircleAM= this.nextIndex++
-}
 
-startCallback(event)
-{
-	let startvalue;
-
-	if (this.startField.value != "")
-	{
-		startvalue = this.startField.value;
-		this.startField.value = "";
-		startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-		if (startvalue < this.size)
-			this.implementAction(this.doBFS.bind(this),startvalue);
+	addControls() {
+		addLabelToAlgorithmBar("Start Vertex: ");
+		this.startField = addControlToAlgorithmBar("Text", "");
+		this.startField.onkeydown = this.returnSubmit(
+			this.startField,
+			this.startCallback.bind(this),
+			1,
+			false
+		);
+		this.startField.size = 2;
+		this.startButton = addControlToAlgorithmBar("Button", "Run BFS");
+		this.startButton.onclick = this.startCallback.bind(this);
+		// BFS.superclass.addControls.call(this);
+		super.addControls();
 	}
-}
 
+	setup() {
+		super.setup();
+		this.messageID = new Array();
+		this.commands = new Array();
+		this.visitedID = new Array(this.size);
+		this.visitedIndexID = new Array(this.size);
+		this.parentID = new Array(this.size);
+		this.parentIndexID = new Array(this.size);
 
+		for (let i = 0; i < this.size; i++) {
+			this.visitedID[i] = this.nextIndex++;
+			this.visitedIndexID[i] = this.nextIndex++;
+			this.parentID[i] = this.nextIndex++;
+			this.parentIndexID[i] = this.nextIndex++;
+			this.cmd(
+				"CreateRectangle",
+				this.visitedID[i],
+				"F",
+				AUX_ARRAY_WIDTH,
+				AUX_ARRAY_HEIGHT,
+				VISITED_START_X,
+				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
+			);
+			this.cmd(
+				"CreateLabel",
+				this.visitedIndexID[i],
+				String.fromCharCode(65 + i),
+				VISITED_START_X - AUX_ARRAY_WIDTH,
+				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
+			);
+			this.cmd("SetForegroundColor", this.visitedIndexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(
+				"CreateRectangle",
+				this.parentID[i],
+				"",
+				AUX_ARRAY_WIDTH,
+				AUX_ARRAY_HEIGHT,
+				PARENT_START_X,
+				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
+			);
+			this.cmd(
+				"CreateLabel",
+				this.parentIndexID[i],
+				String.fromCharCode(65 + i),
+				PARENT_START_X - AUX_ARRAY_WIDTH,
+				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
+			);
+			this.cmd("SetForegroundColor", this.parentIndexID[i], VERTEX_INDEX_COLOR);
+		}
+		this.cmd(
+			"CreateLabel",
+			this.nextIndex++,
+			"Parent",
+			PARENT_START_X - AUX_ARRAY_WIDTH,
+			AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5,
+			0
+		);
+		this.cmd(
+			"CreateLabel",
+			this.nextIndex++,
+			"Visited",
+			VISITED_START_X - AUX_ARRAY_WIDTH,
+			AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5,
+			0
+		);
+		this.cmd(
+			"CreateLabel",
+			this.nextIndex++,
+			"BFS Queue",
+			QUEUE_START_X,
+			QUEUE_START_Y - 30,
+			0
+		);
+		this.animationManager.setAllLayers([0, this.currentLayer]);
+		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
+		this.highlightCircleL = this.nextIndex++;
+		this.highlightCircleAL = this.nextIndex++;
+		this.highlightCircleAM = this.nextIndex++;
+	}
 
-doBFS(startVetex)
-{
-	this.visited = new Array(this.size);
-	this.commands = new Array();
-	this.queue = new Array(this.size);
-	let head = 0;
-	let tail = 0;
-	let queueID = new Array(this.size);
-	let queueSize = 0;
+	startCallback() {
+		let startvalue;
 
-	if (this.messageID != null)
-	{
-		for (let i = 0; i < this.messageID.length; i++)
-		{
-			this.cmd("Delete", this.messageID[i]);
+		if (this.startField.value != "") {
+			startvalue = this.startField.value;
+			this.startField.value = "";
+			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
+			if (startvalue < this.size) this.implementAction(this.doBFS.bind(this), startvalue);
 		}
 	}
 
-	this.rebuildEdges();
-	this.messageID = new Array();
-	for (let i = 0; i < this.size; i++)
-	{
-		this.cmd("SetText", this.visitedID[i], "F");
-		this.cmd("SetText", this.parentID[i], "");
-		this.visited[i] = false;
-		queueID[i] = this.nextIndex++;
+	doBFS(startVetex) {
+		this.visited = new Array(this.size);
+		this.commands = new Array();
+		this.queue = new Array(this.size);
+		let head = 0;
+		let tail = 0;
+		const queueID = new Array(this.size);
+		let queueSize = 0;
 
-	}
-	let vertex = startVetex;
-	this.visited[vertex] = true;
-	this.queue[tail] = vertex;
-	this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + vertex), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
-	queueSize = queueSize + 1;
-	tail = (tail + 1) % (this.size);
+		if (this.messageID != null) {
+			for (let i = 0; i < this.messageID.length; i++) {
+				this.cmd("Delete", this.messageID[i]);
+			}
+		}
 
+		this.rebuildEdges();
+		this.messageID = new Array();
+		for (let i = 0; i < this.size; i++) {
+			this.cmd("SetText", this.visitedID[i], "F");
+			this.cmd("SetText", this.parentID[i], "");
+			this.visited[i] = false;
+			queueID[i] = this.nextIndex++;
+		}
+		let vertex = startVetex;
+		this.visited[vertex] = true;
+		this.queue[tail] = vertex;
+		this.cmd(
+			"CreateLabel",
+			queueID[tail],
+			String.fromCharCode(65 + vertex),
+			QUEUE_START_X + queueSize * QUEUE_SPACING,
+			QUEUE_START_Y
+		);
+		queueSize = queueSize + 1;
+		tail = (tail + 1) % this.size;
 
-	while (queueSize > 0)
-	{
-		vertex = this.queue[head];
-		this.cmd("CreateHighlightCircle", this.highlightCircleL, HIGHLIGHT_CIRCLE_COLOR, this.x_pos_logical[vertex], this.y_pos_logical[vertex]);
-		this.cmd("SetLayer", this.highlightCircleL, 1);
-		this.cmd("CreateHighlightCircle", this.highlightCircleAL, HIGHLIGHT_CIRCLE_COLOR,this.adj_list_x_start - this.adj_list_width, this.adj_list_y_start + vertex*this.adj_list_height);
-		this.cmd("SetLayer", this.highlightCircleAL, 2);
-		this.cmd("CreateHighlightCircle", this.highlightCircleAM, HIGHLIGHT_CIRCLE_COLOR,this.adj_matrix_x_start  - this.adj_matrix_width, this.adj_matrix_y_start + vertex*this.adj_matrix_height);
-		this.cmd("SetLayer", this.highlightCircleAM, 3);
+		while (queueSize > 0) {
+			vertex = this.queue[head];
+			this.cmd(
+				"CreateHighlightCircle",
+				this.highlightCircleL,
+				HIGHLIGHT_CIRCLE_COLOR,
+				this.x_pos_logical[vertex],
+				this.y_pos_logical[vertex]
+			);
+			this.cmd("SetLayer", this.highlightCircleL, 1);
+			this.cmd(
+				"CreateHighlightCircle",
+				this.highlightCircleAL,
+				HIGHLIGHT_CIRCLE_COLOR,
+				this.adj_list_x_start - this.adj_list_width,
+				this.adj_list_y_start + vertex * this.adj_list_height
+			);
+			this.cmd("SetLayer", this.highlightCircleAL, 2);
+			this.cmd(
+				"CreateHighlightCircle",
+				this.highlightCircleAM,
+				HIGHLIGHT_CIRCLE_COLOR,
+				this.adj_matrix_x_start - this.adj_matrix_width,
+				this.adj_matrix_y_start + vertex * this.adj_matrix_height
+			);
+			this.cmd("SetLayer", this.highlightCircleAM, 3);
 
-		this.cmd("SetTextColor", queueID[head], BFS_QUEUE_HEAD_COLOR);
+			this.cmd("SetTextColor", queueID[head], BFS_QUEUE_HEAD_COLOR);
 
-
-		for (let neighbor = 0; neighbor < this.size; neighbor++)
-		{
-			if (this.adj_matrix[vertex][neighbor] > 0)
-			{
-				this.highlightEdge(vertex, neighbor, 1);
-				this.cmd("SetHighlight", this.visitedID[neighbor], 1);
-				this.cmd("Step");
-				if (!this.visited[neighbor])
-				{
-					this.visited[neighbor] = true;
-					this.cmd("SetText", this.visitedID[neighbor], "T");
-					this.cmd("SetText", this.parentID[neighbor], String.fromCharCode(65 + vertex));
-					this.highlightEdge(vertex, neighbor, 0);
-					this.cmd("Disconnect", this.circleID[vertex], this.circleID[neighbor]);
-					this.cmd("Connect", this.circleID[vertex], this.circleID[neighbor], BFS_TREE_COLOR, this.curve[vertex][neighbor], 1, "");
-					this.queue[tail] = neighbor;
-					this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + neighbor), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
-					tail = (tail + 1) % (this.size);
-					queueSize = queueSize + 1;
+			for (let neighbor = 0; neighbor < this.size; neighbor++) {
+				if (this.adj_matrix[vertex][neighbor] > 0) {
+					this.highlightEdge(vertex, neighbor, 1);
+					this.cmd("SetHighlight", this.visitedID[neighbor], 1);
+					this.cmd("Step");
+					if (!this.visited[neighbor]) {
+						this.visited[neighbor] = true;
+						this.cmd("SetText", this.visitedID[neighbor], "T");
+						this.cmd(
+							"SetText",
+							this.parentID[neighbor],
+							String.fromCharCode(65 + vertex)
+						);
+						this.highlightEdge(vertex, neighbor, 0);
+						this.cmd("Disconnect", this.circleID[vertex], this.circleID[neighbor]);
+						this.cmd(
+							"Connect",
+							this.circleID[vertex],
+							this.circleID[neighbor],
+							BFS_TREE_COLOR,
+							this.curve[vertex][neighbor],
+							1,
+							""
+						);
+						this.queue[tail] = neighbor;
+						this.cmd(
+							"CreateLabel",
+							queueID[tail],
+							String.fromCharCode(65 + neighbor),
+							QUEUE_START_X + queueSize * QUEUE_SPACING,
+							QUEUE_START_Y
+						);
+						tail = (tail + 1) % this.size;
+						queueSize = queueSize + 1;
+					} else {
+						this.highlightEdge(vertex, neighbor, 0);
+					}
+					this.cmd("SetHighlight", this.visitedID[neighbor], 0);
+					this.cmd("Step");
 				}
-				else
-				{
-					this.highlightEdge(vertex, neighbor, 0);
-				}
-				this.cmd("SetHighlight", this.visitedID[neighbor], 0);
-				this.cmd("Step");
+			}
+			this.cmd("Delete", queueID[head]);
+			head = (head + 1) % this.size;
+			queueSize = queueSize - 1;
+			for (let i = 0; i < queueSize; i++) {
+				const nextQueueIndex = (i + head) % this.size;
+				this.cmd(
+					"Move",
+					queueID[nextQueueIndex],
+					QUEUE_START_X + i * QUEUE_SPACING,
+					QUEUE_START_Y
+				);
 			}
 
-		}
-		this.cmd("Delete", queueID[head]);
-		head = (head + 1) % (this.size);
-		queueSize = queueSize - 1;
-		for (let i = 0; i < queueSize; i++)
-		{
-			let nextQueueIndex = (i + head) % this.size;
-			this.cmd("Move", queueID[nextQueueIndex], QUEUE_START_X + i * QUEUE_SPACING, QUEUE_START_Y);
+			this.cmd("Delete", this.highlightCircleL);
+			this.cmd("Delete", this.highlightCircleAM);
+			this.cmd("Delete", this.highlightCircleAL);
 		}
 
-		this.cmd("Delete", this.highlightCircleL);
-		this.cmd("Delete", this.highlightCircleAM);
-		this.cmd("Delete", this.highlightCircleAL);
-
+		return this.commands;
 	}
 
-	return this.commands
+	// NEED TO OVERRIDE IN PARENT
+	reset() {
+		// Throw an error?
+	}
 
+	enableUI(event) {
+		this.startField.disabled = false;
+		this.startButton.disabled = false;
+		this.startButton;
+
+		// BFS.superclass.enableUI.call(this,event);
+		super.enableUI(event);
+	}
+	disableUI(event) {
+		this.startField.disabled = true;
+		this.startButton.disabled = true;
+
+		super.disableUI(event);
+		// BFS.superclass.disableUI.call(this, event);
+	}
 }
 
-
-
-// NEED TO OVERRIDE IN PARENT
-reset()
-{
-	// Throw an error?
-}
-
-
-
-
-enableUI(event)
-{
-	this.startField.disabled = false;
-	this.startButton.disabled = false;
-	this.startButton
-
-
-	// BFS.superclass.enableUI.call(this,event);
-	super.enableUI(event);
-}
-disableUI(event)
-{
-
-	this.startField.disabled = true;
-	this.startButton.disabled = true;
-
-	super.disableUI(event);
-	// BFS.superclass.disableUI.call(this, event);
-}
-}
-
-
-let currentAlg;
-
-function init()
-{
-	let animManag = initCanvas();
-	currentAlg = new BFS(animManag, canvas.width, canvas.height);
+function init() {
+	// eslint-disable-next-line no-undef
+	const animManag = initCanvas();
+	// eslint-disable-next-line no-undef, no-unused-vars
+	const currentAlg = new BFS(animManag, canvas.width, canvas.height);
 }
 
 window.onload = init;

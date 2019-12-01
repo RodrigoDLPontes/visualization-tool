@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 // Copyright 2011 David Galles, University of San Francisco. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
@@ -24,7 +25,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addLabelToAlgorithmBar, addControlToAlgorithmBar } from "./Algorithm.js";
+import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from "./Algorithm.js";
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;

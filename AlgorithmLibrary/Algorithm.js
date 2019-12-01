@@ -24,14 +24,14 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-function addLabelToAlgorithmBar(labelName, group) {
-    var element = document.createTextNode(labelName);
+export function addLabelToAlgorithmBar(labelName, group) {
+    const element = document.createTextNode(labelName);
 
     if(!group) {
-        var tableEntry = document.createElement("td");
+        const tableEntry = document.createElement("td");
         tableEntry.appendChild(element);
 
-        var controlBar = document.getElementById("AlgorithmSpecificControls");
+        const controlBar = document.getElementById("AlgorithmSpecificControls");
         // Append the element in page (in span)
         controlBar.appendChild(tableEntry);
     } else {
@@ -41,24 +41,24 @@ function addLabelToAlgorithmBar(labelName, group) {
     return element;
 }
 
-function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
-    var element = document.createElement("input");
+export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
+    const element = document.createElement("input");
 
     element.setAttribute("type", "checkbox");
     element.setAttribute("value", boxLabel);
     checked && element.setAttribute("checked", "true");
 
-    var label = document.createTextNode(boxLabel);
+    const label = document.createTextNode(boxLabel);
 
     if(!group) {
-        var tableEntry = document.createElement("td");
+        const tableEntry = document.createElement("td");
         tableEntry.appendChild(element);
         tableEntry.appendChild(label);
 
-        var controlBar = document.getElementById("AlgorithmSpecificControls");
+        const controlBar = document.getElementById("AlgorithmSpecificControls");
         controlBar.appendChild(tableEntry);
     } else {
-        var span = document.createElement("span");
+        const span = document.createElement("span");
         span.appendChild(element);
         span.appendChild(label);
 
@@ -68,31 +68,31 @@ function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
     return element;
 }
 
-function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group) {
-    var buttonList = [];
-    var newTable = document.createElement("table");
+export function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group) {
+    const buttonList = [];
+    const newTable = document.createElement("table");
 
-    for (var i = 0; i < buttonNames.length; i++) {
-        var midLevel = document.createElement("tr");
-        var bottomLevel = document.createElement("td");
+    for (let i = 0; i < buttonNames.length; i++) {
+        const midLevel = document.createElement("tr");
+        const bottomLevel = document.createElement("td");
 
-        var button = document.createElement("input");
+        const button = document.createElement("input");
         button.setAttribute("type", "radio");
         button.setAttribute("name", groupName);
         button.setAttribute("value", buttonNames[i]);
         bottomLevel.appendChild(button);
         midLevel.appendChild(bottomLevel);
-        var txtNode = document.createTextNode(" " + buttonNames[i]);
+        const txtNode = document.createTextNode(" " + buttonNames[i]);
         bottomLevel.appendChild(txtNode);
         newTable.appendChild(midLevel);
         buttonList.push(button);
     }
 
     if(!group) {
-        var topLevelTableEntry = document.createElement("td");
+        const topLevelTableEntry = document.createElement("td");
         topLevelTableEntry.appendChild(newTable);
 
-        var controlBar = document.getElementById("AlgorithmSpecificControls");
+        const controlBar = document.getElementById("AlgorithmSpecificControls");
         controlBar.appendChild(topLevelTableEntry);
     } else {
         group.appendChild(newTable);
@@ -101,17 +101,17 @@ function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group) {
     return buttonList
 }
 
-function addControlToAlgorithmBar(type, value, group) {
-    var element = document.createElement("input");
+export function addControlToAlgorithmBar(type, value, group) {
+    const element = document.createElement("input");
 
     element.setAttribute("type", type);
     element.setAttribute("value", value);
 
     if(!group) {
-        var tableEntry = document.createElement("td");
+        const tableEntry = document.createElement("td");
         tableEntry.appendChild(element);
 
-        var controlBar = document.getElementById("AlgorithmSpecificControls");
+        const controlBar = document.getElementById("AlgorithmSpecificControls");
         controlBar.appendChild(tableEntry);
     } else {
         group.appendChild(element);
@@ -120,16 +120,16 @@ function addControlToAlgorithmBar(type, value, group) {
     return element;
 }
 
-function addGroupToAlgorithmBar(horizontal, parentGroup) {
-    var group = document.createElement("div");
+export function addGroupToAlgorithmBar(horizontal, parentGroup) {
+    const group = document.createElement("div");
 
     group.setAttribute("class", horizontal ? "hgroup" : "vgroup");
 
     if(!parentGroup) {
-        var tableEntry = document.createElement("td");
+        const tableEntry = document.createElement("td");
         tableEntry.appendChild(group);
 
-        var controlBar = document.getElementById("AlgorithmSpecificControls");
+        const controlBar = document.getElementById("AlgorithmSpecificControls");
         controlBar.appendChild(tableEntry);
     } else {
         parentGroup.appendChild(group);
@@ -138,90 +138,151 @@ function addGroupToAlgorithmBar(horizontal, parentGroup) {
     return group;
 }
 
-function Algorithm(am) {
-    // to be overridden in base class
-}
-
-Algorithm.prototype.setCodeAlpha = function (code, newAlpha) {
-    var i, j;
-    for (i = 0; i < code.length; i++) {
-        for (j = 0; j < code[i].length; j++) {
-            this.cmd("SetAlpha", code[i][j], newAlpha);
-        }
+export default class Algorithm {
+    constructor(am, w, h) {
+        this.animationManager = am;
+        am.addListener("AnimationStarted", this, this.disableUI);
+        am.addListener("AnimationEnded", this, this.enableUI);
+        am.addListener("AnimationUndo", this, this.undo);
+        this.canvasWidth = w;
+        this.canvasHeight = h;
+    
+        this.actionHistory = [];
+        this.recordAnimation = true;
+        this.commands = [];
     }
-}
 
-Algorithm.prototype.addCodeToCanvasBase = function (code, start_x, start_y, line_height, standard_color, layer) {
-    layer = typeof layer !== 'undefined' ? layer : 0;
-    var codeID = Array(code.length);
-    var i, j;
-    for (i = 0; i < code.length; i++) {
-        codeID[i] = new Array(code[i].length);
-        for (j = 0; j < code[i].length; j++) {
-            codeID[i][j] = this.nextIndex++;
-            this.cmd("CreateLabel", codeID[i][j], code[i][j], start_x, start_y + i * line_height, 0);
-            this.cmd("SetForegroundColor", codeID[i][j], standard_color);
-            this.cmd("SetLayer", codeID[i][j], layer);
-            if (j > 0) {
-                this.cmd("AlignRight", codeID[i][j], codeID[i][j - 1]);
+    addCodeToCanvasBase(code, start_x, start_y, line_height, standard_color, layer) {
+        layer = typeof layer !== 'undefined' ? layer : 0;
+        const codeID = Array(code.length);
+        let i, j;
+        for (i = 0; i < code.length; i++) {
+            codeID[i] = new Array(code[i].length);
+            for (j = 0; j < code[i].length; j++) {
+                codeID[i][j] = this.nextIndex++;
+                this.cmd("CreateLabel", codeID[i][j], code[i][j], start_x, start_y + i * line_height, 0);
+                this.cmd("SetForegroundColor", codeID[i][j], standard_color);
+                this.cmd("SetLayer", codeID[i][j], layer);
+                if (j > 0) {
+                    this.cmd("AlignRight", codeID[i][j], codeID[i][j - 1]);
+                }
+            }
+        }
+        return codeID;
+    }
+
+    setCodeAlpha(code, newAlpha) {
+        for (let i = 0; i < code.length; i++) {
+            for (let j = 0; j < code[i].length; j++) {
+                this.cmd("SetAlpha", code[i][j], newAlpha);
             }
         }
     }
-    return codeID;
-}
 
-Algorithm.prototype.init = function (am, w, h) {
-    this.animationManager = am;
-    am.addListener("AnimationStarted", this, this.disableUI);
-    am.addListener("AnimationEnded", this, this.enableUI);
-    am.addListener("AnimationUndo", this, this.undo);
-    this.canvasWidth = w;
-    this.canvasHeight = h;
-
-    this.actionHistory = [];
-    this.recordAnimation = true;
-    this.commands = []
-}
-
-Algorithm.prototype.sizeChanged = function (newWidth, newHeight) {
-    // to be overridden in base class
-}
-
-Algorithm.prototype.implementAction = function (funct, val) {
-    var nxt = [funct, val];
-    this.actionHistory.push(nxt);
-    var retVal = funct(val);
-    this.animationManager.StartNewAnimation(retVal);
-}
-
-Algorithm.prototype.isAllDigits = function (str) {
-    for (var i = str.length - 1; i >= 0; i--) {
-        if (str.charAt(i) < "0" || str.charAt(i) > "9") {
-            return false;
-
+    cmd() {
+        // Helper method to create a command string from a bunch of arguments
+        if (this.recordAnimation) {
+            let command = arguments[0];
+            for (let i = 1; i < arguments.length; i++) {
+                command = command + "<;>" + String(arguments[i]);
+            }
+            this.commands.push(command);
         }
     }
-    return true;
-}
 
-Algorithm.prototype.normalizeNumber = function (input, maxLen) {
-    if (!this.isAllDigits(input) || input == "") {
-        return input;
+    clearHistory() {
+        this.actionHistory = [];
     }
-    else {
+
+    undo() {
+        // Remove the last action (the one that we are going to undo)
+        this.actionHistory.pop();
+        // Clear out our data structure.  Be sure to implement reset in
+        // every AlgorithmAnimation subclass!
+        this.reset();
+        //  Redo all actions from the beginning, throwing out the animation
+        //  commands (the animation manager will update the animation on its own).
+        //  Note that if you do something non-deterministic, you might cause problems!
+        //  Be sure if you do anything non-deterministic (that is, calls to a random
+        //  number generator) you clear out the undo stack here and in the animation
+        //  manager.
+    
+        //  If this seems horribly inefficient -- it is! However, it seems to work well
+        //  in practice, and you get undo for free for all algorithms, which is a non-trivial
+        //  gain.
+        const len = this.actionHistory.length;
+        this.recordAnimation = false;
+        for (let i = 0; i < len; i++) {
+            this.actionHistory[i][0](this.actionHistory[i][1]);
+        }
+        this.recordAnimation = true;
+    }
+
+    implementAction(funct, val) {
+        const nxt = [funct, val];
+        this.actionHistory.push(nxt);
+        const retVal = funct(val);
+        this.animationManager.StartNewAnimation(retVal);
+    }
+
+    normalizeNumber(input, maxLen) {
+        const isAllDigits = str => !/\D/.test(str);
+        if (!isAllDigits(input) || input == "") {
+            return input;
+        }
         return ("OOO0000" + input).substr(-maxLen, maxLen);
     }
+
+    returnSubmit(field, funct, maxsize, intOnly) {
+        if (maxsize != undefined) {
+            field.size = maxsize;
+        }
+        return function (event) {
+            let keyASCII = 0;
+            if (window.event) {
+                // IE
+                keyASCII = event.keyCode
+            } else if (event.which) {
+                // Netscape/Firefox/Opera
+                keyASCII = event.which
+            }
+    
+            if (keyASCII == 13 && funct !== null) {
+                funct();
+            } else if (keyASCII == 190 || keyASCII == 59 || keyASCII == 173 || keyASCII == 189) {
+                return false;
+    
+            } else if ((maxsize != undefined && field.value.length >= maxsize) ||
+                intOnly && (keyASCII < 48 || keyASCII > 57)) {
+                if (!controlKey(keyASCII))
+                    return false;
+            }
+        }
+    }
+
+    // Abstract methods - these should be implemented in the base class
+
+    // eslint-disable-next-line no-unused-vars
+    sizeChanged(newWidth, newHeight) {
+        throw new Error('sizeChanged should be implemented in base class');
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    disableUI(event) {
+        throw new Error('disableUI should be implemented in base class');
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    enableUI(event) {
+        throw new Error('enableUI should be implemented in base class');
+    }
+
+    reset() {
+        throw new Error('reset should be implemented in base class');
+    }
 }
 
-Algorithm.prototype.disableUI = function (event) {
-    // to be overridden in base class
-}
-
-Algorithm.prototype.enableUI = function (event) {
-    // to be overridden in base class
-}
-
-function controlKey(keyASCII) {
+export function controlKey(keyASCII) {
     return keyASCII == 8 || keyASCII == 9 || keyASCII == 37 || keyASCII == 38 ||
         keyASCII == 39 || keyASCII == 40 || keyASCII == 46;
 }
@@ -231,7 +292,7 @@ Algorithm.prototype.returnSubmitFloat = function (field, funct, maxsize) {
         field.size = maxsize;
     }
     return function (event) {
-        var keyASCII = 0;
+        let keyASCII = 0;
         if (window.event) // IE
         {
             keyASCII = event.keyCode
@@ -272,83 +333,6 @@ Algorithm.prototype.returnSubmitFloat = function (field, funct, maxsize) {
     }
 }
 
-Algorithm.prototype.returnSubmit = function (field, funct, maxsize, intOnly) {
-    if (maxsize != undefined) {
-        field.size = maxsize;
-    }
-    return function (event) {
-        var keyASCII = 0;
-        if (window.event) // IE
-        {
-            keyASCII = event.keyCode
-        }
-        else if (event.which) // Netscape/Firefox/Opera
-        {
-            keyASCII = event.which
-        }
-
-        if (keyASCII == 13 && funct !== null) {
-            funct();
-        }
-        else if (keyASCII == 190 || keyASCII == 59 || keyASCII == 173 || keyASCII == 189) {
-            return false;
-
-        }
-        else if ((maxsize != undefined && field.value.length >= maxsize) ||
-            intOnly && (keyASCII < 48 || keyASCII > 57)) {
-            if (!controlKey(keyASCII))
-                return false;
-        }
-    }
-}
-
 Algorithm.prototype.addReturnSubmit = function (field, action) {
     field.onkeydown = this.returnSubmit(field, action, 4, false);
-}
-
-Algorithm.prototype.reset = function () {
-    // to be overriden in base class
-    // (Throw exception here?)
-}
-
-Algorithm.prototype.undo = function (event) {
-    // Remove the last action (the one that we are going to undo)
-    this.actionHistory.pop();
-    // Clear out our data structure.  Be sure to implement reset in
-    // every AlgorithmAnimation subclass!
-    this.reset();
-    //  Redo all actions from the beginning, throwing out the animation
-    //  commands (the animation manager will update the animation on its own).
-    //  Note that if you do something non-deterministic, you might cause problems!
-    //  Be sure if you do anything non-deterministic (that is, calls to a random
-    //  number generator) you clear out the undo stack here and in the animation
-    //  manager.
-
-    //  If this seems horribly inefficient -- it is! However, it seems to work well
-    //  in practice, and you get undo for free for all algorithms, which is a non-trivial
-    //  gain.
-    var len = this.actionHistory.length;
-    this.recordAnimation = false;
-    for (var i = 0; i < len; i++) {
-        this.actionHistory[i][0](this.actionHistory[i][1]);
-    }
-    this.recordAnimation = true;
-}
-
-Algorithm.prototype.clearHistory = function () {
-    this.actionHistory = [];
-}
-
-// Helper method to add text input with nice border.
-// S3 probably has a built-in way to do this. Replace when found.
-
-// Helper method to create a command string from a bunch of arguments
-Algorithm.prototype.cmd = function () {
-    if (this.recordAnimation) {
-        var command = arguments[0];
-        for (i = 1; i < arguments.length; i++) {
-            command = command + "<;>" + String(arguments[i]);
-        }
-        this.commands.push(command);
-    }
 }

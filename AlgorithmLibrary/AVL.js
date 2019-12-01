@@ -1191,6 +1191,7 @@ class AVLNode {
 		this.right = null;
 		this.parent = null;
 	}
+
 	isLeftChild() {
 		if (this.parent == null) {
 			return true;

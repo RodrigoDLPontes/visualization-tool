@@ -24,8 +24,8 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from "./Algorithm.js";
 import Graph, { VERTEX_INDEX_COLOR } from "./Graph.js";
+import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from "./Algorithm.js";
 
 const AUX_ARRAY_WIDTH = 25;
 const AUX_ARRAY_HEIGHT = 25;
@@ -316,6 +316,7 @@ class DFS extends Graph {
 
 		super.enableUI(event);
 	}
+
 	disableUI(event) {
 		this.startField.disabled = true;
 		this.startButton.disabled = true;

@@ -24,34 +24,40 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-var AUX_ARRAY_WIDTH = 25;
-var AUX_ARRAY_HEIGHT = 25;
-var AUX_ARRAY_START_Y = 50;
+import {addControlToAlgorithmBar, addLabelToAlgorithmBar} from './Algorithm.js';
+import Graph from './Graph.js';
 
-var VISITED_START_X = 475;
-var PARENT_START_X = 400;
+let AUX_ARRAY_WIDTH = 25;
+let AUX_ARRAY_HEIGHT = 25;
+let AUX_ARRAY_START_Y = 50;
 
-var HIGHLIGHT_CIRCLE_COLOR = "#000000";
-var BFS_TREE_COLOR = "#0000FF";
-var BFS_QUEUE_HEAD_COLOR = "#0000FF";
+let VISITED_START_X = 475;
+let PARENT_START_X = 400;
 
-
-var QUEUE_START_X = 30;
-var QUEUE_START_Y = 50;
-var QUEUE_SPACING = 30;
+let HIGHLIGHT_CIRCLE_COLOR = "#000000";
+let BFS_TREE_COLOR = "#0000FF";
+let BFS_QUEUE_HEAD_COLOR = "#0000FF";
 
 
-function BFS(am)
+let QUEUE_START_X = 30;
+let QUEUE_START_Y = 50;
+let QUEUE_SPACING = 30;
+
+
+class BFS extends Graph{
+	constructor(am, w, h)
 {
-	this.init(am);
+	super(am, w, h); // TODO:  add no edge label flag to this?
 
+	this.init(am);
+	this.showEdgeCosts = false;
 }
 
-BFS.prototype = new Graph();
-BFS.prototype.constructor = BFS;
-BFS.superclass = Graph.prototype;
+// BFS.prototype = new Graph();
+// constructor = BFS;
+// BFS.superclass = Graph.prototype;
 
-BFS.prototype.addControls =  function()
+addControls()
 {
 	addLabelToAlgorithmBar("Start Vertex: ");
 	this.startField = addControlToAlgorithmBar("Text", "");
@@ -59,21 +65,14 @@ BFS.prototype.addControls =  function()
 	this.startField.size = 2;
 	this.startButton = addControlToAlgorithmBar("Button", "Run BFS");
 	this.startButton.onclick = this.startCallback.bind(this);
-	BFS.superclass.addControls.call(this);
+	// BFS.superclass.addControls.call(this);
+	super.addControls();
 }
 
-
-BFS.prototype.init = function(am, w, h)
+setup()
 {
-	showEdgeCosts = false;
-	BFS.superclass.init.call(this, am, w, h); // TODO:  add no edge label flag to this?
-	// Setup called in base class constructor
-}
-
-
-BFS.prototype.setup = function()
-{
-	BFS.superclass.setup.call(this);
+	// BFS.superclass.setup.call(this);
+	super.setup();
 	this.messageID = new Array();
 	this.commands = new Array();
 	this.visitedID = new Array(this.size);
@@ -81,7 +80,7 @@ BFS.prototype.setup = function()
 	this.parentID = new Array(this.size);
 	this.parentIndexID = new Array(this.size);
 
-	for (var i = 0; i < this.size; i++)
+	for (let i = 0; i < this.size; i++)
 	{
 		this.visitedID[i] = this.nextIndex++;
 		this.visitedIndexID[i] = this.nextIndex++;
@@ -98,18 +97,18 @@ BFS.prototype.setup = function()
 	this.cmd("CreateLabel", this.nextIndex++, "Parent", PARENT_START_X - AUX_ARRAY_WIDTH, AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5, 0);
 	this.cmd("CreateLabel", this.nextIndex++, "Visited", VISITED_START_X - AUX_ARRAY_WIDTH, AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5, 0);
 	this.cmd("CreateLabel", this.nextIndex++, "BFS Queue", QUEUE_START_X, QUEUE_START_Y - 30, 0);
-	animationManager.setAllLayers([0, this.currentLayer]);
-	animationManager.StartNewAnimation(this.commands);
-	animationManager.skipForward();
-	animationManager.clearHistory();
+	this.animationManager.setAllLayers([0, this.currentLayer]);
+	this.animationManager.StartNewAnimation(this.commands);
+	this.animationManager.skipForward();
+	this.animationManager.clearHistory();
 	this.highlightCircleL = this.nextIndex++;
 	this.highlightCircleAL = this.nextIndex++;
 	this.highlightCircleAM= this.nextIndex++
 }
 
-BFS.prototype.startCallback = function(event)
+startCallback(event)
 {
-	var startValue;
+	let startvalue;
 
 	if (this.startField.value != "")
 	{
@@ -123,19 +122,19 @@ BFS.prototype.startCallback = function(event)
 
 
 
-BFS.prototype.doBFS = function(startVetex)
+doBFS(startVetex)
 {
 	this.visited = new Array(this.size);
 	this.commands = new Array();
 	this.queue = new Array(this.size);
-	var head = 0;
-	var tail = 0;
-	var queueID = new Array(this.size);
-	var queueSize = 0;
+	let head = 0;
+	let tail = 0;
+	let queueID = new Array(this.size);
+	let queueSize = 0;
 
 	if (this.messageID != null)
 	{
-		for (var i = 0; i < this.messageID.length; i++)
+		for (let i = 0; i < this.messageID.length; i++)
 		{
 			this.cmd("Delete", this.messageID[i]);
 		}
@@ -143,7 +142,7 @@ BFS.prototype.doBFS = function(startVetex)
 
 	this.rebuildEdges();
 	this.messageID = new Array();
-	for (i = 0; i < this.size; i++)
+	for (let i = 0; i < this.size; i++)
 	{
 		this.cmd("SetText", this.visitedID[i], "F");
 		this.cmd("SetText", this.parentID[i], "");
@@ -151,7 +150,7 @@ BFS.prototype.doBFS = function(startVetex)
 		queueID[i] = this.nextIndex++;
 
 	}
-	var vertex = startVetex;
+	let vertex = startVetex;
 	this.visited[vertex] = true;
 	this.queue[tail] = vertex;
 	this.cmd("CreateLabel", queueID[tail], String.fromCharCode(65 + vertex), QUEUE_START_X + queueSize * QUEUE_SPACING, QUEUE_START_Y);
@@ -172,7 +171,7 @@ BFS.prototype.doBFS = function(startVetex)
 		this.cmd("SetTextColor", queueID[head], BFS_QUEUE_HEAD_COLOR);
 
 
-		for (var neighbor = 0; neighbor < this.size; neighbor++)
+		for (let neighbor = 0; neighbor < this.size; neighbor++)
 		{
 			if (this.adj_matrix[vertex][neighbor] > 0)
 			{
@@ -204,9 +203,9 @@ BFS.prototype.doBFS = function(startVetex)
 		this.cmd("Delete", queueID[head]);
 		head = (head + 1) % (this.size);
 		queueSize = queueSize - 1;
-		for (i = 0; i < queueSize; i++)
+		for (let i = 0; i < queueSize; i++)
 		{
-			var nextQueueIndex = (i + head) % this.size;
+			let nextQueueIndex = (i + head) % this.size;
 			this.cmd("Move", queueID[nextQueueIndex], QUEUE_START_X + i * QUEUE_SPACING, QUEUE_START_Y);
 		}
 
@@ -223,7 +222,7 @@ BFS.prototype.doBFS = function(startVetex)
 
 
 // NEED TO OVERRIDE IN PARENT
-BFS.prototype.reset = function()
+reset()
 {
 	// Throw an error?
 }
@@ -231,29 +230,34 @@ BFS.prototype.reset = function()
 
 
 
-BFS.prototype.enableUI = function(event)
+enableUI(event)
 {
 	this.startField.disabled = false;
 	this.startButton.disabled = false;
 	this.startButton
 
 
-	BFS.superclass.enableUI.call(this,event);
+	// BFS.superclass.enableUI.call(this,event);
+	super.enableUI(event);
 }
-BFS.prototype.disableUI = function(event)
+disableUI(event)
 {
 
 	this.startField.disabled = true;
 	this.startButton.disabled = true;
 
-	BFS.superclass.disableUI.call(this, event);
+	super.disableUI(event);
+	// BFS.superclass.disableUI.call(this, event);
+}
 }
 
 
-var currentAlg;
+let currentAlg;
 
 function init()
 {
-	var animManag = initCanvas();
+	let animManag = initCanvas();
 	currentAlg = new BFS(animManag, canvas.width, canvas.height);
 }
+
+window.onload = init;

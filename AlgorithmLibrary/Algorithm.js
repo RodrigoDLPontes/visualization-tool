@@ -140,6 +140,9 @@ export function addGroupToAlgorithmBar(horizontal, parentGroup) {
 
 export default class Algorithm {
     constructor(am, w, h) {
+        if (am == null) {
+            return;
+        }
         this.animationManager = am;
         am.addListener("AnimationStarted", this, this.disableUI);
         am.addListener("AnimationEnded", this, this.enableUI);

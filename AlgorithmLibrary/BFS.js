@@ -46,7 +46,6 @@ class BFS extends Graph {
 	constructor(am, w, h) {
 		super(am, w, h); // TODO:  add no edge label flag to this?
 
-		// this.init(am);
 		this.showEdgeCosts = false;
 	}
 

@@ -33,10 +33,10 @@ import Algorithm, {
 import {
 	LARGE_ALLOWED,
 	LARGE_CURVE,
-	SMALL_ALLLOWED,
-	SMALL_CURVE,
 	LARGE_X_POS_LOGICAL,
 	LARGE_Y_POS_LOGICAL,
+	SMALL_ALLLOWED,
+	SMALL_CURVE,
 	SMALL_X_POS_LOGICAL,
 	SMALL_Y_POS_LOGICAL,
 } from "./Util/GraphUtil.js";
@@ -74,10 +74,10 @@ const LARGE_ADJ_LIST_WIDTH = 30;
 const LARGE_ADJ_LIST_SPACING = 10;
 
 export const VERTEX_INDEX_COLOR = "#0000FF";
-const EDGE_COLOR = "#000000";
+export const EDGE_COLOR = "#000000";
 
-const SMALL_SIZE = 8;
-const LARGE_SIZE = 18;
+export const SMALL_SIZE = 8;
+export const LARGE_SIZE = 18;
 
 export default class Graph extends Algorithm {
 	constructor(am, w, h, dir, dag) {

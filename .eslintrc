@@ -9,7 +9,7 @@
 		"es6": true
 	},
 	"rules": {
-		"no-var": "warn",
+		"no-var": "error",
 		"prefer-const": "warn",
 		"sort-imports": "error",
 		"lines-between-class-members": "error"

@@ -24,237 +24,257 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-var ARRAY_START_X = 100;
-var ARRAY_START_Y = 30;
+import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from "./Algorithm.js";
 
-var MAX_LENGTH = 22;
+const ARRAY_START_X = 100;
+const ARRAY_START_Y = 30;
 
-function BruteForce(am, w, h)
-{
-    this.init(am, w, h);
+const MAX_LENGTH = 22;
+
+class BruteForce extends Algorithm {
+	constructor(am, w, h) {
+		super(am, w, h);
+
+		this.addControls();
+
+		// Useful for memory management
+		this.nextIndex = 0;
+
+		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
+		// structures, etc.
+		this.setup();
+	}
+
+	addControls() {
+		this.controls = [];
+
+		addLabelToAlgorithmBar("Text");
+
+		// Text text field
+		this.textField = addControlToAlgorithmBar("Text", "");
+		this.textField.onkeydown = this.returnSubmit(
+			this.textField,
+			this.findCallback.bind(this),
+			MAX_LENGTH,
+			false
+		);
+		this.controls.push(this.textField);
+
+		addLabelToAlgorithmBar("Pattern");
+
+		// Pattern text field
+		this.patternField = addControlToAlgorithmBar("Text", "");
+		this.patternField.onkeydown = this.returnSubmit(
+			this.patternField,
+			this.findCallback.bind(this),
+			MAX_LENGTH,
+			false
+		);
+		this.controls.push(this.patternField);
+
+		// Find button
+		this.findButton = addControlToAlgorithmBar("Button", "Find");
+		this.findButton.onclick = this.findCallback.bind(this);
+		this.controls.push(this.findButton);
+
+		// Clear button
+		this.clearButton = addControlToAlgorithmBar("Button", "Clear");
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
+	}
+
+	setup() {
+		this.textRowID = new Array();
+		this.comparisonMatrixID = new Array();
+	}
+
+	reset() {
+		// Reset all of your data structures to *exactly* the state they have immediately after the init
+		// function is called.  This method is called whenever an "undo" is performed.  Your data
+		// structures are completely cleaned, and then all of the actions *up to but not including* the
+		// last action are then redone.  If you implement all of your actions through the "implementAction"
+		// method below, then all of this work is done for you in the Animation "superclass"
+
+		// Reset the (very simple) memory manager
+		this.nextIndex = 0;
+	}
+
+	findCallback() {
+		if (
+			this.textField.value != "" &&
+			this.patternField.value != "" &&
+			this.textField.value.length >= this.patternField.value.length
+		) {
+			this.implementAction(this.clear.bind(this), "");
+			const text = this.textField.value;
+			const pattern = this.patternField.value;
+			this.textField.value = "";
+			this.patternField.value = "";
+			this.implementAction(this.find.bind(this), text + "," + pattern);
+		}
+	}
+
+	clearCallback() {
+		this.implementAction(this.clear.bind(this), "");
+	}
+
+	find(params) {
+		this.commands = new Array();
+
+		const text = params.split(",")[0];
+		const pattern = params.split(",")[1];
+
+		if (text.length <= 14) {
+			this.cellSize = 30;
+		} else if (text.length <= 17) {
+			this.cellSize = 25;
+		} else {
+			this.cellSize = 20;
+		}
+
+		this.textRowID = new Array(text.length);
+		this.comparisonMatrixID = new Array(text.length);
+		for (let i = 0; i < text.length; i++) {
+			this.comparisonMatrixID[i] = new Array(text.length);
+		}
+
+		let xpos, ypos;
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y;
+			this.textRowID[i] = this.nextIndex;
+			this.cmd(
+				"CreateRectangle",
+				this.nextIndex,
+				text.charAt(i),
+				this.cellSize,
+				this.cellSize,
+				xpos,
+				ypos
+			);
+			this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
+		}
+
+		for (let row = 0; row < text.length; row++) {
+			for (let col = 0; col < text.length; col++) {
+				xpos = col * this.cellSize + ARRAY_START_X;
+				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
+				this.comparisonMatrixID[row][col] = this.nextIndex;
+				this.cmd(
+					"CreateRectangle",
+					this.nextIndex++,
+					"",
+					this.cellSize,
+					this.cellSize,
+					xpos,
+					ypos
+				);
+			}
+		}
+
+		const iPointerID = this.nextIndex++;
+		const jPointerID = this.nextIndex++;
+		this.cmd(
+			"CreateHighlightCircle",
+			iPointerID,
+			"#0000FF",
+			ARRAY_START_X,
+			ARRAY_START_Y,
+			this.cellSize / 2
+		);
+		this.cmd(
+			"CreateHighlightCircle",
+			jPointerID,
+			"#0000FF",
+			ARRAY_START_X,
+			ARRAY_START_Y + this.cellSize,
+			this.cellSize / 2
+		);
+
+		let i = 0;
+		let j = 0;
+		let row = 0;
+		while (i <= text.length - pattern.length) {
+			for (let k = i; k < i + pattern.length; k++) {
+				this.cmd(
+					"SetText",
+					this.comparisonMatrixID[row][k],
+					pattern.charAt(k - i),
+					xpos,
+					ypos
+				);
+			}
+			this.cmd("Step");
+			while (j < pattern.length && pattern.charAt(j) == text.charAt(i + j)) {
+				this.cmd("SetBackgroundColor", this.comparisonMatrixID[row][i + j], "#2ECC71");
+				j++;
+				this.cmd("Step");
+				if (j != pattern.length) {
+					const xpos = (i + j) * this.cellSize + ARRAY_START_X;
+					this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
+					const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
+					this.cmd("Move", jPointerID, xpos, ypos);
+					this.cmd("Step");
+				}
+			}
+			if (j != pattern.length) {
+				this.cmd("SetBackgroundColor", this.comparisonMatrixID[row][i + j], "#E74C3C");
+			}
+			i++;
+			j = 0;
+			row++;
+			if (i <= text.length - pattern.length) {
+				const xpos = (i + j) * this.cellSize + ARRAY_START_X;
+				this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
+				const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
+				this.cmd("Move", jPointerID, xpos, ypos);
+				this.cmd("Step");
+			}
+		}
+
+		this.cmd("Delete", iPointerID);
+		this.cmd("Delete", jPointerID);
+		return this.commands;
+	}
+
+	clear() {
+		this.commands = new Array();
+		for (let i = 0; i < this.textRowID.length; i++) {
+			this.cmd("Delete", this.textRowID[i]);
+		}
+		this.textRowID = new Array();
+		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
+			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
+				this.cmd("Delete", this.comparisonMatrixID[i][j]);
+			}
+		}
+		this.comparisonMatrixID = new Array();
+		return this.commands;
+	}
+
+	// Called by our superclass when we get an animation started event -- need to wait for the
+	// event to finish before we start doing anything
+	disableUI() {
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = true;
+		}
+	}
+
+	// Called by our superclass when we get an animation completed event -- we can
+	/// now interact again.
+	enableUI() {
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = false;
+		}
+	}
 }
 
-BruteForce.prototype = new Algorithm();
-BruteForce.prototype.constructor = BruteForce;
-BruteForce.superclass = Algorithm.prototype;
-
-BruteForce.prototype.init = function(am, w, h)
-{
-    // Call the unit function of our "superclass", which adds a couple of
-    // listeners, and sets up the undo stack
-    BruteForce.superclass.init.call(this, am, w, h);
-
-    this.addControls();
-
-    // Useful for memory management
-    this.nextIndex = 0;
-
-    // TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-    // structures, etc.
-    this.setup();
+function init() {
+	// eslint-disable-next-line no-undef
+	const animManag = initCanvas();
+	// eslint-disable-next-line no-undef, no-unused-vars
+	const currentAlg = new BruteForce(animManag, canvas.width, canvas.height);
 }
 
-BruteForce.prototype.addControls =  function()
-{
-    this.controls = [];
-
-    addLabelToAlgorithmBar("Text")
-
-    // Text text field
-    this.textField = addControlToAlgorithmBar("Text", "");
-    this.textField.onkeydown = this.returnSubmit(this.textField, this.findCallback.bind(this), MAX_LENGTH, false);
-    this.controls.push(this.textField);
-
-    addLabelToAlgorithmBar("Pattern")
-
-    // Pattern text field
-    this.patternField = addControlToAlgorithmBar("Text", "");
-    this.patternField.onkeydown = this.returnSubmit(this.patternField, this.findCallback.bind(this), MAX_LENGTH, false);
-    this.controls.push(this.patternField);
-
-    // Find button
-    this.findButton = addControlToAlgorithmBar("Button", "Find");
-    this.findButton.onclick = this.findCallback.bind(this);
-    this.controls.push(this.findButton);
-
-    // Clear button
-    this.clearButton = addControlToAlgorithmBar("Button", "Clear");
-    this.clearButton.onclick = this.clearCallback.bind(this);
-    this.controls.push(this.clearButton);
-}
-
-BruteForce.prototype.setup = function()
-{
-    this.textRowID = new Array();
-    this.comparisonMatrixID = new Array();
-}
-
-BruteForce.prototype.reset = function()
-{
-    // Reset all of your data structures to *exactly* the state they have immediately after the init
-    // function is called.  This method is called whenever an "undo" is performed.  Your data
-    // structures are completely cleaned, and then all of the actions *up to but not including* the
-    // last action are then redone.  If you implement all of your actions through the "implementAction"
-    // method below, then all of this work is done for you in the Animation "superclass"
-
-    // Reset the (very simple) memory manager
-    this.nextIndex = 0;
-}
-
-BruteForce.prototype.findCallback = function(event)
-{
-    if (this.textField.value != "" && this.patternField.value != ""
-        && this.textField.value.length >= this.patternField.value.length)
-    {
-        this.implementAction(this.clear.bind(this), "");
-        var text = this.textField.value;
-        var pattern = this.patternField.value;
-        this.textField.value = ""
-        this.patternField.value = ""
-        this.implementAction(this.find.bind(this), text + "," + pattern);
-    }
-}
-
-BruteForce.prototype.clearCallback = function(event)
-{
-    this.implementAction(this.clear.bind(this), "");
-}
-
-BruteForce.prototype.find = function(params)
-{
-    this.commands = new Array();
-
-    var text = params.split(",")[0];
-    var pattern = params.split(",")[1];
-
-    if(text.length <= 14) {
-        this.cellSize = 30;
-    } else if (text.length <= 17) {
-        this.cellSize = 25;
-    } else {
-        this.cellSize = 20;
-    }
-
-    this.textRowID = new Array(text.length);
-    this.comparisonMatrixID = new Array(text.length);
-    for (var i = 0; i < text.length; i++) {
-        this.comparisonMatrixID[i] = new Array(text.length);
-    }
-
-    for (var i = 0; i < text.length; i++)
-    {
-        var xpos = i * this.cellSize + ARRAY_START_X;
-        var ypos = ARRAY_START_Y;
-        this.textRowID[i] = this.nextIndex;
-        this.cmd("CreateRectangle", this.nextIndex, text.charAt(i), this.cellSize, this.cellSize, xpos, ypos);
-        this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
-    }
-
-    for (var row = 0; row < text.length; row++)
-    {
-        for (var col = 0; col < text.length; col++)
-        {
-            var xpos = col * this.cellSize + ARRAY_START_X;
-            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-            this.comparisonMatrixID[row][col] = this.nextIndex;
-            this.cmd("CreateRectangle", this.nextIndex++, "", this.cellSize, this.cellSize, xpos, ypos);
-        }
-    }
-
-    var iPointerID = this.nextIndex++;
-    var jPointerID = this.nextIndex++;
-    this.cmd("CreateHighlightCircle", iPointerID, "#0000FF", ARRAY_START_X, ARRAY_START_Y, this.cellSize / 2);
-    this.cmd("CreateHighlightCircle", jPointerID, "#0000FF", ARRAY_START_X , ARRAY_START_Y + this.cellSize, this.cellSize / 2);
-
-    var i = 0;
-    var j = 0;
-    var row = 0;
-    while (i <= text.length - pattern.length)
-    {
-        for (var k = i; k < i + pattern.length; k++)
-        {
-            this.cmd("SetText", this.comparisonMatrixID[row][k], pattern.charAt(k - i), xpos, ypos);
-        }
-        this.cmd("Step");
-        while (j < pattern.length && pattern.charAt(j) == text.charAt(i + j))
-        {
-            this.cmd("SetBackgroundColor", this.comparisonMatrixID[row][i + j], "#2ECC71");
-            j++;
-            this.cmd("Step");
-            if (j != pattern.length)
-            {
-                var xpos = (i + j) * this.cellSize + ARRAY_START_X;
-                this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-                var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-                this.cmd("Move", jPointerID, xpos, ypos);
-                this.cmd("Step");
-            }
-        }
-        if (j != pattern.length)
-        {
-            this.cmd("SetBackgroundColor", this.comparisonMatrixID[row][i + j], "#E74C3C");
-        }
-        i++;
-        j = 0;
-        row++;
-        if (i <= text.length - pattern.length)
-        {
-            var xpos = (i + j) * this.cellSize + ARRAY_START_X;
-            this.cmd("Move", iPointerID, xpos, ARRAY_START_Y);
-            var ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-            this.cmd("Move", jPointerID, xpos, ypos);
-            this.cmd("Step");
-        }
-    }
-
-    this.cmd("Delete", iPointerID);
-    this.cmd("Delete", jPointerID);
-    return this.commands;
-}
-
-BruteForce.prototype.clear = function()
-{
-    this.commands = new Array();
-    for (var i = 0; i < this.textRowID.length; i++)
-    {
-        this.cmd("Delete", this.textRowID[i]);
-    }
-    this.textRowID = new Array();
-    for (var i = 0; i < this.comparisonMatrixID.length; i++)
-    {
-        for (var j = 0; j < this.comparisonMatrixID.length; j++)
-        {
-            this.cmd("Delete", this.comparisonMatrixID[i][j]);
-        }
-    }
-    this.comparisonMatrixID = new Array();
-    return this.commands;
-}
-
-// Called by our superclass when we get an animation started event -- need to wait for the
-// event to finish before we start doing anything
-BruteForce.prototype.disableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
-        this.controls[i].disabled = true;
-    }
-}
-
-// Called by our superclass when we get an animation completed event -- we can
-/// now interact again.
-BruteForce.prototype.enableUI = function(event)
-{
-    for (var i = 0; i < this.controls.length; i++)
-    {
-        this.controls[i].disabled = false;
-    }
-}
-
-var currentAlg;
-
-function init()
-{
-    var animManag = initCanvas();
-    currentAlg = new BruteForce(animManag, canvas.width, canvas.height);
-}
+window.onload = init;

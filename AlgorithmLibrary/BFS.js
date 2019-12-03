@@ -298,7 +298,7 @@ class BFS extends Graph {
 		// BFS.superclass.enableUI.call(this,event);
 		super.enableUI(event);
 	}
-	
+
 	disableUI(event) {
 		this.startField.disabled = true;
 		this.startButton.disabled = true;

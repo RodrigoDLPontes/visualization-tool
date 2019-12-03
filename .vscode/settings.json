@@ -13,13 +13,17 @@
 		"Onload": {
 			"find": "let currentAlg;\\n\\nfunction init\\(\\) \\{\\n(?:    |\\t)const animManag = initCanvas\\(\\);\\n(?:    |\\t)currentAlg = new (\\w+)\\(animManag, canvas\\.width, canvas\\.height\\);\\n\\}",
 			"replace": "function init() {\n    // eslint-disable-next-line no-undef\n    const animManag = initCanvas();\n    // eslint-disable-next-line no-undef, no-unused-vars\n    const currentAlg = new $1(animManag, canvas.width, canvas.height);\n}\n\nwindow.onload = init;"
+		},
+		"Loop Controls": {
+			"find": "\\(var (\\w)",
+			"replace": "(let $1"
 		}
 	},
 
 	"replacerules.rulesets": {
 		// Set this to ctrl+i ctrl+i in my keybindings
 		"Viz Dev Fixer": {
-			"rules": ["Class Definition", "Function Declarations", "Onload"]
+			"rules": ["Class Definition", "Function Declarations", "Onload", "Loop Controls"]
 		}
 	}
 }

@@ -37,8 +37,8 @@ const LAST_TABLE_START_Y = 200;
 
 class BoyerMoore extends Algorithm {
 	constructor(am, w, h) {
-        super(am, w, h);
-        
+		super(am, w, h);
+
 		this.addControls();
 
 		// Useful for memory management
@@ -164,8 +164,8 @@ class BoyerMoore extends Algorithm {
 			this.cmd("SetBackgroundColor", this.nextIndex++, "#D3D3D3");
 		}
 
-        let xpos;
-        let ypos;
+		let xpos;
+		let ypos;
 		for (let row = 0; row < text.length; row++) {
 			for (let col = 0; col < text.length; col++) {
 				xpos = col * this.cellSize + ARRAY_START_X;

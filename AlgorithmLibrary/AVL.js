@@ -1228,7 +1228,7 @@ function init() {
 	// eslint-disable-next-line no-undef
 	const animManag = initCanvas();
 	// eslint-disable-next-line no-undef, no-unused-vars
-	currentAlg = new AVL(animManag, canvas.width, canvas.height);
+	const currentAlg = new AVL(animManag, canvas.width, canvas.height);
 }
 
 window.onload = init;

@@ -82,6 +82,7 @@ class SkipList extends Algorithm {
 
 		addLabelToAlgorithmBar("with");
 
+		// Heads' text field
 		this.headsField = addControlToAlgorithmBar("Text", "");
 		this.headsField.onkeydown = this.returnSubmit(
 			this.headsField,

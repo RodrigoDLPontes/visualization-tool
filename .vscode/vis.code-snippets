@@ -1,0 +1,51 @@
+{
+	// Place your vis-dev workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+	// Placeholders with the same ids are connected.
+	// Example:
+	"Step": {
+		"scope": "javascript,typescript",
+		"prefix": ["vstep", "vp"],
+		"body": ["this.cmd(\"Step\");"],
+		"description": "this.cmd(\"Step\");"
+	},
+	"Move": {
+		"scope": "javascript,typescript",
+		"prefix": "vmove",
+		"body": ["this.cmd(\"Move\", ${1:objectID}, ${2:toX}, ${3:toY});"],
+		"description": "this.cmd(\"Move\", ...);"
+	},
+	"SetText": {
+		"scope": "javascript,typescript",
+		"prefix": ["vst", "vsettext"],
+		"body": ["this.cmd(\"SetText\", ${1:objectID}, ${2:newText}, ${3:index?});"],
+		"description": "this.cmd(\"SetText\", ...);"
+	},
+	"SetHighlight": {
+		"scope": "javascript,typescript",
+		"prefix": ["vsh", "vsethighlight", "vhighlight"],
+		"body": ["this.cmd(\"SetHighlight\", ${1:objectID}, ${2|0,1|});"],
+		"description": "this.cmd(\"SetHighlight\", ...);"
+	},
+	"Delete": {
+		"scope": "javascript,typescript",
+		"prefix": "vdel",
+		"body": ["this.cmd(\"Delete\");"],
+		"description": "this.cmd(\"Delete\");"
+	},
+	"Import Algorithm": {
+		"scope": "javascript,typescript",
+		"prefix": "impalg",
+		"body": ["import Algorithm, {$1} from './Algorithm.js';"]
+	},
+	"Vis Tool ES6 Class Definition": {
+		"scope": "javascript,typescript",
+		"prefix": "vclass",
+		"body": [
+			"class $1 extends Algorithm {\n    constructor($2) {\n        super($2);\n    }\n}"
+		]
+	}
+}

@@ -12,11 +12,6 @@ jobs:
     - uses: actions/checkout@master
     - name: Create GH Pages
       run: |
-        git remote set-url origin https://RodrigoDLPontes:$TOKEN@github.com/RodrigoDLPontes/visualization-tool.git
-        git config --global user.email "rodrigo.dl.pontes@gmail.com"
-        git config --global user.name "RodrigoDLPontes"
+        git remote set-url origin https://RodrigoDLPontes:${{ secrets.GITHUB_TOKEN }}@github.com/RodrigoDLPontes/visualization-tool.git
         npm ci
         npm run deploy
-      env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        USERNAME: RodrigoDLPontes

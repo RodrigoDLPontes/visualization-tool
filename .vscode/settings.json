@@ -1,0 +1,41 @@
+{
+	"eslint.enable": true,
+	"eslint.autoFixOnSave": true,
+	"replacerules.rules": {
+		"Class Definition": {
+			"find": "function (\\w+)\\([\\w, ]+\\) \\{\\n(?:\\t|    )this\\.init\\(([\\w, ]+)\\);\\n\\}\\n\\n\\1\\.prototype = new Algorithm\\(\\);\\n\\1\\.prototype\\.constructor = \\1;\\n\\1\\.superclass = Algorithm\\.prototype;\\n",
+			"replace": "class $1 extends Algorithm {\n    constructor($2) {\n        super($2);\n    }\n}\n"
+		},
+		"Function Declarations": {
+			"find": "(\\w+)\\.prototype\\.(\\w+) = function\\(([\\w, ]*)\\)",
+			"replace": "$2($3)"
+		},
+		"Onload": {
+			"find": "let currentAlg;\\n\\nfunction init\\(\\) \\{\\n(?:    |\\t)const animManag = initCanvas\\(\\);\\n(?:    |\\t)currentAlg = new (\\w+)\\(animManag, canvas\\.width, canvas\\.height\\);\\n\\}",
+			"replace": "function init() {\n    // eslint-disable-next-line no-undef\n    const animManag = initCanvas();\n    // eslint-disable-next-line no-undef, no-unused-vars\n    const currentAlg = new $1(animManag, canvas.width, canvas.height);\n}\n\nwindow.onload = init;"
+		},
+		"Loop Controls": {
+			"find": "\\(var (\\w)",
+			"replace": "(let $1"
+		},
+		"Export Class": {
+			"find": "class",
+			"replace": "export default class"
+		},
+		"Animation Library Remove Import": {
+			"find": "import AnimationManager from \"./../AnimationLibrary/AnimationMain.js\";\n",
+			"replace": ""
+		},
+		"Remove init()": {
+			"find": "function init\\(\\) \\{\n(    |\t)// eslint-disable-next-line no-undef\n(    |\t)const animManag = new AnimationManager\\(\\);\n(    |\t)// eslint-disable-next-line no-undef, no-unused-vars\n(    |\t)const currentAlg = new BTree\\(animManag, canvas.width, canvas.height\\);\n\\}\n\nwindow.onload = init;",
+			"replace": ""
+		}
+	},
+
+	"replacerules.rulesets": {
+		// Set this to ctrl+i ctrl+i in my keybindings
+		"Viz Dev Fixer": {
+			"rules": ["Export Class", "Animation Library Remove Import", "Remove init()"]
+		}
+	}
+}

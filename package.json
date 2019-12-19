@@ -1,8 +1,8 @@
 {
-    "name": "dsviz",
+    "name": "visualization-tool",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://migueldlr.github.io/visualization-tool",
+    "homepage": "https://rodrigodlpontes.github.io/visualization-tool/",
     "dependencies": {
         "@material-ui/core": "^4.7.2",
         "@reach/router": "^1.2.1",

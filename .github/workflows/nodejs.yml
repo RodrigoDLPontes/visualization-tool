@@ -12,11 +12,11 @@ jobs:
     - uses: actions/checkout@master
     - name: Create GH Pages
       run: |
-        git remote set-url origin https://migueldlr:$TOKEN@github.com/migueldlr/visualization-tool.git # FIX THIS
-        git config --global user.email "thisiswhataninjalookslike@gmail.com" # FIX THIS
-        git config --global user.name "migueldlr" # FIX THIS
+        git remote set-url origin https://RodrigoDLPontes:$TOKEN@github.com/RodrigoDLPontes/visualization-tool.git
+        git config --global user.email "rodrigo.dl.pontes@gmail.com"
+        git config --global user.name "RodrigoDLPontes"
         npm ci
         npm run deploy
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        USERNAME: migueldlr # FIX THIS
+        USERNAME: RodrigoDLPontes

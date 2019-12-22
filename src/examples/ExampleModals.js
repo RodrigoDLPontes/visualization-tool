@@ -1,6 +1,7 @@
 import React from 'react';
 
-export const modals = {
+// Include the ClassName of algorithms that should have an example modal
+export default {
 	AVL: (
 		<ul>
 			<li>To cause a left rotation, add 1, 2 and 3, in that order</li>
@@ -125,5 +126,3 @@ export const modals = {
 		</ul>
 	),
 };
-
-export const hasModal = name => Object.keys(modals).includes(name);

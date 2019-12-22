@@ -56,7 +56,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@material-ui/core';
-import { UndoConnect } from './Line.js';
+import { UndoConnect } from './AnimatedLine.js';
 
 let swapped = false;
 
@@ -82,7 +82,7 @@ function swapControlDiv() {
 	}
 }
 
-// Utility funciton to read a cookie
+// Utility function to read a cookie
 function getCookie(cookieName) {
 	let i, x, y;
 	const cookies = document.cookie.split(';');
@@ -96,12 +96,10 @@ function getCookie(cookieName) {
 	}
 }
 
-// Utility funciton to write a cookie
+// Utility function to write a cookie
 function setCookie(cookieName, value, expireDays) {
-	const exdate = new Date();
-	exdate.setDate(exdate.getDate() + expireDays);
-	// const cookieValue =
-	// 	escape(value) + (expireDays == null ? "" : "; expires=" + exdate.toUTCString());
+	const exDate = new Date();
+	exDate.setDate(exDate.getDate() + expireDays);
 	document.cookie = cookieName + '=' + value;
 }
 
@@ -121,9 +119,9 @@ function controlKey(keyASCII) {
 	);
 }
 
-function returnSubmit(field, funct, maxsize, intOnly) {
-	if (maxsize !== undefined) {
-		field.size = maxsize;
+function returnSubmit(field, func, maxSize, intOnly) {
+	if (maxSize !== undefined) {
+		field.size = maxSize;
 	}
 	return function(event) {
 		let keyASCII = 0;
@@ -136,7 +134,7 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		}
 
 		if (keyASCII === 13) {
-			funct();
+			func();
 			return false;
 		} else if (
 			keyASCII === 59 ||
@@ -147,7 +145,7 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		) {
 			return false;
 		} else if (
-			(maxsize !== undefined && field.value.length >= maxsize) ||
+			(maxSize !== undefined && field.value.length >= maxSize) ||
 			(intOnly && (keyASCII < 48 || keyASCII > 57))
 		) {
 			if (!controlKey(keyASCII)) return false;
@@ -155,23 +153,6 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		return true;
 	};
 }
-
-// function addControl(type, name, location) {
-// 	const element = document.createElement("input");
-
-// 	element.setAttribute("type", type);
-// 	element.setAttribute("value", name);
-
-// 	const tableEntry = document.createElement("td");
-
-// 	tableEntry.appendChild(element);
-
-// 	const controlBar = document.getElementById(tableEntry);
-
-// 	//Append the element in page (in span).
-// 	controlBar.appendChild(element);
-// 	return element;
-// }
 
 function addControlToAnimationBar(animBarRef, type, name, callback) {
 	const element = document.createElement('input');
@@ -188,9 +169,6 @@ function addControlToAnimationBar(animBarRef, type, name, callback) {
 
 	tableEntry.appendChild(element);
 
-	// const controlBar = document.getElementById('GeneralAnimationControls');
-
-	//Append the element in page (in span).
 	animBarRef.current.appendChild(tableEntry);
 	return element;
 }
@@ -201,12 +179,11 @@ export default class AnimationManager extends EventListener {
 
 		this.objectManager = new ObjectManager(canvasRef);
 		// Holder for all animated objects.
-		// All animation is done by manipulating objects in\
+		// All animation is done by manipulating objects in
 		// this container
 		this.animatedObjects = this.objectManager;
 
 		// Control variables for stopping / starting animation
-
 		this.animationPaused = false;
 		this.awaitingStep = false;
 		this.currentlyAnimating = false;
@@ -214,22 +191,22 @@ export default class AnimationManager extends EventListener {
 		// Array holding the code for the animation.  This is
 		// an array of strings, each of which is an animation command
 		// currentAnimation is an index into this array
-		this.AnimationSteps = [];
+		this.animationSteps = [];
 		this.currentAnimation = 0;
 
 		this.previousAnimationSteps = [];
 
 		// Control variables for where we are in the current animation block.
-		//  currFrame holds the frame number of the current animation block,
-		//  while animationBlockLength holds the length of the current animation
-		//  block (in frame numbers).
+		// currFrame holds the frame number of the current animation block,
+		// while animationBlockLength holds the length of the current animation
+		// block (in frame numbers).
 		this.currFrame = 0;
 		this.animationBlockLength = 0;
 
 		//  The animation block that is currently running.  Array of singleAnimations
 		this.currentBlock = null;
 
-		/////////////////////////////////////
+		////////////////////////////////////
 		// Variables for handling undo.
 		////////////////////////////////////
 		//  A stack of UndoBlock objects (subclassed, UndoBlock is an abstract base class)
@@ -238,24 +215,14 @@ export default class AnimationManager extends EventListener {
 		this.doingUndo = false;
 
 		// A stack containing the beginning of each animation block, as an index
-		// into the AnimationSteps array
+		// into the animationSteps array
 		this.undoAnimationStepIndices = [];
 		this.undoAnimationStepIndicesStack = [];
 
 		this.animationBlockLength = 10;
-		// var this.;
-		// var animationManager;
-		// var canvas;
 
 		this.paused = false;
-		// var this.playPauseBackButton;
-		// var this.skipBackButton;
-		// var this.stepBackButton;
-		// var this.stepForwardButton;
-		// var this.skipForwardButton;
 
-		// this.widthEntry;
-		// let this.heightEntry;
 		this.canvas = canvasRef;
 
 		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () =>
@@ -323,21 +290,8 @@ export default class AnimationManager extends EventListener {
 
 		tableEntry.appendChild(newTable);
 
-		//Append the element in page (in span).
+		// Append the element in page (in span)
 		controlBar.appendChild(tableEntry);
-
-		//tableEntry.appendChild(element);
-
-		// $(element).slider({
-		// 	animate: true,
-		// 	value: speed,
-		// 	change: (e, ui) => {
-		// 		setCookie('VisualizationSpeed', String(ui.value), 30);
-		// 	},
-		// 	slide: (e, ui) => {
-		// 		this.setSpeed(ui.value);
-		// 	},
-		// });
 
 		this.setSpeed(speed);
 
@@ -462,15 +416,13 @@ export default class AnimationManager extends EventListener {
 		this.awaitingStep = false;
 		this.currentBlock = [];
 		let undoBlock = [];
-		if (this.currentAnimation === this.AnimationSteps.length) {
+		if (this.currentAnimation === this.animationSteps.length) {
 			this.currentlyAnimating = false;
 			this.awaitingStep = false;
 			this.fireEvent('AnimationEnded', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
-
 			return;
 		}
 		this.undoAnimationStepIndices.push(this.currentAnimation);
@@ -478,8 +430,8 @@ export default class AnimationManager extends EventListener {
 		let foundBreak = false;
 		let anyAnimations = false;
 
-		while (this.currentAnimation < this.AnimationSteps.length && !foundBreak) {
-			const nextCommand = this.AnimationSteps[this.currentAnimation].split('<;>');
+		while (this.currentAnimation < this.animationSteps.length && !foundBreak) {
+			const nextCommand = this.animationSteps[this.currentAnimation].split('<;>');
 			if (nextCommand[0].toUpperCase() === 'CREATECIRCLE') {
 				this.animatedObjects.addCircleObject(parseInt(nextCommand[1]), nextCommand[2]);
 				if (nextCommand.length > 4) {
@@ -831,7 +783,6 @@ export default class AnimationManager extends EventListener {
 						parseFloat(nextCommand[7]),
 						this.parseBool(nextCommand[8]),
 						this.parseBool(nextCommand[9]),
-						parseInt(nextCommand[10]),
 						'#FFFFFF',
 						'#000000'
 					);
@@ -844,7 +795,6 @@ export default class AnimationManager extends EventListener {
 						0.25,
 						true,
 						false,
-						1,
 						'#FFFFFF',
 						'#000000'
 					);
@@ -865,7 +815,6 @@ export default class AnimationManager extends EventListener {
 						parseInt(nextCommand[3]), // Width
 						parseInt(nextCommand[4]), // Height
 						parseFloat(nextCommand[7]), // Link Percent
-						parseInt(nextCommand[8]), // Num Labels
 						'#FFFFFF',
 						'#000000'
 					);
@@ -876,7 +825,6 @@ export default class AnimationManager extends EventListener {
 						parseInt(nextCommand[3]),
 						parseInt(nextCommand[4]),
 						0.25,
-						1,
 						'#FFFFFF',
 						'#000000'
 					);
@@ -897,7 +845,6 @@ export default class AnimationManager extends EventListener {
 						parseInt(nextCommand[3]), // Width
 						parseInt(nextCommand[4]), // Height
 						parseFloat(nextCommand[7]), // Link Percent
-						parseInt(nextCommand[8]), // Num Labels
 						'#FFFFFF',
 						'#000000'
 					);
@@ -908,7 +855,6 @@ export default class AnimationManager extends EventListener {
 						parseInt(nextCommand[3]),
 						parseInt(nextCommand[4]),
 						0.25,
-						1,
 						'#FFFFFF',
 						'#000000'
 					);
@@ -1059,18 +1005,17 @@ export default class AnimationManager extends EventListener {
 				//			throw "Unknown command: " + nextCommand[0];
 			}
 
-			this.currentAnimation = this.currentAnimation + 1;
+			this.currentAnimation++;
 		}
 		this.currFrame = 0;
 
 		// Hack:  If there are not any animations, and we are currently paused,
-		// then set the current frame to the end of the anumation, so that we will
-		// advance immediagely upon the next step button.  If we are not paused, then
+		// then set the current frame to the end of the animation, so that we will
+		// advance immediately upon the next step button.  If we are not paused, then
 		// animate as normal.
-
 		if (
 			(!anyAnimations && this.animationPaused) ||
-			(!anyAnimations && this.currentAnimation === this.AnimationSteps.length)
+			(!anyAnimations && this.currentAnimation === this.animationSteps.length)
 		) {
 			this.currFrame = this.animationBlockLength;
 		}
@@ -1080,27 +1025,23 @@ export default class AnimationManager extends EventListener {
 
 	//  Start a new animation.  The input parameter commands is an array of strings,
 	//  which represents the animation to start
-	StartNewAnimation(commands) {
-		// clearTimeout(timer);
+	startNewAnimation(commands) {
 		this.stopTimer();
-		if (this.AnimationSteps !== null) {
-			this.previousAnimationSteps.push(this.AnimationSteps);
+		if (this.animationSteps !== null) {
+			this.previousAnimationSteps.push(this.animationSteps);
 			this.undoAnimationStepIndicesStack.push(this.undoAnimationStepIndices);
 		}
 		if (commands === undefined || commands.length === 0) {
-			this.AnimationSteps = ['Step'];
+			this.animationSteps = ['Step'];
 		} else {
-			this.AnimationSteps = commands;
+			this.animationSteps = commands;
 		}
 		this.undoAnimationStepIndices = [];
 		this.currentAnimation = 0;
 		this.startNextBlock();
 		this.currentlyAnimating = true;
 		this.fireEvent('AnimationStarted', 'NoData');
-		// timer = setTimeout("timeout()", 30);
 		this.startTimer();
-
-		// window.requestAnimationFrame(step);
 	}
 
 	// Step backwards one step.  A no-op if the animation is not currently paused
@@ -1108,16 +1049,13 @@ export default class AnimationManager extends EventListener {
 		if (this.awaitingStep && this.undoStack !== null && this.undoStack.length !== 0) {
 			//  TODO:  Get events working correctly!
 			this.fireEvent('AnimationStarted', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 
 			this.awaitingStep = false;
 			this.undoLastBlock();
 			// Re-kick thie timer.  The timer may or may not be running at this point,
 			// so to be safe we'll kill it and start it again.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		} else if (
 			!this.currentlyAnimating &&
@@ -1129,9 +1067,7 @@ export default class AnimationManager extends EventListener {
 			this.undoLastBlock();
 			// Re-kick thie timer.  The timer may or may not be running at this point,
 			// so to be safe we'll kill it and start it again.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		}
 	}
@@ -1144,9 +1080,7 @@ export default class AnimationManager extends EventListener {
 			this.currentlyAnimating = true;
 			// Re-kick thie timer.  The timer should be going now, but we've had some difficulty with
 			// it timing itself out, so we'll be safe and kick it now.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		}
 	}
@@ -1157,9 +1091,8 @@ export default class AnimationManager extends EventListener {
 		this.undoAnimationStepIndices = null;
 		this.previousAnimationSteps = [];
 		this.undoAnimationStepIndicesStack = [];
-		this.AnimationSteps = null;
+		this.animationSteps = null;
 		this.fireEvent('AnimationUndoUnavailable', 'NoData');
-		// clearTimeout(timer);
 		this.stopTimer();
 		this.animatedObjects.update();
 		this.animatedObjects.draw();
@@ -1193,7 +1126,6 @@ export default class AnimationManager extends EventListener {
 				}
 				keepUndoing = this.finishUndoBlock(this.undoStack.pop());
 			}
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1207,7 +1139,6 @@ export default class AnimationManager extends EventListener {
 		this.clearHistory();
 		this.animatedObjects.clearAllObjects();
 		this.animatedObjects.draw();
-		// clearTimeout(timer);
 		this.stopTimer();
 	}
 
@@ -1215,8 +1146,8 @@ export default class AnimationManager extends EventListener {
 		if (this.currentlyAnimating) {
 			this.animatedObjects.runFast = true;
 			while (
-				this.AnimationSteps !== null &&
-				this.currentAnimation < this.AnimationSteps.length
+				this.animationSteps !== null &&
+				this.currentAnimation < this.animationSteps.length
 			) {
 				for (let i = 0; this.currentBlock !== null && i < this.currentBlock.length; i++) {
 					const objectID = this.currentBlock[i].objectID;
@@ -1246,7 +1177,6 @@ export default class AnimationManager extends EventListener {
 
 			this.animatedObjects.runFast = false;
 			this.fireEvent('AnimationEnded', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1264,7 +1194,7 @@ export default class AnimationManager extends EventListener {
 			this.awaitingStep = false;
 			this.currentlyAnimating = false;
 			this.undoAnimationStepIndices = this.undoAnimationStepIndicesStack.pop();
-			this.AnimationSteps = this.previousAnimationSteps.pop();
+			this.animationSteps = this.previousAnimationSteps.pop();
 			this.fireEvent('AnimationEnded', 'NoData');
 			this.fireEvent('AnimationUndo', 'NoData');
 			this.currentBlock = [];
@@ -1274,7 +1204,6 @@ export default class AnimationManager extends EventListener {
 				this.fireEvent('AnimationUndoUnavailable', 'NoData');
 			}
 
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1344,10 +1273,6 @@ export default class AnimationManager extends EventListener {
 				} else if (this.currFrame < this.animationBlockLength) {
 					const objectID = this.currentBlock[i].objectID;
 					const percent = 1 / (this.animationBlockLength - this.currFrame);
-					// const oldX = this.animatedObjects.getNodeX(objectID);
-					// const oldY = this.animatedObjects.getNodeY(objectID);
-					// const targetX = this.currentBlock[i].toX;
-					// const targety = this.currentBlock[i].toY;
 					const newX = this.lerp(
 						this.animatedObjects.getNodeX(objectID),
 						this.currentBlock[i].toX,
@@ -1370,7 +1295,7 @@ export default class AnimationManager extends EventListener {
 				} else {
 					if (
 						this.animationPaused &&
-						this.currentAnimation < this.AnimationSteps.length
+						this.currentAnimation < this.animationSteps.length
 					) {
 						this.awaitingStep = true;
 						this.fireEvent('AnimationWaiting', 'NoData');

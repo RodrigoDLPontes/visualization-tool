@@ -29,18 +29,12 @@
 import SingleAnimation from './SingleAnimation';
 
 export class UndoBlock {
-	// eslint-disable-next-line no-unused-vars
-	addUndoAnimation(animationList) {
+	addUndoAnimation() {
 		return false;
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	undoInitialStep(world) {}
+	undoInitialStep() {}
 }
-
-////////////////////////////////////////////////////////////
-// UndoMove
-////////////////////////////////////////////////////////////
 
 export class UndoMove extends UndoBlock {
 	constructor(id, fmX, fmy, tx, ty) {
@@ -65,10 +59,6 @@ export class UndoMove extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoCreate
-////////////////////////////////////////////////////////////
-
 export class UndoCreate extends UndoBlock {
 	constructor(id) {
 		super();
@@ -79,10 +69,6 @@ export class UndoCreate extends UndoBlock {
 		world.removeObject(this.objectID);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoHighlight
-////////////////////////////////////////////////////////////
 
 export class UndoHighlight extends UndoBlock {
 	constructor(id, val) {
@@ -96,10 +82,6 @@ export class UndoHighlight extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetHeight
-////////////////////////////////////////////////////////////
-
 export class UndoSetHeight extends UndoBlock {
 	constructor(id, val) {
 		super();
@@ -111,10 +93,6 @@ export class UndoSetHeight extends UndoBlock {
 		world.setHeight(this.objectID, this.height);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetWidth
-////////////////////////////////////////////////////////////
 
 export class UndoSetWidth extends UndoBlock {
 	constructor(id, val) {
@@ -128,9 +106,6 @@ export class UndoSetWidth extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetNumElements
-////////////////////////////////////////////////////////////
 export class UndoSetNumElements extends UndoBlock {
 	constructor(obj, newNumElems) {
 		super();
@@ -158,10 +133,6 @@ export class UndoSetNumElements extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetAlpha
-////////////////////////////////////////////////////////////
-
 export class UndoSetAlpha extends UndoBlock {
 	constructor(id, alph) {
 		super();
@@ -173,10 +144,6 @@ export class UndoSetAlpha extends UndoBlock {
 		world.setAlpha(this.objectID, this.alphaVal);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetNull
-////////////////////////////////////////////////////////////
 
 export class UndoSetNull extends UndoBlock {
 	constructor(id, nv) {
@@ -190,10 +157,6 @@ export class UndoSetNull extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetPrevNull
-////////////////////////////////////////////////////////////
-
 export class UndoSetPrevNull extends UndoBlock {
 	constructor(id, nv) {
 		super();
@@ -202,13 +165,9 @@ export class UndoSetPrevNull extends UndoBlock {
 	}
 
 	undoInitialStep(world) {
-		world.SetPrevNull(this.objectID, this.nullVal);
+		world.setPrevNull(this.objectID, this.nullVal);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetNextNull
-////////////////////////////////////////////////////////////
 
 export class UndoSetNextNull extends UndoBlock {
 	constructor(id, nv) {
@@ -218,13 +177,9 @@ export class UndoSetNextNull extends UndoBlock {
 	}
 
 	undoInitialStep(world) {
-		world.SetNextNull(this.objectID, this.nullVal);
+		world.setNextNull(this.objectID, this.nullVal);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetForegroundColor
-////////////////////////////////////////////////////////////
 
 export class UndoSetForegroundColor extends UndoBlock {
 	constructor(id, color) {
@@ -238,10 +193,6 @@ export class UndoSetForegroundColor extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetBackgroundColor
-////////////////////////////////////////////////////////////
-
 export class UndoSetBackgroundColor extends UndoBlock {
 	constructor(id, color) {
 		super();
@@ -253,10 +204,6 @@ export class UndoSetBackgroundColor extends UndoBlock {
 		world.setBackgroundColor(this.objectID, this.color);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetHighlightIndex
-////////////////////////////////////////////////////////////
 
 export class UndoSetHighlightIndex extends UndoBlock {
 	constructor(id, index) {
@@ -270,10 +217,6 @@ export class UndoSetHighlightIndex extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetText
-////////////////////////////////////////////////////////////
-
 export class UndoSetText extends UndoBlock {
 	constructor(id, str, index) {
 		super();
@@ -286,9 +229,6 @@ export class UndoSetText extends UndoBlock {
 		world.setText(this.objectID, this.newText, this.labelIndex);
 	}
 }
-////////////////////////////////////////////////////////////
-// UndoSetTextColor
-////////////////////////////////////////////////////////////
 
 export class UndoSetTextColor extends UndoBlock {
 	constructor(id, color, index) {
@@ -303,10 +243,6 @@ export class UndoSetTextColor extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoHighlightEdge
-////////////////////////////////////////////////////////////
-
 export class UndoHighlightEdge extends UndoBlock {
 	constructor(from, to, val) {
 		super();
@@ -319,10 +255,6 @@ export class UndoHighlightEdge extends UndoBlock {
 		world.setEdgeHighlight(this.fromID, this.toID, this.highlightValue);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetEdgeColor
-////////////////////////////////////////////////////////////
 
 export class UndoSetEdgeColor extends UndoBlock {
 	constructor(from, to, oldColor) {
@@ -337,10 +269,6 @@ export class UndoSetEdgeColor extends UndoBlock {
 	}
 }
 
-////////////////////////////////////////////////////////////
-// UndoSetEdgeAlpha
-////////////////////////////////////////////////////////////
-
 export class UndoSetEdgeAlpha extends UndoBlock {
 	constructor(from, to, oldAplha) {
 		super();
@@ -353,10 +281,6 @@ export class UndoSetEdgeAlpha extends UndoBlock {
 		world.setEdgeAlpha(this.fromID, this.toID, this.alpha);
 	}
 }
-
-////////////////////////////////////////////////////////////
-// UndoSetPosition
-////////////////////////////////////////////////////////////
 
 export class UndoSetPosition extends UndoBlock {
 	constructor(id, x, y) {

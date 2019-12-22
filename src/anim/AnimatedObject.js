@@ -26,31 +26,32 @@
 
 export default class AnimatedObject {
 	constructor() {
+		this.objectID = -1;
+
+		this.x = 0;
+		this.y = 0;
+
 		this.backgroundColor = '#FFFFFF';
 		this.foregroundColor = '#000000';
 		this.highlighted = false;
-		this.objectID = -1;
-		this.layer = 0;
-		this.addedToScene = true;
+
 		this.label = '';
 		this.labelColor = '#000000';
+
+		this.layer = 0;
 		this.alpha = 1.0;
-		this.x = 0;
-		this.y = 0;
 		this.minHeightDiff = 3;
 		this.range = 5;
+
 		this.highlightIndex = -1;
 		this.highlightIndexDirty = true;
-		this.alwaysOnTop = false;
+
+		this.addedToScene = true;
 	}
 
 	setBackgroundColor(newColor) {
 		this.backgroundColor = newColor;
 	}
-
-	// setForegroundColor(newColor) {
-	// 	this.foregroundColor = newColor;
-	// }
 
 	setNull() {}
 
@@ -134,7 +135,6 @@ export default class AnimatedObject {
 
 	alignTop(otherObject) {
 		// Assuming centering.  Overridden method could modify if not centered
-
 		this.x = otherObject.centerX();
 		this.y = otherObject.top() - this.getHeight() / 2;
 	}
@@ -143,38 +143,6 @@ export default class AnimatedObject {
 		this.x = otherObject.centerX();
 		this.y = otherObject.bottom() + this.getHeight() / 2;
 	}
-
-	/* TODO:  Do we need these in the base? 		
-		function left(): Number
-		{
-			return x - getWidth() / 2;
-		}
-		
-		function right():Number
-		{
-			return x + getWidth() / 2;
-		}
-		
-		function top():Number
-		{
-			return y - getHeight() / 2;
-		}
-		
-		function bottom():Number
-		{
-			return y + getHeight() / 2;
-		}
-		
-		function centerX():Number
-		{
-			return x;
-		}
-		
-		function centerY():Number
-		{
-			return y;
-		}
-		*/
 
 	getClosestCardinalPoint(fromX, fromY) {
 		let xDelta;
@@ -225,44 +193,31 @@ export default class AnimatedObject {
 		}
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	getTailPointerAttachPos(fromX, fromY, anchorPoint) {
+	getTailPointerAttachPos() {
 		return [this.x, this.y];
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	getHeadPointerAttachPos(fromX, fromY) {
+	getHeadPointerAttachPos() {
 		return [this.x, this.y];
 	}
-
-	/*public function createUndoDelete() : UndoBlock
-{
-			// Must be overriden!
-			return null;
-}
-*/
 
 	identifier() {
 		return this.objectID;
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	getText(index) {
+	getText() {
 		return this.label;
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	getTextColor(textIndex) {
+	getTextColor() {
 		return this.labelColor;
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	setTextColor(color, textIndex) {
+	setTextColor(color) {
 		this.labelColor = color;
 	}
 
-	// eslint-disable-next-line no-unused-vars
-	setText(newText, textIndex) {
+	setText(newText) {
 		this.label = newText;
 	}
 

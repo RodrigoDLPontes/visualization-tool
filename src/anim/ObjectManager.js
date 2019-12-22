@@ -24,6 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+
 // Object Manager
 //
 // Manage all of our animated objects.  Control any animated object should occur through
@@ -33,18 +34,18 @@
 // This class is only accessed through:
 //
 //  AnimationMain
-//  Undo objects (which are themselves controlled by AnimationMain
+//  Undo objects (which are themselves controlled by AnimationMain)
 
-import AnimatedBTreeNode from './AnimatedBTreeNode.js';
-import AnimatedCircle from './AnimatedCircle.js';
-import AnimatedCircularlyLinkedList from './AnimatedCircularlyLinkedList.js';
-import AnimatedDoublyLinkedList from './AnimatedDoublyLinkedList.js';
-import AnimatedLabel from './AnimatedLabel.js';
-import AnimatedLinkedList from './AnimatedLinkedList.js';
-import AnimatedRectangle from './AnimatedRectangle.js';
-import AnimatedSkipList from './AnimatedSkipList.js';
-import HighlightCircle from './HighlightCircle.js';
-import Line from './Line.js';
+import AnimatedBTreeNode from './AnimatedBTreeNode';
+import AnimatedCircle from './AnimatedCircle';
+import AnimatedCircularlyLinkedListNode from './AnimatedCircularlyLinkedListNode';
+import AnimatedDoublyLinkedListNode from './AnimatedDoublyLinkedListNode';
+import AnimatedHighlightCircle from './AnimatedHighlightCircle';
+import AnimatedLabel from './AnimatedLabel';
+import AnimatedLine from './AnimatedLine';
+import AnimatedLinkedListNode from './AnimatedLinkedListNode';
+import AnimatedRectangle from './AnimatedRectangle';
+import AnimatedSkipListNode from './AnimatedSkipListNode';
 
 export default class ObjectManager {
 	constructor(canvasRef) {
@@ -122,6 +123,7 @@ export default class ObjectManager {
 	}
 
 	addHighlightCircleObject(objectID, objectColor, radius) {
+		console.log(this.Nodes);
 		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
 			throw new Error(
 				'addHighlightCircleObject:Object with same ID (' +
@@ -129,7 +131,7 @@ export default class ObjectManager {
 					') already Exists!'
 			);
 		}
-		const newNode = new HighlightCircle(objectID, objectColor, radius);
+		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
 		this.Nodes[objectID] = newNode;
 	}
 
@@ -141,7 +143,7 @@ export default class ObjectManager {
 				if (
 					this.Edges[fromID][i] != null &&
 					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].Node2 === this.Nodes[toID]
+					this.Edges[fromID][i].toID === this.Nodes[toID]
 				) {
 					oldAlpha = this.Edges[fromID][i].alpha;
 					this.Edges[fromID][i].alpha = alphaVal;
@@ -205,8 +207,8 @@ export default class ObjectManager {
 				for (let j = 0; j < this.Edges[i].length; j++) {
 					if (this.Edges[i][j] != null && this.Edges[i][j] !== undefined) {
 						this.Edges[i][j].addedToScene =
-							this.activeLayers[this.Edges[i][j].Node1.layer] === true &&
-							this.activeLayers[this.Edges[i][j].Node2.layer] === true;
+							this.activeLayers[this.Edges[i][j].fromID.layer] === true &&
+							this.activeLayers[this.Edges[i][j].toID.layer] === true;
 					}
 				}
 			}
@@ -226,7 +228,7 @@ export default class ObjectManager {
 					const nextEdge = this.Edges[objectID][i];
 					if (nextEdge != null && nextEdge !== undefined) {
 						nextEdge.addedToScene =
-							nextEdge.Node1.addedToScene && nextEdge.Node2.addedToScene;
+							nextEdge.fromID.addedToScene && nextEdge.toID.addedToScene;
 					}
 				}
 			}
@@ -235,7 +237,7 @@ export default class ObjectManager {
 					const nextEdge = this.BackEdges[objectID][i];
 					if (nextEdge != null && nextEdge !== undefined) {
 						nextEdge.addedToScene =
-							nextEdge.Node1.addedToScene && nextEdge.Node2.addedToScene;
+							nextEdge.fromID.addedToScene && nextEdge.toID.addedToScene;
 					}
 				}
 			}
@@ -318,7 +320,7 @@ export default class ObjectManager {
 
 	backgroundColor(objectID) {
 		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].backgroundColor;
+			return this.Nodes[objectID].fillColor;
 		} else {
 			return '#000000';
 		}
@@ -326,7 +328,7 @@ export default class ObjectManager {
 
 	foregroundColor(objectID) {
 		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].foregroundColor;
+			return this.Nodes[objectID].edgeColor;
 		} else {
 			return '#000000';
 		}
@@ -341,14 +343,13 @@ export default class ObjectManager {
 			for (let i = len - 1; i >= 0; i--) {
 				if (
 					this.Edges[objectIDfrom][i] != null &&
-					this.Edges[objectIDfrom][i].Node2 === this.Nodes[objectIDto]
+					this.Edges[objectIDfrom][i].toID === this.Nodes[objectIDto]
 				) {
 					deleted = this.Edges[objectIDfrom][i];
-					undo = deleted.createUndoDisconnect();
+					undo = deleted.createUndoConnect();
 					this.Edges[objectIDfrom][i] = this.Edges[objectIDfrom][len - 1];
 					len -= 1;
 					this.Edges[objectIDfrom].pop();
-					// break;
 				}
 			}
 		}
@@ -357,14 +358,13 @@ export default class ObjectManager {
 			for (let i = len - 1; i >= 0; i--) {
 				if (
 					this.BackEdges[objectIDto][i] != null &&
-					this.BackEdges[objectIDto][i].Node1 === this.Nodes[objectIDfrom]
+					this.BackEdges[objectIDto][i].fromID === this.Nodes[objectIDfrom]
 				) {
 					deleted = this.BackEdges[objectIDto][i];
 					// Note:  Don't need to remove this child, did it above on the regular edge
 					this.BackEdges[objectIDto][i] = this.BackEdges[objectIDto][len - 1];
 					len -= 1;
 					this.BackEdges[objectIDto].pop();
-					// break;
 				}
 			}
 		}
@@ -379,8 +379,8 @@ export default class ObjectManager {
 			len = this.Edges[objectID].length;
 			for (let i = len - 1; i >= 0; i--) {
 				deleted = this.Edges[objectID][i];
-				const node2ID = deleted.Node2.identifier();
-				undoStack.push(deleted.createUndoDisconnect());
+				const node2ID = deleted.toID.identifier();
+				undoStack.push(deleted.createUndoConnect());
 
 				let len2 = this.BackEdges[node2ID].length;
 				for (let j = len2 - 1; j >= 0; j--) {
@@ -397,8 +397,8 @@ export default class ObjectManager {
 			len = this.BackEdges[objectID].length;
 			for (let i = len - 1; i >= 0; i--) {
 				deleted = this.BackEdges[objectID][i];
-				const node1ID = deleted.Node1.identifier();
-				undoStack.push(deleted.createUndoDisconnect());
+				const node1ID = deleted.fromID.identifier();
+				undoStack.push(deleted.createUndoConnect());
 
 				let len2 = this.Edges[node1ID].length;
 				for (let j = len2 - 1; j >= 0; j--) {
@@ -451,9 +451,6 @@ export default class ObjectManager {
 	getTextWidth(text) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
 		this.ctx.font = '10px sans-serif';
-		// if (text === undefined) {
-		// 	w = 3;
-		// }
 		const strList = text.split('\n');
 		let width = 0;
 		if (strList.length === 1) {
@@ -494,19 +491,13 @@ export default class ObjectManager {
 		if (fromObj == null || toObj == null) {
 			throw new Error("Tried to connect two nodes, one didn't exist!");
 		}
-		const l = new Line(fromObj, toObj, color, curve, directed, lab, connectionPoint);
+		const l = new AnimatedLine(fromObj, toObj, color, curve, directed, lab, connectionPoint);
 		if (this.Edges[objectIDfrom] == null) {
 			this.Edges[objectIDfrom] = [];
 		}
 		if (this.BackEdges[objectIDto] == null) {
 			this.BackEdges[objectIDto] = [];
 		}
-		// if (
-		// 	this.Edges[objectIDfrom].some(x => x.Node2.objectID === objectIDto) &&
-		// 	this.BackEdges[objectIDto].some(x => x.Node1.objectID === objectIDfrom)
-		// ) {
-		// 	return;
-		// }
 		l.addedToScene = fromObj.addedToScene && toObj.addedToScene;
 		this.Edges[objectIDfrom].push(l);
 		this.BackEdges[objectIDto].push(l);
@@ -563,7 +554,7 @@ export default class ObjectManager {
 				if (
 					this.Edges[fromID][i] != null &&
 					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].Node2 === this.Nodes[toID]
+					this.Edges[fromID][i].toID === this.Nodes[toID]
 				) {
 					oldColor = this.Edges[fromID][i].color();
 					this.Edges[fromID][i].setColor(color);
@@ -669,7 +660,7 @@ export default class ObjectManager {
 				if (
 					this.Edges[fromID][i] != null &&
 					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].Node2 === this.Nodes[toID]
+					this.Edges[fromID][i].toID === this.Nodes[toID]
 				) {
 					oldHighlight = this.Edges[fromID][i].highlighted;
 					this.Edges[fromID][i].setHighlight(val);
@@ -708,7 +699,7 @@ export default class ObjectManager {
 		if (this.Nodes[objectID] != null) {
 			throw new Error('addLinkedListObject:Object with same ID already Exists!');
 		}
-		const newNode = new AnimatedLinkedList(
+		const newNode = new AnimatedLinkedListNode(
 			objectID,
 			nodeLabel,
 			width,
@@ -729,20 +720,18 @@ export default class ObjectManager {
 		width,
 		height,
 		linkPer,
-		numLabels,
 		backgroundColor,
 		foregroundColor
 	) {
 		if (this.Nodes[objectID] != null) {
 			throw new Error('addDoublyLinkedListObject:Object with same ID already Exists!');
 		}
-		const newNode = new AnimatedDoublyLinkedList(
+		const newNode = new AnimatedDoublyLinkedListNode(
 			objectID,
 			nodeLabel,
 			width,
 			height,
 			linkPer,
-			numLabels,
 			backgroundColor,
 			foregroundColor
 		);
@@ -755,20 +744,18 @@ export default class ObjectManager {
 		width,
 		height,
 		linkPer,
-		numLabels,
 		backgroundColor,
 		foregroundColor
 	) {
 		if (this.Nodes[objectID] != null) {
 			throw new Error('addCircularlyLinkedListObject:Object with same ID already Exists!');
 		}
-		const newNode = new AnimatedCircularlyLinkedList(
+		const newNode = new AnimatedCircularlyLinkedListNode(
 			objectID,
 			nodeLabel,
 			width,
 			height,
 			linkPer,
-			numLabels,
 			backgroundColor,
 			foregroundColor
 		);
@@ -787,7 +774,7 @@ export default class ObjectManager {
 		if (this.Nodes[objectID] != null) {
 			throw new Error('addSkipListObject:Object with same ID already Exists!');
 		}
-		const newNode = new AnimatedSkipList(
+		const newNode = new AnimatedSkipListNode(
 			objectID,
 			nodeLabel,
 			width,
@@ -863,7 +850,6 @@ export default class ObjectManager {
 		this.Nodes[nodeID].x = newX;
 		this.Nodes[nodeID].y = newY;
 		/* Don't need to dirty anything, since we repaint everything every frame
-		 (TODO:  Revisit if we do conditional redraws)
-		 }*/
+		 (TODO:  Revisit if we do conditional redraws) */
 	}
 }

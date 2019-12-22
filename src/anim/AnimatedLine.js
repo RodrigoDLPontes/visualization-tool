@@ -24,41 +24,40 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-// This class is somewhat poorly named -- it handles links between vertices in graphs,
-//  pointers in linked lists, and so on.
 
-const LINE_maxHeightDiff = 5;
-const LINE_minHeightDiff = 3;
-const LINE_range = LINE_maxHeightDiff - LINE_minHeightDiff + 1;
-// const LINE_highlightDiff = 3;
+// This class handles links between vertices in graphs, pointers in linked lists, and so on.
 
-export default class Line {
-	constructor(n1, n2, color, cv, d, weight, anchorIndex) {
-		this.arrowHeight = 8;
-		this.arrowWidth = 4;
+const LINE_MAX_HEIGHT_DIFF = 5;
+const LINE_MIN_HEIGHT_DIFF = 3;
+const LINE_RANGE = LINE_MAX_HEIGHT_DIFF - LINE_MIN_HEIGHT_DIFF + 1;
 
-		this.Node1 = n1;
-		this.Node2 = n2;
-		this.Dirty = false;
-		this.directed = d;
-		this.edgeColor = color;
-		this.edgeLabel = weight;
+export default class AnimatedLine {
+	constructor(fromID, toID, color, curve, directed, edgeLabel, anchorPoint) {
+		this.fromID = fromID;
+		this.toID = toID;
+
+		this.foregroundColor = color;
+		this.edgeLabel = edgeLabel;
 		this.highlighted = false;
-		this.addedToScene = true;
-		this.anchorPoint = anchorIndex;
 		this.highlightDiff = 0;
-		this.curve = cv;
+
+		this.dirty = false;
+		this.directed = directed;
+		this.anchorPoint = anchorPoint;
 
 		this.alpha = 1.0;
+		this.arrowHeight = 8;
+		this.arrowWidth = 4;
+		this.curve = curve;
 	}
 
 	color() {
-		return this.edgeColor;
+		return this.foregroundColor;
 	}
 
 	setColor(newColor) {
-		this.edgeColor = newColor;
-		this.Dirty = true;
+		this.foregroundColor = newColor;
+		this.dirty = true;
 	}
 
 	setHighlight(highlightVal) {
@@ -68,27 +67,14 @@ export default class Line {
 	pulseHighlight(frameNum) {
 		if (this.highlighted) {
 			const frameMod = frameNum / 14.0;
-			const delta = Math.abs((frameMod % (2 * LINE_range - 2)) - LINE_range + 1);
-			this.highlightDiff = delta + LINE_minHeightDiff;
-			this.Dirty = true;
+			const delta = Math.abs((frameMod % (2 * LINE_RANGE - 2)) - LINE_RANGE + 1);
+			this.highlightDiff = delta + LINE_MIN_HEIGHT_DIFF;
+			this.dirty = true;
 		}
 	}
 
 	hasNode(n) {
-		return this.Node1 === n || this.Node2 === n;
-	}
-
-	createUndoDisconnect() {
-		return new UndoConnect(
-			this.Node1.objectID,
-			this.Node2.objectID,
-			true,
-			this.edgeColor,
-			this.directed,
-			this.curve,
-			this.edgeLabel,
-			this.anchorPoint
-		);
+		return this.fromID === n || this.toID === n;
 	}
 
 	sign(n) {
@@ -99,17 +85,17 @@ export default class Line {
 		}
 	}
 
-	drawArrow(pensize, color, context) {
+	drawArrow(penSize, color, context) {
 		context.strokeStyle = color;
 		context.fillStyle = color;
-		context.lineWidth = pensize;
+		context.lineWidth = penSize;
 
-		const fromPos = this.Node1.getTailPointerAttachPos(
-			this.Node2.x,
-			this.Node2.y,
+		const fromPos = this.fromID.getTailPointerAttachPos(
+			this.toID.x,
+			this.toID.y,
 			this.anchorPoint
 		);
-		const toPos = this.Node2.getHeadPointerAttachPos(this.Node1.x, this.Node1.y);
+		const toPos = this.toID.getHeadPointerAttachPos(this.fromID.x, this.fromID.y);
 
 		const deltaX = toPos[0] - fromPos[0];
 		const deltaY = toPos[1] - fromPos[1];
@@ -123,7 +109,6 @@ export default class Line {
 		context.moveTo(fromPos[0], fromPos[1]);
 		context.quadraticCurveTo(controlX, controlY, toPos[0], toPos[1]);
 		context.stroke();
-		//context.closePath();
 
 		// Position of the edge label:  First, we will place it right along the
 		// middle of the curve (or the middle of the line, for curve == 0)
@@ -171,31 +156,41 @@ export default class Line {
 		}
 	}
 
-	draw(ctx) {
-		if (!this.addedToScene) {
-			return;
-		}
-		ctx.globalAlpha = this.alpha;
+	draw(context) {
+		context.globalAlpha = this.alpha;
 
-		if (this.highlighted) this.drawArrow(this.highlightDiff, '#FF0000', ctx);
-		this.drawArrow(1, this.edgeColor, ctx);
+		if (this.highlighted) this.drawArrow(this.highlightDiff, '#FF0000', context);
+		this.drawArrow(1, this.foregroundColor, context);
+	}
+
+	createUndoConnect() {
+		return new UndoConnect(
+			this.fromID.objectID,
+			this.toID.objectID,
+			true,
+			this.foregroundColor,
+			this.curve,
+			this.directed,
+			this.edgeLabel,
+			this.anchorPoint
+		);
 	}
 }
 
 export class UndoConnect {
-	constructor(from, to, createConnection, edgeColor, isDirected, cv, lab, anch) {
-		this.fromID = from;
-		this.toID = to;
-		this.connect = createConnection;
-		this.color = edgeColor;
-		this.directed = isDirected;
-		this.curve = cv;
-		this.edgeLabel = lab;
-		this.anchorPoint = anch;
+	constructor(fromID, toID, createConnection, color, curve, directed, edgeLabel, anchorPoint) {
+		this.fromID = fromID;
+		this.toID = toID;
+		this.createConnection = createConnection;
+		this.color = color;
+		this.curve = curve;
+		this.directed = directed;
+		this.edgeLabel = edgeLabel;
+		this.anchorPoint = anchorPoint;
 	}
 
 	undoInitialStep(world) {
-		if (this.connect) {
+		if (this.createConnection) {
 			world.connectEdge(
 				this.fromID,
 				this.toID,

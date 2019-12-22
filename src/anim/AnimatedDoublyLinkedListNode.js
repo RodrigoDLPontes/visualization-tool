@@ -27,71 +27,98 @@
 import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
-export default class AnimatedSkipList extends AnimatedObject {
-	constructor(objectID, label, w, h, labelColor, fillColor, edgeColor) {
+export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
+	constructor(objectID, label, w, h, linkPercent, backgroundColor, foregroundColor) {
 		super();
+
+		this.objectID = objectID;
 
 		this.w = w;
 		this.h = h;
-		this.fillColor = fillColor;
-		this.edgeColor = edgeColor;
+
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.highlighted = false;
+
+		this.linkPercent = linkPercent;
+		this.prevNullPointer = false;
+		this.nextNullPointer = false;
 
 		this.label = label;
 		this.labelPosX = 0;
 		this.labelPosY = 0;
-		this.labelColor = labelColor;
+		this.labelColor = foregroundColor;
+	}
 
-		this.highlighted = false;
-		this.objectID = objectID;
+	setPrevNull(np) {
+		if (this.prevNullPointer !== np) {
+			this.prevNullPointer = np;
+		}
+	}
+
+	setNextNull(np) {
+		if (this.nextNullPointer !== np) {
+			this.nextNullPointer = np;
+		}
+	}
+
+	getLeftNull() {
+		return this.prevNullPointer;
+	}
+
+	getRightNull() {
+		return this.nextNullPointer;
 	}
 
 	left() {
-		return this.x - this.w / 2;
+		return this.x - (this.w * (1 - this.linkPercent)) / 2;
 	}
 
 	right() {
-		return this.x + this.w / 2;
+		return this.x + (this.w * (this.linkPercent + 1)) / 2;
 	}
 
 	top() {
-		return this.y - this.h / 2;
+		return this.y - this.h / 2.0;
 	}
 
 	bottom() {
-		return this.y + this.h / 2;
+		return this.y + this.h / 2.0;
 	}
 
 	resetTextPosition() {
 		this.labelPosY = this.y;
-		this.labelPosX = this.x;
+		this.labelPosX = this.left() + this.w * (this.linkPercent * 2);
 	}
 
 	getTailPointerAttachPos(fromX, fromY, anchor) {
-		switch (anchor) {
-			case 0: // Top
-				return [this.x, this.top()];
-			case 1: // Bottom
-				return [this.x, this.bottom()];
-			case 2: // Left
-				return [this.left(), this.y];
-			case 3: // Right
-				return [this.right(), this.y];
-			default:
-				return;
+		if (anchor === 0) {
+			return [this.x + this.w / 2.0, this.y - this.h * 0.2];
+		} else {
+			return [this.left() + (this.w * this.linkPercent) / 2, this.y + this.h * 0.2];
 		}
 	}
 
 	getHeadPointerAttachPos(fromX, fromY) {
-		return this.getClosestCardinalPoint(fromX, fromY); // Normal anchor
+		const closest = this.getClosestCardinalPoint(fromX, fromY);
+		if (closest[1] === this.y) {
+			if (closest[0] === this.left()) {
+				return [closest[0], this.y - this.h * 0.2];
+			} else {
+				return [closest[0], this.y + this.h * 0.2];
+			}
+		} else {
+			return [closest[0], closest[1]];
+		}
 	}
 
-	setWidth(wdth) {
-		this.w = wdth;
+	setWidth(w) {
+		this.w = w;
 		this.resetTextPosition();
 	}
 
-	setHeight(hght) {
-		this.h = hght;
+	setHeight(h) {
+		this.h = h;
 		this.resetTextPosition();
 	}
 
@@ -104,12 +131,16 @@ export default class AnimatedSkipList extends AnimatedObject {
 	}
 
 	draw(context) {
-		const startX = this.left();
-		const startY = this.top();
+		let startX;
+		let startY;
 
+		startX = this.left();
+		startY = this.top();
+
+		// Highlighted edges
 		if (this.highlighted) {
-			context.strokeStyle = '#ff0000';
-			context.fillStyle = '#ff0000';
+			context.strokeStyle = '#FF0000';
+			context.fillStyle = '#FF0000';
 
 			context.beginPath();
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -124,8 +155,10 @@ export default class AnimatedSkipList extends AnimatedObject {
 			context.stroke();
 			context.fill();
 		}
-		context.strokeStyle = this.edgeColor;
-		context.fillStyle = this.fillColor;
+
+		// Node edges
+		context.strokeStyle = this.foregroundColor;
+		context.fillStyle = this.backgroundColor;
 
 		context.beginPath();
 		context.moveTo(startX, startY);
@@ -137,25 +170,52 @@ export default class AnimatedSkipList extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
+		// Left inner line between node and pointer area
+		startX = this.left() + this.w * this.linkPercent;
+		startY = this.top();
+
+		context.beginPath();
+		context.moveTo(startX, startY + this.h);
+		context.lineTo(startX, startY);
+		if (this.prevNullPointer) {
+			// Left null marker
+			context.moveTo(this.left(), startY);
+			context.lineTo(this.left() + this.w * this.linkPercent, startY + this.h);
+		}
+		context.closePath();
+		context.stroke();
+
+		// Right inner line between node and pointer area
+		startX = this.right() - this.w * this.linkPercent;
+		startY = this.top();
+
+		context.beginPath();
+		context.moveTo(startX, startY + this.h);
+		context.lineTo(startX, startY);
+		if (this.nextNullPointer) {
+			// Right null marker
+			context.moveTo(this.right() - this.w * this.linkPercent, startY);
+			context.lineTo(this.right(), startY + this.h);
+		}
+		context.closePath();
+		context.stroke();
+
+		// Label
 		context.textAlign = 'center';
 		context.font = '10px sans-serif';
 		context.textBaseline = 'middle';
 		context.lineWidth = 1;
-
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;
-		if (this.label === '\u2212\u221E' /* -inf */ || this.label === '\u221E' /* inf */) {
-			context.font = '18px Arial';
-		}
 		context.fillText(this.label, this.labelPosX, this.labelPosY);
 	}
 
 	setTextColor(color) {
-		this.labelColor = color;
+		this.labelColors = color;
 	}
 
 	getTextColor() {
-		return this.labelColor;
+		return this.labelColors;
 	}
 
 	getText() {
@@ -168,17 +228,20 @@ export default class AnimatedSkipList extends AnimatedObject {
 	}
 
 	createUndoDelete() {
-		return new UndoDeleteSkipList(
+		return new UndoDeleteDoublyLinkedList(
 			this.objectID,
 			this.label,
 			this.w,
 			this.h,
 			this.x,
 			this.y,
+			this.linkPercent,
+			this.backgroundColor,
+			this.foregroundColor,
 			this.labelColor,
-			this.fillColor,
-			this.edgeColor,
-			this.layer
+			this.layer,
+			this.prevNullPointer,
+			this.nextNullPointer
 		);
 	}
 
@@ -189,8 +252,8 @@ export default class AnimatedSkipList extends AnimatedObject {
 	}
 }
 
-class UndoDeleteSkipList extends UndoBlock {
-	constructor(objectID, label, w, h, x, y, labelColor, fillColor, edgeColor, layer) {
+class UndoDeleteDoublyLinkedList extends UndoBlock {
+	constructor(objectID, label, w, h, x, y, linkPercent, backgroundColor, foregroundColor, labelColor, layer, pnp, nnp) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -198,23 +261,29 @@ class UndoDeleteSkipList extends UndoBlock {
 		this.h = h;
 		this.x = x;
 		this.y = y;
-		this.labelColor = labelColor;
-		this.fillColor = fillColor;
-		this.edgeColor = edgeColor;
+		this.linkPercent = linkPercent;
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.labelColors = labelColor;
 		this.layer = layer;
+		this.prevNullPointer = pnp;
+		this.nextNullPointer = nnp;
 	}
 
 	undoInitialStep(world) {
-		world.addSkipListObject(
+		world.addDoublyLinkedListObject(
 			this.objectID,
 			this.label,
 			this.w,
 			this.h,
-			this.labelColor,
-			this.fillColor,
-			this.edgeColor
+			this.linkPercent,
+			this.backgroundColor,
+			this.foregroundColor
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
+		world.setPrevNull(this.objectID, this.prevNullPointer);
+		world.setNextNull(this.objectID, this.nextNullPointer);
+		world.setTextColor(this.objectID, this.labelColor);
 	}
 }

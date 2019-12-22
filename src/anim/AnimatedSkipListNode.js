@@ -1,4 +1,4 @@
-// Copyright 2011 David Galles, University of San Francisco. All rights reserved.a
+// Copyright 2011 David Galles, University of San Francisco. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
@@ -24,126 +24,79 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-// Values for xJust / yJust:  "center", "left", "right", "top", "bottom"
-
 import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
-export default class AnimatedRectangle extends AnimatedObject {
-	constructor(objectID, label, w, h, xJustify, yJustify, backgroundColor, foregroundColor) {
+const NINF = '\u2212\u221E'; // Negative infinity
+const PINF = '\u221E'; // Positive infinity
+
+export default class AnimatedSkipListNode extends AnimatedObject {
+	constructor(objectID, label, w, h, labelColor, backgroundColor, foregroundColor) {
 		super();
 
 		this.objectID = objectID;
 
 		this.w = w;
 		this.h = h;
-		this.xJustify = xJustify;
-		this.yJustify = yJustify;
 
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
 		this.highlighted = false;
 
 		this.label = label;
-
-		this.nullPointer = false;
-	}
-
-	setNull(np) {
-		this.nullPointer = np;
-	}
-
-	getNull() {
-		return this.nullPointer;
+		this.labelPosX = 0;
+		this.labelPosY = 0;
+		this.labelColor = labelColor;
 	}
 
 	left() {
-		if (this.xJustify === 'left') {
-			return this.x;
-		} else if (this.xJustify === 'center') {
-			return this.x - this.w / 2.0;
-		} else { // right
-			return this.x - this.w;
-		}
-	}
-
-	centerX() {
-		if (this.xJustify === 'center') {
-			return this.x;
-		} else if (this.xJustify === 'left') {
-			return this.x + this.w / 2.0;
-		} else { // right
-			return this.x - this.w / 2.0;
-		}
-	}
-
-	centerY() {
-		if (this.yJustify === 'center') {
-			return this.y;
-		} else if (this.yJustify === 'top') {
-			return this.y + this.h / 2.0;
-		} else { // bottom
-			return this.y - this.w / 2.0;
-		}
-	}
-
-	top() {
-		if (this.yJustify === 'top') {
-			return this.y;
-		} else if (this.yJustify === 'center') {
-			return this.y - this.h / 2.0;
-		} else { // bottom
-			return this.y - this.h;
-		}
-	}
-
-	bottom() {
-		if (this.yJustify === 'top') {
-			return this.y + this.h;
-		} else if (this.yJustify === 'center') {
-			return this.y + this.h / 2.0;
-		} else { // bottom
-			return this.y;
-		}
+		return this.x - this.w / 2;
 	}
 
 	right() {
-		if (this.xJustify === 'left') {
-			return this.x + this.w;
-		} else if (this.xJustify === 'center') {
-			return this.x + this.w / 2.0;
-		} else { // right
-			return this.x;
-		}
+		return this.x + this.w / 2;
 	}
 
-	getHeadPointerAttachPos(fromX, fromY) {
-		return this.getClosestCardinalPoint(fromX, fromY);
+	top() {
+		return this.y - this.h / 2;
+	}
+
+	bottom() {
+		return this.y + this.h / 2;
+	}
+
+	resetTextPosition() {
+		this.labelPosY = this.y;
+		this.labelPosX = this.x;
 	}
 
 	getTailPointerAttachPos(fromX, fromY, anchor) {
 		switch (anchor) {
-			case 0: // Default
-				return this.getClosestCardinalPoint(fromX, fromY);
-			case 1: // Top
+			case 0: // Top
 				return [this.x, this.top()];
-			case 2: // Bottom
+			case 1: // Bottom
 				return [this.x, this.bottom()];
-			case 3: // Left
+			case 2: // Left
 				return [this.left(), this.y];
-			case 4: // Right
+			case 3: // Right
 				return [this.right(), this.y];
 			default:
-				return null;
+				return this.getClosestCardinalPoint(fromX, fromY);
 		}
+	}
+
+	getHeadPointerAttachPos(fromX, fromY) {
+		return this.getClosestCardinalPoint(fromX, fromY); // Normal anchor
 	}
 
 	setWidth(w) {
 		this.w = w;
+		this.resetTextPosition();
 	}
 
 	setHeight(h) {
 		this.h = h;
+		this.resetTextPosition();
 	}
 
 	getWidth() {
@@ -155,29 +108,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 	}
 
 	draw(context) {
-		if(!this.addedToScene) return;
-
-		context.globalAlpha = this.alpha;
-
-		let startX;
-		let startY;
-
-		if (this.xJustify === 'left') {
-			startX = this.x;
-		} else if (this.xJustify === 'center') {
-			startX = this.x - this.w / 2.0;
-		} else if (this.xJustify === 'right') {
-			startX = this.x - this.w;
-		}
-		if (this.yJustify === 'top') {
-			startY = this.y;
-		} else if (this.yJustify === 'center') {
-			startY = this.y - this.h / 2.0;
-		} else if (this.yJustify === 'bottom') {
-			startY = this.y - this.h;
-		}
-
-		context.lineWidth = 1;
+		const startX = this.left();
+		const startY = this.top();
 
 		if (this.highlighted) {
 			context.strokeStyle = '#ff0000';
@@ -209,81 +141,84 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
-		if (this.nullPointer) {
-			context.beginPath();
-			context.moveTo(startX, startY);
-			context.lineTo(startX + this.w, startY + this.h);
-			context.closePath();
-			context.stroke();
-		}
-
-		context.fillStyle = this.foregroundColor;
-
 		context.textAlign = 'center';
 		context.font = '10px sans-serif';
 		context.textBaseline = 'middle';
 		context.lineWidth = 1;
-		context.fillText(this.label, this.x, this.y);
+
+		this.resetTextPosition();
+		context.fillStyle = this.labelColor;
+		if (this.label === NINF || this.label === PINF) {
+			context.font = '18px Arial';
+		}
+		context.fillText(this.label, this.labelPosX, this.labelPosY);
 	}
 
-	setText(newText, textIndex) {
+	setTextColor(color) {
+		this.labelColor = color;
+	}
+
+	getTextColor() {
+		return this.labelColor;
+	}
+
+	getText() {
+		return this.label;
+	}
+
+	setText(newText) {
 		this.label = newText;
-		// TODO:  setting text position?
+		this.resetTextPosition();
 	}
 
 	createUndoDelete() {
-		// TODO: Add color?
-		return new UndoDeleteRectangle(
+		return new UndoDeleteSkipList(
 			this.objectID,
 			this.label,
-			this.x,
-			this.y,
 			this.w,
 			this.h,
-			this.xJustify,
-			this.yJustify,
+			this.x,
+			this.y,
+			this.labelColor,
 			this.backgroundColor,
 			this.foregroundColor,
-			this.highlighted,
 			this.layer
 		);
 	}
 
 	setHighlight(value) {
-		this.highlighted = value;
+		if (value !== this.highlighted) {
+			this.highlighted = value;
+		}
 	}
 }
 
-class UndoDeleteRectangle extends UndoBlock {
-	constructor(objectID, label, x, y, w, h, xJustify, yJustify, backgroundColor, foregroundColor, highlight, layer) {
+class UndoDeleteSkipList extends UndoBlock {
+	constructor(objectID, label, w, h, x, y, labelColor, backgroundColor, foregroundColor, layer) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
-		this.x = x;
-		this.y = y;
 		this.w = w;
 		this.h = h;
-		this.xJustify = xJustify;
-		this.yJustify = yJustify;
+		this.x = x;
+		this.y = y;
+		this.labelColor = labelColor;
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
-		this.highlighted = highlight;
 		this.layer = layer;
 	}
 
 	undoInitialStep(world) {
-		world.addRectangleObject(
+		world.addSkipListObject(
 			this.objectID,
 			this.label,
 			this.w,
 			this.h,
-			this.xJustify,
-			this.yJustify,
+			this.labelColor,
 			this.backgroundColor,
 			this.foregroundColor
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
-		world.setHighlight(this.objectID, this.highlighted);
 	}
 }

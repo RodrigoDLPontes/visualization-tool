@@ -28,37 +28,32 @@ import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedLabel extends AnimatedObject {
-	constructor(id, val, center, initialWidth) {
+	constructor(objectID, label, centered, initialWidth) {
 		super();
-		this.centering = center;
-		this.label = val;
-		this.highlighted = false;
-		this.objectID = id;
-		this.alpha = 1.0;
-		this.addedToScene = true;
+
+		this.objectID = objectID;
+
+		this.textWidth = initialWidth || 0;
+
+		this.label = label;
 		this.labelColor = '#000000';
-		this.textWidth = 0;
-		if (initialWidth != null) {
-			this.textWidth = initialWidth;
-		}
+		this.highlighted = false;
+		this.centered = centered;
 
 		this.leftWidth = -1;
 		this.centerWidth = -1;
 		this.highlightIndex = -1;
-		this.alwaysOnTop = true;
 	}
 
 	centered() {
-		return this.centering;
+		return this.centered;
 	}
 
-	draw(ctx) {
-		if (!this.addedToScene) {
-			return;
-		}
+	draw(context) {
+		if(!this.addedToScene) return;
 
-		ctx.globalAlpha = this.alpha;
-		ctx.font = '10px sans-serif';
+		context.globalAlpha = this.alpha;
+		context.font = '10px sans-serif';
 
 		let startingXForHighlight = this.x;
 
@@ -66,40 +61,39 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlightIndex = -1;
 		}
 		if (this.highlightIndexDirty && this.highlightIndex !== -1) {
-			this.leftWidth = ctx.measureText(this.label.substring(0, this.highlightIndex)).width;
-			this.centerWidth = ctx.measureText(
+			this.leftWidth = context.measureText(this.label.substring(0, this.highlightIndex)).width;
+			this.centerWidth = context.measureText(
 				this.label.substring(this.highlightIndex, this.highlightIndex + 1)
 			).width;
 			this.highlightIndexDirty = false;
 		}
 
-		if (this.centering) {
+		if (this.centered) {
 			if (this.highlightIndex !== -1) {
 				startingXForHighlight = this.x - this.width / 2;
-				ctx.textAlign = 'left';
-				ctx.textBaseline = 'middle';
+				context.textAlign = 'left';
+				context.textBaseline = 'middle';
 			} else {
-				ctx.textAlign = 'center';
-				ctx.textBaseline = 'middle';
+				context.textAlign = 'center';
+				context.textBaseline = 'middle';
 			}
 		} else {
-			ctx.textAlign = 'left';
-			ctx.textBaseline = 'top';
+			context.textAlign = 'left';
+			context.textBaseline = 'top';
 		}
 		if (this.highlighted) {
-			ctx.strokeStyle = '#ffaaaa';
-			ctx.fillStyle = '#ff0000';
-			ctx.lineWidth = this.highlightDiff;
-			ctx.strokeText(this.label, this.x, this.y);
-			//ctx.fillText(this.label, this.x, this.y);
+			context.strokeStyle = '#FFAAAA';
+			context.fillStyle = '#FF0000';
+			context.lineWidth = this.highlightDiff;
+			context.strokeText(this.label, this.x, this.y);
 		}
-		ctx.strokeStyle = this.labelColor;
-		ctx.fillStyle = this.labelColor;
-		ctx.lineWidth = 1;
+		context.strokeStyle = this.labelColor;
+		context.fillStyle = this.labelColor;
+		context.lineWidth = 1;
 		const strList = this.label.split('\n');
 		if (strList.length === 1) {
 			if (this.highlightIndex === -1) {
-				ctx.fillText(this.label, this.x, this.y);
+				context.fillText(this.label, this.x, this.y);
 			} else {
 				const leftStr = this.label.substring(0, this.highlightIndex);
 				const highlightStr = this.label.substring(
@@ -107,32 +101,30 @@ export default class AnimatedLabel extends AnimatedObject {
 					this.highlightIndex + 1
 				);
 				const rightStr = this.label.substring(this.highlightIndex + 1);
-				ctx.fillText(leftStr, startingXForHighlight, this.y);
-				ctx.strokeStyle = '#FF0000';
-				ctx.fillStyle = '#FF0000';
-				ctx.fillText(highlightStr, startingXForHighlight + this.leftWidth, this.y);
+				context.fillText(leftStr, startingXForHighlight, this.y);
+				context.strokeStyle = '#FF0000';
+				context.fillStyle = '#FF0000';
+				context.fillText(highlightStr, startingXForHighlight + this.leftWidth, this.y);
 
-				ctx.strokeStyle = this.labelColor;
-				ctx.fillStyle = this.labelColor;
-				ctx.fillText(
+				context.strokeStyle = this.labelColor;
+				context.fillStyle = this.labelColor;
+				context.fillText(
 					rightStr,
 					startingXForHighlight + this.leftWidth + this.centerWidth,
 					this.y
 				);
 			}
-			//this.textWidth = ctx.measureText(this.label).width;
 		} else {
-			const offset = this.centering ? (1.0 - strList.length) / 2.0 : 0;
+			const offset = this.centered ? (1.0 - strList.length) / 2.0 : 0;
 			for (let i = 0; i < strList.length; i++) {
-				ctx.fillText(strList[i], this.x, this.y + offset + i * 12);
-				//this.textWidth = Math.max(this.textWidth, ctx.measureText(strList[i]).width);
+				context.fillText(strList[i], this.x, this.y + offset + i * 12);
 			}
 		}
-		ctx.closePath();
+		context.closePath();
 	}
 
 	getAlignLeftPos(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			return [otherObject.left() - this.textWidth / 2, (this.y = otherObject.centerY())];
 		} else {
 			return [otherObject.left() - this.textWidth, otherObject.centerY() - 5];
@@ -140,7 +132,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	alignLeft(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			this.y = otherObject.centerY();
 			this.x = otherObject.left() - this.textWidth / 2;
 		} else {
@@ -150,7 +142,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	alignRight(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			this.y = otherObject.centerY();
 			this.x = otherObject.right() + this.textWidth / 2;
 		} else {
@@ -160,7 +152,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	getAlignRightPos(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			return [otherObject.right() + this.textWidth / 2, otherObject.centerY()];
 		} else {
 			return [otherObject.right(), otherObject.centerY() - 5];
@@ -168,7 +160,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	alignTop(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			this.y = otherObject.top() - 5;
 			this.x = otherObject.centerX();
 		} else {
@@ -178,7 +170,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	getAlignTopPos(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			return [otherObject.centerX(), otherObject.top() - 5];
 		} else {
 			return [otherObject.centerX() - this.textWidth / 2, otherObject.top() - 10];
@@ -186,7 +178,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	alignBottom(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			this.y = otherObject.bottom() + 5;
 			this.x = otherObject.centerX();
 		} else {
@@ -196,7 +188,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	getAlignBottomPos(otherObject) {
-		if (this.centering) {
+		if (this.centered) {
 			return [otherObject.centerX(), otherObject.bottom() + 5];
 		} else {
 			return [otherObject.centerX() - this.textWidth / 2, otherObject.bottom()];
@@ -215,21 +207,8 @@ export default class AnimatedLabel extends AnimatedObject {
 		this.highlighted = value;
 	}
 
-	createUndoDelete() {
-		return new UndoDeleteLabel(
-			this.objectID,
-			this.label,
-			this.x,
-			this.y,
-			this.centering,
-			this.labelColor,
-			this.layer,
-			this.highlightIndex
-		);
-	}
-
 	centerX() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.x;
 		} else {
 			return this.x + this.textWidth;
@@ -237,15 +216,15 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	centerY() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.y;
 		} else {
-			return this.y + 5; //
+			return this.y + 5;
 		}
 	}
 
 	top() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.y - 5; //TODO: Un-Hardwire
 		} else {
 			return this.y;
@@ -253,7 +232,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	bottom() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.y + 5; // TODO: + height / 2;
 		} else {
 			return this.y + 10; // TODO: + hieght;
@@ -261,7 +240,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	right() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.x + this.textWidth / 2; // TODO: + width / 2;
 		} else {
 			return this.x + this.textWidth; // TODO: + width;
@@ -269,7 +248,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	left() {
-		if (this.centering) {
+		if (this.centered) {
 			return this.x - this.textWidth / 2;
 		} else {
 			return this.x; // TODO:  - a little?
@@ -300,25 +279,38 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.textWidth = initialWidth;
 		}
 	}
+
+	createUndoDelete() {
+		return new UndoDeleteLabel(
+			this.objectID,
+			this.label,
+			this.x,
+			this.y,
+			this.centered,
+			this.labelColor,
+			this.layer,
+			this.highlightIndex
+		);
+	}
 }
 
 class UndoDeleteLabel extends UndoBlock {
-	constructor(id, lab, x, y, centered, color, l, hli) {
+	constructor(objectID, label, x, y, centered, labelColor, layer, highlightIndex) {
 		super();
-		this.objectID = id;
-		this.posX = x;
-		this.posY = y;
-		this.nodeLabel = lab;
-		this.labCentered = centered;
-		this.labelColor = color;
-		this.layer = l;
-		this.highlightIndex = hli;
+		this.objectID = objectID;
+		this.label = label;
+		this.x = x;
+		this.y = y;
+		this.centered = centered;
+		this.labelColor = labelColor;
+		this.layer = layer;
+		this.highlightIndex = highlightIndex;
 		this.dirty = true;
 	}
 
 	undoInitialStep(world) {
-		world.addLabelObject(this.objectID, this.nodeLabel, this.labCentered);
-		world.setNodePosition(this.objectID, this.posX, this.posY);
+		world.addLabelObject(this.objectID, this.label, this.centered);
+		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setForegroundColor(this.objectID, this.labelColor);
 		world.setLayer(this.objectID, this.layer);
 	}

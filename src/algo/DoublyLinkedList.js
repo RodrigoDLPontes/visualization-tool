@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 200;
@@ -172,9 +173,9 @@ export default class DoublyLinkedList extends Algorithm {
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
 
-		this.cmd('CreateLabel', this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -261,103 +262,101 @@ export default class DoublyLinkedList extends Algorithm {
 		this.arrayData[index] = elemToAdd;
 		this.linkedListElemID[index] = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.cmd(
-			'CreateDoublyLinkedList',
+			act.createDoublyLinkedListNode,
 			this.linkedListElemID[index],
 			'',
 			LINKED_LIST_ELEM_WIDTH,
 			LINKED_LIST_ELEM_HEIGHT,
 			LINKED_LIST_INSERT_X,
 			LINKED_LIST_INSERT_Y,
-			0.25,
-			1
 		);
 
-		this.cmd('CreateLabel', labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
-		this.cmd('Move', labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+		this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
 
-		this.cmd('Step');
-		this.cmd('SetText', this.linkedListElemID[index], elemToAdd);
-		this.cmd('Delete', labPushValID);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
+		this.cmd(act.delete, labPushValID);
 
 		if (index === 0) {
-			this.cmd('SetPrevNull', this.linkedListElemID[index], 1);
+			this.cmd(act.setPrevNull, this.linkedListElemID[index], 1);
 		}
 
 		if (index === this.size) {
-			this.cmd('SetNextNull', this.linkedListElemID[index], 1);
+			this.cmd(act.setNextNull, this.linkedListElemID[index], 1);
 		}
 
 		if (this.size !== 0) {
 			if (index === 0) {
-				this.cmd('SetPrevNull', this.linkedListElemID[index + 1], 0);
+				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 0);
 				this.cmd(
-					'ConnectNext',
+					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
-					'ConnectPrev',
+					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 			} else if (index === this.size) {
-				this.cmd('SetNextNull', this.linkedListElemID[index - 1], 0);
+				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
-					'ConnectNext',
+					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
-					'ConnectPrev',
+					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			} else {
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index + 1]
 				);
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index + 1],
 					this.linkedListElemID[index - 1]
 				);
 				this.cmd(
-					'ConnectNext',
+					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
-				);
-				this.cmd(
-					'ConnectPrev',
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
 				);
 				this.cmd(
-					'ConnectNext',
+					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index - 1],
 				);
 				this.cmd(
-					'ConnectPrev',
+					act.connectNext,
+					this.linkedListElemID[index],
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+				);
+				this.cmd(
+					act.connectPrev,
+					this.linkedListElemID[index + 1],
+					this.linkedListElemID[index],
 				);
 			}
 		}
 
-		this.cmd('Step');
+		this.cmd(act.step);
 		this.size = this.size + 1;
 		this.resetNodePositions();
-		this.cmd('Delete', labPushID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.step);
 
 		return this.commands;
 	}
@@ -369,61 +368,61 @@ export default class DoublyLinkedList extends Algorithm {
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
-		this.cmd('CreateLabel', labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPopValID, this.arrayData[index], nodePosX, nodePosY);
-		this.cmd('Move', labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
 
 		if (this.size !== 1) {
 			if (index === 0) {
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index + 1],
 					this.linkedListElemID[index]
 				);
-				this.cmd('SetPrevNull', this.linkedListElemID[index + 1], 1);
+				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 1);
 			} else if (index === this.size - 1) {
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index]
 				);
-				this.cmd('SetNextNull', this.linkedListElemID[index - 1], 1);
+				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 1);
 			} else {
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
 					LINKED_LIST_START_X;
 				const yPos = LINKED_LIST_START_Y - LINKED_LIST_ELEM_HEIGHT * 2;
-				this.cmd('Move', this.linkedListElemID[index], xPos, yPos);
-				this.cmd('Step');
+				this.cmd(act.move, this.linkedListElemID[index], xPos, yPos);
+				this.cmd(act.step);
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index]
 				);
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index + 1],
 					this.linkedListElemID[index]
 				);
 				this.cmd(
-					'ConnectNext',
+					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
-					'ConnectPrev',
+					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			}
 		}
-		this.cmd('Step');
-		this.cmd('Delete', this.linkedListElemID[index]);
+		this.cmd(act.step);
+		this.cmd(act.delete, this.linkedListElemID[index]);
 
 		for (let i = index; i < this.size; i++) {
 			this.arrayData[i] = this.arrayData[i + 1];
@@ -432,8 +431,8 @@ export default class DoublyLinkedList extends Algorithm {
 		this.size = this.size - 1;
 		this.resetNodePositions();
 
-		this.cmd('Delete', labPopValID);
-		this.cmd('Delete', labPopID);
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, labPopID);
 
 		return this.commands;
 	}
@@ -445,14 +444,14 @@ export default class DoublyLinkedList extends Algorithm {
 			const nextY =
 				Math.floor(i / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING +
 				LINKED_LIST_START_Y;
-			this.cmd('Move', this.linkedListElemID[i], nextX, nextY);
+			this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 		}
 	}
 
 	clearAll() {
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('Delete', this.linkedListElemID[i]);
+			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.size = 0;
 		return this.commands;

@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_ELEM_WIDTH = 30;
 const ARRAY_ELEM_HEIGHT = 30;
@@ -90,7 +91,7 @@ export default class RadixSort extends Algorithm {
 			let nextID = this.nextIndex++;
 			this.arrayData[i] = Math.floor(Math.random() * MAX_DATA_VALUE);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				nextID,
 				this.arrayData[i],
 				ARRAY_ELEM_WIDTH,
@@ -102,17 +103,17 @@ export default class RadixSort extends Algorithm {
 			nextID = this.nextIndex++;
 			this.arrayIndices[i] = nextID;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				nextID,
 				i,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 				this.ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT
 			);
-			this.cmd('SetForegroundColor', nextID, '#0000FF');
+			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 
 			nextID = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				nextID,
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -124,18 +125,18 @@ export default class RadixSort extends Algorithm {
 			nextID = this.nextIndex++;
 			this.swapIndices[i] = nextID;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				nextID,
 				i,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 				this.SWAP_ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT
 			);
-			this.cmd('SetForegroundColor', nextID, '#0000FF');
+			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 		}
 		for (let i = COUNTER_ARRAY_SIZE - 1; i >= 0; i--) {
 			let nextID = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				nextID,
 				'',
 				COUNTER_ARRAY_ELEM_WIDTH,
@@ -147,15 +148,15 @@ export default class RadixSort extends Algorithm {
 			nextID = this.nextIndex++;
 			this.counterIndices[i] = nextID;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				nextID,
 				i,
 				COUNTER_ARRAY_ELEM_START_X + i * COUNTER_ARRAY_ELEM_WIDTH,
 				this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
 			);
-			this.cmd('SetForegroundColor', nextID, '#0000FF');
+			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 		}
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -180,25 +181,25 @@ export default class RadixSort extends Algorithm {
 		for (let radix = 0; radix < NUM_DIGITS; radix++) {
 			for (let i = 0; i < COUNTER_ARRAY_SIZE; i++) {
 				this.counterData[i] = 0;
-				this.cmd('SetText', this.counterRects[i], 0);
+				this.cmd(act.setText, this.counterRects[i], 0);
 			}
 			for (let i = 0; i < ARRAY_SIZE; i++) {
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID2,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
 
-				this.cmd('SetText', this.arrayRects[i], '');
+				this.cmd(act.setText, this.arrayRects[i], '');
 
 				for (let k = 0; k < NUM_DIGITS; k++) {
 					const digitXPos =
@@ -208,71 +209,71 @@ export default class RadixSort extends Algorithm {
 						(NUM_DIGITS - k) * (ARRAY_ELEM_WIDTH / NUM_DIGITS - 3);
 					const digitYPos = this.ARRAY_ELEM_Y;
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						digits[k],
 						Math.floor(this.arrayData[i] / Math.pow(10, k)) % 10,
 						digitXPos,
 						digitYPos
 					);
 					if (k !== radix) {
-						this.cmd('SetAlpha', digits[k], 0.2);
+						this.cmd(act.setAlpha, digits[k], 0.2);
 					}
 					//						else
 					//						{
-					//							this.cmd("SetAlpha", digits[k], 0.2);
+					//							this.cmd(act.setAlpha, digits[k], 0.2);
 					//						}
 				}
 
 				const index = Math.floor(this.arrayData[i] / Math.pow(10, radix)) % 10;
 				this.cmd(
-					'Move',
+					act.move,
 					animatedCircleID,
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
 					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				this.counterData[index]++;
-				this.cmd('SetText', this.counterRects[index], this.counterData[index]);
-				this.cmd('Step');
-				// this.cmd("SetAlpha", this.arrayRects[i], 0.2);
-				this.cmd('Delete', animatedCircleID);
-				this.cmd('Delete', animatedCircleID2);
-				this.cmd('SetText', this.arrayRects[i], this.arrayData[i]);
+				this.cmd(act.setText, this.counterRects[index], this.counterData[index]);
+				this.cmd(act.step);
+				// this.cmd(act.setAlpha, this.arrayRects[i], 0.2);
+				this.cmd(act.delete, animatedCircleID);
+				this.cmd(act.delete, animatedCircleID2);
+				this.cmd(act.setText, this.arrayRects[i], this.arrayData[i]);
 				for (let k = 0; k < NUM_DIGITS; k++) {
-					this.cmd('Delete', digits[k]);
+					this.cmd(act.delete, digits[k]);
 				}
 			}
 			for (let i = 1; i < COUNTER_ARRAY_SIZE; i++) {
-				this.cmd('SetHighlight', this.counterRects[i - 1], 1);
-				this.cmd('SetHighlight', this.counterRects[i], 1);
-				this.cmd('Step');
+				this.cmd(act.setHighlight, this.counterRects[i - 1], 1);
+				this.cmd(act.setHighlight, this.counterRects[i], 1);
+				this.cmd(act.step);
 				this.counterData[i] = this.counterData[i] + this.counterData[i - 1];
-				this.cmd('SetText', this.counterRects[i], this.counterData[i]);
-				this.cmd('Step');
-				this.cmd('SetHighlight', this.counterRects[i - 1], 0);
-				this.cmd('SetHighlight', this.counterRects[i], 0);
+				this.cmd(act.setText, this.counterRects[i], this.counterData[i]);
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.counterRects[i - 1], 0);
+				this.cmd(act.setHighlight, this.counterRects[i], 0);
 			}
 			//				for (i=ARRAY_SIZE - 1; i >= 0; i--)
 			//				{
-			//					this.cmd("SetAlpha", this.arrayRects[i], 1.0);
+			//					this.cmd(act.setAlpha, this.arrayRects[i], 1.0);
 			//				}
 			for (let i = ARRAY_SIZE - 1; i >= 0; i--) {
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID2,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
 
-				this.cmd('SetText', this.arrayRects[i], '');
+				this.cmd(act.setText, this.arrayRects[i], '');
 
 				for (let k = 0; k < NUM_DIGITS; k++) {
 					digits[k] = this.nextIndex++;
@@ -283,39 +284,39 @@ export default class RadixSort extends Algorithm {
 						(NUM_DIGITS - k) * (ARRAY_ELEM_WIDTH / NUM_DIGITS - 3);
 					const digitYPos = this.ARRAY_ELEM_Y;
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						digits[k],
 						Math.floor(this.arrayData[i] / Math.pow(10, k)) % 10,
 						digitXPos,
 						digitYPos
 					);
 					if (k !== radix) {
-						this.cmd('SetAlpha', digits[k], 0.2);
+						this.cmd(act.setAlpha, digits[k], 0.2);
 					}
 				}
 
 				const index = Math.floor(this.arrayData[i] / Math.pow(10, radix)) % 10;
 				this.cmd(
-					'Move',
+					act.move,
 					animatedCircleID2,
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
 					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				const insertIndex = --this.counterData[index];
-				this.cmd('SetText', this.counterRects[index], this.counterData[index]);
-				this.cmd('Step');
+				this.cmd(act.setText, this.counterRects[index], this.counterData[index]);
+				this.cmd(act.step);
 
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID3,
 					'#AAAAFF',
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
 					this.COUNTER_ARRAY_ELEM_Y
 				);
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					animatedCircleID4,
 					'#AAAAFF',
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
@@ -323,24 +324,24 @@ export default class RadixSort extends Algorithm {
 				);
 
 				this.cmd(
-					'Move',
+					act.move,
 					animatedCircleID4,
 					ARRAY_ELEM_START_X + insertIndex * ARRAY_ELEM_WIDTH,
 					this.SWAP_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				const moveLabel = this.nextIndex++;
-				this.cmd('SetText', this.arrayRects[i], '');
+				this.cmd(act.setText, this.arrayRects[i], '');
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					moveLabel,
 					this.arrayData[i],
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
 				this.cmd(
-					'Move',
+					act.move,
 					moveLabel,
 					ARRAY_ELEM_START_X + insertIndex * ARRAY_ELEM_WIDTH,
 					this.SWAP_ARRAY_ELEM_Y
@@ -348,70 +349,70 @@ export default class RadixSort extends Algorithm {
 				this.swapData[insertIndex] = this.arrayData[i];
 
 				for (let k = 0; k < NUM_DIGITS; k++) {
-					this.cmd('Delete', digits[k]);
+					this.cmd(act.delete, digits[k]);
 				}
-				this.cmd('Step');
-				this.cmd('Delete', moveLabel);
+				this.cmd(act.step);
+				this.cmd(act.delete, moveLabel);
 				this.nextIndex--; // Reuse index from moveLabel, now that it has been removed.
-				this.cmd('SetText', this.swapRects[insertIndex], this.swapData[insertIndex]);
-				this.cmd('Delete', animatedCircleID);
-				this.cmd('Delete', animatedCircleID2);
-				this.cmd('Delete', animatedCircleID3);
-				this.cmd('Delete', animatedCircleID4);
+				this.cmd(act.setText, this.swapRects[insertIndex], this.swapData[insertIndex]);
+				this.cmd(act.delete, animatedCircleID);
+				this.cmd(act.delete, animatedCircleID2);
+				this.cmd(act.delete, animatedCircleID3);
+				this.cmd(act.delete, animatedCircleID4);
 			}
 			for (let i = 0; i < ARRAY_SIZE; i++) {
-				this.cmd('SetText', this.arrayRects[i], '');
+				this.cmd(act.setText, this.arrayRects[i], '');
 			}
 
 			for (let i = 0; i < COUNTER_ARRAY_SIZE; i++) {
-				this.cmd('SetAlpha', this.counterRects[i], 0.05);
-				this.cmd('SetAlpha', this.counterIndices[i], 0.05);
+				this.cmd(act.setAlpha, this.counterRects[i], 0.05);
+				this.cmd(act.setAlpha, this.counterIndices[i], 0.05);
 			}
 
-			this.cmd('Step');
+			this.cmd(act.step);
 			const startLab = this.nextIndex;
 			for (let i = 0; i < ARRAY_SIZE; i++) {
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					startLab + i,
 					this.swapData[i],
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.SWAP_ARRAY_ELEM_Y
 				);
 				this.cmd(
-					'Move',
+					act.move,
 					startLab + i,
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
 					this.ARRAY_ELEM_Y
 				);
-				this.cmd('SetText', this.swapRects[i], '');
+				this.cmd(act.setText, this.swapRects[i], '');
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			for (let i = 0; i < ARRAY_SIZE; i++) {
 				this.arrayData[i] = this.swapData[i];
-				this.cmd('SetText', this.arrayRects[i], this.arrayData[i]);
-				this.cmd('Delete', startLab + i);
+				this.cmd(act.setText, this.arrayRects[i], this.arrayData[i]);
+				this.cmd(act.delete, startLab + i);
 			}
 			for (let i = 0; i < COUNTER_ARRAY_SIZE; i++) {
-				this.cmd('SetAlpha', this.counterRects[i], 1);
-				this.cmd('SetAlpha', this.counterIndices[i], 1);
+				this.cmd(act.setAlpha, this.counterRects[i], 1);
+				this.cmd(act.setAlpha, this.counterIndices[i], 1);
 			}
 		}
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 	}
 
 	randomizeArray() {
 		this.commands = [];
 		for (let i = 0; i < ARRAY_SIZE; i++) {
 			this.arrayData[i] = Math.floor(1 + Math.random() * MAX_DATA_VALUE);
-			this.cmd('SetText', this.arrayRects[i], this.arrayData[i]);
+			this.cmd(act.setText, this.arrayRects[i], this.arrayData[i]);
 		}
 
 		for (let i = 0; i < COUNTER_ARRAY_SIZE; i++) {
-			this.cmd('SetText', this.counterRects[i], '');
+			this.cmd(act.setText, this.counterRects[i], '');
 		}
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}

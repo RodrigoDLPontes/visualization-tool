@@ -30,6 +30,7 @@ import Algorithm, {
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -153,7 +154,7 @@ export default class QuickSelect extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
 		this.arrayID = [];
@@ -200,7 +201,7 @@ export default class QuickSelect extends Algorithm {
 			}
 			this.displayData[i] = displayData;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				displayData,
 				ARRAY_ELEM_WIDTH,
@@ -223,13 +224,13 @@ export default class QuickSelect extends Algorithm {
 
 		// Hightlight cells in the current sub-array
 		for (let i = left; i <= right; i++) {
-			this.cmd('SetBackgroundColor', this.arrayID[i], '#99CCFF');
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#99CCFF');
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		if (left === right) {
-			this.cmd('SetBackgroundColor', this.arrayID[left], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, this.arrayID[left], '#2ECC71');
+			this.cmd(act.step);
 			return;
 		}
 
@@ -250,8 +251,8 @@ export default class QuickSelect extends Algorithm {
 			pivot = Math.floor(Math.random() * (right - left)) + left + 1;
 		}
 		const pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateHighlightCircle', this.pPointerID, '#FFFF00', pXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, this.pPointerID, '#FFFF00', pXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 		this.swapPivot(pivot, left);
 
 		// Partition
@@ -259,25 +260,25 @@ export default class QuickSelect extends Algorithm {
 		let j = right;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateHighlightCircle', this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
-		this.cmd('CreateHighlightCircle', this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
+		this.cmd(act.createHighlightCircle, this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 		while (i <= j) {
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
 				i++;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
-				this.cmd('SetForegroundColor', this.iPointerID, '#FF0000');
-				this.cmd('Step');
+				this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
+				this.cmd(act.step);
 			}
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
 				j--;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
-				this.cmd('SetForegroundColor', this.jPointerID, '#FF0000');
-				this.cmd('Step');
+				this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
+				this.cmd(act.step);
 			}
 			if (i <= j) {
 				this.swap(i, j);
@@ -291,21 +292,21 @@ export default class QuickSelect extends Algorithm {
 		this.swapPivot(left, j, true);
 
 		// Delete i and j pointers
-		this.cmd('Delete', this.iPointerID);
-		this.cmd('Delete', this.jPointerID);
-		this.cmd('Delete', this.pPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.delete, this.pPointerID);
+		this.cmd(act.step);
 
 		// Un-hightlight cells in sub-array and set pivot cell to green
 		for (let i = left; i <= right; i++) {
-			this.cmd('SetBackgroundColor', this.arrayID[i], '#FFFFFF');
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#FFFFFF');
 		}
 		if (this.k - 1 === j) {
-			this.cmd('SetBackgroundColor', this.arrayID[j], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, this.arrayID[j], '#2ECC71');
+			this.cmd(act.step);
 		} else {
-			this.cmd('SetBackgroundColor', this.arrayID[j], '#4DA6ff');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, this.arrayID[j], '#4DA6ff');
+			this.cmd(act.step);
 
 			if (this.k - 1 < j) {
 				this.helper(left, j - 1);
@@ -317,10 +318,10 @@ export default class QuickSelect extends Algorithm {
 
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('Move', this.iPointerID, iXPos, ARRAY_START_Y);
+		this.cmd(act.move, this.iPointerID, iXPos, ARRAY_START_Y);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('Move', this.jPointerID, jXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.move, this.jPointerID, jXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 	}
 
 	swapPivot(pivot, other, moveJ) {
@@ -328,23 +329,23 @@ export default class QuickSelect extends Algorithm {
 		// Create temporary labels and remove text in array
 		const lLabelID = this.nextIndex++;
 		const lXPos = other * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', lLabelID, this.displayData[other], lXPos, ARRAY_START_Y);
+		this.cmd(act.createLabel, lLabelID, this.displayData[other], lXPos, ARRAY_START_Y);
 		const pLabelID = this.nextIndex++;
 		const pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', pLabelID, this.displayData[pivot], pXPos, ARRAY_START_Y);
-		this.cmd('Settext', this.arrayID[other], '');
-		this.cmd('Settext', this.arrayID[pivot], '');
+		this.cmd(act.createLabel, pLabelID, this.displayData[pivot], pXPos, ARRAY_START_Y);
+		this.cmd(act.setText, this.arrayID[other], '');
+		this.cmd(act.setText, this.arrayID[pivot], '');
 		// Move labels and pivot pointer
-		this.cmd('Move', pLabelID, lXPos, ARRAY_START_Y);
-		this.cmd('Move', this.pPointerID, lXPos, ARRAY_START_Y);
-		this.cmd('Move', lLabelID, pXPos, ARRAY_START_Y);
-		moveJ && this.cmd('Move', this.jPointerID, pXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.move, pLabelID, lXPos, ARRAY_START_Y);
+		this.cmd(act.move, this.pPointerID, lXPos, ARRAY_START_Y);
+		this.cmd(act.move, lLabelID, pXPos, ARRAY_START_Y);
+		moveJ && this.cmd(act.move, this.jPointerID, pXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 		// Set text in array, and delete temporary labels and pointer
-		this.cmd('Settext', this.arrayID[other], this.displayData[pivot]);
-		this.cmd('Settext', this.arrayID[pivot], this.displayData[other]);
-		this.cmd('Delete', pLabelID);
-		this.cmd('Delete', lLabelID);
+		this.cmd(act.setText, this.arrayID[other], this.displayData[pivot]);
+		this.cmd(act.setText, this.arrayID[pivot], this.displayData[other]);
+		this.cmd(act.delete, pLabelID);
+		this.cmd(act.delete, lLabelID);
 		// Swap data in backend array
 		let temp = this.arrayData[pivot];
 		this.arrayData[pivot] = this.arrayData[other];
@@ -359,21 +360,21 @@ export default class QuickSelect extends Algorithm {
 		// Create temporary labels and remove text in array
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
+		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
 		const jLabelID = this.nextIndex++;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
-		this.cmd('Settext', this.arrayID[i], '');
-		this.cmd('Settext', this.arrayID[j], '');
+		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
+		this.cmd(act.setText, this.arrayID[i], '');
+		this.cmd(act.setText, this.arrayID[j], '');
 		// Move labels
-		this.cmd('Move', iLabelID, jXPos, ARRAY_START_Y);
-		this.cmd('Move', jLabelID, iXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
+		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 		// Set text in array and delete temporary labels
-		this.cmd('Settext', this.arrayID[i], this.displayData[j]);
-		this.cmd('Settext', this.arrayID[j], this.displayData[i]);
-		this.cmd('Delete', iLabelID);
-		this.cmd('Delete', jLabelID);
+		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
+		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
+		this.cmd(act.delete, iLabelID);
+		this.cmd(act.delete, jLabelID);
 		// Swap data in backend array
 		let temp = this.arrayData[i];
 		this.arrayData[i] = this.arrayData[j];
@@ -383,9 +384,9 @@ export default class QuickSelect extends Algorithm {
 		this.displayData[i] = this.displayData[j];
 		this.displayData[j] = temp;
 		// Reset pointer colors back to blue
-		this.cmd('SetForegroundColor', this.iPointerID, '#0000FF');
-		this.cmd('SetForegroundColor', this.jPointerID, '#0000FF');
-		this.cmd('Step');
+		this.cmd(act.setForegroundColor, this.iPointerID, '#0000FF');
+		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
+		this.cmd(act.step);
 	}
 
 	toggleWorstPivot() {

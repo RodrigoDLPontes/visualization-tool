@@ -227,6 +227,12 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 		this.resetTextPosition();
 	}
 
+	setHighlight(value) {
+		if (value !== this.highlighted) {
+			this.highlighted = value;
+		}
+	}
+
 	createUndoDelete() {
 		return new UndoDeleteDoublyLinkedList(
 			this.objectID,
@@ -245,11 +251,6 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 		);
 	}
 
-	setHighlight(value) {
-		if (value !== this.highlighted) {
-			this.highlighted = value;
-		}
-	}
 }
 
 class UndoDeleteDoublyLinkedList extends UndoBlock {

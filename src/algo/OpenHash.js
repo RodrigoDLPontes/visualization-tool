@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Hash from './Hash.js';
+import { act } from '../anim/AnimationMain';
 
 const POINTER_ARRAY_ELEM_WIDTH = 70;
 const POINTER_ARRAY_ELEM_HEIGHT = 30;
@@ -60,12 +61,12 @@ export default class OpenHash extends Hash {
 
 	insertElement(elem) {
 		this.commands = [];
-		this.cmd('SetText', this.ExplainLabel, 'Inserting element: ' + String(elem));
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
 		const index = this.doHash(elem);
 
 		const node = new LinkedListNode(elem, this.nextIndex++, 100, 75);
 		this.cmd(
-			'CreateLinkedList',
+			act.createLinkedListNode,
 			node.graphicID,
 			elem,
 			LINKED_ITEM_WIDTH,
@@ -76,55 +77,55 @@ export default class OpenHash extends Hash {
 		let found = false;
 		if (this.hashTableValues[index] != null) {
 			// Search for duplicates
-			this.cmd('SetText', this.ExplainLabel, 'Searching for duplicates of ' + elem);
+			this.cmd(act.setText, this.ExplainLabel, 'Searching for duplicates of ' + elem);
 
 			const compareIndex = this.nextIndex++;
 			let tmp = this.hashTableValues[index];
-			this.cmd('CreateLabel', compareIndex, '', 10, 40, 0);
+			this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 			while (tmp != null && !found) {
-				this.cmd('SetHighlight', tmp.graphicID, 1);
+				this.cmd(act.setHighlight, tmp.graphicID, 1);
 				if (tmp.data === elem) {
-					this.cmd('SetText', compareIndex, tmp.data + '==' + elem);
+					this.cmd(act.setText, compareIndex, tmp.data + '==' + elem);
 					found = true;
 				} else {
-					this.cmd('SetText', compareIndex, tmp.data + '!=' + elem);
+					this.cmd(act.setText, compareIndex, tmp.data + '!=' + elem);
 				}
-				this.cmd('Step');
-				this.cmd('SetHighlight', tmp.graphicID, 0);
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, tmp.graphicID, 0);
 				tmp = tmp.next;
 			}
 
-			this.cmd('Delete', compareIndex);
+			this.cmd(act.delete, compareIndex);
 			this.nextIndex--;
 		} else {
-			this.cmd('SetNull', node.graphicID, 1);
-			this.cmd('SetNull', this.hashTableVisual[index], 0);
+			this.cmd(act.setNull, node.graphicID, 1);
+			this.cmd(act.setNull, this.hashTableVisual[index], 0);
 		}
 
 		if (found) {
-			this.cmd('SetText', this.ExplainLabel, 'Duplicate of  ' + elem + '  found!');
-			this.cmd('Delete', node.graphicID);
-			this.cmd('Step');
+			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + elem + '  found!');
+			this.cmd(act.delete, node.graphicID);
+			this.cmd(act.step);
 		} else {
-			this.cmd('SetText', this.ExplainLabel, 'Duplicate of  ' + elem + '  not found!');
-			this.cmd('Step');
+			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + elem + '  not found!');
+			this.cmd(act.step);
 
 			if (this.hashTableValues[index] != null) {
-				this.cmd('connect', node.graphicID, this.hashTableValues[index].graphicID);
+				this.cmd(act.connect, node.graphicID, this.hashTableValues[index].graphicID);
 				this.cmd(
-					'disconnect',
+					act.disconnect,
 					this.hashTableVisual[index],
 					this.hashTableValues[index].graphicID
 				);
 			}
 
-			this.cmd('connect', this.hashTableVisual[index], node.graphicID);
+			this.cmd(act.connect, this.hashTableVisual[index], node.graphicID);
 			node.next = this.hashTableValues[index];
 			this.hashTableValues[index] = node;
 			this.repositionList(index);
 		}
 
-		this.cmd('SetText', this.ExplainLabel, '');
+		this.cmd(act.setText, this.ExplainLabel, '');
 
 		return this.commands;
 	}
@@ -136,7 +137,7 @@ export default class OpenHash extends Hash {
 		while (tmp != null) {
 			tmp.x = startX;
 			tmp.y = startY;
-			this.cmd('Move', tmp.graphicID, tmp.x, tmp.y);
+			this.cmd(act.move, tmp.graphicID, tmp.x, tmp.y);
 			startY = startY - LINKED_ITEM_Y_DELTA;
 			tmp = tmp.next;
 		}
@@ -144,30 +145,30 @@ export default class OpenHash extends Hash {
 
 	deleteElement(elem) {
 		this.commands = [];
-		this.cmd('SetText', this.ExplainLabel, 'Deleting element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Deleting element: ' + elem);
 		const index = this.doHash(elem);
 		if (this.hashTableValues[index] == null) {
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.ExplainLabel,
 				'Deleting element: ' + elem + '  Element not in table'
 			);
 			return this.commands;
 		}
-		this.cmd('SetHighlight', this.hashTableValues[index].graphicID, 1);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.hashTableValues[index].graphicID, 0);
+		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 0);
 		if (this.hashTableValues[index].data === elem) {
 			if (this.hashTableValues[index].next != null) {
 				this.cmd(
-					'Connect',
+					act.connect,
 					this.hashTableVisual[index],
 					this.hashTableValues[index].next.graphicID
 				);
 			} else {
-				this.cmd('SetNull', this.hashTableVisual[index], 1);
+				this.cmd(act.setNull, this.hashTableVisual[index], 1);
 			}
-			this.cmd('Delete', this.hashTableValues[index].graphicID);
+			this.cmd(act.delete, this.hashTableValues[index].graphicID);
 			this.hashTableValues[index] = this.hashTableValues[index].next;
 			this.repositionList(index);
 			return this.commands;
@@ -176,23 +177,23 @@ export default class OpenHash extends Hash {
 		let tmp = this.hashTableValues[index].next;
 		let found = false;
 		while (tmp != null && !found) {
-			this.cmd('SetHighlight', tmp.graphicID, 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', tmp.graphicID, 0);
+			this.cmd(act.setHighlight, tmp.graphicID, 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			if (tmp.data === elem) {
 				found = true;
 				this.cmd(
-					'SetText',
+					act.setText,
 					this.ExplainLabel,
 					'Deleting element: ' + elem + '  Element deleted'
 				);
 				if (tmp.next != null) {
-					this.cmd('Connect', tmpPrev.graphicID, tmp.next.graphicID);
+					this.cmd(act.connect, tmpPrev.graphicID, tmp.next.graphicID);
 				} else {
-					this.cmd('SetNull', tmpPrev.graphicID, 1);
+					this.cmd(act.setNull, tmpPrev.graphicID, 1);
 				}
 				tmpPrev.next = tmpPrev.next.next;
-				this.cmd('Delete', tmp.graphicID);
+				this.cmd(act.delete, tmp.graphicID);
 				this.repositionList(index);
 			} else {
 				tmpPrev = tmp;
@@ -201,7 +202,7 @@ export default class OpenHash extends Hash {
 		}
 		if (!found) {
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.ExplainLabel,
 				'Deleting element: ' + elem + '  Element not in table'
 			);
@@ -211,31 +212,31 @@ export default class OpenHash extends Hash {
 
 	findElement(elem) {
 		this.commands = [];
-		this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem);
 
 		const index = this.doHash(elem);
 		const compareIndex = this.nextIndex++;
 		let found = false;
 		let tmp = this.hashTableValues[index];
-		this.cmd('CreateLabel', compareIndex, '', 10, 40, 0);
+		this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 		while (tmp != null && !found) {
-			this.cmd('SetHighlight', tmp.graphicID, 1);
+			this.cmd(act.setHighlight, tmp.graphicID, 1);
 			if (tmp.data === elem) {
-				this.cmd('SetText', compareIndex, tmp.data + '==' + elem);
+				this.cmd(act.setText, compareIndex, tmp.data + '==' + elem);
 				found = true;
 			} else {
-				this.cmd('SetText', compareIndex, tmp.data + '!=' + elem);
+				this.cmd(act.setText, compareIndex, tmp.data + '!=' + elem);
 			}
-			this.cmd('Step');
-			this.cmd('SetHighlight', tmp.graphicID, 0);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
 		} else {
-			this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
 		}
-		this.cmd('Delete', compareIndex);
+		this.cmd(act.delete, compareIndex);
 		this.nextIndex--;
 		return this.commands;
 	}
@@ -257,7 +258,7 @@ export default class OpenHash extends Hash {
 			let nextID = this.nextIndex++;
 
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				nextID,
 				'',
 				POINTER_ARRAY_ELEM_WIDTH,
@@ -266,7 +267,7 @@ export default class OpenHash extends Hash {
 				this.POINTER_ARRAY_ELEM_Y
 			);
 			this.hashTableVisual[i] = nextID;
-			this.cmd('SetNull', this.hashTableVisual[i], 1);
+			this.cmd(act.setNull, this.hashTableVisual[i], 1);
 
 			nextID = this.nextIndex++;
 			this.hashTableIndices[i] = nextID;
@@ -274,11 +275,11 @@ export default class OpenHash extends Hash {
 			this.indexYPos[i] = this.POINTER_ARRAY_ELEM_Y + POINTER_ARRAY_ELEM_HEIGHT;
 			this.hashTableValues[i] = null;
 
-			this.cmd('CreateLabel', nextID, i, this.indexXPos[i], this.indexYPos[i]);
-			this.cmd('SetForegroundColor', nextID, INDEX_COLOR);
+			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd('CreateLabel', this.ExplainLabel, '', 10, 25, 0);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.resetIndex = this.nextIndex;
@@ -291,11 +292,11 @@ export default class OpenHash extends Hash {
 			tmp = this.hashTableValues[i];
 			if (tmp != null) {
 				while (tmp != null) {
-					this.cmd('Delete', tmp.graphicID);
+					this.cmd(act.delete, tmp.graphicID);
 					tmp = tmp.next;
 				}
 				this.hashTableValues[i] = null;
-				this.cmd('SetNull', this.hashTableVisual[i], 1);
+				this.cmd(act.setNull, this.hashTableVisual[i], 1);
 			}
 		}
 		return this.commands;
@@ -314,8 +315,8 @@ export default class OpenHash extends Hash {
 
 	/*this.nextIndex = 0;
  this.commands = [];
- this.cmd("CreateLabel", 0, "", 20, 50, 0);
- this.animationManager.StartNewAnimation(this.commands);
+ this.cmd(act.createLabel, 0, "", 20, 50, 0);
+ this.animationManager.startNewAnimation(this.commands);
  this.animationManager.skipForward();
  this.animationManager.clearHistory(); */
 

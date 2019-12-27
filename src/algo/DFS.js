@@ -26,6 +26,7 @@
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const AUX_ARRAY_WIDTH = 25;
 const AUX_ARRAY_HEIGHT = 25;
@@ -71,7 +72,7 @@ export default class DFS extends Graph {
 			this.parentID[i] = this.nextIndex++;
 			this.parentIndexID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.visitedID[i],
 				'F',
 				AUX_ARRAY_WIDTH,
@@ -80,15 +81,15 @@ export default class DFS extends Graph {
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.visitedIndexID[i],
 				String.fromCharCode(65 + i),
 				VISITED_START_X - AUX_ARRAY_WIDTH,
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
-			this.cmd('SetForegroundColor', this.visitedIndexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setForegroundColor, this.visitedIndexID[i], VERTEX_INDEX_COLOR);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.parentID[i],
 				'',
 				AUX_ARRAY_WIDTH,
@@ -97,16 +98,16 @@ export default class DFS extends Graph {
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.parentIndexID[i],
 				String.fromCharCode(65 + i),
 				PARENT_START_X - AUX_ARRAY_WIDTH,
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
-			this.cmd('SetForegroundColor', this.parentIndexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setForegroundColor, this.parentIndexID[i], VERTEX_INDEX_COLOR);
 		}
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Parent',
 			PARENT_START_X - AUX_ARRAY_WIDTH,
@@ -114,7 +115,7 @@ export default class DFS extends Graph {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Visited',
 			VISITED_START_X - AUX_ARRAY_WIDTH,
@@ -122,7 +123,7 @@ export default class DFS extends Graph {
 			0
 		);
 		this.animationManager.setAllLayers([0, this.currentLayer]);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.highlightCircleL = this.nextIndex++;
@@ -144,48 +145,48 @@ export default class DFS extends Graph {
 		this.commands = [];
 		if (this.messageID != null) {
 			for (let i = 0; i < this.messageID.length; i++) {
-				this.cmd('Delete', this.messageID[i]);
+				this.cmd(act.delete, this.messageID[i]);
 			}
 		}
 		this.rebuildEdges();
 		this.messageID = [];
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('SetText', this.visitedID[i], 'F');
-			this.cmd('SetText', this.parentID[i], '');
+			this.cmd(act.setText, this.visitedID[i], 'F');
+			this.cmd(act.setText, this.parentID[i], '');
 			this.visited[i] = false;
 		}
 		const vertex = startVertex;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.highlightCircleL,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.x_pos_logical[vertex],
 			this.y_pos_logical[vertex]
 		);
-		this.cmd('SetLayer', this.highlightCircleL, 1);
+		this.cmd(act.setLayer, this.highlightCircleL, 1);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.highlightCircleAL,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.adj_list_x_start - this.adj_list_width,
 			this.adj_list_y_start + vertex * this.adj_list_height
 		);
-		this.cmd('SetLayer', this.highlightCircleAL, 2);
+		this.cmd(act.setLayer, this.highlightCircleAL, 2);
 
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.highlightCircleAM,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.adj_matrix_x_start - this.adj_matrix_width,
 			this.adj_matrix_y_start + vertex * this.adj_matrix_height
 		);
-		this.cmd('SetLayer', this.highlightCircleAM, 3);
+		this.cmd(act.setLayer, this.highlightCircleAM, 3);
 
 		this.messageY = 30;
 		this.dfsVisit(vertex, 10);
-		this.cmd('Delete', this.highlightCircleL);
-		this.cmd('Delete', this.highlightCircleAL);
-		this.cmd('Delete', this.highlightCircleAM);
+		this.cmd(act.delete, this.highlightCircleL);
+		this.cmd(act.delete, this.highlightCircleAL);
+		this.cmd(act.delete, this.highlightCircleAM);
 		return this.commands;
 	}
 
@@ -194,7 +195,7 @@ export default class DFS extends Graph {
 		this.messageID.push(nextMessage);
 
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			nextMessage,
 			'DFS(' + String.fromCharCode(65 + startVertex) + ')',
 			messageX,
@@ -204,16 +205,16 @@ export default class DFS extends Graph {
 		this.messageY = this.messageY + 20;
 		if (!this.visited[startVertex]) {
 			this.visited[startVertex] = true;
-			this.cmd('SetText', this.visitedID[startVertex], 'T');
-			this.cmd('Step');
+			this.cmd(act.setText, this.visitedID[startVertex], 'T');
+			this.cmd(act.step);
 			for (let neighbor = 0; neighbor < this.size; neighbor++) {
 				if (this.adj_matrix[startVertex][neighbor] > 0) {
 					this.highlightEdge(startVertex, neighbor, 1);
-					this.cmd('SetHighlight', this.visitedID[neighbor], 1);
+					this.cmd(act.setHighlight, this.visitedID[neighbor], 1);
 					if (this.visited[neighbor]) {
 						nextMessage = this.nextIndex;
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							nextMessage,
 							'Vertex ' + String.fromCharCode(65 + neighbor) + ' already visited.',
 							messageX,
@@ -221,17 +222,17 @@ export default class DFS extends Graph {
 							0
 						);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 					this.highlightEdge(startVertex, neighbor, 0);
-					this.cmd('SetHighlight', this.visitedID[neighbor], 0);
+					this.cmd(act.setHighlight, this.visitedID[neighbor], 0);
 					if (this.visited[neighbor]) {
-						this.cmd('Delete', nextMessage);
+						this.cmd(act.delete, nextMessage);
 					}
 
 					if (!this.visited[neighbor]) {
-						this.cmd('Disconnect', this.circleID[startVertex], this.circleID[neighbor]);
+						this.cmd(act.disconnect, this.circleID[startVertex], this.circleID[neighbor]);
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.circleID[startVertex],
 							this.circleID[neighbor],
 							DFS_TREE_COLOR,
@@ -240,34 +241,34 @@ export default class DFS extends Graph {
 							''
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleL,
 							this.x_pos_logical[neighbor],
 							this.y_pos_logical[neighbor]
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleAL,
 							this.adj_list_x_start - this.adj_list_width,
 							this.adj_list_y_start + neighbor * this.adj_list_height
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleAM,
 							this.adj_matrix_x_start - this.adj_matrix_width,
 							this.adj_matrix_y_start + neighbor * this.adj_matrix_height
 						);
 
 						this.cmd(
-							'SetText',
+							act.setText,
 							this.parentID[neighbor],
 							String.fromCharCode(65 + startVertex)
 						);
-						this.cmd('Step');
+						this.cmd(act.step);
 						this.dfsVisit(neighbor, messageX + 20);
 						nextMessage = this.nextIndex;
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							nextMessage,
 							'Returning from recursive call: DFS(' +
 								String.fromCharCode(65 + neighbor) +
@@ -278,27 +279,27 @@ export default class DFS extends Graph {
 						);
 
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleAL,
 							this.adj_list_x_start - this.adj_list_width,
 							this.adj_list_y_start + startVertex * this.adj_list_height
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleL,
 							this.x_pos_logical[startVertex],
 							this.y_pos_logical[startVertex]
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							this.highlightCircleAM,
 							this.adj_matrix_x_start - this.adj_matrix_width,
 							this.adj_matrix_y_start + startVertex * this.adj_matrix_height
 						);
-						this.cmd('Step');
-						this.cmd('Delete', nextMessage);
+						this.cmd(act.step);
+						this.cmd(act.delete, nextMessage);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 				}
 			}
 		}

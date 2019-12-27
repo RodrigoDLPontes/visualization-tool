@@ -31,7 +31,7 @@ const NINF = '\u2212\u221E'; // Negative infinity
 const PINF = '\u221E'; // Positive infinity
 
 export default class AnimatedSkipListNode extends AnimatedObject {
-	constructor(objectID, label, w, h, labelColor, backgroundColor, foregroundColor) {
+	constructor(objectID, label, w, h, backgroundColor, foregroundColor) {
 		super();
 
 		this.objectID = objectID;
@@ -46,7 +46,7 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 		this.label = label;
 		this.labelPosX = 0;
 		this.labelPosY = 0;
-		this.labelColor = labelColor;
+		this.labelColor = foregroundColor;
 	}
 
 	left() {
@@ -171,6 +171,12 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 		this.resetTextPosition();
 	}
 
+	setHighlight(value) {
+		if (value !== this.highlighted) {
+			this.highlighted = value;
+		}
+	}
+
 	createUndoDelete() {
 		return new UndoDeleteSkipList(
 			this.objectID,
@@ -184,12 +190,6 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 			this.foregroundColor,
 			this.layer
 		);
-	}
-
-	setHighlight(value) {
-		if (value !== this.highlighted) {
-			this.highlighted = value;
-		}
 	}
 }
 
@@ -214,10 +214,10 @@ class UndoDeleteSkipList extends UndoBlock {
 			this.label,
 			this.w,
 			this.h,
-			this.labelColor,
 			this.backgroundColor,
 			this.foregroundColor
 		);
+		world.setTextColor(this.objectID, this.labelColor);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 	}

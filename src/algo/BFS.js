@@ -26,6 +26,7 @@
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const AUX_ARRAY_WIDTH = 25;
 const AUX_ARRAY_HEIGHT = 25;
@@ -80,7 +81,7 @@ export default class BFS extends Graph {
 			this.parentID[i] = this.nextIndex++;
 			this.parentIndexID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.visitedID[i],
 				'F',
 				AUX_ARRAY_WIDTH,
@@ -89,15 +90,15 @@ export default class BFS extends Graph {
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.visitedIndexID[i],
 				String.fromCharCode(65 + i),
 				VISITED_START_X - AUX_ARRAY_WIDTH,
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
-			this.cmd('SetForegroundColor', this.visitedIndexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setForegroundColor, this.visitedIndexID[i], VERTEX_INDEX_COLOR);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.parentID[i],
 				'',
 				AUX_ARRAY_WIDTH,
@@ -106,16 +107,16 @@ export default class BFS extends Graph {
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.parentIndexID[i],
 				String.fromCharCode(65 + i),
 				PARENT_START_X - AUX_ARRAY_WIDTH,
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
-			this.cmd('SetForegroundColor', this.parentIndexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setForegroundColor, this.parentIndexID[i], VERTEX_INDEX_COLOR);
 		}
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Parent',
 			PARENT_START_X - AUX_ARRAY_WIDTH,
@@ -123,7 +124,7 @@ export default class BFS extends Graph {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Visited',
 			VISITED_START_X - AUX_ARRAY_WIDTH,
@@ -131,7 +132,7 @@ export default class BFS extends Graph {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'BFS Queue',
 			QUEUE_START_X,
@@ -139,7 +140,7 @@ export default class BFS extends Graph {
 			0
 		);
 		this.animationManager.setAllLayers([0, this.currentLayer]);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.highlightCircleL = this.nextIndex++;
@@ -169,15 +170,15 @@ export default class BFS extends Graph {
 
 		if (this.messageID != null) {
 			for (let i = 0; i < this.messageID.length; i++) {
-				this.cmd('Delete', this.messageID[i]);
+				this.cmd(act.delete, this.messageID[i]);
 			}
 		}
 
 		this.rebuildEdges();
 		this.messageID = [];
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('SetText', this.visitedID[i], 'F');
-			this.cmd('SetText', this.parentID[i], '');
+			this.cmd(act.setText, this.visitedID[i], 'F');
+			this.cmd(act.setText, this.parentID[i], '');
 			this.visited[i] = false;
 			queueID[i] = this.nextIndex++;
 		}
@@ -185,7 +186,7 @@ export default class BFS extends Graph {
 		this.visited[vertex] = true;
 		this.queue[tail] = vertex;
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			queueID[tail],
 			String.fromCharCode(65 + vertex),
 			QUEUE_START_X + queueSize * QUEUE_SPACING,
@@ -197,49 +198,49 @@ export default class BFS extends Graph {
 		while (queueSize > 0) {
 			vertex = this.queue[head];
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.highlightCircleL,
 				HIGHLIGHT_CIRCLE_COLOR,
 				this.x_pos_logical[vertex],
 				this.y_pos_logical[vertex]
 			);
-			this.cmd('SetLayer', this.highlightCircleL, 1);
+			this.cmd(act.setLayer, this.highlightCircleL, 1);
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.highlightCircleAL,
 				HIGHLIGHT_CIRCLE_COLOR,
 				this.adj_list_x_start - this.adj_list_width,
 				this.adj_list_y_start + vertex * this.adj_list_height
 			);
-			this.cmd('SetLayer', this.highlightCircleAL, 2);
+			this.cmd(act.setLayer, this.highlightCircleAL, 2);
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.highlightCircleAM,
 				HIGHLIGHT_CIRCLE_COLOR,
 				this.adj_matrix_x_start - this.adj_matrix_width,
 				this.adj_matrix_y_start + vertex * this.adj_matrix_height
 			);
-			this.cmd('SetLayer', this.highlightCircleAM, 3);
+			this.cmd(act.setLayer, this.highlightCircleAM, 3);
 
-			this.cmd('SetTextColor', queueID[head], BFS_QUEUE_HEAD_COLOR);
+			this.cmd(act.setTextColor, queueID[head], BFS_QUEUE_HEAD_COLOR);
 
 			for (let neighbor = 0; neighbor < this.size; neighbor++) {
 				if (this.adj_matrix[vertex][neighbor] > 0) {
 					this.highlightEdge(vertex, neighbor, 1);
-					this.cmd('SetHighlight', this.visitedID[neighbor], 1);
-					this.cmd('Step');
+					this.cmd(act.setHighlight, this.visitedID[neighbor], 1);
+					this.cmd(act.step);
 					if (!this.visited[neighbor]) {
 						this.visited[neighbor] = true;
-						this.cmd('SetText', this.visitedID[neighbor], 'T');
+						this.cmd(act.setText, this.visitedID[neighbor], 'T');
 						this.cmd(
-							'SetText',
+							act.setText,
 							this.parentID[neighbor],
 							String.fromCharCode(65 + vertex)
 						);
 						this.highlightEdge(vertex, neighbor, 0);
-						this.cmd('Disconnect', this.circleID[vertex], this.circleID[neighbor]);
+						this.cmd(act.disconnect, this.circleID[vertex], this.circleID[neighbor]);
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.circleID[vertex],
 							this.circleID[neighbor],
 							BFS_TREE_COLOR,
@@ -249,7 +250,7 @@ export default class BFS extends Graph {
 						);
 						this.queue[tail] = neighbor;
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							queueID[tail],
 							String.fromCharCode(65 + neighbor),
 							QUEUE_START_X + queueSize * QUEUE_SPACING,
@@ -260,26 +261,26 @@ export default class BFS extends Graph {
 					} else {
 						this.highlightEdge(vertex, neighbor, 0);
 					}
-					this.cmd('SetHighlight', this.visitedID[neighbor], 0);
-					this.cmd('Step');
+					this.cmd(act.setHighlight, this.visitedID[neighbor], 0);
+					this.cmd(act.step);
 				}
 			}
-			this.cmd('Delete', queueID[head]);
+			this.cmd(act.delete, queueID[head]);
 			head = (head + 1) % this.size;
 			queueSize = queueSize - 1;
 			for (let i = 0; i < queueSize; i++) {
 				const nextQueueIndex = (i + head) % this.size;
 				this.cmd(
-					'Move',
+					act.move,
 					queueID[nextQueueIndex],
 					QUEUE_START_X + i * QUEUE_SPACING,
 					QUEUE_START_Y
 				);
 			}
 
-			this.cmd('Delete', this.highlightCircleL);
-			this.cmd('Delete', this.highlightCircleAM);
-			this.cmd('Delete', this.highlightCircleAL);
+			this.cmd(act.delete, this.highlightCircleL);
+			this.cmd(act.delete, this.highlightCircleAM);
+			this.cmd(act.delete, this.highlightCircleAL);
 		}
 
 		return this.commands;

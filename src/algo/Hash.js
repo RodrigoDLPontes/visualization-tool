@@ -28,6 +28,7 @@ import Algorithm, {
 	addControlToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 10;
 
@@ -168,46 +169,46 @@ export default class Hash extends Algorithm {
 			this.currHash = parseInt(input);
 
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				labelID1,
 				input + ' % ' + String(this.table_size) + ' = ',
 				HASH_LABEL_X,
 				HASH_LABEL_Y
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				labelID2,
 				index,
 				HASH_LABEL_X + HASH_LABEL_DELTA_X,
 				HASH_LABEL_Y
 			);
-			this.cmd('Step');
+			this.cmd(act.step);
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				highlightID,
 				HIGHLIGHT_COLOR,
 				HASH_LABEL_X + HASH_LABEL_DELTA_X,
 				HASH_LABEL_Y
 			);
-			this.cmd('Move', highlightID, this.indexXPos[index], this.indexYPos[index]);
-			this.cmd('Step');
-			this.cmd('Delete', labelID1);
-			this.cmd('Delete', labelID2);
-			this.cmd('Delete', highlightID);
+			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
+			this.cmd(act.step);
+			this.cmd(act.delete, labelID1);
+			this.cmd(act.delete, labelID2);
+			this.cmd(act.delete, highlightID);
 			this.nextIndex -= 3;
 
 			return index;
 		} else {
 			// const oldnextIndex = this.nextIndex;
 			const label1 = this.nextIndex++;
-			this.cmd('CreateLabel', label1, 'Hashing:', 10, 45, 0);
+			this.cmd(act.createLabel, label1, 'Hashing:', 10, 45, 0);
 			const wordToHashID = new Array(input.length);
 			const wordToHash = new Array(input.length);
 			for (let i = 0; i < input.length; i++) {
 				wordToHashID[i] = this.nextIndex++;
 				wordToHash[i] = input.charAt(i);
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					wordToHashID[i],
 					wordToHash[i],
 					HASH_INPUT_START_X + i * HASH_INPUT_X_DIFF,
@@ -236,11 +237,11 @@ export default class Hash extends Algorithm {
 			for (let i = 0; i < 4; i++) {
 				floatingDigits[i] = this.nextIndex++;
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			for (let i = wordToHash.length - 1; i >= 0; i--) {
 				for (let j = 0; j < 32; j++) {
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						digits[j],
 						hashValue[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
@@ -248,13 +249,13 @@ export default class Hash extends Algorithm {
 						0
 					);
 				}
-				this.cmd('Delete', wordToHashID[i]);
+				this.cmd(act.delete, wordToHashID[i]);
 				let nextChar = wordToHash[i].charCodeAt(0);
 				for (let j = 7; j >= 0; j--) {
 					nextByte[j] = nextChar % 2;
 					nextChar = Math.floor(nextChar / 2);
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						nextByteID[j],
 						nextByte[j],
 						HASH_INPUT_START_X + i * HASH_INPUT_X_DIFF,
@@ -262,15 +263,15 @@ export default class Hash extends Algorithm {
 						0
 					);
 					this.cmd(
-						'Move',
+						act.move,
 						nextByteID[j],
 						HASH_NUMBER_START_X + (j + 24) * HASH_X_DIFF,
 						HASH_ADD_START_Y
 					);
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					barID,
 					'',
 					32 * HASH_X_DIFF,
@@ -280,8 +281,8 @@ export default class Hash extends Algorithm {
 					'left',
 					'bottom'
 				);
-				this.cmd('CreateLabel', operatorID, '+', HASH_NUMBER_START_X, HASH_ADD_START_Y, 0);
-				this.cmd('Step');
+				this.cmd(act.createLabel, operatorID, '+', HASH_NUMBER_START_X, HASH_ADD_START_Y, 0);
+				this.cmd(act.step);
 
 				let carry = 0;
 				for (let j = 7; j >= 0; j--) {
@@ -304,7 +305,7 @@ export default class Hash extends Algorithm {
 				}
 				for (let j = 0; j < 32; j++) {
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						resultDigits[j],
 						hashValue[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
@@ -313,32 +314,32 @@ export default class Hash extends Algorithm {
 					);
 				}
 
-				this.cmd('Step');
+				this.cmd(act.step);
 				for (let j = 0; j < 8; j++) {
-					this.cmd('Delete', nextByteID[j]);
+					this.cmd(act.delete, nextByteID[j]);
 				}
-				this.cmd('Delete', barID);
-				this.cmd('Delete', operatorID);
+				this.cmd(act.delete, barID);
+				this.cmd(act.delete, operatorID);
 				for (let j = 0; j < 32; j++) {
-					this.cmd('Delete', digits[j]);
+					this.cmd(act.delete, digits[j]);
 					this.cmd(
-						'Move',
+						act.move,
 						resultDigits[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
 						HASH_NUMBER_START_Y
 					);
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 				if (i > 0) {
 					for (let j = 0; j < 32; j++) {
 						this.cmd(
-							'Move',
+							act.move,
 							resultDigits[j],
 							HASH_NUMBER_START_X + (j - 4) * HASH_X_DIFF,
 							HASH_NUMBER_START_Y
 						);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 					for (let j = 0; j < 28; j++) {
 						floatingVals[j] = hashValue[j];
 						hashValue[j] = hashValue[j + 4];
@@ -346,14 +347,14 @@ export default class Hash extends Algorithm {
 
 					for (let j = 0; j < 4; j++) {
 						this.cmd(
-							'Move',
+							act.move,
 							resultDigits[j],
 							HASH_NUMBER_START_X + (j + ELF_HASH_SHIFT) * HASH_X_DIFF,
 							HASH_ADD_START_Y
 						);
 						hashValue[j + 28] = 0;
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							floatingDigits[j],
 							0,
 							HASH_NUMBER_START_X + (j + 28) * HASH_X_DIFF,
@@ -365,7 +366,7 @@ export default class Hash extends Algorithm {
 						}
 					}
 					this.cmd(
-						'CreateRectangle',
+						act.createRectangle,
 						barID,
 						'',
 						32 * HASH_X_DIFF,
@@ -376,17 +377,17 @@ export default class Hash extends Algorithm {
 						'bottom'
 					);
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						operatorID,
 						'XOR',
 						HASH_NUMBER_START_X,
 						HASH_ADD_START_Y,
 						0
 					);
-					this.cmd('Step');
+					this.cmd(act.step);
 					for (let j = 0; j < 32; j++) {
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							digits[j],
 							hashValue[j],
 							HASH_NUMBER_START_X + j * HASH_X_DIFF,
@@ -394,36 +395,36 @@ export default class Hash extends Algorithm {
 							0
 						);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 
-					this.cmd('Delete', operatorID);
-					this.cmd('Delete', barID);
+					this.cmd(act.delete, operatorID);
+					this.cmd(act.delete, barID);
 					for (let j = 0; j < 32; j++) {
-						this.cmd('Delete', resultDigits[j]);
+						this.cmd(act.delete, resultDigits[j]);
 						this.cmd(
-							'Move',
+							act.move,
 							digits[j],
 							HASH_NUMBER_START_X + j * HASH_X_DIFF,
 							HASH_NUMBER_START_Y
 						);
 					}
 					for (let j = 0; j < 4; j++) {
-						this.cmd('Delete', floatingDigits[j]);
+						this.cmd(act.delete, floatingDigits[j]);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 					for (let j = 0; j < 32; j++) {
-						this.cmd('Delete', digits[j]);
+						this.cmd(act.delete, digits[j]);
 					}
 				} else {
 					for (let j = 0; j < 32; j++) {
-						this.cmd('Delete', resultDigits[j]);
+						this.cmd(act.delete, resultDigits[j]);
 					}
 				}
 			}
-			this.cmd('Delete', label1);
+			this.cmd(act.delete, label1);
 			for (let j = 0; j < 32; j++) {
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					digits[j],
 					hashValue[j],
 					HASH_NUMBER_START_X + j * HASH_X_DIFF,
@@ -436,47 +437,47 @@ export default class Hash extends Algorithm {
 				this.currHash = this.currHash * 2 + hashValue[j];
 			}
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				label1,
 				' = ' + String(this.currHash),
 				HASH_NUMBER_START_X + 32 * HASH_X_DIFF,
 				HASH_NUMBER_START_Y,
 				0
 			);
-			this.cmd('Step');
+			this.cmd(act.step);
 			for (let j = 0; j < 32; j++) {
-				this.cmd('Delete', digits[j]);
+				this.cmd(act.delete, digits[j]);
 			}
 
 			const label2 = this.nextIndex++;
 			this.cmd(
-				'SetText',
+				act.setText,
 				label1,
 				String(this.currHash) + ' % ' + String(this.table_size) + ' = '
 			);
 			const index = this.currHash % this.table_size;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				label2,
 				index,
 				HASH_NUMBER_START_X + 32 * HASH_X_DIFF + 105,
 				HASH_NUMBER_START_Y,
 				0
 			);
-			this.cmd('Step');
+			this.cmd(act.step);
 			const highlightID = this.nextIndex++;
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				highlightID,
 				HIGHLIGHT_COLOR,
 				HASH_NUMBER_START_X + 30 * HASH_X_DIFF + 120,
 				HASH_NUMBER_START_Y + 15
 			);
-			this.cmd('Move', highlightID, this.indexXPos[index], this.indexYPos[index]);
-			this.cmd('Step');
-			this.cmd('Delete', highlightID);
-			this.cmd('Delete', label1);
-			this.cmd('Delete', label2);
+			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
+			this.cmd(act.step);
+			this.cmd(act.delete, highlightID);
+			this.cmd(act.delete, label1);
+			this.cmd(act.delete, label2);
 			//this.nextIndex = oldnextIndex;
 
 			return index;

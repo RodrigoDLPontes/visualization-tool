@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 30;
@@ -149,7 +150,7 @@ export default class KMP extends Algorithm {
 			ypos = ARRAY_START_Y;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex,
 				text.charAt(i),
 				this.cellSize,
@@ -157,7 +158,7 @@ export default class KMP extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
 		for (let row = 0; row < text.length; row++) {
@@ -166,7 +167,7 @@ export default class KMP extends Algorithm {
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
 				this.comparisonMatrixID[row][col] = this.nextIndex;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.nextIndex++,
 					'',
 					this.cellSize,
@@ -182,7 +183,7 @@ export default class KMP extends Algorithm {
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			iPointerID,
 			'#0000FF',
 			ARRAY_START_X,
@@ -190,7 +191,7 @@ export default class KMP extends Algorithm {
 			this.cellSize / 2
 		);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			jPointerID,
 			'#0000FF',
 			ARRAY_START_X,
@@ -204,32 +205,32 @@ export default class KMP extends Algorithm {
 		while (i <= text.length - pattern.length) {
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
-					'SetText',
+					act.setText,
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
 					ypos
 				);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#2ECC71');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
-				this.cmd('Step');
+				this.cmd(act.step);
 				if (j < pattern.length) {
 					xpos = (i + j) * this.cellSize + ARRAY_START_X;
-					this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+					this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 					ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-					this.cmd('Move', jPointerID, xpos, ypos);
-					this.cmd('Step');
+					this.cmd(act.move, jPointerID, xpos, ypos);
+					this.cmd(act.step);
 				}
 			}
 			if (j === 0) {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i], '#E74C3C');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i], '#E74C3C');
 				i++;
 			} else {
 				if (j !== pattern.length) {
-					this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#E74C3C');
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				}
 				const nextAlignment = failureTable[j - 1];
 				i += j - nextAlignment;
@@ -238,15 +239,15 @@ export default class KMP extends Algorithm {
 			row++;
 			if (i <= text.length - pattern.length) {
 				xpos = (i + j) * this.cellSize + ARRAY_START_X;
-				this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+				this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd('Move', jPointerID, xpos, ypos);
-				this.cmd('Step');
+				this.cmd(act.move, jPointerID, xpos, ypos);
+				this.cmd(act.step);
 			}
 		}
 
-		this.cmd('Delete', iPointerID);
-		this.cmd('Delete', jPointerID);
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
 		return this.commands;
 	}
 
@@ -254,7 +255,7 @@ export default class KMP extends Algorithm {
 		// Display label
 		const labelX = ARRAY_START_X + textLength * this.cellSize + 10;
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.failureTableLabelID,
 			'Failure table:',
 			labelX,
@@ -270,7 +271,7 @@ export default class KMP extends Algorithm {
 			const xpos = tableStartX + i * this.cellSize;
 			this.failureTableCharacterID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.failureTableCharacterID[i],
 				pattern.charAt(i),
 				this.cellSize,
@@ -278,10 +279,10 @@ export default class KMP extends Algorithm {
 				xpos,
 				FAILURE_TABLE_START_Y
 			);
-			this.cmd('SetBackgroundColor', this.failureTableCharacterID[i], '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.failureTableCharacterID[i], '#D3D3D3');
 			this.failureTableValueID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.failureTableValueID[i],
 				'',
 				this.cellSize,
@@ -290,13 +291,13 @@ export default class KMP extends Algorithm {
 				FAILURE_TABLE_START_Y + this.cellSize
 			);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		// Display pointers and set first value to 0
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			iPointerID,
 			'#0000FF',
 			tableStartX,
@@ -304,15 +305,15 @@ export default class KMP extends Algorithm {
 			this.cellSize / 2
 		);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			jPointerID,
 			'#FF0000',
 			tableStartX + this.cellSize,
 			FAILURE_TABLE_START_Y,
 			this.cellSize / 2
 		);
-		this.cmd('SetText', this.failureTableValueID[0], 0);
-		this.cmd('Step');
+		this.cmd(act.setText, this.failureTableValueID[0], 0);
+		this.cmd(act.step);
 
 		const failureTable = [];
 		failureTable[0] = 0;
@@ -322,52 +323,52 @@ export default class KMP extends Algorithm {
 			if (pattern.charAt(i) === pattern.charAt(j)) {
 				i++;
 				failureTable[j] = i;
-				this.cmd('SetText', this.failureTableValueID[j], i);
+				this.cmd(act.setText, this.failureTableValueID[j], i);
 				j++;
 				if (j < pattern.length) {
 					this.cmd(
-						'Move',
+						act.move,
 						iPointerID,
 						tableStartX + i * this.cellSize,
 						FAILURE_TABLE_START_Y
 					);
 					this.cmd(
-						'Move',
+						act.move,
 						jPointerID,
 						tableStartX + j * this.cellSize,
 						FAILURE_TABLE_START_Y
 					);
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 			} else {
 				if (i === 0) {
 					failureTable[j] = i;
-					this.cmd('SetText', this.failureTableValueID[j], i);
+					this.cmd(act.setText, this.failureTableValueID[j], i);
 					j++;
 					if (j < pattern.length) {
 						this.cmd(
-							'Move',
+							act.move,
 							jPointerID,
 							tableStartX + j * this.cellSize,
 							FAILURE_TABLE_START_Y
 						);
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 				} else {
 					i = failureTable[i - 1];
 					this.cmd(
-						'Move',
+						act.move,
 						iPointerID,
 						tableStartX + i * this.cellSize,
 						FAILURE_TABLE_START_Y
 					);
-					this.cmd('Step');
+					this.cmd(act.step);
 				}
 			}
 		}
 
-		this.cmd('Delete', iPointerID);
-		this.cmd('Delete', jPointerID);
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
 
 		return failureTable;
 	}
@@ -375,21 +376,21 @@ export default class KMP extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
-			this.cmd('Delete', this.textRowID[i]);
+			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
-				this.cmd('Delete', this.comparisonMatrixID[i][j]);
+				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
 		this.comparisonMatrixID = [];
 		if (this.failureTableValueID.length !== 0) {
-			this.cmd('Delete', this.failureTableLabelID);
+			this.cmd(act.delete, this.failureTableLabelID);
 		}
 		for (let i = 0; i < this.failureTableCharacterID.length; i++) {
-			this.cmd('Delete', this.failureTableCharacterID[i]);
-			this.cmd('Delete', this.failureTableValueID[i]);
+			this.cmd(act.delete, this.failureTableCharacterID[i]);
+			this.cmd(act.delete, this.failureTableValueID[i]);
 		}
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];

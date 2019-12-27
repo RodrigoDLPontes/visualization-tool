@@ -6,7 +6,7 @@ export default {
 	ArrayList: ['ArrayList', algos.ArrayList],
 	LinkedList: ['Singly LinkedList', algos.LinkedList],
 	DoublyLinkedList: ['Doubly LinkedList', algos.DoublyLinkedList],
-	SinglyCircularlyLinkedList: ['Circularly LinkedList', algos.SinglyCircularlyLinkedList],
+	CircularlyLinkedList: ['Circularly LinkedList', algos.CircularlyLinkedList],
 	StackArray: ['Stack (Array)', algos.StackArray],
 	StackLL: ['Stack (LinkedList)', algos.StackLL],
 	QueueArray: ['Queue (Array)', algos.QueueArray],

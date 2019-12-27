@@ -24,6 +24,8 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { act } from '../anim/AnimationMain';
+
 export function addLabelToAlgorithmBar(labelName, group) {
 	const element = document.createTextNode(labelName);
 
@@ -164,17 +166,17 @@ export default class Algorithm {
 			for (j = 0; j < code[i].length; j++) {
 				codeID[i][j] = this.nextIndex++;
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					codeID[i][j],
 					code[i][j],
 					start_x,
 					start_y + i * line_height,
 					0
 				);
-				this.cmd('SetForegroundColor', codeID[i][j], standard_color);
-				this.cmd('SetLayer', codeID[i][j], layer);
+				this.cmd(act.setForegroundColor, codeID[i][j], standard_color);
+				this.cmd(act.setLayer, codeID[i][j], layer);
 				if (j > 0) {
-					this.cmd('AlignRight', codeID[i][j], codeID[i][j - 1]);
+					this.cmd(act.alignRight, codeID[i][j], codeID[i][j - 1]);
 				}
 			}
 		}
@@ -184,19 +186,15 @@ export default class Algorithm {
 	setCodeAlpha(code, newAlpha) {
 		for (let i = 0; i < code.length; i++) {
 			for (let j = 0; j < code[i].length; j++) {
-				this.cmd('SetAlpha', code[i][j], newAlpha);
+				this.cmd(act.setAlpha, code[i][j], newAlpha);
 			}
 		}
 	}
 
-	cmd() {
-		// Helper method to create a command string from a bunch of arguments
+	cmd(act, ...params) {
+		// Helper method to add command to stack
 		if (this.recordAnimation) {
-			let command = arguments[0];
-			for (let i = 1; i < arguments.length; i++) {
-				command = command + '<;>' + String(arguments[i]);
-			}
-			this.commands.push(command);
+			this.commands.push([act, params]);
 		}
 	}
 
@@ -232,7 +230,7 @@ export default class Algorithm {
 		const nxt = [funct, val];
 		this.actionHistory.push(nxt);
 		const retVal = funct(val);
-		this.animationManager.StartNewAnimation(retVal);
+		this.animationManager.startNewAnimation(retVal);
 	}
 
 	normalizeNumber(input, maxLen) {

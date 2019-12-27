@@ -231,6 +231,10 @@ export default class AnimatedRectangle extends AnimatedObject {
 		// TODO:  setting text position?
 	}
 
+	setHighlight(value) {
+		this.highlighted = value;
+	}
+
 	createUndoDelete() {
 		// TODO: Add color?
 		return new UndoDeleteRectangle(
@@ -247,10 +251,6 @@ export default class AnimatedRectangle extends AnimatedObject {
 			this.highlighted,
 			this.layer
 		);
-	}
-
-	setHighlight(value) {
-		this.highlighted = value;
 	}
 }
 

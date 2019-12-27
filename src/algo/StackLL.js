@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 200;
@@ -110,9 +111,9 @@ export default class StackLL extends Algorithm {
 		this.top = 0;
 		this.leftoverLabelID = this.nextIndex++;
 
-		this.cmd('CreateLabel', this.topLabelID, 'Top', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'Top', TOP_LABEL_X, TOP_LABEL_Y);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.topID,
 			'',
 			TOP_ELEM_WIDTH,
@@ -120,11 +121,11 @@ export default class StackLL extends Algorithm {
 			TOP_POS_X,
 			TOP_POS_Y
 		);
-		this.cmd('SetNull', this.topID, 1);
+		this.cmd(act.setNull, this.topID, 1);
 
-		this.cmd('CreateLabel', this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -138,7 +139,7 @@ export default class StackLL extends Algorithm {
 				Math.floor((this.top - 1 - i) / LINKED_LIST_ELEMS_PER_LINE) *
 					LINKED_LIST_LINE_SPACING +
 				LINKED_LIST_START_Y;
-			this.cmd('Move', this.linkedListElemID[i], nextX, nextY);
+			this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 		}
 	}
 
@@ -172,10 +173,10 @@ export default class StackLL extends Algorithm {
 		const labPushValID = this.nextIndex++;
 		this.arrayData[this.top] = elemToPush;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.cmd(
-			'CreateLinkedList',
+			act.createLinkedListNode,
 			this.linkedListElemID[this.top],
 			'',
 			LINKED_LIST_ELEM_WIDTH,
@@ -184,40 +185,39 @@ export default class StackLL extends Algorithm {
 			LINKED_LIST_INSERT_Y,
 			0.25,
 			0,
-			1,
 			1
 		);
 
-		this.cmd('CreateLabel', labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
-		this.cmd('Move', labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+		this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
 
-		this.cmd('Step');
-		this.cmd('SetText', this.linkedListElemID[this.top], elemToPush);
-		this.cmd('Delete', labPushValID);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.linkedListElemID[this.top], elemToPush);
+		this.cmd(act.delete, labPushValID);
 
 		if (this.top === 0) {
-			this.cmd('SetNull', this.topID, 0);
-			this.cmd('SetNull', this.linkedListElemID[this.top], 1);
+			this.cmd(act.setNull, this.topID, 0);
+			this.cmd(act.setNull, this.linkedListElemID[this.top], 1);
 		} else {
 			this.cmd(
-				'Connect',
+				act.connect,
 				this.linkedListElemID[this.top],
 				this.linkedListElemID[this.top - 1]
 			);
-			this.cmd('Step');
-			this.cmd('Disconnect', this.topID, this.linkedListElemID[this.top - 1]);
+			this.cmd(act.step);
+			this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
 		}
-		this.cmd('Connect', this.topID, this.linkedListElemID[this.top]);
+		this.cmd(act.connect, this.topID, this.linkedListElemID[this.top]);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 		this.top = this.top + 1;
 		this.resetLinkedListPositions();
-		this.cmd('Delete', labPushID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.step);
 
 		return this.commands;
 	}
@@ -228,34 +228,34 @@ export default class StackLL extends Algorithm {
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd('CreateLabel', labPopID, 'Popped Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopID, 'Popped Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			labPopValID,
 			this.arrayData[this.top - 1],
 			LINKED_LIST_START_X,
 			LINKED_LIST_START_Y
 		);
 
-		this.cmd('Move', labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
-		this.cmd('Disconnect', this.topID, this.linkedListElemID[this.top - 1]);
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
+		this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
 
 		if (this.top === 1) {
-			this.cmd('SetNull', this.topID, 1);
+			this.cmd(act.setNull, this.topID, 1);
 		} else {
-			this.cmd('Connect', this.topID, this.linkedListElemID[this.top - 2]);
+			this.cmd(act.connect, this.topID, this.linkedListElemID[this.top - 2]);
 		}
-		this.cmd('Step');
-		this.cmd('Delete', this.linkedListElemID[this.top - 1]);
+		this.cmd(act.step);
+		this.cmd(act.delete, this.linkedListElemID[this.top - 1]);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
 
-		this.cmd('Delete', labPopValID);
-		this.cmd('Delete', labPopID);
-		this.cmd('SetText', this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, labPopID);
+		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
 
 		return this.commands;
 	}
@@ -263,10 +263,10 @@ export default class StackLL extends Algorithm {
 	clearAll() {
 		this.commands = [];
 		for (let i = 0; i < this.top; i++) {
-			this.cmd('Delete', this.linkedListElemID[i]);
+			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.top = 0;
-		this.cmd('SetNull', this.topID, 1);
+		this.cmd(act.setNull, this.topID, 1);
 		return this.commands;
 	}
 }

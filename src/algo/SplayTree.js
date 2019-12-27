@@ -25,8 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
-
-// Constants.
+import { act } from '../anim/AnimationMain';
 
 const LINK_COLOR = '#007700';
 const HIGHLIGHT_CIRCLE_COLOR = '#007700';
@@ -52,9 +51,9 @@ export default class SplayTree extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.commands = [];
-		this.cmd('CreateLabel', 0, '', 20, 10, 0);
+		this.cmd(act.createLabel, 0, '', 20, 10, 0);
 		this.nextIndex = 1;
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -181,7 +180,7 @@ export default class SplayTree extends Algorithm {
 			this.highlightID = this.nextIndex++;
 			const firstLabel = this.nextIndex;
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.highlightID,
 				HIGHLIGHT_CIRCLE_COLOR,
 				this.treeRoot.x,
@@ -190,11 +189,11 @@ export default class SplayTree extends Algorithm {
 			this.xPosOfNextLabel = FIRST_PRINT_POS_X;
 			this.yPosOfNextLabel = this.first_print_pos_y;
 			this.printTreeRec(this.treeRoot);
-			this.cmd('Delete', this.highlightID);
-			this.cmd('Step');
+			this.cmd(act.delete, this.highlightID);
+			this.cmd(act.step);
 
 			for (let i = firstLabel; i < this.nextIndex; i++) {
-				this.cmd('Delete', i);
+				this.cmd(act.delete, i);
 			}
 			this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
 		}
@@ -202,18 +201,18 @@ export default class SplayTree extends Algorithm {
 	}
 
 	printTreeRec(tree) {
-		this.cmd('Step');
+		this.cmd(act.step);
 		if (tree.left != null) {
-			this.cmd('Move', this.highlightID, tree.left.x, tree.left.y);
+			this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
 			this.printTreeRec(tree.left);
-			this.cmd('Move', this.highlightID, tree.x, tree.y);
-			this.cmd('Step');
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
 		}
 		const nextLabelID = this.nextIndex++;
-		this.cmd('CreateLabel', nextLabelID, tree.data, tree.x, tree.y);
-		this.cmd('SetForegroundColor', nextLabelID, PRINT_COLOR);
-		this.cmd('Move', nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
-		this.cmd('Step');
+		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
+		this.cmd(act.setForegroundColor, nextLabelID, PRINT_COLOR);
+		this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
+		this.cmd(act.step);
 
 		this.xPosOfNextLabel += PRINT_HORIZONTAL_GAP;
 		if (this.xPosOfNextLabel > this.print_max) {
@@ -221,10 +220,10 @@ export default class SplayTree extends Algorithm {
 			this.yPosOfNextLabel += PRINT_VERTICAL_GAP;
 		}
 		if (tree.right != null) {
-			this.cmd('Move', this.highlightID, tree.right.x, tree.right.y);
+			this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
 			this.printTreeRec(tree.right);
-			this.cmd('Move', this.highlightID, tree.x, tree.y);
-			this.cmd('Step');
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
 		}
 		return;
 	}
@@ -243,34 +242,34 @@ export default class SplayTree extends Algorithm {
 		const found = this.doFind(this.treeRoot, findValue);
 
 		if (found) {
-			this.cmd('SetText', 0, 'Element ' + findValue + ' found.');
+			this.cmd(act.setText, 0, 'Element ' + findValue + ' found.');
 		} else {
-			this.cmd('SetText', 0, 'Element ' + findValue + ' not found.');
+			this.cmd(act.setText, 0, 'Element ' + findValue + ' not found.');
 		}
 
 		return this.commands;
 	}
 
 	doFind(tree, value) {
-		this.cmd('SetText', 0, 'Searching for ' + value);
+		this.cmd(act.setText, 0, 'Searching for ' + value);
 		if (tree != null) {
-			this.cmd('SetHighlight', tree.graphicID, 1);
+			this.cmd(act.setHighlight, tree.graphicID, 1);
 			if (tree.data === value) {
 				this.cmd(
-					'SetText',
+					act.setText,
 					0,
 					'Searching for ' + value + ' : ' + value + ' = ' + value + ' (Element found!)'
 				);
-				this.cmd('Step');
-				this.cmd('SetText', 0, 'Splaying found node to root of tree');
-				this.cmd('Step');
-				this.cmd('SetHighlight', tree.graphicID, 0);
+				this.cmd(act.step);
+				this.cmd(act.setText, 0, 'Splaying found node to root of tree');
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, tree.graphicID, 0);
 				this.splayUp(tree);
 				return true;
 			} else {
 				if (tree.data > value) {
 					this.cmd(
-						'SetText',
+						act.setText,
 						0,
 						'Searching for ' +
 							value +
@@ -280,19 +279,19 @@ export default class SplayTree extends Algorithm {
 							tree.data +
 							' (look to left subtree)'
 					);
-					this.cmd('Step');
-					this.cmd('SetHighlight', tree.graphicID, 0);
+					this.cmd(act.step);
+					this.cmd(act.setHighlight, tree.graphicID, 0);
 					if (tree.left != null) {
 						this.cmd(
-							'CreateHighlightCircle',
+							act.createHighlightCircle,
 							this.highlightID,
 							HIGHLIGHT_CIRCLE_COLOR,
 							tree.x,
 							tree.y
 						);
-						this.cmd('Move', this.highlightID, tree.left.x, tree.left.y);
-						this.cmd('Step');
-						this.cmd('Delete', this.highlightID);
+						this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
+						this.cmd(act.step);
+						this.cmd(act.delete, this.highlightID);
 						return this.doFind(tree.left, value);
 					} else {
 						this.splayUp(tree);
@@ -300,7 +299,7 @@ export default class SplayTree extends Algorithm {
 					}
 				} else {
 					this.cmd(
-						'SetText',
+						act.setText,
 						0,
 						'Searching for ' +
 							value +
@@ -310,19 +309,19 @@ export default class SplayTree extends Algorithm {
 							tree.data +
 							' (look to right subtree)'
 					);
-					this.cmd('Step');
-					this.cmd('SetHighlight', tree.graphicID, 0);
+					this.cmd(act.step);
+					this.cmd(act.setHighlight, tree.graphicID, 0);
 					if (tree.right != null) {
 						this.cmd(
-							'CreateHighlightCircle',
+							act.createHighlightCircle,
 							this.highlightID,
 							HIGHLIGHT_CIRCLE_COLOR,
 							tree.x,
 							tree.y
 						);
-						this.cmd('Move', this.highlightID, tree.right.x, tree.right.y);
-						this.cmd('Step');
-						this.cmd('Delete', this.highlightID);
+						this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
+						this.cmd(act.step);
+						this.cmd(act.delete, this.highlightID);
 						return this.doFind(tree.right, value);
 					} else {
 						this.splayUp(tree);
@@ -332,111 +331,111 @@ export default class SplayTree extends Algorithm {
 			}
 		} else {
 			this.cmd(
-				'SetText',
+				act.setText,
 				0,
 				'Searching for ' + value + ' : < Empty Tree > (Element not found)'
 			);
-			this.cmd('Step');
-			this.cmd('SetText', 0, 'Searching for ' + value + ' :  (Element not found)');
+			this.cmd(act.step);
+			this.cmd(act.setText, 0, 'Searching for ' + value + ' :  (Element not found)');
 			return false;
 		}
 	}
 
 	insertElement(insertedValue) {
 		this.commands = [];
-		this.cmd('SetText', 0, 'Inserting ' + insertedValue);
+		this.cmd(act.setText, 0, 'Inserting ' + insertedValue);
 		this.highlightID = this.nextIndex++;
 
 		if (this.treeRoot == null) {
-			this.cmd('CreateCircle', this.nextIndex, insertedValue, this.startingX, STARTING_Y);
-			this.cmd('SetForegroundColor', this.nextIndex, FOREGROUND_COLOR);
-			this.cmd('SetBackgroundColor', this.nextIndex, BACKGROUND_COLOR);
-			this.cmd('Step');
+			this.cmd(act.createCircle, this.nextIndex, insertedValue, this.startingX, STARTING_Y);
+			this.cmd(act.setForegroundColor, this.nextIndex, FOREGROUND_COLOR);
+			this.cmd(act.setBackgroundColor, this.nextIndex, BACKGROUND_COLOR);
+			this.cmd(act.step);
 			this.treeRoot = new BSTNode(insertedValue, this.nextIndex, this.startingX, STARTING_Y);
 			this.nextIndex += 1;
 		} else {
-			this.cmd('CreateCircle', this.nextIndex, insertedValue, 100, 100);
-			this.cmd('SetForegroundColor', this.nextIndex, FOREGROUND_COLOR);
-			this.cmd('SetBackgroundColor', this.nextIndex, BACKGROUND_COLOR);
-			this.cmd('Step');
+			this.cmd(act.createCircle, this.nextIndex, insertedValue, 100, 100);
+			this.cmd(act.setForegroundColor, this.nextIndex, FOREGROUND_COLOR);
+			this.cmd(act.setBackgroundColor, this.nextIndex, BACKGROUND_COLOR);
+			this.cmd(act.step);
 			const insertElem = new BSTNode(insertedValue, this.nextIndex, 100, 100);
 
 			this.nextIndex += 1;
-			this.cmd('SetHighlight', insertElem.graphicID, 1);
+			this.cmd(act.setHighlight, insertElem.graphicID, 1);
 			this.insert(insertElem, this.treeRoot);
 			this.resizeTree();
-			this.cmd('SetText', 0, 'Splay inserted element to root of tree');
-			this.cmd('Step');
+			this.cmd(act.setText, 0, 'Splay inserted element to root of tree');
+			this.cmd(act.step);
 			this.splayUp(insertElem);
 		}
-		this.cmd('SetText', 0, '');
+		this.cmd(act.setText, 0, '');
 		return this.commands;
 	}
 
 	insert(elem, tree) {
 		let foundDuplicate = false;
-		this.cmd('SetHighlight', tree.graphicID, 1);
-		this.cmd('SetHighlight', elem.graphicID, 1);
+		this.cmd(act.setHighlight, tree.graphicID, 1);
+		this.cmd(act.setHighlight, elem.graphicID, 1);
 
 		if (elem.data < tree.data) {
-			this.cmd('SetText', 0, elem.data + ' < ' + tree.data + '.  Looking at left subtree');
+			this.cmd(act.setText, 0, elem.data + ' < ' + tree.data + '.  Looking at left subtree');
 		} else if (elem.data > tree.data) {
-			this.cmd('SetText', 0, elem.data + ' >= ' + tree.data + '.  Looking at right subtree');
+			this.cmd(act.setText, 0, elem.data + ' >= ' + tree.data + '.  Looking at right subtree');
 		} else {
-			this.cmd('SetText', 0, elem.data + ' = ' + tree.data + '. Ignoring duplicate');
+			this.cmd(act.setText, 0, elem.data + ' = ' + tree.data + '. Ignoring duplicate');
 			foundDuplicate = true;
 		}
-		this.cmd('Step');
-		this.cmd('SetHighlight', tree.graphicID, 0);
-		this.cmd('SetHighlight', elem.graphicID, 0);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, tree.graphicID, 0);
+		this.cmd(act.setHighlight, elem.graphicID, 0);
 
 		if (foundDuplicate) {
-			this.cmd('Delete', elem.graphicID, 0);
+			this.cmd(act.delete, elem.graphicID, 0);
 			return;
 		}
 
 		if (elem.data < tree.data) {
 			if (tree.left == null) {
-				this.cmd('SetText', 0, 'Found null tree, inserting element');
+				this.cmd(act.setText, 0, 'Found null tree, inserting element');
 
-				this.cmd('SetHighlight', elem.graphicID, 0);
+				this.cmd(act.setHighlight, elem.graphicID, 0);
 				tree.left = elem;
 				elem.parent = tree;
-				this.cmd('Connect', tree.graphicID, elem.graphicID, LINK_COLOR);
+				this.cmd(act.connect, tree.graphicID, elem.graphicID, LINK_COLOR);
 			} else {
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					this.highlightID,
 					HIGHLIGHT_CIRCLE_COLOR,
 					tree.x,
 					tree.y
 				);
-				this.cmd('Move', this.highlightID, tree.left.x, tree.left.y);
-				this.cmd('Step');
-				this.cmd('Delete', this.highlightID);
+				this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
+				this.cmd(act.step);
+				this.cmd(act.delete, this.highlightID);
 				this.insert(elem, tree.left);
 			}
 		} else {
 			if (tree.right == null) {
-				this.cmd('SetText', 0, 'Found null tree, inserting element');
-				this.cmd('SetHighlight', elem.graphicID, 0);
+				this.cmd(act.setText, 0, 'Found null tree, inserting element');
+				this.cmd(act.setHighlight, elem.graphicID, 0);
 				tree.right = elem;
 				elem.parent = tree;
-				this.cmd('Connect', tree.graphicID, elem.graphicID, LINK_COLOR);
+				this.cmd(act.connect, tree.graphicID, elem.graphicID, LINK_COLOR);
 				elem.x = tree.x + WIDTH_DELTA / 2;
 				elem.y = tree.y + HEIGHT_DELTA;
-				this.cmd('Move', elem.graphicID, elem.x, elem.y);
+				this.cmd(act.move, elem.graphicID, elem.x, elem.y);
 			} else {
 				this.cmd(
-					'CreateHighlightCircle',
+					act.createHighlightCircle,
 					this.highlightID,
 					HIGHLIGHT_CIRCLE_COLOR,
 					tree.x,
 					tree.y
 				);
-				this.cmd('Move', this.highlightID, tree.right.x, tree.right.y);
-				this.cmd('Step');
-				this.cmd('Delete', this.highlightID);
+				this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
+				this.cmd(act.step);
+				this.cmd(act.delete, this.highlightID);
 				this.insert(elem, tree.right);
 			}
 		}
@@ -444,35 +443,35 @@ export default class SplayTree extends Algorithm {
 
 	deleteElement(deletedValue) {
 		this.commands = [];
-		this.cmd('SetText', 0, 'Deleting ' + deletedValue);
-		this.cmd('Step');
-		this.cmd('SetText', 0, '');
+		this.cmd(act.setText, 0, 'Deleting ' + deletedValue);
+		this.cmd(act.step);
+		this.cmd(act.setText, 0, '');
 		this.highlightID = this.nextIndex++;
 		this.treeDelete(this.treeRoot, deletedValue);
-		this.cmd('SetText', 0, '');
+		this.cmd(act.setText, 0, '');
 		// Do delete
 		return this.commands;
 	}
 
 	treeDelete(tree, valueToDelete) {
-		this.cmd('SetText', 0, 'Finding ' + valueToDelete + ' and splaying to rooot');
-		this.cmd('Step');
+		this.cmd(act.setText, 0, 'Finding ' + valueToDelete + ' and splaying to rooot');
+		this.cmd(act.step);
 
 		const inTree = this.doFind(this.treeRoot, valueToDelete);
-		this.cmd('SetText', 0, 'Removing root, leaving left and right trees');
-		this.cmd('Step');
+		this.cmd(act.setText, 0, 'Removing root, leaving left and right trees');
+		this.cmd(act.step);
 		if (inTree) {
 			if (this.treeRoot.right == null) {
-				this.cmd('Delete', this.treeRoot.graphicID);
-				this.cmd('SetText', 0, 'No right tree, make left tree the root.');
-				this.cmd('Step');
+				this.cmd(act.delete, this.treeRoot.graphicID);
+				this.cmd(act.setText, 0, 'No right tree, make left tree the root.');
+				this.cmd(act.step);
 				this.treeRoot = this.treeRoot.left;
 				this.treeRoot.parent = null;
 				this.resizeTree();
 			} else if (this.treeRoot.left == null) {
-				this.cmd('Delete', this.treeRoot.graphicID);
-				this.cmd('SetText', 0, 'No left tree, make right tree the root.');
-				this.cmd('Step');
+				this.cmd(act.delete, this.treeRoot.graphicID);
+				this.cmd(act.setText, 0, 'No left tree, make right tree the root.');
+				this.cmd(act.step);
 				this.treeRoot = this.treeRoot.right;
 				this.treeRoot.parent = null;
 				this.resizeTree();
@@ -480,27 +479,27 @@ export default class SplayTree extends Algorithm {
 				const right = this.treeRoot.right;
 				const left = this.treeRoot.left;
 				const oldGraphicID = this.treeRoot.graphicID;
-				this.cmd('Disconnect', this.treeRoot.graphicID, left.graphicID);
-				this.cmd('Disconnect', this.treeRoot.graphicID, right.graphicID);
-				this.cmd('SetAlpha', this.treeRoot.graphicID, 0);
-				this.cmd('SetText', 0, 'Splay largest element in left tree to root');
-				this.cmd('Step');
+				this.cmd(act.disconnect, this.treeRoot.graphicID, left.graphicID);
+				this.cmd(act.disconnect, this.treeRoot.graphicID, right.graphicID);
+				this.cmd(act.setAlpha, this.treeRoot.graphicID, 0);
+				this.cmd(act.setText, 0, 'Splay largest element in left tree to root');
+				this.cmd(act.step);
 
 				left.parent = null;
 				const largestLeft = this.findMax(left);
 				this.splayUp(largestLeft);
 				this.cmd(
-					'SetText',
+					act.setText,
 					0,
 					'Left tree now has no right subtree, connect left and right trees'
 				);
-				this.cmd('Step');
-				this.cmd('Connect', largestLeft.graphicID, right.graphicID, LINK_COLOR);
+				this.cmd(act.step);
+				this.cmd(act.connect, largestLeft.graphicID, right.graphicID, LINK_COLOR);
 				largestLeft.parent = null;
 				largestLeft.right = right;
 				right.parent = largestLeft;
 				this.treeRoot = largestLeft;
-				this.cmd('Delete', oldGraphicID);
+				this.cmd(act.delete, oldGraphicID);
 				this.resizeTree();
 			}
 		}
@@ -513,23 +512,23 @@ export default class SplayTree extends Algorithm {
 		// const t1 = A.left;
 		const t2 = A.right;
 
-		this.cmd('SetText', 0, 'Zig Right');
-		this.cmd('SetEdgeHighlight', B.graphicID, A.graphicID, 1);
-		this.cmd('Step');
+		this.cmd(act.setText, 0, 'Zig Right');
+		this.cmd(act.setEdgeHighlight, B.graphicID, A.graphicID, 1);
+		this.cmd(act.step);
 
 		if (t2 != null) {
-			this.cmd('Disconnect', A.graphicID, t2.graphicID);
-			this.cmd('Connect', B.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, A.graphicID, t2.graphicID);
+			this.cmd(act.connect, B.graphicID, t2.graphicID, LINK_COLOR);
 			t2.parent = B;
 		}
-		this.cmd('Disconnect', B.graphicID, A.graphicID);
-		this.cmd('Connect', A.graphicID, B.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, B.graphicID, A.graphicID);
+		this.cmd(act.connect, A.graphicID, B.graphicID, LINK_COLOR);
 		A.parent = B.parent;
 		if (B.parent == null) {
 			this.treeRoot = A;
 		} else {
-			this.cmd('Disconnect', B.parent.graphicID, B.graphicID, LINK_COLOR);
-			this.cmd('Connect', B.parent.graphicID, A.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, B.parent.graphicID, B.graphicID, LINK_COLOR);
+			this.cmd(act.connect, B.parent.graphicID, A.graphicID, LINK_COLOR);
 			if (B.isLeftChild()) {
 				B.parent.left = A;
 			} else {
@@ -551,16 +550,16 @@ export default class SplayTree extends Algorithm {
 		const t3 = B.right;
 		// const t4 = C.right;
 
-		this.cmd('SetText', 0, 'Zig-Zig Right');
-		this.cmd('SetEdgeHighlight', C.graphicID, B.graphicID, 1);
-		this.cmd('SetEdgeHighlight', B.graphicID, A.graphicID, 1);
-		this.cmd('Step');
-		this.cmd('SetEdgeHighlight', C.graphicID, B.graphicID, 0);
-		this.cmd('SetEdgeHighlight', B.graphicID, A.graphicID, 0);
+		this.cmd(act.setText, 0, 'Zig-Zig Right');
+		this.cmd(act.setEdgeHighlight, C.graphicID, B.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, B.graphicID, A.graphicID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setEdgeHighlight, C.graphicID, B.graphicID, 0);
+		this.cmd(act.setEdgeHighlight, B.graphicID, A.graphicID, 0);
 
 		if (C.parent != null) {
-			this.cmd('Disconnect', C.parent.graphicID, C.graphicID);
-			this.cmd('Connect', C.parent.graphicID, A.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, C.parent.graphicID, C.graphicID);
+			this.cmd(act.connect, C.parent.graphicID, A.graphicID, LINK_COLOR);
 			if (C.isLeftChild()) {
 				C.parent.left = A;
 			} else {
@@ -571,19 +570,19 @@ export default class SplayTree extends Algorithm {
 		}
 
 		if (t2 != null) {
-			this.cmd('Disconnect', A.graphicID, t2.graphicID);
-			this.cmd('Connect', B.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, A.graphicID, t2.graphicID);
+			this.cmd(act.connect, B.graphicID, t2.graphicID, LINK_COLOR);
 			t2.parent = B;
 		}
 		if (t3 != null) {
-			this.cmd('Disconnect', B.graphicID, t3.graphicID);
-			this.cmd('Connect', C.graphicID, t3.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, B.graphicID, t3.graphicID);
+			this.cmd(act.connect, C.graphicID, t3.graphicID, LINK_COLOR);
 			t3.parent = C;
 		}
-		this.cmd('Disconnect', B.graphicID, A.graphicID);
-		this.cmd('Connect', A.graphicID, B.graphicID, LINK_COLOR);
-		this.cmd('Disconnect', C.graphicID, B.graphicID);
-		this.cmd('Connect', B.graphicID, C.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, B.graphicID, A.graphicID);
+		this.cmd(act.connect, A.graphicID, B.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, C.graphicID, B.graphicID);
+		this.cmd(act.connect, B.graphicID, C.graphicID, LINK_COLOR);
 
 		A.right = B;
 		A.parent = C.parent;
@@ -604,16 +603,16 @@ export default class SplayTree extends Algorithm {
 		const t3 = C.left;
 		// const t4 = C.right;
 
-		this.cmd('SetText', 0, 'Zig-Zig Left');
-		this.cmd('SetEdgeHighlight', A.graphicID, B.graphicID, 1);
-		this.cmd('SetEdgeHighlight', B.graphicID, C.graphicID, 1);
-		this.cmd('Step');
-		this.cmd('SetEdgeHighlight', A.graphicID, B.graphicID, 0);
-		this.cmd('SetEdgeHighlight', B.graphicID, C.graphicID, 0);
+		this.cmd(act.setText, 0, 'Zig-Zig Left');
+		this.cmd(act.setEdgeHighlight, A.graphicID, B.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, B.graphicID, C.graphicID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setEdgeHighlight, A.graphicID, B.graphicID, 0);
+		this.cmd(act.setEdgeHighlight, B.graphicID, C.graphicID, 0);
 
 		if (A.parent != null) {
-			this.cmd('Disconnect', A.parent.graphicID, A.graphicID);
-			this.cmd('Connect', A.parent.graphicID, C.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, A.parent.graphicID, A.graphicID);
+			this.cmd(act.connect, A.parent.graphicID, C.graphicID, LINK_COLOR);
 			if (A.isLeftChild()) {
 				A.parent.left = C;
 			} else {
@@ -624,19 +623,19 @@ export default class SplayTree extends Algorithm {
 		}
 
 		if (t2 != null) {
-			this.cmd('Disconnect', B.graphicID, t2.graphicID);
-			this.cmd('Connect', A.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, B.graphicID, t2.graphicID);
+			this.cmd(act.connect, A.graphicID, t2.graphicID, LINK_COLOR);
 			t2.parent = A;
 		}
 		if (t3 != null) {
-			this.cmd('Disconnect', C.graphicID, t3.graphicID);
-			this.cmd('Connect', B.graphicID, t3.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, C.graphicID, t3.graphicID);
+			this.cmd(act.connect, B.graphicID, t3.graphicID, LINK_COLOR);
 			t3.parent = B;
 		}
-		this.cmd('Disconnect', A.graphicID, B.graphicID);
-		this.cmd('Disconnect', B.graphicID, C.graphicID);
-		this.cmd('Connect', C.graphicID, B.graphicID, LINK_COLOR);
-		this.cmd('Connect', B.graphicID, A.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, A.graphicID, B.graphicID);
+		this.cmd(act.disconnect, B.graphicID, C.graphicID);
+		this.cmd(act.connect, C.graphicID, B.graphicID, LINK_COLOR);
+		this.cmd(act.connect, B.graphicID, A.graphicID, LINK_COLOR);
 		C.parent = A.parent;
 		A.right = t2;
 		B.left = A;
@@ -655,23 +654,23 @@ export default class SplayTree extends Algorithm {
 		const t2 = B.left;
 		// const t3 = B.right;
 
-		this.cmd('SetText', 0, 'Zig Left');
-		this.cmd('SetEdgeHighlight', A.graphicID, B.graphicID, 1);
-		this.cmd('Step');
+		this.cmd(act.setText, 0, 'Zig Left');
+		this.cmd(act.setEdgeHighlight, A.graphicID, B.graphicID, 1);
+		this.cmd(act.step);
 
 		if (t2 != null) {
-			this.cmd('Disconnect', B.graphicID, t2.graphicID);
-			this.cmd('Connect', A.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, B.graphicID, t2.graphicID);
+			this.cmd(act.connect, A.graphicID, t2.graphicID, LINK_COLOR);
 			t2.parent = A;
 		}
-		this.cmd('Disconnect', A.graphicID, B.graphicID);
-		this.cmd('Connect', B.graphicID, A.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, A.graphicID, B.graphicID);
+		this.cmd(act.connect, B.graphicID, A.graphicID, LINK_COLOR);
 		B.parent = A.parent;
 		if (A.parent == null) {
 			this.treeRoot = B;
 		} else {
-			this.cmd('Disconnect', A.parent.graphicID, A.graphicID, LINK_COLOR);
-			this.cmd('Connect', A.parent.graphicID, B.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, A.parent.graphicID, A.graphicID, LINK_COLOR);
+			this.cmd(act.connect, A.parent.graphicID, B.graphicID, LINK_COLOR);
 
 			if (A.isLeftChild()) {
 				A.parent.left = B;
@@ -714,19 +713,19 @@ export default class SplayTree extends Algorithm {
 		if (tree.right != null) {
 			this.highlightID = this.nextIndex++;
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.highlightID,
 				HIGHLIGHT_CIRCLE_COLOR,
 				tree.x,
 				tree.y
 			);
-			this.cmd('Step');
+			this.cmd(act.step);
 			while (tree.right != null) {
-				this.cmd('Move', this.highlightID, tree.right.x, tree.right.y);
-				this.cmd('Step');
+				this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
+				this.cmd(act.step);
 				tree = tree.right;
 			}
-			this.cmd('Delete', this.highlightID);
+			this.cmd(act.delete, this.highlightID);
 			return tree;
 		} else {
 			return tree;
@@ -734,7 +733,7 @@ export default class SplayTree extends Algorithm {
 	}
 
 	doubleRotateRight(tree) {
-		this.cmd('SetText', 0, 'Zig-Zag Right');
+		this.cmd(act.setText, 0, 'Zig-Zag Right');
 		const A = tree.left;
 		const B = tree.left.right;
 		const C = tree;
@@ -743,29 +742,29 @@ export default class SplayTree extends Algorithm {
 		const t3 = B.right;
 		// const t4 = C.right;
 
-		this.cmd('SetEdgeHighlight', C.graphicID, A.graphicID, 1);
-		this.cmd('SetEdgeHighlight', A.graphicID, B.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, C.graphicID, A.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, A.graphicID, B.graphicID, 1);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		if (t2 != null) {
-			this.cmd('Disconnect', B.graphicID, t2.graphicID);
+			this.cmd(act.disconnect, B.graphicID, t2.graphicID);
 			t2.parent = A;
 			A.right = t2;
-			this.cmd('Connect', A.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.connect, A.graphicID, t2.graphicID, LINK_COLOR);
 		}
 		if (t3 != null) {
-			this.cmd('Disconnect', B.graphicID, t3.graphicID);
+			this.cmd(act.disconnect, B.graphicID, t3.graphicID);
 			t3.parent = C;
 			C.left = t2;
-			this.cmd('Connect', C.graphicID, t3.graphicID, LINK_COLOR);
+			this.cmd(act.connect, C.graphicID, t3.graphicID, LINK_COLOR);
 		}
 		if (C.parent == null) {
 			B.parent = null;
 			this.treeRoot = B;
 		} else {
-			this.cmd('Disconnect', C.parent.graphicID, C.graphicID);
-			this.cmd('Connect', C.parent.graphicID, B.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, C.parent.graphicID, C.graphicID);
+			this.cmd(act.connect, C.parent.graphicID, B.graphicID, LINK_COLOR);
 			if (C.isLeftChild()) {
 				C.parent.left = B;
 			} else {
@@ -774,10 +773,10 @@ export default class SplayTree extends Algorithm {
 			B.parent = C.parent;
 			C.parent = B;
 		}
-		this.cmd('Disconnect', C.graphicID, A.graphicID);
-		this.cmd('Disconnect', A.graphicID, B.graphicID);
-		this.cmd('Connect', B.graphicID, A.graphicID, LINK_COLOR);
-		this.cmd('Connect', B.graphicID, C.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, C.graphicID, A.graphicID);
+		this.cmd(act.disconnect, A.graphicID, B.graphicID);
+		this.cmd(act.connect, B.graphicID, A.graphicID, LINK_COLOR);
+		this.cmd(act.connect, B.graphicID, C.graphicID, LINK_COLOR);
 		B.left = A;
 		A.parent = B;
 		B.right = C;
@@ -789,7 +788,7 @@ export default class SplayTree extends Algorithm {
 	}
 
 	doubleRotateLeft(tree) {
-		this.cmd('SetText', 0, 'Zig-Zag Left');
+		this.cmd(act.setText, 0, 'Zig-Zag Left');
 		const A = tree;
 		const B = tree.right.left;
 		const C = tree.right;
@@ -798,30 +797,30 @@ export default class SplayTree extends Algorithm {
 		const t3 = B.right;
 		// const t4 = C.right;
 
-		this.cmd('SetEdgeHighlight', A.graphicID, C.graphicID, 1);
-		this.cmd('SetEdgeHighlight', C.graphicID, B.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, A.graphicID, C.graphicID, 1);
+		this.cmd(act.setEdgeHighlight, C.graphicID, B.graphicID, 1);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		if (t2 != null) {
-			this.cmd('Disconnect', B.graphicID, t2.graphicID);
+			this.cmd(act.disconnect, B.graphicID, t2.graphicID);
 			t2.parent = A;
 			A.right = t2;
-			this.cmd('Connect', A.graphicID, t2.graphicID, LINK_COLOR);
+			this.cmd(act.connect, A.graphicID, t2.graphicID, LINK_COLOR);
 		}
 		if (t3 != null) {
-			this.cmd('Disconnect', B.graphicID, t3.graphicID);
+			this.cmd(act.disconnect, B.graphicID, t3.graphicID);
 			t3.parent = C;
 			C.left = t2;
-			this.cmd('Connect', C.graphicID, t3.graphicID, LINK_COLOR);
+			this.cmd(act.connect, C.graphicID, t3.graphicID, LINK_COLOR);
 		}
 
 		if (A.parent == null) {
 			B.parent = null;
 			this.treeRoot = B;
 		} else {
-			this.cmd('Disconnect', A.parent.graphicID, A.graphicID);
-			this.cmd('Connect', A.parent.graphicID, B.graphicID, LINK_COLOR);
+			this.cmd(act.disconnect, A.parent.graphicID, A.graphicID);
+			this.cmd(act.connect, A.parent.graphicID, B.graphicID, LINK_COLOR);
 			if (A.isLeftChild()) {
 				A.parent.left = B;
 			} else {
@@ -830,10 +829,10 @@ export default class SplayTree extends Algorithm {
 			B.parent = A.parent;
 			A.parent = B;
 		}
-		this.cmd('Disconnect', A.graphicID, C.graphicID);
-		this.cmd('Disconnect', C.graphicID, B.graphicID);
-		this.cmd('Connect', B.graphicID, A.graphicID, LINK_COLOR);
-		this.cmd('Connect', B.graphicID, C.graphicID, LINK_COLOR);
+		this.cmd(act.disconnect, A.graphicID, C.graphicID);
+		this.cmd(act.disconnect, C.graphicID, B.graphicID);
+		this.cmd(act.connect, B.graphicID, A.graphicID, LINK_COLOR);
+		this.cmd(act.connect, B.graphicID, C.graphicID, LINK_COLOR);
 		B.left = A;
 		A.parent = B;
 		B.right = C;
@@ -858,7 +857,7 @@ export default class SplayTree extends Algorithm {
 			}
 			this.setNewPositions(this.treeRoot, startingPoint, STARTING_Y, 0);
 			this.animateNewPositions(this.treeRoot);
-			this.cmd('Step');
+			this.cmd(act.step);
 		}
 	}
 
@@ -878,7 +877,7 @@ export default class SplayTree extends Algorithm {
 
 	animateNewPositions(tree) {
 		if (tree != null) {
-			this.cmd('Move', tree.graphicID, tree.x, tree.y);
+			this.cmd(act.move, tree.graphicID, tree.x, tree.y);
 			this.animateNewPositions(tree.left);
 			this.animateNewPositions(tree.right);
 		}

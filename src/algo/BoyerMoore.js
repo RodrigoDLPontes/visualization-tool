@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 30;
@@ -153,7 +154,7 @@ export default class BoyerMoore extends Algorithm {
 			const ypos = ARRAY_START_Y;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex,
 				text.charAt(i),
 				this.cellSize,
@@ -161,7 +162,7 @@ export default class BoyerMoore extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
 		let xpos;
@@ -172,7 +173,7 @@ export default class BoyerMoore extends Algorithm {
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
 				this.comparisonMatrixID[row][col] = this.nextIndex;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.nextIndex++,
 					'',
 					this.cellSize,
@@ -188,7 +189,7 @@ export default class BoyerMoore extends Algorithm {
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			iPointerID,
 			'#0000FF',
 			ARRAY_START_X + (pattern.length - 1) * this.cellSize,
@@ -196,7 +197,7 @@ export default class BoyerMoore extends Algorithm {
 			this.cellSize / 2
 		);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			jPointerID,
 			'#0000FF',
 			ARRAY_START_X + (pattern.length - 1) * this.cellSize,
@@ -210,30 +211,30 @@ export default class BoyerMoore extends Algorithm {
 		while (i <= text.length - pattern.length) {
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
-					'SetText',
+					act.setText,
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
 					ypos
 				);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			while (j >= 0 && pattern.charAt(j) === text.charAt(i + j)) {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#2ECC71');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j--;
-				this.cmd('Step');
+				this.cmd(act.step);
 				if (j >= 0) {
 					const xpos = (i + j) * this.cellSize + ARRAY_START_X;
-					this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+					this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 					const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-					this.cmd('Move', jPointerID, xpos, ypos);
-					this.cmd('Step');
+					this.cmd(act.move, jPointerID, xpos, ypos);
+					this.cmd(act.step);
 				}
 			}
 			if (j === -1) {
 				i++;
 			} else {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#E74C3C');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				let shift;
 				if (text.charAt(i + j) in lastTable) {
 					shift = lastTable[text.charAt(i + j)];
@@ -250,24 +251,24 @@ export default class BoyerMoore extends Algorithm {
 			row++;
 			if (i <= text.length - pattern.length) {
 				const xpos = (i + j) * this.cellSize + ARRAY_START_X;
-				this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+				this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 				const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd('Move', jPointerID, xpos, ypos);
-				this.cmd('Step');
+				this.cmd(act.move, jPointerID, xpos, ypos);
+				this.cmd(act.step);
 			}
 		}
 
-		this.cmd('Delete', iPointerID);
-		this.cmd('Delete', jPointerID);
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
 		return this.commands;
 	}
 
 	buildLastTable(textLength, pattern) {
 		// Display labels
 		const labelsX = ARRAY_START_X + textLength * this.cellSize + 10;
-		this.cmd('CreateLabel', this.patternTableLableID, 'Pattern:', labelsX, PATTERN_START_Y, 0);
+		this.cmd(act.createLabel, this.patternTableLableID, 'Pattern:', labelsX, PATTERN_START_Y, 0);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.lastTableLabelID,
 			'Last occurence table:',
 			labelsX,
@@ -283,7 +284,7 @@ export default class BoyerMoore extends Algorithm {
 			const xpos = patternTableStartX + i * this.cellSize;
 			this.patternTableCharacterID[i] = this.nextIndex;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex++,
 				pattern.charAt(i),
 				this.cellSize,
@@ -292,7 +293,7 @@ export default class BoyerMoore extends Algorithm {
 				PATTERN_START_Y
 			);
 			this.patternTableIndexID[i] = this.nextIndex;
-			this.cmd('CreateLabel', this.nextIndex++, i, xpos, PATTERN_START_Y + this.cellSize);
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, PATTERN_START_Y + this.cellSize);
 		}
 
 		// Create empty last occurence table
@@ -310,7 +311,7 @@ export default class BoyerMoore extends Algorithm {
 			const xpos = patternTableStartX + j * this.cellSize;
 			this.lastTableCharacterID.push(this.nextIndex);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex,
 				character,
 				this.cellSize,
@@ -318,11 +319,11 @@ export default class BoyerMoore extends Algorithm {
 				xpos,
 				LAST_TABLE_START_Y
 			);
-			this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 			characters[character] = this.nextIndex;
 			this.lastTableValueID.push(this.nextIndex);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex++,
 				'',
 				this.cellSize,
@@ -336,7 +337,7 @@ export default class BoyerMoore extends Algorithm {
 		const xpos = patternTableStartX + j * this.cellSize;
 		this.lastTableCharacterID.push(this.nextIndex);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.nextIndex,
 			'*',
 			this.cellSize,
@@ -344,10 +345,10 @@ export default class BoyerMoore extends Algorithm {
 			xpos,
 			LAST_TABLE_START_Y
 		);
-		this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+		this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		this.lastTableValueID.push(this.nextIndex);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.nextIndex++,
 			'-1',
 			this.cellSize,
@@ -360,7 +361,7 @@ export default class BoyerMoore extends Algorithm {
 		const lastTable = {};
 		for (let i = 0; i < pattern.length; i++) {
 			lastTable[pattern.charAt(i)] = i;
-			this.cmd('SetText', characters[pattern.charAt(i)], i);
+			this.cmd(act.setText, characters[pattern.charAt(i)], i);
 		}
 		return lastTable;
 	}
@@ -368,30 +369,30 @@ export default class BoyerMoore extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
-			this.cmd('Delete', this.textRowID[i]);
+			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
-				this.cmd('Delete', this.comparisonMatrixID[i][j]);
+				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
 		this.comparisonMatrixID = [];
 		if (this.patternTableCharacterID.length !== 0) {
-			this.cmd('Delete', this.patternTableLableID);
+			this.cmd(act.delete, this.patternTableLableID);
 		}
 		for (let i = 0; i < this.patternTableCharacterID.length; i++) {
-			this.cmd('Delete', this.patternTableCharacterID[i]);
-			this.cmd('Delete', this.patternTableIndexID[i]);
+			this.cmd(act.delete, this.patternTableCharacterID[i]);
+			this.cmd(act.delete, this.patternTableIndexID[i]);
 		}
 		this.patternTableCharacterID = [];
 		this.patternTableIndexID = [];
 		if (this.lastTableCharacterID.length !== 0) {
-			this.cmd('Delete', this.lastTableLabelID);
+			this.cmd(act.delete, this.lastTableLabelID);
 		}
 		for (let i = 0; i < this.lastTableCharacterID.length; i++) {
-			this.cmd('Delete', this.lastTableCharacterID[i]);
-			this.cmd('Delete', this.lastTableValueID[i]);
+			this.cmd(act.delete, this.lastTableCharacterID[i]);
+			this.cmd(act.delete, this.lastTableValueID[i]);
 		}
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];

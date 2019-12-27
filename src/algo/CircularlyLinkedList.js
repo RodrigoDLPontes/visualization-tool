@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 200;
@@ -53,7 +54,7 @@ const PUSH_ELEMENT_Y = 30;
 
 const SIZE = 9;
 
-export default class CircularlySinglyLinkedList extends Algorithm {
+export default class CircularlyLinkedList extends Algorithm {
 	constructor(am, w, h) {
 		// Call the unit function of our "superexport default class", which adds a couple of
 		// listeners, and sets up the undo stack
@@ -175,9 +176,9 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
 
-		this.cmd('CreateLabel', this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -284,45 +285,41 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 			this.linkedListElemID[index] = this.nextIndex++;
 		}
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		if (this.size !== 0 && (index === 0 || index === this.size)) {
 			this.cmd(
-				'CreateCircularlyLinkedList',
+				act.createCircularlyLinkedListNode,
 				this.linkedListElemID[1],
 				'',
 				LINKED_LIST_ELEM_WIDTH,
 				LINKED_LIST_ELEM_HEIGHT,
 				LINKED_LIST_INSERT_X,
 				LINKED_LIST_INSERT_Y,
-				0.25,
-				1
 			);
 		} else {
 			this.cmd(
-				'CreateCircularlyLinkedList',
+				act.createCircularlyLinkedListNode,
 				this.linkedListElemID[index],
 				'',
 				LINKED_LIST_ELEM_WIDTH,
 				LINKED_LIST_ELEM_HEIGHT,
 				LINKED_LIST_INSERT_X,
 				LINKED_LIST_INSERT_Y,
-				0.25,
-				1
 			);
 		}
-		this.cmd('CreateLabel', labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
 
 		if (this.size === 0) {
-			this.cmd('Move', labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-			this.cmd('Step');
+			this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+			this.cmd(act.step);
 
-			this.cmd('SetText', this.linkedListElemID[0], elemToAdd);
-			this.cmd('Delete', labPushValID);
-			this.cmd('ConnectCurve', this.linkedListElemID[0], this.linkedListElemID[0], -0.5);
-			this.cmd('Step');
+			this.cmd(act.setText, this.linkedListElemID[0], elemToAdd);
+			this.cmd(act.delete, labPushValID);
+			this.cmd(act.connectCurve, this.linkedListElemID[0], this.linkedListElemID[0], -0.5);
+			this.cmd(act.step);
 
 			this.size = this.size + 1;
 			this.resetNodePositions();
@@ -332,49 +329,49 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 				const labCopiedValID = this.nextIndex++;
 				const copiedData = index === 0 ? this.arrayData[1] : this.arrayData[0];
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					labCopiedValID,
 					copiedData,
 					LINKED_LIST_START_X,
 					LINKED_LIST_START_Y
 				);
-				this.cmd('Move', labCopiedValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-				this.cmd('Step');
+				this.cmd(act.move, labCopiedValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+				this.cmd(act.step);
 
-				this.cmd('SetText', this.linkedListElemID[1], copiedData);
-				this.cmd('Delete', labCopiedValID);
-				this.cmd('Step');
+				this.cmd(act.setText, this.linkedListElemID[1], copiedData);
+				this.cmd(act.delete, labCopiedValID);
+				this.cmd(act.step);
 
 				// Move label for new data to the first node
-				this.cmd('Move', labPushValID, LINKED_LIST_START_X, LINKED_LIST_START_Y);
-				this.cmd('Step');
+				this.cmd(act.move, labPushValID, LINKED_LIST_START_X, LINKED_LIST_START_Y);
+				this.cmd(act.step);
 
-				this.cmd('SetText', this.linkedListElemID[0], elemToAdd);
-				this.cmd('Delete', labPushValID);
-				this.cmd('Step');
+				this.cmd(act.setText, this.linkedListElemID[0], elemToAdd);
+				this.cmd(act.delete, labPushValID);
+				this.cmd(act.step);
 
 				// Change pointers
 				if (this.size === 1) {
 					// Case where we're adding the second node
-					this.cmd('Disconnect', this.linkedListElemID[0], this.linkedListElemID[0]); // Disconnect head node from itself
-					this.cmd('Connect', this.linkedListElemID[0], this.linkedListElemID[1]); // Connect head node to new node
+					this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[0]); // Disconnect head node from itself
+					this.cmd(act.connect, this.linkedListElemID[0], this.linkedListElemID[1]); // Connect head node to new node
 					this.cmd(
-						'ConnectCurve',
+						act.connectCurve,
 						this.linkedListElemID[1],
 						this.linkedListElemID[0],
 						-0.5
 					); // Connect new node to head node
 				} else {
 					// Other cases
-					this.cmd('Disconnect', this.linkedListElemID[0], this.linkedListElemID[2]); // Disconnect head from old second node
-					this.cmd('Connect', this.linkedListElemID[0], this.linkedListElemID[1]); // Connect head node to new node
-					this.cmd('Connect', this.linkedListElemID[1], this.linkedListElemID[2]); // Connect new node to old second node
+					this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[2]); // Disconnect head from old second node
+					this.cmd(act.connect, this.linkedListElemID[0], this.linkedListElemID[1]); // Connect head node to new node
+					this.cmd(act.connect, this.linkedListElemID[1], this.linkedListElemID[2]); // Connect new node to old second node
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				this.size = this.size + 1;
 				this.resetNodePositions();
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				// If adding to the back, "move head over" (rotate elements backwards)
 				if (index === this.size - 1) {
@@ -394,12 +391,12 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 							LINKED_LIST_LINE_SPACING +
 						LINKED_LIST_START_Y;
 					this.cmd(
-						'Move',
+						act.move,
 						this.linkedListElemID[i],
 						(LINKED_LIST_START_X + lastX) / 2,
 						lastY + LINKED_LIST_ELEM_HEIGHT * 3
 					);
-					this.cmd('Step');
+					this.cmd(act.step);
 
 					for (let i = 0; i < this.size - 1; i++) {
 						const nextX =
@@ -408,56 +405,56 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 						const nextY =
 							Math.floor(i / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING +
 							LINKED_LIST_START_Y;
-						this.cmd('Move', this.linkedListElemID[i], nextX, nextY);
+						this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 					}
 
 					this.cmd(
-						'Disconnect',
+						act.disconnect,
 						this.linkedListElemID[this.size - 2],
 						this.linkedListElemID[this.size - 1]
 					); // Disconnect curved pointer
 					this.cmd(
-						'Connect',
+						act.connect,
 						this.linkedListElemID[this.size - 2],
 						this.linkedListElemID[this.size - 1]
 					); // Connect with normal pointer
 					this.cmd(
-						'Disconnect',
+						act.disconnect,
 						this.linkedListElemID[this.size - 1],
 						this.linkedListElemID[0]
 					); // Disconnect normal pointer
 					this.cmd(
-						'ConnectCurve',
+						act.connectCurve,
 						this.linkedListElemID[this.size - 1],
 						this.linkedListElemID[0],
 						-0.5
 					); // Connect with curved pointer
-					this.cmd('Move', this.linkedListElemID[i], lastX, lastY);
-					this.cmd('Step');
+					this.cmd(act.move, this.linkedListElemID[i], lastX, lastY);
+					this.cmd(act.step);
 				}
 			} else {
-				this.cmd('Move', labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-				this.cmd('Step');
+				this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
+				this.cmd(act.step);
 
-				this.cmd('SetText', this.linkedListElemID[index], elemToAdd);
-				this.cmd('Delete', labPushValID);
-				this.cmd('Step');
+				this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
+				this.cmd(act.delete, labPushValID);
+				this.cmd(act.step);
 
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index + 1]
 				);
-				this.cmd('Connect', this.linkedListElemID[index - 1], this.linkedListElemID[index]);
-				this.cmd('Connect', this.linkedListElemID[index], this.linkedListElemID[index + 1]);
+				this.cmd(act.connect, this.linkedListElemID[index - 1], this.linkedListElemID[index]);
+				this.cmd(act.connect, this.linkedListElemID[index], this.linkedListElemID[index + 1]);
 
 				this.size = this.size + 1;
 				this.resetNodePositions();
 			}
 		}
 
-		this.cmd('Delete', labPushID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.step);
 
 		return this.commands;
 	}
@@ -469,14 +466,14 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
-		this.cmd('CreateLabel', labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPopValID, this.arrayData[index], nodePosX, nodePosY);
-		this.cmd('Move', labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
 
 		if (this.size !== 1) {
 			if (index === 0) {
@@ -485,50 +482,50 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 				const secondNodeX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING;
 				const secondNodeY = LINKED_LIST_START_Y;
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					labCopiedValID,
 					this.arrayData[1],
 					secondNodeX,
 					secondNodeY
 				);
-				this.cmd('Move', labCopiedValID, LINKED_LIST_START_X, LINKED_LIST_START_Y);
-				this.cmd('Step');
+				this.cmd(act.move, labCopiedValID, LINKED_LIST_START_X, LINKED_LIST_START_Y);
+				this.cmd(act.step);
 
-				this.cmd('SetText', this.linkedListElemID[0], this.arrayData[1]);
-				this.cmd('Delete', labCopiedValID);
-				this.cmd('Step');
+				this.cmd(act.setText, this.linkedListElemID[0], this.arrayData[1]);
+				this.cmd(act.delete, labCopiedValID);
+				this.cmd(act.step);
 
 				this.cmd(
-					'Move',
+					act.move,
 					this.linkedListElemID[1],
 					secondNodeX,
 					secondNodeY - LINKED_LIST_ELEM_HEIGHT * 2
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 
-				this.cmd('Disconnect', this.linkedListElemID[0], this.linkedListElemID[1]);
+				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
 				if (this.size === 2) {
 					// Only one node will remain, connect it to itself
 					this.cmd(
-						'ConnectCurve',
+						act.connectCurve,
 						this.linkedListElemID[0],
 						this.linkedListElemID[0],
 						-0.5
 					);
 				} else {
 					// Normal remove
-					this.cmd('Connect', this.linkedListElemID[0], this.linkedListElemID[2]);
+					this.cmd(act.connect, this.linkedListElemID[0], this.linkedListElemID[2]);
 				}
 			} else if (index === this.size - 1) {
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index]
 				);
 				if (this.size === 2) {
 					// Only one node will remain, connect it to itself
 					this.cmd(
-						'ConnectCurve',
+						act.connectCurve,
 						this.linkedListElemID[0],
 						this.linkedListElemID[0],
 						-0.5
@@ -536,7 +533,7 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 				} else {
 					// Normal remove
 					this.cmd(
-						'ConnectCurve',
+						act.connectCurve,
 						this.linkedListElemID[index - 1],
 						this.linkedListElemID[0],
 						-0.5
@@ -547,29 +544,29 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
 					LINKED_LIST_START_X;
 				const yPos = LINKED_LIST_START_Y - LINKED_LIST_ELEM_HEIGHT * 2;
-				this.cmd('Move', this.linkedListElemID[index], xPos, yPos);
-				this.cmd('Step');
+				this.cmd(act.move, this.linkedListElemID[index], xPos, yPos);
+				this.cmd(act.step);
 
 				this.cmd(
-					'Disconnect',
+					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index]
 				);
 				this.cmd(
-					'Connect',
+					act.connect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index + 1]
 				);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 
 			const removedNodeIndex = index === 0 ? 1 : index; // If deleting from front, we need to remove the second node
-			this.cmd('Delete', this.linkedListElemID[removedNodeIndex]);
+			this.cmd(act.delete, this.linkedListElemID[removedNodeIndex]);
 			for (let i = removedNodeIndex; i < this.size; i++) {
 				this.linkedListElemID[i] = this.linkedListElemID[i + 1];
 			}
 		} else {
-			this.cmd('Delete', this.linkedListElemID[0]);
+			this.cmd(act.delete, this.linkedListElemID[0]);
 		}
 
 		for (let i = index; i < this.size; i++) {
@@ -578,9 +575,9 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 		this.size = this.size - 1;
 		this.resetNodePositions();
 
-		this.cmd('Delete', labPopValID);
-		this.cmd('Delete', labPopID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, labPopID);
+		this.cmd(act.step);
 
 		return this.commands;
 	}
@@ -592,14 +589,14 @@ export default class CircularlySinglyLinkedList extends Algorithm {
 			const nextY =
 				Math.floor(i / LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_LINE_SPACING +
 				LINKED_LIST_START_Y;
-			this.cmd('Move', this.linkedListElemID[i], nextX, nextY);
+			this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 		}
 	}
 
 	clearAll() {
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('Delete', this.linkedListElemID[i]);
+			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.size = 0;
 		return this.commands;

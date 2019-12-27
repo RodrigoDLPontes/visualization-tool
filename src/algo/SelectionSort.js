@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -121,7 +122,7 @@ export default class SelectionSort extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
 		this.arrayID = [];
@@ -165,7 +166,7 @@ export default class SelectionSort extends Algorithm {
 			}
 			this.displayData[i] = displayData;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				displayData,
 				ARRAY_ELEM_WIDTH,
@@ -175,44 +176,44 @@ export default class SelectionSort extends Algorithm {
 			);
 		}
 
-		this.cmd('CreateHighlightCircle', this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
-		this.cmd('SetHighlight', this.iPointerID, 1);
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y
 		);
-		this.cmd('SetHighlight', this.jPointerID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.jPointerID, 1);
+		this.cmd(act.step);
 
 		for (let i = 0; i < this.arrayData.length - 1; i++) {
 			let smallest = i;
-			this.cmd('SetBackgroundColor', this.arrayID[smallest], '#FFFF00');
+			this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFF00');
 			for (let j = i + 1; j < this.arrayData.length; j++) {
 				this.movePointers(smallest, j);
 				if (this.arrayData[j] < this.arrayData[smallest]) {
-					this.cmd('SetBackgroundColor', this.arrayID[smallest], '#FFFFFF');
-					this.cmd('Step');
+					this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFFFF');
+					this.cmd(act.step);
 					smallest = j;
 					this.movePointers(smallest, j);
-					this.cmd('SetBackgroundColor', this.arrayID[smallest], '#FFFF00');
-					this.cmd('Step');
+					this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFF00');
+					this.cmd(act.step);
 				}
 			}
 			this.swap(i, smallest);
-			this.cmd('SetBackgroundColor', this.arrayID[smallest], '#FFFFFF');
-			this.cmd('Step');
-			this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFFFF');
+			this.cmd(act.step);
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
+			this.cmd(act.step);
 		}
 
-		this.cmd('Delete', this.iPointerID);
-		this.cmd('Delete', this.jPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.step);
 
-		this.cmd('SetBackgroundColor', this.arrayID[this.arrayID.length - 1], '#2ECC71');
+		this.cmd(act.setBackgroundColor, this.arrayID[this.arrayID.length - 1], '#2ECC71');
 
 		return this.commands;
 	}
@@ -220,31 +221,31 @@ export default class SelectionSort extends Algorithm {
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('Move', this.iPointerID, iXPos, iYPos);
+		this.cmd(act.move, this.iPointerID, iXPos, iYPos);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('Move', this.jPointerID, jXPos, jYPos);
-		this.cmd('Step');
+		this.cmd(act.move, this.jPointerID, jXPos, jYPos);
+		this.cmd(act.step);
 	}
 
 	swap(i, j) {
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', iLabelID, this.displayData[i], iXPos, iYPos);
+		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, iYPos);
 		const jLabelID = this.nextIndex++;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', jLabelID, this.displayData[j], jXPos, jYPos);
-		this.cmd('Settext', this.arrayID[i], '');
-		this.cmd('Settext', this.arrayID[j], '');
-		this.cmd('Move', iLabelID, jXPos, jYPos);
-		this.cmd('Move', jLabelID, iXPos, iYPos);
-		this.cmd('Step');
-		this.cmd('Settext', this.arrayID[i], this.displayData[j]);
-		this.cmd('Settext', this.arrayID[j], this.displayData[i]);
-		this.cmd('Delete', iLabelID);
-		this.cmd('Delete', jLabelID);
+		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, jYPos);
+		this.cmd(act.setText, this.arrayID[i], '');
+		this.cmd(act.setText, this.arrayID[j], '');
+		this.cmd(act.move, iLabelID, jXPos, jYPos);
+		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
+		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
+		this.cmd(act.delete, iLabelID);
+		this.cmd(act.delete, jLabelID);
 		// Swap data in backend array
 		let temp = this.arrayData[i];
 		this.arrayData[i] = this.arrayData[j];

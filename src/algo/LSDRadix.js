@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const INFO_LABEL_X = 75;
 const INFO_LABEL_Y = 20;
@@ -121,7 +122,7 @@ export default class LSDRadix extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
 		this.arrayID = [];
@@ -166,7 +167,7 @@ export default class LSDRadix extends Algorithm {
 			}
 			this.arrayDisplay[i] = arrayDisplay;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				arrayDisplay,
 				ARRAY_ELEM_WIDTH,
@@ -187,7 +188,7 @@ export default class LSDRadix extends Algorithm {
 			const xpos = i * ARRAY_ELEM_WIDTH + BUCKETS_START_X;
 			const ypos = BUCKETS_START_Y;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.bucketsID[i],
 				i,
 				BUCKET_ELEM_WIDTH,
@@ -195,78 +196,78 @@ export default class LSDRadix extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('SetBackgroundColor', this.bucketsID[i], '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
 		}
 
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.infoLabelID,
 			'Searching for number with greatest magnitude',
 			INFO_LABEL_X,
 			INFO_LABEL_Y,
 			0
 		);
-		this.cmd('CreateHighlightCircle', this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
-		this.cmd('SetHighlight', this.iPointerID, 1);
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y
 		);
-		this.cmd('SetHighlight', this.jPointerID, 1);
-		this.cmd('SetBackgroundColor', this.arrayID[0], '#FFFF00');
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.jPointerID, 1);
+		this.cmd(act.setBackgroundColor, this.arrayID[0], '#FFFF00');
+		this.cmd(act.step);
 
 		let greatest = 0;
 		for (let i = 1; i < this.arrayData.length; i++) {
 			this.movePointers(greatest, i);
 			if (this.arrayData[i] > this.arrayData[greatest]) {
-				this.cmd('SetBackgroundColor', this.arrayID[greatest], '#FFFFFF');
-				this.cmd('Step');
+				this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFFFF');
+				this.cmd(act.step);
 				greatest = i;
 				this.movePointers(greatest, i);
-				this.cmd('SetBackgroundColor', this.arrayID[greatest], '#FFFF00');
-				this.cmd('Step');
+				this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFF00');
+				this.cmd(act.step);
 			}
 		}
 
-		this.cmd('Delete', this.iPointerID);
-		this.cmd('Delete', this.jPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.step);
 
 		let digits = Math.floor(Math.log10(this.arrayData[greatest])) + 1;
 		digits = digits || 1; // If greatest is 0, above returns NaN, so set to 1 if that happens
 
 		const longData = this.arrayData[greatest];
 		this.cmd(
-			'SetText',
+			act.setText,
 			this.infoLabelID,
 			longData + ' has greatest magnitude, number of digits is ' + digits
 		);
-		this.cmd('Step');
+		this.cmd(act.step);
 
-		this.cmd('SetBackgroundColor', this.arrayID[greatest], '#FFFFFF');
+		this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFFFF');
 
 		for (let i = 0; i < digits; i++) {
-			this.cmd('SetText', this.infoLabelID, 'Getting digits at position ' + (i + 1));
+			this.cmd(act.setText, this.infoLabelID, 'Getting digits at position ' + (i + 1));
 			this.cmd(
-				'CreateHighlightCircle',
+				act.createHighlightCircle,
 				this.iPointerID,
 				'#0000FF',
 				ARRAY_START_X,
 				ARRAY_START_Y
 			);
-			this.cmd('SetHighlight', this.iPointerID, 1);
+			this.cmd(act.setHighlight, this.iPointerID, 1);
 			for (let j = 0; j < this.arrayData.length; j++) {
 				this.cmd(
-					'Move',
+					act.move,
 					this.iPointerID,
 					ARRAY_START_X + j * ARRAY_ELEM_WIDTH,
 					ARRAY_START_Y
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				const id = this.nextIndex++;
 				const data = this.arrayData[j];
 				const display = this.arrayDisplay[j];
@@ -276,7 +277,7 @@ export default class LSDRadix extends Algorithm {
 				this.bucketsDisplay[digit].push(display);
 				const len = this.bucketsData[digit].length;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					id,
 					display,
 					BUCKET_ELEM_WIDTH,
@@ -285,7 +286,7 @@ export default class LSDRadix extends Algorithm {
 					BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING
 				);
 				this.cmd(
-					'Connect',
+					act.connect,
 					this.bucketsID[digit][this.bucketsID[digit].length - 2],
 					id,
 					0,
@@ -294,10 +295,10 @@ export default class LSDRadix extends Algorithm {
 					'',
 					2
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
-			this.cmd('Delete', this.iPointerID);
-			this.cmd('Step');
+			this.cmd(act.delete, this.iPointerID);
+			this.cmd(act.step);
 			let index = 0;
 			for (let j = 0; j < 10; j++) {
 				const idBucket = this.bucketsID[j];
@@ -309,34 +310,34 @@ export default class LSDRadix extends Algorithm {
 					const data = dataBucket.shift();
 					const display = displayBucket.shift();
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						labelID,
 						display,
 						BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
 						BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING
 					);
 					this.cmd(
-						'Move',
+						act.move,
 						labelID,
 						ARRAY_START_X + index * ARRAY_ELEM_WIDTH,
 						ARRAY_START_Y
 					);
-					this.cmd('Step');
-					this.cmd('SetText', this.arrayID[index], display);
-					this.cmd('Delete', labelID);
-					this.cmd('Step');
-					this.cmd('Delete', nodeID);
+					this.cmd(act.step);
+					this.cmd(act.setText, this.arrayID[index], display);
+					this.cmd(act.delete, labelID);
+					this.cmd(act.step);
+					this.cmd(act.delete, nodeID);
 					if (dataBucket.length) {
-						this.cmd('Connect', idBucket[0], idBucket[1]);
+						this.cmd(act.connect, idBucket[0], idBucket[1]);
 						for (let k = 1; k < idBucket.length; k++) {
 							this.cmd(
-								'Move',
+								act.move,
 								idBucket[k],
 								BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
 								BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING
 							);
 						}
-						this.cmd('Step');
+						this.cmd(act.step);
 					}
 					this.arrayData[index] = data;
 					this.arrayDisplay[index] = display;
@@ -345,7 +346,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
-		this.cmd('Delete', this.infoLabelID);
+		this.cmd(act.delete, this.infoLabelID);
 
 		return this.commands;
 	}
@@ -353,31 +354,31 @@ export default class LSDRadix extends Algorithm {
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('Move', this.iPointerID, iXPos, iYPos);
+		this.cmd(act.move, this.iPointerID, iXPos, iYPos);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('Move', this.jPointerID, jXPos, jYPos);
-		this.cmd('Step');
+		this.cmd(act.move, this.jPointerID, jXPos, jYPos);
+		this.cmd(act.step);
 	}
 
 	swap(i, j) {
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', iLabelID, this.displayData[i], iXPos, iYPos);
+		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, iYPos);
 		const jLabelID = this.nextIndex++;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', jLabelID, this.displayData[j], jXPos, jYPos);
-		this.cmd('Settext', this.arrayID[i], '');
-		this.cmd('Settext', this.arrayID[j], '');
-		this.cmd('Move', iLabelID, jXPos, jYPos);
-		this.cmd('Move', jLabelID, iXPos, iYPos);
-		this.cmd('Step');
-		this.cmd('Settext', this.arrayID[i], this.displayData[j]);
-		this.cmd('Settext', this.arrayID[j], this.displayData[i]);
-		this.cmd('Delete', iLabelID);
-		this.cmd('Delete', jLabelID);
+		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, jYPos);
+		this.cmd(act.setText, this.arrayID[i], '');
+		this.cmd(act.setText, this.arrayID[j], '');
+		this.cmd(act.move, iLabelID, jXPos, jYPos);
+		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
+		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
+		this.cmd(act.delete, iLabelID);
+		this.cmd(act.delete, jLabelID);
 		// Swap data in backend array
 		let temp = this.arrayData[i];
 		this.arrayData[i] = this.arrayData[j];

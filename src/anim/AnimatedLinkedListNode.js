@@ -260,6 +260,12 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		this.resetTextPosition();
 	}
 
+	setHighlight(value) {
+		if (value !== this.highlighted) {
+			this.highlighted = value;
+		}
+	}
+
 	createUndoDelete() {
 		return new UndoDeleteLinkedList(
 			this.objectID,
@@ -277,12 +283,6 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			this.layer,
 			this.nullPointer
 		);
-	}
-
-	setHighlight(value) {
-		if (value !== this.highlighted) {
-			this.highlighted = value;
-		}
 	}
 }
 

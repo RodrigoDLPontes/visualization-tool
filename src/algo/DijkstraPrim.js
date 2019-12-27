@@ -26,6 +26,7 @@
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const TABLE_ENTRY_WIDTH = 50;
 const TABLE_ENTRY_HEIGHT = 25;
@@ -68,7 +69,7 @@ export default class DijkstraPrim extends Graph {
 		super.setup();
 
 		this.commands = [];
-		this.cmd('CreateLabel', this.message1ID, '', MESSAGE_LABEL_1_X, MESSAGE_LABEL_1_Y, 0);
+		this.cmd(act.createLabel, this.message1ID, '', MESSAGE_LABEL_1_X, MESSAGE_LABEL_1_Y, 0);
 
 		this.vertexID = new Array(this.size);
 		this.knownID = new Array(this.size);
@@ -86,7 +87,7 @@ export default class DijkstraPrim extends Graph {
 			this.distanceID[i] = this.nextIndex++;
 			this.pathID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.vertexID[i],
 				String.fromCharCode(65 + i),
 				TABLE_ENTRY_WIDTH,
@@ -95,7 +96,7 @@ export default class DijkstraPrim extends Graph {
 				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
 			);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.knownID[i],
 				'',
 				TABLE_ENTRY_WIDTH,
@@ -104,7 +105,7 @@ export default class DijkstraPrim extends Graph {
 				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
 			);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.distanceID[i],
 				'',
 				TABLE_ENTRY_WIDTH,
@@ -113,7 +114,7 @@ export default class DijkstraPrim extends Graph {
 				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
 			);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.pathID[i],
 				'',
 				TABLE_ENTRY_WIDTH,
@@ -121,31 +122,31 @@ export default class DijkstraPrim extends Graph {
 				TABLE_START_X + 3 * TABLE_ENTRY_WIDTH,
 				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
 			);
-			this.cmd('SetTextColor', this.vertexID[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setTextColor, this.vertexID[i], VERTEX_INDEX_COLOR);
 		}
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Vertex',
 			TABLE_START_X,
 			TABLE_START_Y - TABLE_ENTRY_HEIGHT
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Visited',
 			TABLE_START_X + TABLE_ENTRY_WIDTH,
 			TABLE_START_Y - TABLE_ENTRY_HEIGHT
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Cost',
 			TABLE_START_X + 2 * TABLE_ENTRY_WIDTH,
 			TABLE_START_Y - TABLE_ENTRY_HEIGHT
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.nextIndex++,
 			'Path',
 			TABLE_START_X + 3 * TABLE_ENTRY_WIDTH,
@@ -153,7 +154,7 @@ export default class DijkstraPrim extends Graph {
 		);
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.comparisonMessageID = this.nextIndex++;
@@ -161,11 +162,11 @@ export default class DijkstraPrim extends Graph {
 
 	findCheapestUnknown() {
 		let bestIndex = -1;
-		this.cmd('SetText', this.message1ID, 'Finding Cheapest Uknown Vertex');
+		this.cmd(act.setText, this.message1ID, 'Finding Cheapest Uknown Vertex');
 
 		for (let i = 0; i < this.size; i++) {
 			if (!this.known[i]) {
-				this.cmd('SetHighlight', this.distanceID[i], 1);
+				this.cmd(act.setHighlight, this.distanceID[i], 1);
 			}
 
 			if (
@@ -180,10 +181,10 @@ export default class DijkstraPrim extends Graph {
 		// 	let x = 3;
 		// 	x = x + 2;
 		// }
-		this.cmd('Step');
+		this.cmd(act.step);
 		for (let i = 0; i < this.size; i++) {
 			if (!this.known[i]) {
-				this.cmd('SetHighlight', this.distanceID[i], 0);
+				this.cmd(act.setHighlight, this.distanceID[i], 0);
 			}
 		}
 		return bestIndex;
@@ -202,20 +203,20 @@ export default class DijkstraPrim extends Graph {
 			this.known[i] = false;
 			this.distance[i] = -1;
 			this.path[i] = -1;
-			this.cmd('SetText', this.knownID[i], 'F');
-			this.cmd('SetText', this.distanceID[i], 'INF');
-			this.cmd('SetText', this.pathID[i], '-1');
-			this.cmd('SetTextColor', this.knownID[i], '#000000');
+			this.cmd(act.setText, this.knownID[i], 'F');
+			this.cmd(act.setText, this.distanceID[i], 'INF');
+			this.cmd(act.setText, this.pathID[i], '-1');
+			this.cmd(act.setTextColor, this.knownID[i], '#000000');
 		}
 		if (this.messageID != null) {
 			for (let i = 0; i < this.messageID.length; i++) {
-				this.cmd('Delete', this.messageID[i]);
+				this.cmd(act.delete, this.messageID[i]);
 			}
 		}
 		this.messageID = [];
 
 		this.distance[current] = 0;
-		this.cmd('SetText', this.distanceID[current], 0);
+		this.cmd(act.setText, this.distanceID[current], 0);
 
 		for (let i = 0; i < this.size; i++) {
 			current = this.findCheapestUnknown();
@@ -223,24 +224,24 @@ export default class DijkstraPrim extends Graph {
 				break;
 			}
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.message1ID,
 				'Cheapest Unknown Vertex: ' + String.fromCharCode(65 + current)
 			); // Gotta love Auto Conversion
-			this.cmd('SetHighlight', this.distanceID[current], 1);
+			this.cmd(act.setHighlight, this.distanceID[current], 1);
 
-			this.cmd('SetHighlight', this.circleID[current], 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.distanceID[current], 0);
-			this.cmd('SetText', this.message1ID, 'Setting known field to True');
-			this.cmd('SetHighlight', this.knownID[current], 1);
+			this.cmd(act.setHighlight, this.circleID[current], 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.distanceID[current], 0);
+			this.cmd(act.setText, this.message1ID, 'Setting known field to True');
+			this.cmd(act.setHighlight, this.knownID[current], 1);
 			this.known[current] = true;
-			this.cmd('SetText', this.knownID[current], 'T');
-			this.cmd('SetTextColor', this.knownID[current], '#AAAAAA');
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.knownID[current], 0);
+			this.cmd(act.setText, this.knownID[current], 'T');
+			this.cmd(act.setTextColor, this.knownID[current], '#AAAAAA');
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.knownID[current], 0);
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.message1ID,
 				'Updating neighbors of vertex ' + String.fromCharCode(65 + current)
 			); // Gotta love Auto Conversion
@@ -249,16 +250,16 @@ export default class DijkstraPrim extends Graph {
 					this.highlightEdge(current, neighbor, 1);
 					if (this.known[neighbor]) {
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							this.comparisonMessageID,
 							'Vertex ' + String.fromCharCode(65 + neighbor) + ' known',
 							TABLE_START_X + 5 * TABLE_ENTRY_WIDTH,
 							TABLE_START_Y + neighbor * TABLE_ENTRY_HEIGHT
 						);
-						this.cmd('SetHighlight', this.knownID[neighbor], 1);
+						this.cmd(act.setHighlight, this.knownID[neighbor], 1);
 					} else {
-						this.cmd('SetHighlight', this.distanceID[current], 1);
-						this.cmd('SetHighlight', this.distanceID[neighbor], 1);
+						this.cmd(act.setHighlight, this.distanceID[current], 1);
+						this.cmd(act.setHighlight, this.distanceID[neighbor], 1);
 						let distString = String(this.distance[neighbor]);
 						if (this.distance[neighbor] < 0) {
 							distString = 'INF';
@@ -271,7 +272,7 @@ export default class DijkstraPrim extends Graph {
 									this.distance[current] + this.adj_matrix[current][neighbor]
 							) {
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									this.comparisonMessageID,
 									distString +
 										' > ' +
@@ -283,7 +284,7 @@ export default class DijkstraPrim extends Graph {
 								);
 							} else {
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									this.comparisonMessageID,
 									'!(' +
 										String(this.distance[neighbor]) +
@@ -302,7 +303,7 @@ export default class DijkstraPrim extends Graph {
 								this.distance[neighbor] > this.adj_matrix[current][neighbor]
 							) {
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									this.comparisonMessageID,
 									distString + ' > ' + String(this.adj_matrix[current][neighbor]),
 									TABLE_START_X + 4.3 * TABLE_ENTRY_WIDTH,
@@ -310,7 +311,7 @@ export default class DijkstraPrim extends Graph {
 								);
 							} else {
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									this.comparisonMessageID,
 									'!(' +
 										String(this.distance[neighbor]) +
@@ -324,14 +325,14 @@ export default class DijkstraPrim extends Graph {
 						}
 					}
 
-					this.cmd('Step');
-					this.cmd('Delete', this.comparisonMessageID);
+					this.cmd(act.step);
+					this.cmd(act.delete, this.comparisonMessageID);
 					this.highlightEdge(current, neighbor, 0);
 					if (this.known[neighbor]) {
-						this.cmd('SetHighlight', this.knownID[neighbor], 0);
+						this.cmd(act.setHighlight, this.knownID[neighbor], 0);
 					} else {
-						this.cmd('SetHighlight', this.distanceID[current], 0);
-						this.cmd('SetHighlight', this.distanceID[neighbor], 0);
+						this.cmd(act.setHighlight, this.distanceID[current], 0);
+						this.cmd(act.setHighlight, this.distanceID[neighbor], 0);
 						let compare;
 						if (this.runningDijkstra) {
 							compare = this.distance[current] + this.adj_matrix[current][neighbor];
@@ -341,26 +342,26 @@ export default class DijkstraPrim extends Graph {
 						if (this.distance[neighbor] < 0 || this.distance[neighbor] > compare) {
 							this.distance[neighbor] = compare;
 							this.path[neighbor] = current;
-							this.cmd('SetText', this.distanceID[neighbor], this.distance[neighbor]);
-							this.cmd('SetText', this.pathID[neighbor], this.path[neighbor]);
+							this.cmd(act.setText, this.distanceID[neighbor], this.distance[neighbor]);
+							this.cmd(act.setText, this.pathID[neighbor], this.path[neighbor]);
 						}
 					}
 				}
 			}
-			this.cmd('SetHighlight', this.circleID[current], 0);
+			this.cmd(act.setHighlight, this.circleID[current], 0);
 		}
 		// Running Dijkstra's algorithm, create the paths
 		if (this.runningDijkstra) {
-			this.cmd('SetText', this.message1ID, 'Finding Paths in Table');
+			this.cmd(act.setText, this.message1ID, 'Finding Paths in Table');
 			this.createPaths();
 		}
 		// Running Prim's algorithm, highlight the tree
 		else {
-			this.cmd('SetText', this.message1ID, 'Creating tree from table');
+			this.cmd(act.setText, this.message1ID, 'Creating tree from table');
 			this.highlightTree();
 		}
 
-		this.cmd('SetText', this.message1ID, '');
+		this.cmd(act.setText, this.message1ID, '');
 		return this.commands;
 	}
 
@@ -369,7 +370,7 @@ export default class DijkstraPrim extends Graph {
 			let nextLabelID = this.nextIndex++;
 			if (this.distance[vertex] < 0) {
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					nextLabelID,
 					'No Path',
 					TABLE_START_X + 4.3 * TABLE_ENTRY_WIDTH,
@@ -378,7 +379,7 @@ export default class DijkstraPrim extends Graph {
 				this.messageID.push(nextLabelID);
 			} else {
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					nextLabelID,
 					String.fromCharCode(65 + vertex),
 					TABLE_START_X + 4.3 * TABLE_ENTRY_WIDTH,
@@ -388,19 +389,19 @@ export default class DijkstraPrim extends Graph {
 				const pathList = [nextLabelID];
 				let nextInPath = vertex;
 				while (nextInPath >= 0) {
-					this.cmd('SetHighlight', this.pathID[nextInPath], 1);
-					this.cmd('Step');
+					this.cmd(act.setHighlight, this.pathID[nextInPath], 1);
+					this.cmd(act.step);
 					if (this.path[nextInPath] !== -1) {
 						nextLabelID = this.nextIndex++;
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							nextLabelID,
 							String.fromCharCode(65 + this.path[nextInPath]),
 							TABLE_START_X + 3 * TABLE_ENTRY_WIDTH,
 							TABLE_START_Y + nextInPath * TABLE_ENTRY_HEIGHT
 						);
 						this.cmd(
-							'Move',
+							act.move,
 							nextLabelID,
 							TABLE_START_X + 4.3 * TABLE_ENTRY_WIDTH,
 							TABLE_START_Y + vertex * TABLE_ENTRY_HEIGHT
@@ -408,7 +409,7 @@ export default class DijkstraPrim extends Graph {
 						this.messageID.push(nextLabelID);
 						for (let i = pathList.length - 1; i >= 0; i--) {
 							this.cmd(
-								'Move',
+								act.move,
 								pathList[i],
 								TABLE_START_X +
 									4.3 * TABLE_ENTRY_WIDTH +
@@ -416,10 +417,10 @@ export default class DijkstraPrim extends Graph {
 								TABLE_START_Y + vertex * TABLE_ENTRY_HEIGHT
 							);
 						}
-						this.cmd('Step');
+						this.cmd(act.step);
 						pathList.push(nextLabelID);
 					}
-					this.cmd('SetHighlight', this.pathID[nextInPath], 0);
+					this.cmd(act.setHighlight, this.pathID[nextInPath], 0);
 					nextInPath = this.path[nextInPath];
 				}
 			}
@@ -429,13 +430,13 @@ export default class DijkstraPrim extends Graph {
 	highlightTree() {
 		for (let vertex = 0; vertex < this.size; vertex++) {
 			if (this.path[vertex] >= 0) {
-				this.cmd('SetHighlight', this.vertexID[vertex], 1);
-				this.cmd('SetHighlight', this.pathID[vertex], 1);
+				this.cmd(act.setHighlight, this.vertexID[vertex], 1);
+				this.cmd(act.setHighlight, this.pathID[vertex], 1);
 				this.highlightEdge(vertex, this.path[vertex], 1);
 				this.highlightEdge(this.path[vertex], vertex, 1);
-				this.cmd('Step');
-				this.cmd('SetHighlight', this.vertexID[vertex], 0);
-				this.cmd('SetHighlight', this.pathID[vertex], 0);
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.vertexID[vertex], 0);
+				this.cmd(act.setHighlight, this.pathID[vertex], 0);
 				this.highlightEdge(vertex, this.path[vertex], 0);
 				this.highlightEdge(this.path[vertex], vertex, 0);
 				this.setEdgeColor(vertex, this.path[vertex], '#FF0000');

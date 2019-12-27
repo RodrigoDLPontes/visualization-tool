@@ -123,7 +123,6 @@ export default class ObjectManager {
 	}
 
 	addHighlightCircleObject(objectID, objectColor, radius) {
-		console.log(this.Nodes);
 		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
 			throw new Error(
 				'addHighlightCircleObject:Object with same ID (' +
@@ -692,7 +691,6 @@ export default class ObjectManager {
 		linkPer,
 		verticalOrientation,
 		linkPosEnd,
-		numLabels,
 		backgroundColor,
 		foregroundColor
 	) {
@@ -707,7 +705,6 @@ export default class ObjectManager {
 			linkPer,
 			verticalOrientation,
 			linkPosEnd,
-			numLabels,
 			backgroundColor,
 			foregroundColor
 		);
@@ -767,7 +764,6 @@ export default class ObjectManager {
 		nodeLabel,
 		width,
 		height,
-		labelColor,
 		backgroundColor,
 		foregroundColor
 	) {
@@ -779,7 +775,6 @@ export default class ObjectManager {
 			nodeLabel,
 			width,
 			height,
-			labelColor,
 			backgroundColor,
 			foregroundColor
 		);

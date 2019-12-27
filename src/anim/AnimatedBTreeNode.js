@@ -36,8 +36,8 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 
 		this.objectID = objectID;
 
-		this.backgroundColor = backgroundColor || "#FFFFFF";
-		this.foregroundColor = foregroundColor || "#000000";
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
 
 		this.widthPerElement = widthPerElement;
 		this.h = h;
@@ -187,23 +187,6 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 		}
 	}
 
-	createUndoDelete() {
-		return new UndoDeleteBTreeNode(
-			this.objectID,
-			this.numLabels,
-			this.labels,
-			this.x,
-			this.y,
-			this.widthPerElement,
-			this.h,
-			this.labelColors,
-			this.backgroundColor,
-			this.foregroundColor,
-			this.layer,
-			this.highlighted
-		);
-	}
-
 	getTextColor(textIndex) {
 		textIndex = textIndex || 0;
 		return this.labelColors[textIndex];
@@ -222,6 +205,23 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 	setText(newText, textIndex) {
 		textIndex = textIndex || 0;
 		this.labels[textIndex] = newText;
+	}
+
+	createUndoDelete() {
+		return new UndoDeleteBTreeNode(
+			this.objectID,
+			this.numLabels,
+			this.labels,
+			this.x,
+			this.y,
+			this.widthPerElement,
+			this.h,
+			this.labelColors,
+			this.backgroundColor,
+			this.foregroundColor,
+			this.layer,
+			this.highlighted
+		);
 	}
 }
 

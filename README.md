@@ -1,9 +1,13 @@
 # Visualization Tool
-This is the source code for the Visualization Tool used for Georgia Tech's CS 1332 which covers all data structures & algorithms taught in class. It is hosted using Github Pages, and you can visit it at: https://rodrigodlpontes.github.io/visualization-tool/.
+This is the source code for the Visualization Tool used for Georgia Tech's CS 1332 which covers all data structures & algorithms taught in class. It is hosted using GitHub Pages, and you can visit it at: https://rodrigodlpontes.github.io/visualization-tool/.
 
 ## About
 
 This tool is based on the already excellent [website by David Galles](https://www.cs.usfca.edu/~galles/visualization), and has been updated to include more data structures and algorithms, as well as to use ES6 syntax and React.
+
+## Structure
+
+The structure of the project is the same as a regular [create-react-app](https://github.com/facebook/create-react-app) application, but also uses [Single Page Apps for GitHub Pages](https://github.com/rafrex/spa-github-pages) for compatibility with GitHub Pages. Scripts related to the animations of each data structure and algorithm can be found under `src/algo/`, while the underlying animation "library" can be found under `src/anim/`. Other React related and miscellaneous files can be found under `src/`. 
 
 ## API
 

@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const SKIP_LIST_START_X = 100;
 const SKIP_LIST_START_Y = 400;
@@ -162,7 +163,7 @@ export default class SkipList extends Algorithm {
 		this.size = 0;
 
 		this.cmd(
-			'CreateSkipList',
+			act.createSkipListNode,
 			this.nodeID[0][0],
 			NINF,
 			SKIP_LIST_ELEM_SIZE,
@@ -171,7 +172,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_START_Y
 		);
 		this.cmd(
-			'CreateSkipList',
+			act.createSkipListNode,
 			this.nodeID[1][0],
 			PINF,
 			SKIP_LIST_ELEM_SIZE,
@@ -179,9 +180,9 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_START_X + SKIP_LIST_SPACING,
 			SKIP_LIST_START_Y
 		);
-		this.cmd('ConnectSkipList', this.nodeID[0][0], this.nodeID[1][0], 3);
+		this.cmd(act.connectSkipList, this.nodeID[0][0], this.nodeID[1][0], 3);
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -239,7 +240,7 @@ export default class SkipList extends Algorithm {
 
 		let heads;
 		if (params.split(',').length === 2) {
-			heads = params.split(',')[1];
+			heads = parseInt(params.split(',')[1]);
 		} else {
 			heads = Math.floor(Math.random() * (this.size + 1));
 		}
@@ -257,11 +258,11 @@ export default class SkipList extends Algorithm {
 		}
 		headsString += 'T';
 
-		this.cmd('CreateLabel', valueLabelId, 'Value to add:', VALUE_LABEL_X, VALUE_LABEL_Y);
-		this.cmd('CreateLabel', valueStringId, value, VALUE_STRING_X, VALUE_STRING_Y);
-		this.cmd('CreateLabel', cfLabelId, 'Coin Flipper:', CF_LABEL_X, CF_LABEL_Y);
-		this.cmd('CreateLabel', cfStringId, headsString, CF_STRING_X, CF_STRING_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, valueLabelId, 'Value to add:', VALUE_LABEL_X, VALUE_LABEL_Y);
+		this.cmd(act.createLabel, valueStringId, value, VALUE_STRING_X, VALUE_STRING_Y);
+		this.cmd(act.createLabel, cfLabelId, 'Coin Flipper:', CF_LABEL_X, CF_LABEL_Y);
+		this.cmd(act.createLabel, cfStringId, headsString, CF_STRING_X, CF_STRING_Y);
+		this.cmd(act.step);
 
 		// Add levels
 		for (let row = this.nodeID[0].length; row <= heads; row++) {
@@ -269,7 +270,7 @@ export default class SkipList extends Algorithm {
 			this.data[0][row] = Number.NEGATIVE_INFINITY;
 			this.nodeID[0][row] = this.nextIndex++;
 			this.cmd(
-				'CreateSkipList',
+				act.createSkipListNode,
 				this.nodeID[0][row],
 				NINF,
 				SKIP_LIST_ELEM_SIZE,
@@ -280,7 +281,7 @@ export default class SkipList extends Algorithm {
 			this.data[rightPhantomsCol][row] = Number.POSITIVE_INFINITY;
 			this.nodeID[rightPhantomsCol][row] = this.nextIndex++;
 			this.cmd(
-				'CreateSkipList',
+				act.createSkipListNode,
 				this.nodeID[rightPhantomsCol][row],
 				PINF,
 				SKIP_LIST_ELEM_SIZE,
@@ -288,15 +289,15 @@ export default class SkipList extends Algorithm {
 				SKIP_LIST_START_X + SKIP_LIST_SPACING * rightPhantomsCol,
 				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 			);
-			this.cmd('ConnectSkipList', this.nodeID[0][row], this.nodeID[rightPhantomsCol][row], 3);
-			this.cmd('ConnectSkipList', this.nodeID[0][row - 1], this.nodeID[0][row], 0);
+			this.cmd(act.connectSkipList, this.nodeID[0][row], this.nodeID[rightPhantomsCol][row], 3);
+			this.cmd(act.connectSkipList, this.nodeID[0][row - 1], this.nodeID[0][row], 0);
 			this.cmd(
-				'ConnectSkipList',
+				act.connectSkipList,
 				this.nodeID[rightPhantomsCol][row - 1],
 				this.nodeID[rightPhantomsCol][row],
 				0
 			);
-			this.cmd('Step');
+			this.cmd(act.step);
 		}
 
 		// Find column where new element will be inserted
@@ -319,14 +320,14 @@ export default class SkipList extends Algorithm {
 
 		const highlightID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
 			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 		);
-		this.cmd('SetHighlight', highlightID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, highlightID, 1);
+		this.cmd(act.step);
 
 		let foundDuplicate = false;
 		while (row >= 0) {
@@ -338,12 +339,12 @@ export default class SkipList extends Algorithm {
 			}
 			while (value > this.data[nextCol][row]) {
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				col = nextCol;
 				nextCol = this.getNextCol(col, row);
 			}
@@ -352,12 +353,12 @@ export default class SkipList extends Algorithm {
 			row--;
 			if (row >= 0) {
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
 		}
 
@@ -367,13 +368,13 @@ export default class SkipList extends Algorithm {
 			row++;
 			// Having a highlight circle in the previous ID causes an object to look weird (this
 			// seems to be an already existing bug) Creating a random object before it is a workaround
-			this.cmd('CreateCircle', this.nextIndex++, '', -100, -100, 0);
+			this.cmd(act.createCircle, this.nextIndex++, '', -100, -100, 0);
 
 			while (row <= heads) {
 				this.data[newCol][row] = value;
 				this.nodeID[newCol][row] = this.nextIndex++;
 				this.cmd(
-					'CreateSkipList',
+					act.createSkipListNode,
 					this.nodeID[newCol][row],
 					value,
 					SKIP_LIST_ELEM_SIZE,
@@ -383,35 +384,35 @@ export default class SkipList extends Algorithm {
 				);
 				const prevCol = this.getPrevCol(newCol, row);
 				const nextCol = this.getNextCol(newCol, row);
-				this.cmd('Disconnect', this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
-				this.cmd('ConnectSkipList', this.nodeID[prevCol][row], this.nodeID[newCol][row], 3);
-				this.cmd('ConnectSkipList', this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
+				this.cmd(act.disconnect, this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
+				this.cmd(act.connectSkipList, this.nodeID[prevCol][row], this.nodeID[newCol][row], 3);
+				this.cmd(act.connectSkipList, this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
 				if (row !== 0) {
 					this.cmd(
-						'ConnectSkipList',
+						act.connectSkipList,
 						this.nodeID[newCol][row - 1],
 						this.nodeID[newCol][row],
 						0
 					);
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				row++;
 			}
 		}
 
-		this.cmd('Delete', valueLabelId);
-		this.cmd('Delete', valueStringId);
-		this.cmd('Delete', cfLabelId);
-		this.cmd('Delete', cfStringId);
-		this.cmd('Delete', highlightID);
+		this.cmd(act.delete, valueLabelId);
+		this.cmd(act.delete, valueStringId);
+		this.cmd(act.delete, cfLabelId);
+		this.cmd(act.delete, cfStringId);
+		this.cmd(act.delete, highlightID);
 
 		this.size++;
 
@@ -426,9 +427,9 @@ export default class SkipList extends Algorithm {
 		const valueLabelId = this.nextIndex++;
 		const valueStringId = this.nextIndex++;
 
-		this.cmd('CreateLabel', valueLabelId, 'Value to remove:', VALUE_LABEL_X, VALUE_LABEL_Y);
-		this.cmd('CreateLabel', valueStringId, value, VALUE_STRING_X, VALUE_STRING_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, valueLabelId, 'Value to remove:', VALUE_LABEL_X, VALUE_LABEL_Y);
+		this.cmd(act.createLabel, valueStringId, value, VALUE_STRING_X, VALUE_STRING_Y);
+		this.cmd(act.step);
 
 		// Traverse and remove
 		let col = 0;
@@ -437,25 +438,25 @@ export default class SkipList extends Algorithm {
 
 		const highlightID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
 			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 		);
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		while (row >= 0) {
 			// Move right until next element is greater or equal
 			let nextCol = this.getNextCol(col, row);
 			while (value > this.data[nextCol][row]) {
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				col = nextCol;
 				nextCol = this.getNextCol(col, row);
 			}
@@ -464,58 +465,58 @@ export default class SkipList extends Algorithm {
 				removedCol = nextCol;
 				col = nextCol;
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 
 				while (row >= 0) {
 					nextCol = this.getNextCol(col, row);
 					const prevCol = this.getPrevCol(col, row);
-					this.cmd('Disconnect', this.nodeID[prevCol][row], this.nodeID[col][row]);
-					this.cmd('Disconnect', this.nodeID[col][row], this.nodeID[nextCol][row]);
+					this.cmd(act.disconnect, this.nodeID[prevCol][row], this.nodeID[col][row]);
+					this.cmd(act.disconnect, this.nodeID[col][row], this.nodeID[nextCol][row]);
 					if (this.nodeID[col][row + 1] != null) {
-						this.cmd('Disconnect', this.nodeID[col][row + 1], this.nodeID[col][row]);
+						this.cmd(act.disconnect, this.nodeID[col][row + 1], this.nodeID[col][row]);
 					}
 					this.cmd(
-						'ConnectSkipList',
+						act.connectSkipList,
 						this.nodeID[prevCol][row],
 						this.nodeID[nextCol][row],
 						3
 					);
-					this.cmd('Delete', this.nodeID[col][row]);
-					this.cmd('Step');
+					this.cmd(act.delete, this.nodeID[col][row]);
+					this.cmd(act.step);
 
 					row--;
 					if (row !== -1) {
 						this.cmd(
-							'Move',
+							act.move,
 							highlightID,
 							SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 							SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 						);
-						this.cmd('Step');
+						this.cmd(act.step);
 					}
 				}
 			} else {
 				row--;
 				if (row !== -1) {
 					this.cmd(
-						'Move',
+						act.move,
 						highlightID,
 						SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 					);
-					this.cmd('Step');
+					this.cmd(act.step);
 				}
 			}
 		}
 
-		this.cmd('Delete', valueLabelId);
-		this.cmd('Delete', valueStringId);
-		this.cmd('Delete', highlightID);
+		this.cmd(act.delete, valueLabelId);
+		this.cmd(act.delete, valueStringId);
+		this.cmd(act.delete, highlightID);
 
 		if (removedCol !== -1) {
 			// Shift ID and data columns to the left (already erases last column)
@@ -539,13 +540,13 @@ export default class SkipList extends Algorithm {
 		for (let row = this.nodeID[0].length - 1; row >= maxHeight; row--) {
 			this.data[0].pop();
 			const leftPhantomID = this.nodeID[0].pop();
-			this.cmd('Delete', leftPhantomID);
+			this.cmd(act.delete, leftPhantomID);
 			const rightPhantomsCol = this.nodeID.length - 1;
 			this.data[rightPhantomsCol].pop();
 			const rightPhantomID = this.nodeID[rightPhantomsCol].pop();
-			this.cmd('Delete', rightPhantomID);
+			this.cmd(act.delete, rightPhantomID);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		this.size--;
 
@@ -563,26 +564,26 @@ export default class SkipList extends Algorithm {
 
 		const highlightID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
 			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 		);
-		this.cmd('SetHighlight', highlightID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, highlightID, 1);
+		this.cmd(act.step);
 
 		while (row >= 0 && value !== this.data[col][row]) {
 			// Move right until next element is greater or equal
 			let nextCol = this.getNextCol(col, row);
 			while (value >= this.data[nextCol][row]) {
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 				col = nextCol;
 				nextCol = this.getNextCol(col, row);
 			}
@@ -591,16 +592,16 @@ export default class SkipList extends Algorithm {
 			if (value !== this.data[col][row]) {
 				row--;
 				this.cmd(
-					'Move',
+					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 				);
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
 		}
 
-		this.cmd('Delete', highlightID);
+		this.cmd(act.delete, highlightID);
 
 		return this.commands;
 	}
@@ -611,7 +612,7 @@ export default class SkipList extends Algorithm {
 			for (let row = 0; row < this.nodeID[col].length; row++) {
 				if (this.nodeID[col][row] != null) {
 					this.cmd(
-						'Move',
+						act.move,
 						this.nodeID[col][row],
 						SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
 						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
@@ -619,7 +620,7 @@ export default class SkipList extends Algorithm {
 				}
 			}
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 	}
 
 	// Gets the column of the next node ("right pointer")
@@ -645,7 +646,7 @@ export default class SkipList extends Algorithm {
 
 		for (let col = 0; col < this.nodeID.length; col++) {
 			for (let row = 0; row < this.nodeID[col].length; row++) {
-				this.cmd('Delete', this.nodeID[col][row]);
+				this.cmd(act.delete, this.nodeID[col][row]);
 			}
 		}
 
@@ -654,7 +655,7 @@ export default class SkipList extends Algorithm {
 		this.size = 0;
 
 		this.cmd(
-			'CreateSkipList',
+			act.createSkipListNode,
 			this.nodeID[0][0],
 			NINF,
 			SKIP_LIST_ELEM_SIZE,
@@ -663,7 +664,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_START_Y
 		);
 		this.cmd(
-			'CreateSkipList',
+			act.createSkipListNode,
 			this.nodeID[1][0],
 			PINF,
 			SKIP_LIST_ELEM_SIZE,
@@ -671,8 +672,8 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_START_X + SKIP_LIST_SPACING,
 			SKIP_LIST_START_Y
 		);
-		this.cmd('ConnectSkipList', this.nodeID[0][0], this.nodeID[1][0], 3);
-		this.cmd('Step');
+		this.cmd(act.connectSkipList, this.nodeID[0][0], this.nodeID[1][0], 3);
+		this.cmd(act.step);
 
 		return this.commands;
 	}

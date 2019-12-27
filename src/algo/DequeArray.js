@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -123,7 +124,7 @@ export default class DequeArray extends Algorithm {
 			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -131,12 +132,12 @@ export default class DequeArray extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('CreateLabel', this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
-			this.cmd('SetForegroundColor', this.arrayLabelID[i], INDEX_COLOR);
+			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelID[i], INDEX_COLOR);
 		}
-		this.cmd('CreateLabel', frontLabelID, 'Front', FRONT_LABEL_X, FRONT_LABEL_Y);
+		this.cmd(act.createLabel, frontLabelID, 'Front', FRONT_LABEL_X, FRONT_LABEL_Y);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.frontID,
 			0,
 			ARRAY_ELEM_WIDTH,
@@ -145,9 +146,9 @@ export default class DequeArray extends Algorithm {
 			FRONT_POS_Y
 		);
 
-		this.cmd('CreateLabel', sizeLabelID, 'Size', SIZE_LABEL_X, SIZE_LABEL_Y);
+		this.cmd(act.createLabel, sizeLabelID, 'Size', SIZE_LABEL_X, SIZE_LABEL_Y);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.sizeID,
 			0,
 			ARRAY_ELEM_WIDTH,
@@ -156,14 +157,14 @@ export default class DequeArray extends Algorithm {
 			SIZE_POS_Y
 		);
 
-		this.cmd('CreateLabel', this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
 
 		this.initialIndex = this.nextIndex;
 
 		this.highlight1ID = this.nextIndex++;
 		this.highlight2ID = this.nextIndex++;
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -216,37 +217,37 @@ export default class DequeArray extends Algorithm {
 		const addIndex = (this.front + this.size) % SIZE;
 
 		this.arrayData[addIndex] = elemToaddLast;
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd('CreateLabel', labaddLastID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
-		this.cmd('CreateLabel', labaddLastValID, elemToaddLast, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.createLabel, labaddLastID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, labaddLastValID, elemToaddLast, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
-		this.cmd('Step');
-		this.cmd('CreateHighlightCircle', this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
-		this.cmd('Step');
+		this.cmd(act.step);
+		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
+		this.cmd(act.step);
 
 		const xpos = (addIndex % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(addIndex / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Step');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
 
-		this.cmd('Move', labaddLastValID, xpos, ypos);
-		this.cmd('Step');
+		this.cmd(act.move, labaddLastValID, xpos, ypos);
+		this.cmd(act.step);
 
-		this.cmd('SetText', this.arrayID[addIndex], elemToaddLast);
-		this.cmd('Delete', labaddLastValID);
+		this.cmd(act.setText, this.arrayID[addIndex], elemToaddLast);
+		this.cmd(act.delete, labaddLastValID);
 
-		this.cmd('Delete', this.highlight1ID);
+		this.cmd(act.delete, this.highlight1ID);
 
-		this.cmd('SetHighlight', this.sizeID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
 		this.size = this.size + 1;
-		this.cmd('SetText', this.sizeID, this.size);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.sizeID, 0);
-		this.cmd('Delete', labaddLastID);
+		this.cmd(act.setText, this.sizeID, this.size);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
+		this.cmd(act.delete, labaddLastID);
 
 		return this.commands;
 	}
@@ -264,53 +265,53 @@ export default class DequeArray extends Algorithm {
 
 		this.arrayData[addIndex] = elemToAdd;
 
-		this.cmd('CreateLabel', labelAddID, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.createLabel, labelAddID, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
-		this.cmd('SetText', this.leftoverLabelID, '');
-		this.cmd('SetPosition', this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
+		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
 
-		this.cmd('Step');
-		this.cmd('CreateHighlightCircle', this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
-		this.cmd('Step');
+		this.cmd(act.step);
+		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(act.step);
 		this.cmd(
-			'SetText',
+			act.setText,
 			this.leftoverLabelID,
 			`Adding ${elemToAdd} at index (${this.front} - 1) % ${SIZE}`
 		);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 		this.cmd(
-			'Move',
+			act.move,
 			this.highlight1ID,
 			this.front * ARRAY_ELEM_WIDTH + ARRAY_START_X,
 			ypos + ARRAY_ELEM_HEIGHT
 		);
-		this.cmd('Step');
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Step');
-		this.cmd('Move', labelAddID, xpos, ypos);
-		this.cmd('Step');
+		this.cmd(act.step);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
+		this.cmd(act.move, labelAddID, xpos, ypos);
+		this.cmd(act.step);
 
-		this.cmd('SetText', this.arrayID[addIndex], elemToAdd);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.frontID, 1);
-		this.cmd('Step');
-		this.cmd('SetText', this.frontID, addIndex);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.frontID, 0);
+		this.cmd(act.setText, this.arrayID[addIndex], elemToAdd);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.frontID, addIndex);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.frontID, 0);
 
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.sizeID, 1);
-		this.cmd('Step');
-		this.cmd('SetText', this.sizeID, this.size + 1);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.sizeID, 0);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.sizeID, this.size + 1);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
-		this.cmd('Delete', labelAddID);
-		this.cmd('Delete', this.highlight1ID);
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.delete, labelAddID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.front = addIndex;
 		this.size++;
 		return this.commands;
@@ -322,56 +323,56 @@ export default class DequeArray extends Algorithm {
 		const labremoveFirstID = this.nextIndex++;
 		const labremoveFirstValID = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			labremoveFirstID,
 			'removeFirstd Value: ',
 			QUEUE_LABEL_X,
 			QUEUE_LABEL_Y
 		);
 
-		this.cmd('CreateHighlightCircle', this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(act.step);
 
 		const xpos = (this.front % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(this.front / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Step');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
 
-		this.cmd('Delete', this.highlight1ID);
+		this.cmd(act.delete, this.highlight1ID);
 
 		const removeFirstdVal = this.arrayData[this.front];
-		this.cmd('CreateLabel', labremoveFirstValID, removeFirstdVal, xpos, ypos);
-		this.cmd('Settext', this.arrayID[this.front], '');
-		this.cmd('Move', labremoveFirstValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, labremoveFirstValID, removeFirstdVal, xpos, ypos);
+		this.cmd(act.setText, this.arrayID[this.front], '');
+		this.cmd(act.move, labremoveFirstValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.step);
 
-		this.cmd('SetHighlight', this.frontID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.step);
 		this.front = (this.front + 1) % SIZE;
-		this.cmd('SetText', this.frontID, this.front);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.frontID, 0);
+		this.cmd(act.setText, this.frontID, this.front);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.frontID, 0);
 
-		this.cmd('SetText', this.leftoverLabelID, 'removeFirstd Value: ' + removeFirstdVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'removeFirstd Value: ' + removeFirstdVal);
 
-		this.cmd('Delete', labremoveFirstID);
-		this.cmd('Delete', labremoveFirstValID);
-		this.cmd('Step');
+		this.cmd(act.delete, labremoveFirstID);
+		this.cmd(act.delete, labremoveFirstValID);
+		this.cmd(act.step);
 
-		this.cmd('SetHighlight', this.sizeID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
 		this.size--;
-		this.cmd('SetText', this.sizeID, this.size);
+		this.cmd(act.setText, this.sizeID, this.size);
 
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.sizeID, 0);
-		this.cmd('Step');
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.adjustIfEmpty();
 
@@ -385,47 +386,47 @@ export default class DequeArray extends Algorithm {
 
 		const remIndex = (this.front + this.size - 1 + SIZE) % SIZE;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd('CreateLabel', remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
-		this.cmd('CreateHighlightCircle', this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
-		this.cmd('CreateHighlightCircle', this.highlight2ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
+		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(act.createHighlightCircle, this.highlight2ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		const xpos = (remIndex % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(remIndex / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Move', this.highlight2ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight2ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 
-		this.cmd('Step');
+		this.cmd(act.step);
 
-		this.cmd('Delete', this.highlight1ID);
-		this.cmd('Delete', this.highlight2ID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.delete, this.highlight2ID);
 
 		const removedVal = this.arrayData[remIndex];
-		this.cmd('CreateLabel', remLabelValID, removedVal, xpos, ypos);
-		this.cmd('Settext', this.arrayID[remIndex], '');
-		this.cmd('Move', remLabelValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, remLabelValID, removedVal, xpos, ypos);
+		this.cmd(act.setText, this.arrayID[remIndex], '');
+		this.cmd(act.move, remLabelValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.step);
 
-		this.cmd('SetText', this.leftoverLabelID, 'Removed Value: ' + removedVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ' + removedVal);
 
-		this.cmd('Delete', remLabelID);
-		this.cmd('Delete', remLabelValID);
-		this.cmd('Step');
+		this.cmd(act.delete, remLabelID);
+		this.cmd(act.delete, remLabelValID);
+		this.cmd(act.step);
 
-		this.cmd('SetHighlight', this.sizeID, 1);
-		this.cmd('Step');
-		this.cmd('SetText', this.sizeID, this.size - 1);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.sizeID, 0);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.sizeID, this.size - 1);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
+		this.cmd(act.step);
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.size--;
 
@@ -436,30 +437,30 @@ export default class DequeArray extends Algorithm {
 
 	adjustIfEmpty() {
 		if (this.size === 0) {
-			this.cmd('SetText', this.leftoverLabelID, 'size = 0, set front to 0');
+			this.cmd(act.setText, this.leftoverLabelID, 'size = 0, set front to 0');
 			this.front = 0;
 
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.frontID, 1);
-			this.cmd('Step');
-			this.cmd('SetText', this.frontID, 0);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.frontID, 0);
-			this.cmd('SetText', this.leftoverLabelID, '');
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.frontID, 1);
+			this.cmd(act.step);
+			this.cmd(act.setText, this.frontID, 0);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.frontID, 0);
+			this.cmd(act.setText, this.leftoverLabelID, '');
 		}
 	}
 
 	clearAll() {
 		this.commands = [];
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		for (let i = 0; i < SIZE; i++) {
-			this.cmd('SetText', this.arrayID[i], '');
+			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.front = 0;
 		this.size = 0;
-		this.cmd('SetText', this.frontID, '0');
-		this.cmd('SetText', this.sizeID, '0');
+		this.cmd(act.setText, this.frontID, '0');
+		this.cmd(act.setText, this.sizeID, '0');
 		return this.commands;
 	}
 }

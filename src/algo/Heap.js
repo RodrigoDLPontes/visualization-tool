@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_SIZE = 32;
 const ARRAY_ELEM_WIDTH = 30;
@@ -113,8 +114,8 @@ export default class Heap extends Algorithm {
 
 		/*this.nextIndex = 0;
 	this.this.commands = [];
-	this.cmd("CreateLabel", 0, "", 20, 50, 0);
-	this.animationManager.StartNewAnimation(this.this.commands);
+	this.cmd(act.createLabel, 0, "", 20, 50, 0);
+	this.animationManager.startNewAnimation(this.this.commands);
 	this.animationManager.skipForward();
 	this.animationManager.clearHistory(); */
 	}
@@ -151,7 +152,7 @@ export default class Heap extends Algorithm {
 			this.arrayRects[i] = this.nextIndex++;
 			this.circleObjs[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayRects[i],
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -160,24 +161,24 @@ export default class Heap extends Algorithm {
 				ARRAY_Y_POS
 			);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.arrayLabels[i],
 				i,
 				this.ArrayXPositions[i],
 				ARRAY_LABEL_Y_POS
 			);
-			this.cmd('SetForegroundColor', this.arrayLabels[i], '#0000FF');
+			this.cmd(act.setForegroundColor, this.arrayLabels[i], '#0000FF');
 		}
-		this.cmd('SetText', this.arrayRects[0], '-INF');
+		this.cmd(act.setText, this.arrayRects[0], '-INF');
 		this.swapLabel1 = this.nextIndex++;
 		this.swapLabel2 = this.nextIndex++;
 		this.swapLabel3 = this.nextIndex++;
 		this.swapLabel4 = this.nextIndex++;
 		this.descriptLabel1 = this.nextIndex++;
 		this.descriptLabel2 = this.nextIndex++;
-		this.cmd('CreateLabel', this.descriptLabel1, '', 20, 10, 0);
-		//this.cmd("CreateLabel", this.descriptLabel2, "", this.nextIndex, 40, 120, 0);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.cmd(act.createLabel, this.descriptLabel1, '', 20, 10, 0);
+		//this.cmd(act.createLabel, this.descriptLabel2, "", this.nextIndex, 40, 120, 0);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -199,8 +200,8 @@ export default class Heap extends Algorithm {
 	//TODO:  Make me undoable!!
 	clear() {
 		while (this.currentHeapSize > 0) {
-			this.cmd('Delete', this.circleObjs[this.currentHeapSize]);
-			this.cmd('SetText', this.arrayRects[this.currentHeapSize], '');
+			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
+			this.cmd(act.setText, this.arrayRects[this.currentHeapSize], '');
 			this.currentHeapSize--;
 		}
 		return this.commands;
@@ -215,59 +216,59 @@ export default class Heap extends Algorithm {
 	}
 
 	swap(index1, index2) {
-		this.cmd('SetText', this.arrayRects[index1], '');
-		this.cmd('SetText', this.arrayRects[index2], '');
-		this.cmd('SetText', this.circleObjs[index1], '');
-		this.cmd('SetText', this.circleObjs[index2], '');
+		this.cmd(act.setText, this.arrayRects[index1], '');
+		this.cmd(act.setText, this.arrayRects[index2], '');
+		this.cmd(act.setText, this.circleObjs[index1], '');
+		this.cmd(act.setText, this.circleObjs[index2], '');
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.swapLabel1,
 			this.arrayData[index1],
 			this.ArrayXPositions[index1],
 			ARRAY_Y_POS
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.swapLabel2,
 			this.arrayData[index2],
 			this.ArrayXPositions[index2],
 			ARRAY_Y_POS
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.swapLabel3,
 			this.arrayData[index1],
 			this.HeapXPositions[index1],
 			this.HeapYPositions[index1]
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.swapLabel4,
 			this.arrayData[index2],
 			this.HeapXPositions[index2],
 			this.HeapYPositions[index2]
 		);
-		this.cmd('Move', this.swapLabel1, this.ArrayXPositions[index2], ARRAY_Y_POS);
-		this.cmd('Move', this.swapLabel2, this.ArrayXPositions[index1], ARRAY_Y_POS);
-		this.cmd('Move', this.swapLabel3, this.HeapXPositions[index2], this.HeapYPositions[index2]);
-		this.cmd('Move', this.swapLabel4, this.HeapXPositions[index1], this.HeapYPositions[index1]);
+		this.cmd(act.move, this.swapLabel1, this.ArrayXPositions[index2], ARRAY_Y_POS);
+		this.cmd(act.move, this.swapLabel2, this.ArrayXPositions[index1], ARRAY_Y_POS);
+		this.cmd(act.move, this.swapLabel3, this.HeapXPositions[index2], this.HeapYPositions[index2]);
+		this.cmd(act.move, this.swapLabel4, this.HeapXPositions[index1], this.HeapYPositions[index1]);
 		const tmp = this.arrayData[index1];
 		this.arrayData[index1] = this.arrayData[index2];
 		this.arrayData[index2] = tmp;
-		this.cmd('Step');
-		this.cmd('SetText', this.arrayRects[index1], this.arrayData[index1]);
-		this.cmd('SetText', this.arrayRects[index2], this.arrayData[index2]);
-		this.cmd('SetText', this.circleObjs[index1], this.arrayData[index1]);
-		this.cmd('SetText', this.circleObjs[index2], this.arrayData[index2]);
-		this.cmd('Delete', this.swapLabel1);
-		this.cmd('Delete', this.swapLabel2);
-		this.cmd('Delete', this.swapLabel3);
-		this.cmd('Delete', this.swapLabel4);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.arrayRects[index1], this.arrayData[index1]);
+		this.cmd(act.setText, this.arrayRects[index2], this.arrayData[index2]);
+		this.cmd(act.setText, this.circleObjs[index1], this.arrayData[index1]);
+		this.cmd(act.setText, this.circleObjs[index2], this.arrayData[index2]);
+		this.cmd(act.delete, this.swapLabel1);
+		this.cmd(act.delete, this.swapLabel2);
+		this.cmd(act.delete, this.swapLabel3);
+		this.cmd(act.delete, this.swapLabel4);
 	}
 
 	setIndexHighlight(index, highlightVal) {
-		this.cmd('SetHighlight', this.circleObjs[index], highlightVal);
-		this.cmd('SetHighlight', this.arrayRects[index], highlightVal);
+		this.cmd(act.setHighlight, this.circleObjs[index], highlightVal);
+		this.cmd(act.setHighlight, this.arrayRects[index], highlightVal);
 	}
 
 	pushDown(index) {
@@ -279,7 +280,7 @@ export default class Heap extends Algorithm {
 			if (index * 2 + 1 <= this.currentHeapSize) {
 				this.setIndexHighlight(2 * index, 1);
 				this.setIndexHighlight(2 * index + 1, 1);
-				this.cmd('Step');
+				this.cmd(act.step);
 				this.setIndexHighlight(2 * index, 0);
 				this.setIndexHighlight(2 * index + 1, 0);
 				if (this.arrayData[2 * index + 1] < this.arrayData[2 * index]) {
@@ -288,7 +289,7 @@ export default class Heap extends Algorithm {
 			}
 			this.setIndexHighlight(index, 1);
 			this.setIndexHighlight(smallestIndex, 1);
-			this.cmd('Step');
+			this.cmd(act.step);
 			this.setIndexHighlight(index, 0);
 			this.setIndexHighlight(smallestIndex, 0);
 
@@ -303,42 +304,42 @@ export default class Heap extends Algorithm {
 
 	removeSmallest() {
 		this.commands = [];
-		this.cmd('SetText', this.descriptLabel1, '');
+		this.cmd(act.setText, this.descriptLabel1, '');
 
 		if (this.currentHeapSize === 0) {
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.descriptLabel1,
 				'Heap is empty, cannot remove smallest element'
 			);
 			return this.commands;
 		}
 
-		this.cmd('SetText', this.descriptLabel1, 'Removing element:');
+		this.cmd(act.setText, this.descriptLabel1, 'Removing element:');
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.descriptLabel2,
 			this.arrayData[1],
 			this.HeapXPositions[1],
 			this.HeapYPositions[1],
 			0
 		);
-		this.cmd('SetText', this.circleObjs[1], '');
-		this.cmd('Move', this.descriptLabel2, 120, 40);
-		this.cmd('Step');
-		this.cmd('Delete', this.descriptLabel2);
-		this.cmd('SetText', this.descriptLabel1, 'Removing element: ' + this.arrayData[1]);
+		this.cmd(act.setText, this.circleObjs[1], '');
+		this.cmd(act.move, this.descriptLabel2, 120, 40);
+		this.cmd(act.step);
+		this.cmd(act.delete, this.descriptLabel2);
+		this.cmd(act.setText, this.descriptLabel1, 'Removing element: ' + this.arrayData[1]);
 		this.arrayData[1] = '';
 		if (this.currentHeapSize > 1) {
-			this.cmd('SetText', this.arrayRects[1], '');
-			this.cmd('SetText', this.arrayRects[this.currentHeapSize], '');
+			this.cmd(act.setText, this.arrayRects[1], '');
+			this.cmd(act.setText, this.arrayRects[this.currentHeapSize], '');
 			this.swap(1, this.currentHeapSize);
-			this.cmd('Delete', this.circleObjs[this.currentHeapSize]);
+			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
 			this.currentHeapSize--;
 			this.pushDown(1);
 		} else {
-			this.cmd('SetText', this.arrayRects[1], '');
-			this.cmd('Delete', this.circleObjs[this.currentHeapSize]);
+			this.cmd(act.setText, this.arrayRects[1], '');
+			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
 			this.currentHeapSize--;
 		}
 		return this.commands;
@@ -354,18 +355,18 @@ export default class Heap extends Algorithm {
 		for (let i = 1; i < ARRAY_SIZE; i++) {
 			this.arrayData[i] = this.normalizeNumber(String(ARRAY_SIZE - i), 4);
 			this.cmd(
-				'CreateCircle',
+				act.createCircle,
 				this.circleObjs[i],
 				this.arrayData[i],
 				this.HeapXPositions[i],
 				this.HeapYPositions[i]
 			);
-			this.cmd('SetText', this.arrayRects[i], this.arrayData[i]);
+			this.cmd(act.setText, this.arrayRects[i], this.arrayData[i]);
 			if (i > 1) {
-				this.cmd('Connect', this.circleObjs[Math.floor(i / 2)], this.circleObjs[i]);
+				this.cmd(act.connect, this.circleObjs[Math.floor(i / 2)], this.circleObjs[i]);
 			}
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 		this.currentHeapSize = ARRAY_SIZE - 1;
 		let nextElem = this.currentHeapSize;
 		while (nextElem > 0) {
@@ -379,41 +380,41 @@ export default class Heap extends Algorithm {
 		this.commands = [];
 
 		if (this.currentHeapSize >= ARRAY_SIZE - 1) {
-			this.cmd('SetText', this.descriptLabel1, 'Heap Full!');
+			this.cmd(act.setText, this.descriptLabel1, 'Heap Full!');
 			return this.commands;
 		}
 
-		this.cmd('SetText', this.descriptLabel1, 'Inserting Element: ' + insertedValue);
-		this.cmd('Step');
-		this.cmd('SetText', this.descriptLabel1, 'Inserting Element: ');
+		this.cmd(act.setText, this.descriptLabel1, 'Inserting Element: ' + insertedValue);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.descriptLabel1, 'Inserting Element: ');
 		this.currentHeapSize++;
 		this.arrayData[this.currentHeapSize] = insertedValue;
 		this.cmd(
-			'CreateCircle',
+			act.createCircle,
 			this.circleObjs[this.currentHeapSize],
 			'',
 			this.HeapXPositions[this.currentHeapSize],
 			this.HeapYPositions[this.currentHeapSize]
 		);
-		this.cmd('CreateLabel', this.descriptLabel2, insertedValue, 120, 45, 1);
+		this.cmd(act.createLabel, this.descriptLabel2, insertedValue, 120, 45, 1);
 		if (this.currentHeapSize > 1) {
 			this.cmd(
-				'Connect',
+				act.connect,
 				this.circleObjs[Math.floor(this.currentHeapSize / 2)],
 				this.circleObjs[this.currentHeapSize]
 			);
 		}
 
 		this.cmd(
-			'Move',
+			act.move,
 			this.descriptLabel2,
 			this.HeapXPositions[this.currentHeapSize],
 			this.HeapYPositions[this.currentHeapSize]
 		);
-		this.cmd('Step');
-		this.cmd('SetText', this.circleObjs[this.currentHeapSize], insertedValue);
-		this.cmd('delete', this.descriptLabel2);
-		this.cmd('SetText', this.arrayRects[this.currentHeapSize], insertedValue);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.circleObjs[this.currentHeapSize], insertedValue);
+		this.cmd(act.delete, this.descriptLabel2);
+		this.cmd(act.setText, this.arrayRects[this.currentHeapSize], insertedValue);
 
 		let currentIndex = this.currentHeapSize;
 		let parentIndex = Math.floor(currentIndex / 2);
@@ -421,7 +422,7 @@ export default class Heap extends Algorithm {
 		if (currentIndex > 1) {
 			this.setIndexHighlight(currentIndex, 1);
 			this.setIndexHighlight(parentIndex, 1);
-			this.cmd('Step');
+			this.cmd(act.step);
 			this.setIndexHighlight(currentIndex, 0);
 			this.setIndexHighlight(parentIndex, 0);
 		}
@@ -433,12 +434,12 @@ export default class Heap extends Algorithm {
 			if (currentIndex > 1) {
 				this.setIndexHighlight(currentIndex, 1);
 				this.setIndexHighlight(parentIndex, 1);
-				this.cmd('Step');
+				this.cmd(act.step);
 				this.setIndexHighlight(currentIndex, 0);
 				this.setIndexHighlight(parentIndex, 0);
 			}
 		}
-		this.cmd('SetText', this.descriptLabel1, '');
+		this.cmd(act.setText, this.descriptLabel1, '');
 
 		return this.commands;
 	}

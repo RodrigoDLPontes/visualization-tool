@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 30;
@@ -165,7 +166,7 @@ export default class RabinKarp extends Algorithm {
 			ypos = ARRAY_START_Y;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex,
 				text.charAt(i),
 				this.cellSize,
@@ -173,7 +174,7 @@ export default class RabinKarp extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
 		for (let row = 0; row < text.length; row++) {
@@ -182,7 +183,7 @@ export default class RabinKarp extends Algorithm {
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
 				this.comparisonMatrixID[row][col] = this.nextIndex;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.nextIndex++,
 					'',
 					this.cellSize,
@@ -194,9 +195,9 @@ export default class RabinKarp extends Algorithm {
 		}
 
 		const labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
-		this.cmd('CreateLabel', this.baseLabelID, 'Base constant = 1', labelsX, BASE_LABEL_Y, 0);
+		this.cmd(act.createLabel, this.baseLabelID, 'Base constant = 1', labelsX, BASE_LABEL_Y, 0);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.characterValuesLabelID,
 			'Character values: a = 0, b = 1, ..., z = 25',
 			labelsX,
@@ -204,7 +205,7 @@ export default class RabinKarp extends Algorithm {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.textHashLabelID,
 			'Text hash:',
 			labelsX,
@@ -212,7 +213,7 @@ export default class RabinKarp extends Algorithm {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.patternHashLabelID,
 			'Pattern hash:',
 			labelsX,
@@ -236,7 +237,7 @@ export default class RabinKarp extends Algorithm {
 			patternCalculation.substring(0, patternCalculation.length - 2) + ' = ' + patternHash;
 		const calculationsX = ARRAY_START_X + text.length * this.cellSize + 80;
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.textHashCalculationID,
 			textCalculation,
 			calculationsX,
@@ -244,7 +245,7 @@ export default class RabinKarp extends Algorithm {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			this.patternHashCalculationID,
 			patternCalculation,
 			calculationsX,
@@ -259,43 +260,43 @@ export default class RabinKarp extends Algorithm {
 		for (let i = 0; i <= text.length - pattern.length; i++) {
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
-					'SetText',
+					act.setText,
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
 					ypos
 				);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			if (patternHash === textHash) {
 				xpos = i * this.cellSize + ARRAY_START_X;
-				this.cmd('CreateHighlightCircle', iPointerID, '#0000FF', xpos, ARRAY_START_Y);
+				this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', xpos, ARRAY_START_Y);
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd('CreateHighlightCircle', jPointerID, '#0000FF', xpos, ypos);
-				this.cmd('Step');
+				this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', xpos, ypos);
+				this.cmd(act.step);
 				let j = 0;
 				while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
-					this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#2ECC71');
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 					j++;
 					if (j !== pattern.length) {
 						xpos = (i + j) * this.cellSize + ARRAY_START_X;
-						this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+						this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 						ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-						this.cmd('Move', jPointerID, xpos, ypos);
-						this.cmd('Step');
+						this.cmd(act.move, jPointerID, xpos, ypos);
+						this.cmd(act.step);
 					}
 				}
 				if (j !== pattern.length) {
-					this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#E74C3C');
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				}
-				this.cmd('Delete', iPointerID);
-				this.cmd('Delete', jPointerID);
-				this.cmd('Step');
+				this.cmd(act.delete, iPointerID);
+				this.cmd(act.delete, jPointerID);
+				this.cmd(act.step);
 			} else {
 				for (let k = i; k < i + pattern.length; k++) {
-					this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][k], '#FFFF4D');
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][k], '#FFFF4D');
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
 			if (i < text.length - pattern.length) {
 				textHash =
@@ -308,7 +309,7 @@ export default class RabinKarp extends Algorithm {
 				}
 				textCalculation =
 					textCalculation.substring(0, textCalculation.length - 2) + ' = ' + textHash;
-				this.cmd('SetText', this.textHashCalculationID, textCalculation);
+				this.cmd(act.setText, this.textHashCalculationID, textCalculation);
 			}
 			row++;
 		}
@@ -319,20 +320,20 @@ export default class RabinKarp extends Algorithm {
 	clear() {
 		this.commands = [];
 		if (this.textRowID.length !== 0) {
-			this.cmd('Delete', this.baseLabelID);
-			this.cmd('Delete', this.characterValuesLabelID);
-			this.cmd('Delete', this.textHashLabelID);
-			this.cmd('Delete', this.textHashCalculationID);
-			this.cmd('Delete', this.patternHashLabelID);
-			this.cmd('Delete', this.patternHashCalculationID);
+			this.cmd(act.delete, this.baseLabelID);
+			this.cmd(act.delete, this.characterValuesLabelID);
+			this.cmd(act.delete, this.textHashLabelID);
+			this.cmd(act.delete, this.textHashCalculationID);
+			this.cmd(act.delete, this.patternHashLabelID);
+			this.cmd(act.delete, this.patternHashCalculationID);
 		}
 		for (let i = 0; i < this.textRowID.length; i++) {
-			this.cmd('Delete', this.textRowID[i]);
+			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
-				this.cmd('Delete', this.comparisonMatrixID[i][j]);
+				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
 		this.comparisonMatrixID = [];

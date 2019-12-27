@@ -29,6 +29,7 @@ import Algorithm, {
 	addControlToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -124,7 +125,7 @@ export default class BubbleSort extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
 		this.arrayID = [];
@@ -166,7 +167,7 @@ export default class BubbleSort extends Algorithm {
 			}
 			this.displayData[i] = displayData;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				displayData,
 				ARRAY_ELEM_WIDTH,
@@ -175,17 +176,17 @@ export default class BubbleSort extends Algorithm {
 				ypos
 			);
 		}
-		this.cmd('CreateHighlightCircle', this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
-		this.cmd('SetHighlight', this.iPointerID, 1);
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y
 		);
-		this.cmd('SetHighlight', this.jPointerID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.jPointerID, 1);
+		this.cmd(act.step);
 
 		let sorted = true;
 		let end = this.arrayData.length - 1;
@@ -207,54 +208,54 @@ export default class BubbleSort extends Algorithm {
 			}
 			if (!sorted) {
 				for (let i = end + 1; i < this.arrayData.length; i++) {
-					this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
+					this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
 		} while (!sorted);
 
-		this.cmd('Delete', this.iPointerID);
-		this.cmd('Delete', this.jPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.step);
 
 		for (let i = 0; i < this.arrayData.length; i++) {
-			this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		return this.commands;
 	}
 
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('Move', this.iPointerID, iXPos, ARRAY_START_Y);
+		this.cmd(act.move, this.iPointerID, iXPos, ARRAY_START_Y);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('Move', this.jPointerID, jXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.move, this.jPointerID, jXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 	}
 
 	swap(i, j) {
 		// Change pointer colors to red
-		this.cmd('SetForegroundColor', this.iPointerID, '#FF0000');
-		this.cmd('SetForegroundColor', this.jPointerID, '#FF0000');
+		this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
+		this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
 		// Create temporary labels and remove text in array
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
+		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
 		const jLabelID = this.nextIndex++;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd('CreateLabel', jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
-		this.cmd('Settext', this.arrayID[i], '');
-		this.cmd('Settext', this.arrayID[j], '');
+		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
+		this.cmd(act.setText, this.arrayID[i], '');
+		this.cmd(act.setText, this.arrayID[j], '');
 		// Move labels
-		this.cmd('Move', iLabelID, jXPos, ARRAY_START_Y);
-		this.cmd('Move', jLabelID, iXPos, ARRAY_START_Y);
-		this.cmd('Step');
+		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
+		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
+		this.cmd(act.step);
 		// Set text in array and delete temporary labels
-		this.cmd('Settext', this.arrayID[i], this.displayData[j]);
-		this.cmd('Settext', this.arrayID[j], this.displayData[i]);
-		this.cmd('Delete', iLabelID);
-		this.cmd('Delete', jLabelID);
+		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
+		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
+		this.cmd(act.delete, iLabelID);
+		this.cmd(act.delete, jLabelID);
 		// Swap data in backend array
 		let temp = this.arrayData[i];
 		this.arrayData[i] = this.arrayData[j];
@@ -264,9 +265,9 @@ export default class BubbleSort extends Algorithm {
 		this.displayData[i] = this.displayData[j];
 		this.displayData[j] = temp;
 		// Reset pointer colors back to blue
-		this.cmd('SetForegroundColor', this.iPointerID, '#0000FF');
-		this.cmd('SetForegroundColor', this.jPointerID, '#0000FF');
-		this.cmd('Step');
+		this.cmd(act.setForegroundColor, this.iPointerID, '#0000FF');
+		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
+		this.cmd(act.step);
 	}
 
 	// Called by our superexport default class when we get an animation started event -- need to wait for the

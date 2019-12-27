@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Graph, { LARGE_SIZE, SMALL_SIZE } from './Graph.js';
+import { act } from '../anim/AnimationMain';
 import { addControlToAlgorithmBar } from './Algorithm.js';
 
 export default class Floyd extends Graph {
@@ -164,7 +165,7 @@ export default class Floyd extends Graph {
 		const pathTableHeader = this.nextIndex++;
 
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			costTableHeader,
 			'Cost Table',
 			this.cost_table_start_x,
@@ -172,7 +173,7 @@ export default class Floyd extends Graph {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			pathTableHeader,
 			'Path Table',
 			this.path_table_start_x,
@@ -186,38 +187,38 @@ export default class Floyd extends Graph {
 			this.costIndexXID[i] = this.nextIndex++;
 			this.costIndexYID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.pathIndexXID[i],
 				i,
 				this.path_table_start_x + i * this.path_table_width,
 				this.path_table_start_y - this.path_table_height
 			);
-			this.cmd('SetTextColor', this.pathIndexXID[i], '#0000FF');
+			this.cmd(act.setTextColor, this.pathIndexXID[i], '#0000FF');
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.pathIndexYID[i],
 				i,
 				this.path_table_start_x - this.path_table_width,
 				this.path_table_start_y + i * this.path_table_height
 			);
-			this.cmd('SetTextColor', this.pathIndexYID[i], '#0000FF');
+			this.cmd(act.setTextColor, this.pathIndexYID[i], '#0000FF');
 
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.costIndexXID[i],
 				i,
 				this.cost_table_start_x + i * this.cost_table_width,
 				this.cost_table_start_y - this.cost_table_height
 			);
-			this.cmd('SetTextColor', this.costIndexXID[i], '#0000FF');
+			this.cmd(act.setTextColor, this.costIndexXID[i], '#0000FF');
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.costIndexYID[i],
 				i,
 				this.cost_table_start_x - this.cost_table_width,
 				this.cost_table_start_y + i * this.cost_table_height
 			);
-			this.cmd('SetTextColor', this.costIndexYID[i], '#0000FF');
+			this.cmd(act.setTextColor, this.costIndexYID[i], '#0000FF');
 			for (let j = 0; j < this.size; j++) {
 				this.costTable[i][j] = this.adj_matrix[i][j];
 				if (this.costTable[i][j] >= 0) {
@@ -228,7 +229,7 @@ export default class Floyd extends Graph {
 				this.costTableID[i][j] = this.nextIndex++;
 				this.pathTableID[i][j] = this.nextIndex++;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.costTableID[i][j],
 					this.getCostLabel(this.costTable[i][j], true),
 					this.cost_table_width,
@@ -237,7 +238,7 @@ export default class Floyd extends Graph {
 					this.cost_table_start_y + i * this.cost_table_height
 				);
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.pathTableID[i][j],
 					this.pathTable[i][j],
 					this.path_table_width,
@@ -247,7 +248,7 @@ export default class Floyd extends Graph {
 				);
 			}
 		}
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		if (this.size === LARGE_SIZE) {
@@ -267,20 +268,20 @@ export default class Floyd extends Graph {
 		const moveLabel1ID = this.nextIndex++;
 		const moveLabel2ID = this.nextIndex++;
 
-		this.cmd('CreateCircle', this.node1ID, '', this.node_1_x_pos, this.node_1_y_pos);
-		this.cmd('CreateCircle', this.node2ID, '', this.node_2_x_pos, this.node_2_y_pos);
-		this.cmd('CreateCircle', this.node3ID, '', this.node_3_x_pos, this.node_3_y_pos);
-		this.cmd('CreateLabel', messageID, '', this.message_x, this.message_y, 0);
+		this.cmd(act.createCircle, this.node1ID, '', this.node_1_x_pos, this.node_1_y_pos);
+		this.cmd(act.createCircle, this.node2ID, '', this.node_2_x_pos, this.node_2_y_pos);
+		this.cmd(act.createCircle, this.node3ID, '', this.node_3_x_pos, this.node_3_y_pos);
+		this.cmd(act.createLabel, messageID, '', this.message_x, this.message_y, 0);
 
 		for (let k = 0; k < this.size; k++) {
 			for (let i = 0; i < this.size; i++) {
 				for (let j = 0; j < this.size; j++) {
 					if (i !== j && j !== k && i !== k) {
-						this.cmd('SetText', this.node1ID, i);
-						this.cmd('SetText', this.node2ID, k);
-						this.cmd('SetText', this.node3ID, j);
+						this.cmd(act.setText, this.node1ID, i);
+						this.cmd(act.setText, this.node2ID, k);
+						this.cmd(act.setText, this.node3ID, j);
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.node1ID,
 							this.node2ID,
 							'#009999',
@@ -289,7 +290,7 @@ export default class Floyd extends Graph {
 							this.getCostLabel(this.costTable[i][k], true)
 						);
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.node2ID,
 							this.node3ID,
 							'#9900CC',
@@ -298,7 +299,7 @@ export default class Floyd extends Graph {
 							this.getCostLabel(this.costTable[k][j], true)
 						);
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.node1ID,
 							this.node3ID,
 							'#CC0000',
@@ -306,19 +307,19 @@ export default class Floyd extends Graph {
 							1,
 							this.getCostLabel(this.costTable[i][j], true)
 						);
-						this.cmd('SetHighlight', this.costTableID[i][k], 1);
-						this.cmd('SetHighlight', this.costTableID[k][j], 1);
-						this.cmd('SetHighlight', this.costTableID[i][j], 1);
-						this.cmd('SetTextColor', this.costTableID[i][k], '#009999');
-						this.cmd('SetTextColor', this.costTableID[k][j], '#9900CC');
-						this.cmd('SetTextColor', this.costTableID[i][j], '#CC0000');
+						this.cmd(act.setHighlight, this.costTableID[i][k], 1);
+						this.cmd(act.setHighlight, this.costTableID[k][j], 1);
+						this.cmd(act.setHighlight, this.costTableID[i][j], 1);
+						this.cmd(act.setTextColor, this.costTableID[i][k], '#009999');
+						this.cmd(act.setTextColor, this.costTableID[k][j], '#9900CC');
+						this.cmd(act.setTextColor, this.costTableID[i][j], '#CC0000');
 						if (this.costTable[i][k] >= 0 && this.costTable[k][j] >= 0) {
 							if (
 								this.costTable[i][j] < 0 ||
 								this.costTable[i][k] + this.costTable[k][j] < this.costTable[i][j]
 							) {
 								this.cmd(
-									'SetText',
+									act.setText,
 									messageID,
 									this.getCostLabel(this.costTable[i][k], true) +
 										' + ' +
@@ -326,46 +327,46 @@ export default class Floyd extends Graph {
 										' < ' +
 										this.getCostLabel(this.costTable[i][j], true)
 								);
-								this.cmd('Step');
+								this.cmd(act.step);
 								this.costTable[i][j] = this.costTable[i][k] + this.costTable[k][j];
-								this.cmd('SetText', this.pathTableID[i][j], '');
-								this.cmd('SetText', this.costTableID[i][j], '');
+								this.cmd(act.setText, this.pathTableID[i][j], '');
+								this.cmd(act.setText, this.costTableID[i][j], '');
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									moveLabel1ID,
 									this.pathTable[k][j],
 									this.path_table_start_x + j * this.path_table_width,
 									this.path_table_start_y + k * this.path_table_height
 								);
 								this.cmd(
-									'Move',
+									act.move,
 									moveLabel1ID,
 									this.path_table_start_x + j * this.path_table_width,
 									this.path_table_start_y + i * this.path_table_height
 								);
 								this.cmd(
-									'CreateLabel',
+									act.createLabel,
 									moveLabel2ID,
 									this.costTable[i][j],
 									this.message_x,
 									this.message_y
 								);
-								this.cmd('SetHighlight', moveLabel2ID, 1);
+								this.cmd(act.setHighlight, moveLabel2ID, 1);
 								this.cmd(
-									'Move',
+									act.move,
 									moveLabel2ID,
 									this.cost_table_start_x + j * this.cost_table_width,
 									this.cost_table_start_y + i * this.cost_table_height
 								);
 								this.pathTable[i][j] = this.pathTable[k][j];
-								this.cmd('Step');
-								this.cmd('SetText', this.costTableID[i][j], this.costTable[i][j]);
-								this.cmd('SetText', this.pathTableID[i][j], this.pathTable[i][j]);
-								this.cmd('Delete', moveLabel1ID);
-								this.cmd('Delete', moveLabel2ID);
+								this.cmd(act.step);
+								this.cmd(act.setText, this.costTableID[i][j], this.costTable[i][j]);
+								this.cmd(act.setText, this.pathTableID[i][j], this.pathTable[i][j]);
+								this.cmd(act.delete, moveLabel1ID);
+								this.cmd(act.delete, moveLabel2ID);
 							} else {
 								this.cmd(
-									'SetText',
+									act.setText,
 									messageID,
 									'!(' +
 										this.getCostLabel(this.costTable[i][k], true) +
@@ -375,11 +376,11 @@ export default class Floyd extends Graph {
 										this.getCostLabel(this.costTable[i][j], true) +
 										')'
 								);
-								this.cmd('Step');
+								this.cmd(act.step);
 							}
 						} else {
 							this.cmd(
-								'SetText',
+								act.setText,
 								messageID,
 								'!(' +
 									this.getCostLabel(this.costTable[i][k], true) +
@@ -389,25 +390,25 @@ export default class Floyd extends Graph {
 									this.getCostLabel(this.costTable[i][j], true) +
 									')'
 							);
-							this.cmd('Step');
+							this.cmd(act.step);
 						}
-						this.cmd('SetTextColor', this.costTableID[i][k], '#000000');
-						this.cmd('SetTextColor', this.costTableID[k][j], '#000000');
-						this.cmd('SetTextColor', this.costTableID[i][j], '#000000');
-						this.cmd('Disconnect', this.node1ID, this.node2ID);
-						this.cmd('Disconnect', this.node2ID, this.node3ID);
-						this.cmd('Disconnect', this.node1ID, this.node3ID);
-						this.cmd('SetHighlight', this.costTableID[i][k], 0);
-						this.cmd('SetHighlight', this.costTableID[k][j], 0);
-						this.cmd('SetHighlight', this.costTableID[i][j], 0);
+						this.cmd(act.setTextColor, this.costTableID[i][k], '#000000');
+						this.cmd(act.setTextColor, this.costTableID[k][j], '#000000');
+						this.cmd(act.setTextColor, this.costTableID[i][j], '#000000');
+						this.cmd(act.disconnect, this.node1ID, this.node2ID);
+						this.cmd(act.disconnect, this.node2ID, this.node3ID);
+						this.cmd(act.disconnect, this.node1ID, this.node3ID);
+						this.cmd(act.setHighlight, this.costTableID[i][k], 0);
+						this.cmd(act.setHighlight, this.costTableID[k][j], 0);
+						this.cmd(act.setHighlight, this.costTableID[i][j], 0);
 					}
 				}
 			}
 		}
-		this.cmd('Delete', this.node1ID);
-		this.cmd('Delete', this.node2ID);
-		this.cmd('Delete', this.node3ID);
-		this.cmd('Delete', messageID);
+		this.cmd(act.delete, this.node1ID);
+		this.cmd(act.delete, this.node2ID);
+		this.cmd(act.delete, this.node3ID);
+		this.cmd(act.delete, messageID);
 		this.nextIndex = oldIndex;
 
 		return this.commands;

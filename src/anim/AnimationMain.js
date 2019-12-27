@@ -56,7 +56,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@material-ui/core';
-import { UndoConnect } from './Line.js';
+import { UndoConnect } from './AnimatedLine.js';
 
 let swapped = false;
 
@@ -82,7 +82,7 @@ function swapControlDiv() {
 	}
 }
 
-// Utility funciton to read a cookie
+// Utility function to read a cookie
 function getCookie(cookieName) {
 	let i, x, y;
 	const cookies = document.cookie.split(';');
@@ -96,12 +96,10 @@ function getCookie(cookieName) {
 	}
 }
 
-// Utility funciton to write a cookie
+// Utility function to write a cookie
 function setCookie(cookieName, value, expireDays) {
-	const exdate = new Date();
-	exdate.setDate(exdate.getDate() + expireDays);
-	// const cookieValue =
-	// 	escape(value) + (expireDays == null ? "" : "; expires=" + exdate.toUTCString());
+	const exDate = new Date();
+	exDate.setDate(exDate.getDate() + expireDays);
 	document.cookie = cookieName + '=' + value;
 }
 
@@ -121,9 +119,9 @@ function controlKey(keyASCII) {
 	);
 }
 
-function returnSubmit(field, funct, maxsize, intOnly) {
-	if (maxsize !== undefined) {
-		field.size = maxsize;
+function returnSubmit(field, func, maxSize, intOnly) {
+	if (maxSize !== undefined) {
+		field.size = maxSize;
 	}
 	return function(event) {
 		let keyASCII = 0;
@@ -136,7 +134,7 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		}
 
 		if (keyASCII === 13) {
-			funct();
+			func();
 			return false;
 		} else if (
 			keyASCII === 59 ||
@@ -147,7 +145,7 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		) {
 			return false;
 		} else if (
-			(maxsize !== undefined && field.value.length >= maxsize) ||
+			(maxSize !== undefined && field.value.length >= maxSize) ||
 			(intOnly && (keyASCII < 48 || keyASCII > 57))
 		) {
 			if (!controlKey(keyASCII)) return false;
@@ -155,23 +153,6 @@ function returnSubmit(field, funct, maxsize, intOnly) {
 		return true;
 	};
 }
-
-// function addControl(type, name, location) {
-// 	const element = document.createElement("input");
-
-// 	element.setAttribute("type", type);
-// 	element.setAttribute("value", name);
-
-// 	const tableEntry = document.createElement("td");
-
-// 	tableEntry.appendChild(element);
-
-// 	const controlBar = document.getElementById(tableEntry);
-
-// 	//Append the element in page (in span).
-// 	controlBar.appendChild(element);
-// 	return element;
-// }
 
 function addControlToAnimationBar(animBarRef, type, name, callback) {
 	const element = document.createElement('input');
@@ -188,9 +169,6 @@ function addControlToAnimationBar(animBarRef, type, name, callback) {
 
 	tableEntry.appendChild(element);
 
-	// const controlBar = document.getElementById('GeneralAnimationControls');
-
-	//Append the element in page (in span).
 	animBarRef.current.appendChild(tableEntry);
 	return element;
 }
@@ -201,12 +179,11 @@ export default class AnimationManager extends EventListener {
 
 		this.objectManager = new ObjectManager(canvasRef);
 		// Holder for all animated objects.
-		// All animation is done by manipulating objects in\
+		// All animation is done by manipulating objects in
 		// this container
 		this.animatedObjects = this.objectManager;
 
 		// Control variables for stopping / starting animation
-
 		this.animationPaused = false;
 		this.awaitingStep = false;
 		this.currentlyAnimating = false;
@@ -214,22 +191,22 @@ export default class AnimationManager extends EventListener {
 		// Array holding the code for the animation.  This is
 		// an array of strings, each of which is an animation command
 		// currentAnimation is an index into this array
-		this.AnimationSteps = [];
+		this.animationSteps = [];
 		this.currentAnimation = 0;
 
 		this.previousAnimationSteps = [];
 
 		// Control variables for where we are in the current animation block.
-		//  currFrame holds the frame number of the current animation block,
-		//  while animationBlockLength holds the length of the current animation
-		//  block (in frame numbers).
+		// currFrame holds the frame number of the current animation block,
+		// while animationBlockLength holds the length of the current animation
+		// block (in frame numbers).
 		this.currFrame = 0;
 		this.animationBlockLength = 0;
 
 		//  The animation block that is currently running.  Array of singleAnimations
 		this.currentBlock = null;
 
-		/////////////////////////////////////
+		////////////////////////////////////
 		// Variables for handling undo.
 		////////////////////////////////////
 		//  A stack of UndoBlock objects (subclassed, UndoBlock is an abstract base class)
@@ -238,24 +215,14 @@ export default class AnimationManager extends EventListener {
 		this.doingUndo = false;
 
 		// A stack containing the beginning of each animation block, as an index
-		// into the AnimationSteps array
+		// into the animationSteps array
 		this.undoAnimationStepIndices = [];
 		this.undoAnimationStepIndicesStack = [];
 
 		this.animationBlockLength = 10;
-		// var this.;
-		// var animationManager;
-		// var canvas;
 
 		this.paused = false;
-		// var this.playPauseBackButton;
-		// var this.skipBackButton;
-		// var this.stepBackButton;
-		// var this.stepForwardButton;
-		// var this.skipForwardButton;
 
-		// this.widthEntry;
-		// let this.heightEntry;
 		this.canvas = canvasRef;
 
 		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () =>
@@ -323,21 +290,8 @@ export default class AnimationManager extends EventListener {
 
 		tableEntry.appendChild(newTable);
 
-		//Append the element in page (in span).
+		// Append the element in page (in span)
 		controlBar.appendChild(tableEntry);
-
-		//tableEntry.appendChild(element);
-
-		// $(element).slider({
-		// 	animate: true,
-		// 	value: speed,
-		// 	change: (e, ui) => {
-		// 		setCookie('VisualizationSpeed', String(ui.value), 30);
-		// 	},
-		// 	slide: (e, ui) => {
-		// 		this.setSpeed(ui.value);
-		// 	},
-		// });
 
 		this.setSpeed(speed);
 
@@ -412,11 +366,6 @@ export default class AnimationManager extends EventListener {
 		}
 	}
 
-	// Set the speed of the animation, from 0 (slow) to 100 (fast)
-	setSpeed(newSpeed) {
-		this.animationBlockLength = Math.floor((100 - newSpeed) / 2);
-	}
-
 	parseBool(str) {
 		const uppercase = str.toUpperCase();
 		const returnVal = !(
@@ -435,6 +384,11 @@ export default class AnimationManager extends EventListener {
 		} else if (clr.substring(0, 2) === '0x') {
 			return '#' + clr.substring(2);
 		}
+	}
+
+	// Set the speed of the animation, from 0 (slow) to 100 (fast)
+	setSpeed(newSpeed) {
+		this.animationBlockLength = Math.floor((100 - newSpeed) / 2);
 	}
 
 	changeSize() {
@@ -461,646 +415,61 @@ export default class AnimationManager extends EventListener {
 	startNextBlock() {
 		this.awaitingStep = false;
 		this.currentBlock = [];
-		let undoBlock = [];
-		if (this.currentAnimation === this.AnimationSteps.length) {
+		this.undoBlock = [];
+		if (this.currentAnimation === this.animationSteps.length) {
 			this.currentlyAnimating = false;
 			this.awaitingStep = false;
 			this.fireEvent('AnimationEnded', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
-
 			return;
 		}
 		this.undoAnimationStepIndices.push(this.currentAnimation);
 
-		let foundBreak = false;
-		let anyAnimations = false;
+		this.foundBreak = false;
+		this.anyAnimations = false;
 
-		while (this.currentAnimation < this.AnimationSteps.length && !foundBreak) {
-			const nextCommand = this.AnimationSteps[this.currentAnimation].split('<;>');
-			if (nextCommand[0].toUpperCase() === 'CREATECIRCLE') {
-				this.animatedObjects.addCircleObject(parseInt(nextCommand[1]), nextCommand[2]);
-				if (nextCommand.length > 4) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4])
-					);
-				}
-				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-			} else if (nextCommand[0].toUpperCase() === 'CONNECT') {
-				if (nextCommand.length > 7) {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						this.parseColor(nextCommand[3]),
-						parseFloat(nextCommand[4]),
-						this.parseBool(nextCommand[5]),
-						nextCommand[6],
-						parseInt(nextCommand[7])
-					);
-				} else if (nextCommand.length > 6) {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						this.parseColor(nextCommand[3]),
-						parseFloat(nextCommand[4]),
-						this.parseBool(nextCommand[5]),
-						nextCommand[6],
-						0
-					);
-				} else if (nextCommand.length > 5) {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						this.parseColor(nextCommand[3]),
-						parseFloat(nextCommand[4]),
-						this.parseBool(nextCommand[5]),
-						'',
-						0
-					);
-				} else if (nextCommand.length > 4) {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						this.parseColor(nextCommand[3]),
-						parseFloat(nextCommand[4]),
-						true,
-						'',
-						0
-					);
-				} else if (nextCommand.length > 3) {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						this.parseColor(nextCommand[3]),
-						0.0,
-						true,
-						'',
-						0
-					);
-				} else {
-					this.animatedObjects.connectEdge(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[2]),
-						'#000000',
-						0.0,
-						true,
-						'',
-						0
-					);
-				}
-				undoBlock.push(
-					new UndoConnect(parseInt(nextCommand[1]), parseInt(nextCommand[2]), false)
-				);
-			} else if (nextCommand[0].toUpperCase() === 'CONNECTNEXT') {
-				this.animatedObjects.connectEdge(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2]),
-					'#000000',
-					0.0,
-					true,
-					'',
-					0
-				);
-				undoBlock.push(
-					new UndoConnect(parseInt(nextCommand[1]), parseInt(nextCommand[2]), false)
-				);
-			} else if (nextCommand[0].toUpperCase() === 'CONNECTPREV') {
-				this.animatedObjects.connectEdge(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2]),
-					'#000000',
-					0.0,
-					true,
-					'',
-					1
-				);
-				undoBlock.push(
-					new UndoConnect(parseInt(nextCommand[1]), parseInt(nextCommand[2]), false)
-				);
-			} else if (nextCommand[0].toUpperCase() === 'CONNECTCURVE') {
-				this.animatedObjects.connectEdge(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2]),
-					'#000000',
-					parseFloat(nextCommand[3]),
-					true,
-					'',
-					1
-				);
-				undoBlock.push(
-					new UndoConnect(parseInt(nextCommand[1]), parseInt(nextCommand[2]), false)
-				);
-			} else if (nextCommand[0].toUpperCase() === 'CONNECTSKIPLIST') {
-				this.animatedObjects.connectEdge(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2]),
-					'#000000',
-					0,
-					false,
-					'',
-					parseInt(nextCommand[3])
-				);
-				undoBlock.push(
-					new UndoConnect(parseInt(nextCommand[1]), parseInt(nextCommand[2]), false)
-				);
-			} else if (nextCommand[0].toUpperCase() === 'CREATERECTANGLE') {
-				if (nextCommand.length === 9) {
-					this.animatedObjects.addRectangleObject(
-						parseInt(nextCommand[1]), // ID
-						nextCommand[2], // Label
-						parseInt(nextCommand[3]), // w
-						parseInt(nextCommand[4]), // h
-						nextCommand[7], // xJustify
-						nextCommand[8], // yJustify
-						'#ffffff', // background color
-						'#000000'
-					); // foreground color
-				} else {
-					this.animatedObjects.addRectangleObject(
-						parseInt(nextCommand[1]), // ID
-						nextCommand[2], // Label
-						parseInt(nextCommand[3]), // w
-						parseInt(nextCommand[4]), // h
-						'center', // xJustify
-						'center', // yJustify
-						'#ffffff', // background color
-						'#000000'
-					); // foreground color
-				}
-				if (nextCommand.length > 6) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[5]),
-						parseInt(nextCommand[6])
-					);
-				}
-				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-			} else if (nextCommand[0].toUpperCase() === 'MOVE') {
-				const objectID = parseInt(nextCommand[1]);
-				const nextAnim = new SingleAnimation(
-					objectID,
-					this.animatedObjects.getNodeX(objectID),
-					this.animatedObjects.getNodeY(objectID),
-					parseInt(nextCommand[2]),
-					parseInt(nextCommand[3])
-				);
-				this.currentBlock.push(nextAnim);
-
-				undoBlock.push(
-					new UndoMove(
-						nextAnim.objectID,
-						nextAnim.toX,
-						nextAnim.toY,
-						nextAnim.fromX,
-						nextAnim.fromY
-					)
-				);
-
-				anyAnimations = true;
-			} else if (nextCommand[0].toUpperCase() === 'MOVETOALIGNRIGHT') {
-				const id = parseInt(nextCommand[1]);
-				const otherId = parseInt(nextCommand[2]);
-				const newXY = this.animatedObjects.getAlignRightPos(id, otherId);
-
-				const nextAnim = new SingleAnimation(
-					id,
-					this.animatedObjects.getNodeX(id),
-					this.animatedObjects.getNodeY(id),
-					newXY[0],
-					newXY[1]
-				);
-				this.currentBlock.push(nextAnim);
-				undoBlock.push(
-					new UndoMove(
-						nextAnim.objectID,
-						nextAnim.toX,
-						nextAnim.toY,
-						nextAnim.fromX,
-						nextAnim.fromY
-					)
-				);
-				anyAnimations = true;
-			} else if (nextCommand[0].toUpperCase() === 'STEP') {
-				foundBreak = true;
-			} else if (nextCommand[0].toUpperCase() === 'SETFOREGROUNDCOLOR') {
-				const id = parseInt(nextCommand[1]);
-				const oldColor = this.animatedObjects.foregroundColor(id);
-				this.animatedObjects.setForegroundColor(id, this.parseColor(nextCommand[2]));
-				undoBlock.push(new UndoSetForegroundColor(id, oldColor));
-			} else if (nextCommand[0].toUpperCase() === 'SETBACKGROUNDCOLOR') {
-				const id = parseInt(nextCommand[1]);
-				const oldColor = this.animatedObjects.backgroundColor(id);
-				this.animatedObjects.setBackgroundColor(id, this.parseColor(nextCommand[2]));
-				undoBlock.push(new UndoSetBackgroundColor(id, oldColor));
-			} else if (nextCommand[0].toUpperCase() === 'SETHIGHLIGHT') {
-				const newHighlight = this.parseBool(nextCommand[2]);
-				this.animatedObjects.setHighlight(parseInt(nextCommand[1]), newHighlight, nextCommand[3]);
-				undoBlock.push(new UndoHighlight(parseInt(nextCommand[1]), !newHighlight));
-			} else if (nextCommand[0].toUpperCase() === 'DISCONNECT') {
-				const undoConnect = this.animatedObjects.disconnect(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2])
-				);
-				if (undoConnect !== null) {
-					undoBlock.push(undoConnect);
-				}
-			} else if (nextCommand[0].toUpperCase() === 'SETALPHA') {
-				const oldAlpha = this.animatedObjects.getAlpha(parseInt(nextCommand[1]));
-				this.animatedObjects.setAlpha(parseInt(nextCommand[1]), parseFloat(nextCommand[2]));
-				undoBlock.push(new UndoSetAlpha(parseInt(nextCommand[1]), oldAlpha));
-			} else if (nextCommand[0].toUpperCase() === 'SETTEXT') {
-				if (nextCommand.length > 3) {
-					const oldText = this.animatedObjects.getText(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[3])
-					);
-					this.animatedObjects.setText(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						parseInt(nextCommand[3])
-					);
-					if (oldText !== undefined) {
-						undoBlock.push(
-							new UndoSetText(
-								parseInt(nextCommand[1]),
-								oldText,
-								parseInt(nextCommand[3])
-							)
-						);
-					}
-				} else {
-					const oldText = this.animatedObjects.getText(parseInt(nextCommand[1]), 0);
-					this.animatedObjects.setText(parseInt(nextCommand[1]), nextCommand[2], 0);
-					if (oldText !== undefined) {
-						undoBlock.push(new UndoSetText(parseInt(nextCommand[1]), oldText, 0));
-					}
-				}
-			} else if (nextCommand[0].toUpperCase() === 'DELETE') {
-				const objectID = parseInt(nextCommand[1]);
-
-				const removedEdges = this.animatedObjects.deleteIncident(objectID);
-				if (removedEdges.length > 0) {
-					undoBlock = undoBlock.concat(removedEdges);
-				}
-				const obj = this.animatedObjects.getObject(objectID);
-				if (obj !== null) {
-					undoBlock.push(obj.createUndoDelete());
-					this.animatedObjects.removeObject(objectID);
-				}
-			} else if (nextCommand[0].toUpperCase() === 'CREATEHIGHLIGHTCIRCLE') {
-				if (nextCommand.length > 5) {
-					this.animatedObjects.addHighlightCircleObject(
-						parseInt(nextCommand[1]),
-						this.parseColor(nextCommand[2]),
-						parseFloat(nextCommand[5])
-					);
-				} else {
-					this.animatedObjects.addHighlightCircleObject(
-						parseInt(nextCommand[1]),
-						this.parseColor(nextCommand[2]),
-						20
-					);
-				}
-				if (nextCommand.length > 4) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4])
-					);
-				}
-				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-			} else if (nextCommand[0].toUpperCase() === 'CREATELABEL') {
-				if (nextCommand.length === 6) {
-					this.animatedObjects.addLabelObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						this.parseBool(nextCommand[5])
-					);
-				} else {
-					this.animatedObjects.addLabelObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						true
-					);
-				}
-				if (nextCommand.length >= 5) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseFloat(nextCommand[3]),
-						parseFloat(nextCommand[4])
-					);
-				}
-				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-			} else if (nextCommand[0].toUpperCase() === 'SETEDGECOLOR') {
-				const from = parseInt(nextCommand[1]);
-				const to = parseInt(nextCommand[2]);
-				const newColor = this.parseColor(nextCommand[3]);
-				const oldColor = this.animatedObjects.setEdgeColor(from, to, newColor);
-				undoBlock.push(new UndoSetEdgeColor(from, to, oldColor));
-			} else if (nextCommand[0].toUpperCase() === 'SETEDGEALPHA') {
-				const from = parseInt(nextCommand[1]);
-				const to = parseInt(nextCommand[2]);
-				const newAlpha = parseFloat(nextCommand[3]);
-				const oldAplpha = this.animatedObjects.setEdgeAlpha(from, to, newAlpha);
-				undoBlock.push(new UndoSetEdgeAlpha(from, to, oldAplpha));
-			} else if (nextCommand[0].toUpperCase() === 'SETEDGEHIGHLIGHT') {
-				const newHighlight = this.parseBool(nextCommand[3]);
-				const from = parseInt(nextCommand[1]);
-				const to = parseInt(nextCommand[2]);
-				const oldHighlight = this.animatedObjects.setEdgeHighlight(from, to, newHighlight);
-				undoBlock.push(new UndoHighlightEdge(from, to, oldHighlight));
-			} else if (nextCommand[0].toUpperCase() === 'SETHEIGHT') {
-				const id = parseInt(nextCommand[1]);
-				const oldHeight = this.animatedObjects.getHeight(id);
-				this.animatedObjects.setHeight(id, parseInt(nextCommand[2]));
-				undoBlock.push(new UndoSetHeight(id, oldHeight));
-			} else if (nextCommand[0].toUpperCase() === 'SETLAYER') {
-				this.animatedObjects.setLayer(parseInt(nextCommand[1]), parseInt(nextCommand[2]));
-				//TODO: Add undo information here
-			} else if (nextCommand[0].toUpperCase() === 'CREATELINKEDLIST') {
-				if (nextCommand.length === 11) {
-					this.animatedObjects.addLinkedListObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4]),
-						parseFloat(nextCommand[7]),
-						this.parseBool(nextCommand[8]),
-						this.parseBool(nextCommand[9]),
-						parseInt(nextCommand[10]),
-						'#FFFFFF',
-						'#000000'
-					);
-				} else {
-					this.animatedObjects.addLinkedListObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4]),
-						0.25,
-						true,
-						false,
-						1,
-						'#FFFFFF',
-						'#000000'
-					);
-				}
-				if (nextCommand.length > 6) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[5]),
-						parseInt(nextCommand[6])
-					);
-					undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-				}
-			} else if (nextCommand[0].toUpperCase() === 'CREATEDOUBLYLINKEDLIST') {
-				if (nextCommand.length === 9) {
-					this.animatedObjects.addDoublyLinkedListObject(
-						parseInt(nextCommand[1]), // ID
-						nextCommand[2], // Label
-						parseInt(nextCommand[3]), // Width
-						parseInt(nextCommand[4]), // Height
-						parseFloat(nextCommand[7]), // Link Percent
-						parseInt(nextCommand[8]), // Num Labels
-						'#FFFFFF',
-						'#000000'
-					);
-				} else {
-					this.animatedObjects.addDoublyLinkedListObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4]),
-						0.25,
-						1,
-						'#FFFFFF',
-						'#000000'
-					);
-				}
-				if (nextCommand.length > 6) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[5]),
-						parseInt(nextCommand[6])
-					);
-					undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-				}
-			} else if (nextCommand[0].toUpperCase() === 'CREATECIRCULARLYLINKEDLIST') {
-				if (nextCommand.length === 9) {
-					this.animatedObjects.addCircularlyLinkedListObject(
-						parseInt(nextCommand[1]), // ID
-						nextCommand[2], // Label
-						parseInt(nextCommand[3]), // Width
-						parseInt(nextCommand[4]), // Height
-						parseFloat(nextCommand[7]), // Link Percent
-						parseInt(nextCommand[8]), // Num Labels
-						'#FFFFFF',
-						'#000000'
-					);
-				} else {
-					this.animatedObjects.addCircularlyLinkedListObject(
-						parseInt(nextCommand[1]),
-						nextCommand[2],
-						parseInt(nextCommand[3]),
-						parseInt(nextCommand[4]),
-						0.25,
-						1,
-						'#FFFFFF',
-						'#000000'
-					);
-				}
-				if (nextCommand.length > 6) {
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[5]),
-						parseInt(nextCommand[6])
-					);
-					undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-				}
-			} else if (nextCommand[0].toUpperCase() === 'CREATESKIPLIST') {
-				if (nextCommand.length === 7) {
-					this.animatedObjects.addSkipListObject(
-						parseInt(nextCommand[1]), // ID
-						nextCommand[2], // Label
-						parseInt(nextCommand[3]), // Width
-						parseInt(nextCommand[4]), // Height
-						'#000000', // Label color
-						'#FFFFFF', // Fill color
-						'#000000'
-					); // Edge color
-
-					this.animatedObjects.setNodePosition(
-						parseInt(nextCommand[1]), // ID
-						parseInt(nextCommand[5]), // X
-						parseInt(nextCommand[6])
-					); // Y
-					undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-				}
-			} else if (nextCommand[0].toUpperCase() === 'SETNULL') {
-				const oldNull = this.animatedObjects.getNull(parseInt(nextCommand[1]));
-				this.animatedObjects.setNull(
-					parseInt(nextCommand[1]),
-					this.parseBool(nextCommand[2])
-				);
-				undoBlock.push(new UndoSetNull(parseInt(nextCommand[1]), oldNull));
-			} else if (nextCommand[0].toUpperCase() === 'SETPREVNULL') {
-				const oldNull = this.animatedObjects.getLeftNull(parseInt(nextCommand[1]));
-				this.animatedObjects.setPrevNull(
-					parseInt(nextCommand[1]),
-					this.parseBool(nextCommand[2])
-				);
-				undoBlock.push(new UndoSetPrevNull(parseInt(nextCommand[1]), oldNull));
-			} else if (nextCommand[0].toUpperCase() === 'SETNEXTNULL') {
-				const oldNull = this.animatedObjects.getRightNull(parseInt(nextCommand[1]));
-				this.animatedObjects.setNextNull(
-					parseInt(nextCommand[1]),
-					this.parseBool(nextCommand[2])
-				);
-				undoBlock.push(new UndoSetNextNull(parseInt(nextCommand[1]), oldNull));
-			} else if (nextCommand[0].toUpperCase() === 'SETTEXTCOLOR') {
-				if (nextCommand.length > 3) {
-					const oldColor = this.animatedObjects.getTextColor(
-						parseInt(nextCommand[1]),
-						parseInt(nextCommand[3])
-					);
-					this.animatedObjects.setTextColor(
-						parseInt(nextCommand[1]),
-						this.parseColor(nextCommand[2]),
-						parseInt(nextCommand[3])
-					);
-					undoBlock.push(
-						new UndoSetTextColor(
-							parseInt(nextCommand[1]),
-							oldColor,
-							parseInt(nextCommand[3])
-						)
-					);
-				} else {
-					const oldColor = this.animatedObjects.getTextColor(parseInt(nextCommand[1]), 0);
-					this.animatedObjects.setTextColor(
-						parseInt(nextCommand[1]),
-						this.parseColor(nextCommand[2]),
-						0
-					);
-					undoBlock.push(new UndoSetTextColor(parseInt(nextCommand[1]), oldColor, 0));
-				}
-			} else if (nextCommand[0].toUpperCase() === 'CREATEBTREENODE') {
-				this.animatedObjects.addBTreeNode(
-					parseInt(nextCommand[1]),
-					parseFloat(nextCommand[2]),
-					parseFloat(nextCommand[3]),
-					parseInt(nextCommand[4]),
-					this.parseColor(nextCommand[7]),
-					this.parseColor(nextCommand[8])
-				);
-				this.animatedObjects.setNodePosition(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[5]),
-					parseInt(nextCommand[6])
-				);
-				undoBlock.push(new UndoCreate(parseInt(nextCommand[1])));
-			} else if (nextCommand[0].toUpperCase() === 'SETWIDTH') {
-				const id = parseInt(nextCommand[1]);
-				this.animatedObjects.setWidth(id, parseInt(nextCommand[2]));
-				const oldWidth = this.animatedObjects.getWidth(id);
-				undoBlock.push(new UndoSetWidth(id, oldWidth));
-			} else if (nextCommand[0].toUpperCase() === 'SETNUMELEMENTS') {
-				const oldElem = this.animatedObjects.getObject(parseInt(nextCommand[1]));
-				undoBlock.push(new UndoSetNumElements(oldElem, parseInt(nextCommand[2])));
-				this.animatedObjects.setNumElements(
-					parseInt(nextCommand[1]),
-					parseInt(nextCommand[2])
-				);
-			} else if (nextCommand[0].toUpperCase() === 'SETPOSITION') {
-				const id = parseInt(nextCommand[1]);
-				const oldX = this.animatedObjects.getNodeX(id);
-				const oldY = this.animatedObjects.getNodeY(id);
-				undoBlock.push(new UndoSetPosition(id, oldX, oldY));
-				this.animatedObjects.setNodePosition(
-					id,
-					parseInt(nextCommand[2]),
-					parseInt(nextCommand[3])
-				);
-			} else if (nextCommand[0].toUpperCase() === 'ALIGNRIGHT') {
-				const id = parseInt(nextCommand[1]);
-				const oldX = this.animatedObjects.getNodeX(id);
-				// const oldY = this.animatedObjects.getNodeY(id);
-				undoBlock.push(new UndoSetPosition(id, oldX.oldY));
-				this.animatedObjects.alignRight(id, parseInt(nextCommand[2]));
-			} else if (nextCommand[0].toUpperCase() === 'ALIGNLEFT') {
-				const id = parseInt(nextCommand[1]);
-				const oldX = this.animatedObjects.getNodeX(id);
-				// const oldY = this.animatedObjects.getNodeY(id);
-				undoBlock.push(new UndoSetPosition(id, oldX.oldY));
-				this.animatedObjects.alignLeft(id, parseInt(nextCommand[2]));
-			} else if (nextCommand[0].toUpperCase() === 'ALIGNTOP') {
-				const id = parseInt(nextCommand[1]);
-				const oldX = this.animatedObjects.getNodeX(id);
-				// const oldY = this.animatedObjects.getNodeY(id);
-				undoBlock.push(new UndoSetPosition(id, oldX.oldY));
-				this.animatedObjects.alignTop(id, parseInt(nextCommand[2]));
-			} else if (nextCommand[0].toUpperCase() === 'ALIGNBOTTOM') {
-				const id = parseInt(nextCommand[1]);
-				const oldX = this.animatedObjects.getNodeX(id);
-				// const oldY = this.animatedObjects.getNodeY(id);
-				undoBlock.push(new UndoSetPosition(id, oldX.oldY));
-				this.animatedObjects.alignBottom(id, parseInt(nextCommand[2]));
-			} else if (nextCommand[0].toUpperCase() === 'SETHIGHLIGHTINDEX') {
-				const id = parseInt(nextCommand[1]);
-				const index = parseInt(nextCommand[2]);
-				const oldIndex = this.animatedObjects.getHighlightIndex(id);
-				undoBlock.push(new UndoSetHighlightIndex(id, oldIndex));
-				this.animatedObjects.setHighlightIndex(id, index);
-			} else {
-				//			throw "Unknown command: " + nextCommand[0];
-			}
-
-			this.currentAnimation = this.currentAnimation + 1;
+		while (this.currentAnimation < this.animationSteps.length && !this.foundBreak) {
+			const [ act, params ] = this.animationSteps[this.currentAnimation];
+			act.call(this, params);
+			this.currentAnimation++;
 		}
 		this.currFrame = 0;
 
 		// Hack:  If there are not any animations, and we are currently paused,
-		// then set the current frame to the end of the anumation, so that we will
-		// advance immediagely upon the next step button.  If we are not paused, then
+		// then set the current frame to the end of the animation, so that we will
+		// advance immediately upon the next step button.  If we are not paused, then
 		// animate as normal.
-
 		if (
-			(!anyAnimations && this.animationPaused) ||
-			(!anyAnimations && this.currentAnimation === this.AnimationSteps.length)
+			(!this.anyAnimations && this.animationPaused) ||
+			(!this.anyAnimations && this.currentAnimation === this.animationSteps.length)
 		) {
 			this.currFrame = this.animationBlockLength;
 		}
 
-		this.undoStack.push(undoBlock);
+		this.undoStack.push(this.undoBlock);
 	}
 
 	//  Start a new animation.  The input parameter commands is an array of strings,
 	//  which represents the animation to start
-	StartNewAnimation(commands) {
-		// clearTimeout(timer);
+	startNewAnimation(commands) {
 		this.stopTimer();
-		if (this.AnimationSteps !== null) {
-			this.previousAnimationSteps.push(this.AnimationSteps);
+		if (this.animationSteps !== null) {
+			this.previousAnimationSteps.push(this.animationSteps);
 			this.undoAnimationStepIndicesStack.push(this.undoAnimationStepIndices);
 		}
 		if (commands === undefined || commands.length === 0) {
-			this.AnimationSteps = ['Step'];
+			this.animationSteps = [[act.step, []]];
 		} else {
-			this.AnimationSteps = commands;
+			this.animationSteps = commands;
 		}
 		this.undoAnimationStepIndices = [];
 		this.currentAnimation = 0;
 		this.startNextBlock();
 		this.currentlyAnimating = true;
 		this.fireEvent('AnimationStarted', 'NoData');
-		// timer = setTimeout("timeout()", 30);
 		this.startTimer();
-
-		// window.requestAnimationFrame(step);
 	}
 
 	// Step backwards one step.  A no-op if the animation is not currently paused
@@ -1108,16 +477,13 @@ export default class AnimationManager extends EventListener {
 		if (this.awaitingStep && this.undoStack !== null && this.undoStack.length !== 0) {
 			//  TODO:  Get events working correctly!
 			this.fireEvent('AnimationStarted', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 
 			this.awaitingStep = false;
 			this.undoLastBlock();
-			// Re-kick thie timer.  The timer may or may not be running at this point,
+			// Re-kick the timer.  The timer may or may not be running at this point,
 			// so to be safe we'll kill it and start it again.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		} else if (
 			!this.currentlyAnimating &&
@@ -1127,11 +493,9 @@ export default class AnimationManager extends EventListener {
 			this.fireEvent('AnimationStarted', 'NoData');
 			this.currentlyAnimating = true;
 			this.undoLastBlock();
-			// Re-kick thie timer.  The timer may or may not be running at this point,
+			// Re-kick the timer.  The timer may or may not be running at this point,
 			// so to be safe we'll kill it and start it again.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		}
 	}
@@ -1142,11 +506,9 @@ export default class AnimationManager extends EventListener {
 			this.startNextBlock();
 			this.fireEvent('AnimationStarted', 'NoData');
 			this.currentlyAnimating = true;
-			// Re-kick thie timer.  The timer should be going now, but we've had some difficulty with
+			// Re-kick the timer.  The timer should be going now, but we've had some difficulty with
 			// it timing itself out, so we'll be safe and kick it now.
-			// clearTimeout(timer);
 			this.stopTimer();
-			// timer = setTimeout("timeout()", 30);
 			this.startTimer();
 		}
 	}
@@ -1157,9 +519,8 @@ export default class AnimationManager extends EventListener {
 		this.undoAnimationStepIndices = null;
 		this.previousAnimationSteps = [];
 		this.undoAnimationStepIndicesStack = [];
-		this.AnimationSteps = null;
+		this.animationSteps = null;
 		this.fireEvent('AnimationUndoUnavailable', 'NoData');
-		// clearTimeout(timer);
 		this.stopTimer();
 		this.animatedObjects.update();
 		this.animatedObjects.draw();
@@ -1193,7 +554,6 @@ export default class AnimationManager extends EventListener {
 				}
 				keepUndoing = this.finishUndoBlock(this.undoStack.pop());
 			}
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1207,7 +567,6 @@ export default class AnimationManager extends EventListener {
 		this.clearHistory();
 		this.animatedObjects.clearAllObjects();
 		this.animatedObjects.draw();
-		// clearTimeout(timer);
 		this.stopTimer();
 	}
 
@@ -1215,8 +574,8 @@ export default class AnimationManager extends EventListener {
 		if (this.currentlyAnimating) {
 			this.animatedObjects.runFast = true;
 			while (
-				this.AnimationSteps !== null &&
-				this.currentAnimation < this.AnimationSteps.length
+				this.animationSteps !== null &&
+				this.currentAnimation < this.animationSteps.length
 			) {
 				for (let i = 0; this.currentBlock !== null && i < this.currentBlock.length; i++) {
 					const objectID = this.currentBlock[i].objectID;
@@ -1246,7 +605,6 @@ export default class AnimationManager extends EventListener {
 
 			this.animatedObjects.runFast = false;
 			this.fireEvent('AnimationEnded', 'NoData');
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1264,7 +622,7 @@ export default class AnimationManager extends EventListener {
 			this.awaitingStep = false;
 			this.currentlyAnimating = false;
 			this.undoAnimationStepIndices = this.undoAnimationStepIndicesStack.pop();
-			this.AnimationSteps = this.previousAnimationSteps.pop();
+			this.animationSteps = this.previousAnimationSteps.pop();
 			this.fireEvent('AnimationEnded', 'NoData');
 			this.fireEvent('AnimationUndo', 'NoData');
 			this.currentBlock = [];
@@ -1274,7 +632,6 @@ export default class AnimationManager extends EventListener {
 				this.fireEvent('AnimationUndoUnavailable', 'NoData');
 			}
 
-			// clearTimeout(timer);
 			this.stopTimer();
 			this.animatedObjects.update();
 			this.animatedObjects.draw();
@@ -1304,7 +661,7 @@ export default class AnimationManager extends EventListener {
 
 			// Hack:  If there are not any animations, and we are currently paused,
 			// then set the current frame to the end of the animation, so that we will
-			// advance immediagely upon the next step button.  If we are not paused, then
+			// advance immediately upon the next step button.  If we are not paused, then
 			// animate as normal.
 			if (!anyAnimations && this.animationPaused) {
 				this.currFrame = this.animationBlockLength;
@@ -1344,10 +701,6 @@ export default class AnimationManager extends EventListener {
 				} else if (this.currFrame < this.animationBlockLength) {
 					const objectID = this.currentBlock[i].objectID;
 					const percent = 1 / (this.animationBlockLength - this.currFrame);
-					// const oldX = this.animatedObjects.getNodeX(objectID);
-					// const oldY = this.animatedObjects.getNodeY(objectID);
-					// const targetX = this.currentBlock[i].toX;
-					// const targety = this.currentBlock[i].toY;
 					const newX = this.lerp(
 						this.animatedObjects.getNodeX(objectID),
 						this.currentBlock[i].toX,
@@ -1370,7 +723,7 @@ export default class AnimationManager extends EventListener {
 				} else {
 					if (
 						this.animationPaused &&
-						this.currentAnimation < this.AnimationSteps.length
+						this.currentAnimation < this.animationSteps.length
 					) {
 						this.awaitingStep = true;
 						this.fireEvent('AnimationWaiting', 'NoData');
@@ -1445,4 +798,442 @@ export default class AnimationManager extends EventListener {
 	stopTimer() {
 		clearInterval(this.timer);
 	}
+}
+
+export const act = {
+	step() {
+		this.foundBreak = true;
+	},
+	move(params) { // id, x, y
+		const nextAnim = new SingleAnimation(
+			params[0],
+			this.animatedObjects.getNodeX(params[0]),
+			this.animatedObjects.getNodeY(params[0]),
+			params[1],
+			params[2]
+		);
+		this.currentBlock.push(nextAnim);
+		this.undoBlock.push(
+			new UndoMove(
+				nextAnim.objectID,
+				nextAnim.toX,
+				nextAnim.toY,
+				nextAnim.fromX,
+				nextAnim.fromY
+			)
+		);
+		this.anyAnimations = true;
+	},
+	delete(params) { // id
+		const removedEdges = this.animatedObjects.deleteIncident(params[0]);
+		if (removedEdges.length > 0) {
+			this.undoBlock = this.undoBlock.concat(removedEdges);
+		}
+		const obj = this.animatedObjects.getObject(params[0]);
+		if (obj !== null) {
+			this.undoBlock.push(obj.createUndoDelete());
+			this.animatedObjects.removeObject(params[0]);
+		}
+	},
+	connect(params) { // fromID, toID | color, curve, directed, label, anchorPos
+		params[2] = params[2] || "#000000";
+		params[3] = params[3] || 0.0;
+		params[4] = params[4] !== false && params[4] !== 0;
+		params[5] = params[5] === undefined ? "" : params[5];
+		params[6] = params[6] || 0;
+		this.animatedObjects.connectEdge(
+			params[0],
+			params[1],
+			params[2],
+			params[3],
+			params[4],
+			String(params[5]),
+			params[6]
+		);
+		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
+	},
+	connectNext(params) { // fromID, toID
+		this.animatedObjects.connectEdge(
+			params[0],
+			params[1],
+			"#000000",
+			0.0,
+			true,
+			"",
+			0
+		);
+		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
+	},
+	connectPrev(params) { // fromID, toID
+		this.animatedObjects.connectEdge(
+			params[0],
+			params[1],
+			"#000000",
+			0.0,
+			true,
+			"",
+			1
+		);
+		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
+	},
+	connectCurve(params) { // fromID, toID, curve
+		this.animatedObjects.connectEdge(
+			params[0],
+			params[1],
+			"#000000",
+			params[2],
+			true,
+			"",
+			1
+		);
+		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
+	},
+	connectSkipList(params) { // fromID, toID, anchorPos
+		this.animatedObjects.connectEdge(
+			params[0],
+			params[1],
+			"#000000",
+			0.0,
+			false,
+			"",
+			params[2]
+		);
+		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
+	},
+	disconnect(params) { // fromID, toID
+		const undoConnect = this.animatedObjects.disconnect(params[0], params[1]);
+		if (undoConnect !== null) this.undoBlock.push(undoConnect);
+	},
+	createCircle(params) { // id, label | x, y
+		params[2] = params[2] || 0;
+		params[3] = params[3] || 0;
+		this.animatedObjects.addCircleObject(params[0], String(params[1]));
+		this.animatedObjects.setNodePosition(
+			parseInt(params[0]),
+			parseInt(params[2]),
+			parseInt(params[3])
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createHighlightCircle(params) { // id, color | x, y, radius
+		params[2] = params[2] || 0;
+		params[3] = params[3] || 0;
+		params[4] = params[4] === undefined ? 20 : params[4];
+		this.animatedObjects.addHighlightCircleObject(
+			params[0],
+			params[1],
+			params[4]
+		);
+		this.animatedObjects.setNodePosition(
+			parseInt(params[0]),
+			parseInt(params[2]),
+			parseInt(params[3])
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createRectangle(params) { // id, label, w, h | x, y, xJustify, yJustify, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] || "center";
+		params[7] = params[7] || "center";
+		params[8] = params[8] || "#FFFFFF";
+		params[9] = params[9] || "#000000";
+		this.animatedObjects.addRectangleObject(
+			params[0],
+			String(params[1]),
+			params[2],
+			params[3],
+			params[6],
+			params[7],
+			params[8],
+			params[9]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createLabel(params) { // id, label | x, y, centered
+		params[2] = params[2] || 0;
+		params[3] = params[3] || 0;
+		params[4] = params[4] !== false && params[4] !== 0;
+		this.animatedObjects.addLabelObject(
+			params[0],
+			String(params[1]),
+			params[4]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[2],
+			params[3]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, vertical, linkPosEnd, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] === undefined ? 0.25 : params[6];
+		params[7] = params[7] !== false && params[7] !== 0;
+		params[8] = params[8] || false;
+		params[9] = params[9] || "#FFFFFF";
+		params[10] = params[10] || "#000000";
+		this.animatedObjects.addLinkedListObject(
+			params[0],
+			String(params[1]),
+			params[2],
+			params[3],
+			params[6],
+			params[7],
+			params[8],
+			params[9],
+			params[10]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createDoublyLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] === undefined ? 0.25 : params[6];
+		params[7] = params[7] || "#FFFFFF";
+		params[8] = params[8] || "#000000";
+		this.animatedObjects.addDoublyLinkedListObject(
+			params[0],
+			String(params[1]),
+			params[2],
+			params[3],
+			params[6],
+			params[7],
+			params[8]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createCircularlyLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] === undefined ? 0.25 : params[6];
+		params[7] = params[7] || "#FFFFFF";
+		params[8] = params[8] || "#000000";
+		this.animatedObjects.addCircularlyLinkedListObject(
+			params[0],
+			String(params[1]),
+			params[2],
+			params[3],
+			params[6],
+			params[7],
+			params[8]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createSkipListNode(params) { // id, label, w, h | x, y, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] || "#FFFFFF";
+		params[7] = params[7] || "#000000";
+		this.animatedObjects.addSkipListObject(
+			params[0],
+			String(params[1]),
+			params[2],
+			params[3],
+			params[6],
+			params[7]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	createBTreeNode(params) { // id, widthPerElement, height, numLabels, x, y, bgColor, fgColor
+		params[4] = params[4] || 0;
+		params[5] = params[5] || 0;
+		params[6] = params[6] || "#FFFFFF";
+		params[7] = params[7] || "#000000";
+		this.animatedObjects.addBTreeNode(
+			params[0],
+			params[1],
+			params[2],
+			params[3],
+			params[6],
+			params[7]
+		);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[4],
+			params[5]
+		);
+		this.undoBlock.push(new UndoCreate(params[0]));
+	},
+	setText(params) { // id, text | textIndex
+		params[2] = params[2] || 0;
+		const oldText = this.animatedObjects.getText(params[0], params[2]);
+		this.animatedObjects.setText(params[0], String(params[1]), params[2]);
+		if (oldText !== undefined) {
+			this.undoBlock.push(new UndoSetText(params[0], oldText, params[2]));
+		}
+	},
+	setTextColor(params) { // id, color, textIndex
+		params[2] = params[2] || 0;
+		const oldColor = this.animatedObjects.getTextColor(params[0], params[2]);
+		this.animatedObjects.setTextColor(
+			params[0],
+			params[1],
+			params[2]
+		);
+		this.undoBlock.push(new UndoSetTextColor(params[0], oldColor, params[2]));
+	},
+	setForegroundColor(params) { // id, color
+		const oldColor = this.animatedObjects.foregroundColor(params[0]);
+		this.animatedObjects.setForegroundColor(params[0], params[1]);
+		this.undoBlock.push(new UndoSetForegroundColor(params[0], oldColor));
+	},
+	setBackgroundColor(params) { // id, color
+		const oldColor = this.animatedObjects.backgroundColor(params[0]);
+		this.animatedObjects.setBackgroundColor(params[0], params[1]);
+		this.undoBlock.push(new UndoSetBackgroundColor(params[0], oldColor));
+	},
+	setHighlight(params) { // id, highlight, color
+		this.animatedObjects.setHighlight(params[0], params[1], params[2]);
+		this.undoBlock.push(new UndoHighlight(params[0], !params[1]));
+	},
+	setAlpha(params) { // id, alpha
+		const oldAlpha = this.animatedObjects.getAlpha(params[0]);
+		this.animatedObjects.setAlpha(params[0], params[1]);
+		this.undoBlock.push(new UndoSetAlpha(params[0], oldAlpha));
+	},
+	setEdgeColor(params) { // fromID, toID, newColor
+		const oldColor = this.animatedObjects.setEdgeColor(params[0], params[1], params[2]);
+		this.undoBlock.push(new UndoSetEdgeColor(params[0], params[1], oldColor));
+	},
+	setEdgeAlpha(params) { // fromID, toID, alpha
+		const oldAlpha = this.animatedObjects.setEdgeAlpha(params[0], params[1], params[2]);
+		this.undoBlock.push(new UndoSetEdgeAlpha(params[0], params[1], oldAlpha));
+	},
+	setEdgeHighlight(params) { // fromID, toID, highlight
+		const oldHighlight = this.animatedObjects.setEdgeHighlight(params[0], params[1], params[2]);
+		this.undoBlock.push(new UndoHighlightEdge(params[0], params[1], oldHighlight));
+	},
+	setHeight(params) { // id, height
+		const oldHeight = this.animatedObjects.getHeight(params[0]);
+		this.animatedObjects.setHeight(params[0], params[1]);
+		this.undoBlock.push(new UndoSetHeight(params[0], oldHeight));
+	},
+	setWidth(params) { // id, width
+		const oldWidth = this.animatedObjects.getWidth(params[0]);
+		this.animatedObjects.setWidth(params[0], params[1]);
+		this.undoBlock.push(new UndoSetWidth(params[0], oldWidth));
+	},
+	setLayer(params) { // id, height
+		this.animatedObjects.setLayer(params[0], params[1]);
+		//TODO: Add undo information here
+	},
+	setNull(params) { // id, null
+		const oldNull = this.animatedObjects.getNull(params[0]);
+		this.animatedObjects.setNull(
+			params[0],
+			params[1]
+		);
+		this.undoBlock.push(new UndoSetNull(params[0], oldNull));
+	},
+	setPrevNull(params) { // id, null
+		const oldNull = this.animatedObjects.getLeftNull(params[0]);
+		this.animatedObjects.setPrevNull(
+			params[0],
+			params[1]
+		);
+		this.undoBlock.push(new UndoSetPrevNull(params[0], oldNull));
+	},
+	setNextNull(params) { // id, null
+		const oldNull = this.animatedObjects.getRightNull(params[0]);
+		this.animatedObjects.setNextNull(
+			params[0],
+			params[1]
+		);
+		this.undoBlock.push(new UndoSetNextNull(params[0], oldNull));
+	},
+	setNumElements(params) { // id, numElements
+		const oldElem = this.animatedObjects.getObject(params[0]);
+		this.undoBlock.push(new UndoSetNumElements(oldElem, params[1]));
+		this.animatedObjects.setNumElements(
+			params[0],
+			params[1]
+		);
+	},
+	setPosition(params) { // id, x, y
+		const oldX = this.animatedObjects.getNodeX(params[0]);
+		const oldY = this.animatedObjects.getNodeY(params[0]);
+		this.animatedObjects.setNodePosition(
+			params[0],
+			params[1],
+			params[2]
+		);
+		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	setHighlightIndex(params) {
+		const oldIndex = this.animatedObjects.getHighlightIndex(params[0]);
+		this.undoBlock.push(new UndoSetHighlightIndex(params[0], oldIndex));
+		this.animatedObjects.setHighlightIndex(params[0], params[1]);
+	},
+	alignRight(params) { // id, otherID
+		const oldX = this.animatedObjects.getNodeX(params[0]);
+		const oldY = this.animatedObjects.getNodeY(params[0]);
+		this.animatedObjects.alignRight(params[0], params[1]);
+		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	alignLeft(params) { // id, otherID
+		const oldX = this.animatedObjects.getNodeX(params[0]);
+		const oldY = this.animatedObjects.getNodeY(params[0]);
+		this.animatedObjects.alignLeft(params[0], params[1]);
+		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	alignTop(params) { // id, otherID
+		const oldX = this.animatedObjects.getNodeX(params[0]);
+		const oldY = this.animatedObjects.getNodeY(params[0]);
+		this.animatedObjects.alignTop(params[0], params[1]);
+		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	alignBottom(params) { // id, otherID
+		const oldX = this.animatedObjects.getNodeX(params[0]);
+		const oldY = this.animatedObjects.getNodeY(params[0]);
+		this.animatedObjects.alignBottom(params[0], params[1]);
+		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	moveToAlignRight(params) { // id, otherID
+		const newXY = this.animatedObjects.getAlignRightPos(params[0], params[1]);
+		const nextAnim = new SingleAnimation(
+			params[0],
+			this.animatedObjects.getNodeX(params[0]),
+			this.animatedObjects.getNodeY(params[0]),
+			newXY[0],
+			newXY[1]
+		);
+		this.currentBlock.push(nextAnim);
+		this.undoBlock.push(
+			new UndoMove(
+				nextAnim.objectID,
+				nextAnim.toX,
+				nextAnim.toY,
+				nextAnim.fromX,
+				nextAnim.fromY
+			)
+		);
+		this.anyAnimations = true;
+	},
 }

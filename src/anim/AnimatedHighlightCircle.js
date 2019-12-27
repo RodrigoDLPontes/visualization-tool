@@ -29,7 +29,7 @@
 import AnimatedObject from "./AnimatedObject.js";
 import { UndoBlock } from "./UndoFunctions.js";
 
-export default class HighlightCircle extends AnimatedObject {
+export default class AnimatedHighlightCircle extends AnimatedObject {
 	constructor(objectID, color, radius) {
 		super();
 		this.objectID = objectID;
@@ -38,17 +38,16 @@ export default class HighlightCircle extends AnimatedObject {
 		this.foregroundColor = color;
 		this.x = 0;
 		this.y = 0;
-		this.alpha = 1;
 	}
 
-	draw(ctx) {
-		ctx.globalAlpha = this.alpha;
-		ctx.strokeStyle = this.foregroundColor;
-		ctx.lineWidth = this.thickness;
-		ctx.beginPath();
-		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-		ctx.closePath();
-		ctx.stroke();
+	draw(context) {
+		context.globalAlpha = this.alpha;
+		context.strokeStyle = this.foregroundColor;
+		context.lineWidth = this.thickness;
+		context.beginPath();
+		context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+		context.closePath();
+		context.stroke();
 	}
 
 	createUndoDelete() {
@@ -79,7 +78,6 @@ class UndoDeleteHighlightCircle extends UndoBlock {
 	undoInitialStep(world) {
 		world.addHighlightCircleObject(this.objectID, this.color, this.r);
 		world.setLayer(this.objectID, this.layer);
-		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setAlpha(this.objectID, this.alpha);
 	}
 }

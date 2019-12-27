@@ -29,6 +29,7 @@ import Algorithm, {
 	addControlToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -126,7 +127,7 @@ export default class CocktailSort extends Algorithm {
 		this.commands = [];
 		this.displayData = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		return this.commands;
 	}
@@ -167,7 +168,7 @@ export default class CocktailSort extends Algorithm {
 			}
 			this.displayData[i] = displayData;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				displayData,
 				ARRAY_ELEM_WIDTH,
@@ -176,17 +177,17 @@ export default class CocktailSort extends Algorithm {
 				ypos
 			);
 		}
-		this.cmd('CreateHighlightCircle', this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
-		this.cmd('SetHighlight', this.iPointerID, 1);
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y
 		);
-		this.cmd('SetHighlight', this.jPointerID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.jPointerID, 1);
+		this.cmd(act.step);
 
 		let sorted = true;
 		let start = 0;
@@ -209,9 +210,9 @@ export default class CocktailSort extends Algorithm {
 			}
 			if (!sorted) {
 				for (let i = end + 1; i < this.arrayData.length; i++) {
-					this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
+					this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 				}
-				this.cmd('Step');
+				this.cmd(act.step);
 			}
 			if (!sorted) {
 				sorted = true;
@@ -230,21 +231,21 @@ export default class CocktailSort extends Algorithm {
 				}
 				if (!sorted) {
 					for (let i = start - 1; i >= 0; i--) {
-						this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
+						this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 					}
-					this.cmd('Step');
+					this.cmd(act.step);
 				}
 			}
 		} while (!sorted);
 
-		this.cmd('Delete', this.iPointerID);
-		this.cmd('Delete', this.jPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.step);
 
 		for (let i = 0; i < this.arrayData.length; i++) {
-			this.cmd('SetBackgroundColor', this.arrayID[i], '#2ECC71');
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		return this.commands;
 	}
@@ -252,33 +253,33 @@ export default class CocktailSort extends Algorithm {
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('Move', this.iPointerID, iXPos, iYPos);
+		this.cmd(act.move, this.iPointerID, iXPos, iYPos);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('Move', this.jPointerID, jXPos, jYPos);
-		this.cmd('Step');
+		this.cmd(act.move, this.jPointerID, jXPos, jYPos);
+		this.cmd(act.step);
 	}
 
 	swap(i, j) {
-		this.cmd('SetForegroundColor', this.iPointerID, '#FF0000');
-		this.cmd('SetForegroundColor', this.jPointerID, '#FF0000');
+		this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
+		this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', iLabelID, this.displayData[i], iXPos, iYPos);
+		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, iYPos);
 		const jLabelID = this.nextIndex++;
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const jYPos = ARRAY_START_Y;
-		this.cmd('CreateLabel', jLabelID, this.displayData[j], jXPos, jYPos);
-		this.cmd('Settext', this.arrayID[i], '');
-		this.cmd('Settext', this.arrayID[j], '');
-		this.cmd('Move', iLabelID, jXPos, jYPos);
-		this.cmd('Move', jLabelID, iXPos, iYPos);
-		this.cmd('Step');
-		this.cmd('Settext', this.arrayID[i], this.displayData[j]);
-		this.cmd('Settext', this.arrayID[j], this.displayData[i]);
-		this.cmd('Delete', iLabelID);
-		this.cmd('Delete', jLabelID);
+		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, jYPos);
+		this.cmd(act.setText, this.arrayID[i], '');
+		this.cmd(act.setText, this.arrayID[j], '');
+		this.cmd(act.move, iLabelID, jXPos, jYPos);
+		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
+		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
+		this.cmd(act.delete, iLabelID);
+		this.cmd(act.delete, jLabelID);
 
 		// Swap actual data
 		let temp = this.arrayData[i];
@@ -290,9 +291,9 @@ export default class CocktailSort extends Algorithm {
 		this.displayData[i] = this.displayData[j];
 		this.displayData[j] = temp;
 
-		this.cmd('SetForegroundColor', this.iPointerID, '#0000FF');
-		this.cmd('SetForegroundColor', this.jPointerID, '#0000FF');
-		this.cmd('Step');
+		this.cmd(act.setForegroundColor, this.iPointerID, '#0000FF');
+		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
+		this.cmd(act.step);
 	}
 
 	// Called by our superexport default class when we get an animation started event -- need to wait for the

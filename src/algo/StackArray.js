@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -111,7 +112,7 @@ export default class StackArray extends Algorithm {
 			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -119,12 +120,12 @@ export default class StackArray extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('CreateLabel', this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
-			this.cmd('SetForegroundColor', this.arrayLabelID[i], '#0000FF');
+			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
 		}
-		this.cmd('CreateLabel', this.topLabelID, 'top', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'top', TOP_LABEL_X, TOP_LABEL_Y);
 		this.cmd(
-			'CreateRectangle',
+			act.createRectangle,
 			this.topID,
 			0,
 			ARRAY_ELEM_WIDTH,
@@ -133,12 +134,12 @@ export default class StackArray extends Algorithm {
 			TOP_POS_Y
 		);
 
-		this.cmd('CreateLabel', this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
 		this.highlight1ID = this.nextIndex++;
 		this.highlight2ID = this.nextIndex++;
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -179,41 +180,41 @@ export default class StackArray extends Algorithm {
 		const labPushValID = this.nextIndex++;
 		this.arrayData[this.top] = elemToPush;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd('CreateLabel', labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 
-		this.cmd('Step');
-		this.cmd('Step');
-		this.cmd('Step');
-		this.cmd('CreateHighlightCircle', this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
-		this.cmd('Step');
+		this.cmd(act.step);
+		this.cmd(act.step);
+		this.cmd(act.step);
+		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
+		this.cmd(act.step);
 
 		const xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Step');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
 
-		this.cmd('Move', labPushValID, xpos, ypos);
-		this.cmd('Step');
+		this.cmd(act.move, labPushValID, xpos, ypos);
+		this.cmd(act.step);
 
-		this.cmd('Settext', this.arrayID[this.top], elemToPush);
-		this.cmd('Delete', labPushValID);
+		this.cmd(act.setText, this.arrayID[this.top], elemToPush);
+		this.cmd(act.delete, labPushValID);
 
-		this.cmd('Delete', this.highlight1ID);
+		this.cmd(act.delete, this.highlight1ID);
 
-		this.cmd('SetHighlight', this.topID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.topID, 1);
+		this.cmd(act.step);
 		this.top = this.top + 1;
-		this.cmd('SetText', this.topID, this.top);
-		this.cmd('Delete', labPushID);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.topID, 0);
+		this.cmd(act.setText, this.topID, this.top);
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.topID, 0);
 
 		return this.commands;
 	}
@@ -224,37 +225,37 @@ export default class StackArray extends Algorithm {
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
-		this.cmd('SetText', this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd('CreateLabel', labPopID, 'Popped Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopID, 'Popped Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.cmd('SetHighlight', this.topID, 1);
-		this.cmd('Step');
+		this.cmd(act.setHighlight, this.topID, 1);
+		this.cmd(act.step);
 		this.top = this.top - 1;
-		this.cmd('SetText', this.topID, this.top);
-		this.cmd('Step');
-		this.cmd('SetHighlight', this.topID, 0);
+		this.cmd(act.setText, this.topID, this.top);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.topID, 0);
 
-		this.cmd('CreateHighlightCircle', this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
+		this.cmd(act.step);
 
 		const xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Move', this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd('Step');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
 
-		this.cmd('CreateLabel', labPopValID, this.arrayData[this.top], xpos, ypos);
-		this.cmd('Settext', this.arrayID[this.top], '');
-		this.cmd('Move', labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
-		this.cmd('Delete', labPopValID);
-		this.cmd('Delete', labPopID);
-		this.cmd('Delete', this.highlight1ID);
-		this.cmd('SetText', this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
+		this.cmd(act.createLabel, labPopValID, this.arrayData[this.top], xpos, ypos);
+		this.cmd(act.setText, this.arrayID[this.top], '');
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, labPopID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
 
 		return this.commands;
 	}
@@ -262,10 +263,10 @@ export default class StackArray extends Algorithm {
 	clearAll() {
 		this.commands = [];
 		for (let i = 0; i < this.top; i++) {
-			this.cmd('SetText', this.arrayID[i], '');
+			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.top = 0;
-		this.cmd('SetText', this.topID, '0');
+		this.cmd(act.setText, this.topID, '0');
 		return this.commands;
 	}
 }

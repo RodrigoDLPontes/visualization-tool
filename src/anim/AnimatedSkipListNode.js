@@ -27,22 +27,26 @@
 import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
-export default class AnimatedSkipList extends AnimatedObject {
-	constructor(objectID, label, w, h, labelColor, fillColor, edgeColor) {
+const NINF = '\u2212\u221E'; // Negative infinity
+const PINF = '\u221E'; // Positive infinity
+
+export default class AnimatedSkipListNode extends AnimatedObject {
+	constructor(objectID, label, w, h, backgroundColor, foregroundColor) {
 		super();
+
+		this.objectID = objectID;
 
 		this.w = w;
 		this.h = h;
-		this.fillColor = fillColor;
-		this.edgeColor = edgeColor;
+
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.highlighted = false;
 
 		this.label = label;
 		this.labelPosX = 0;
 		this.labelPosY = 0;
-		this.labelColor = labelColor;
-
-		this.highlighted = false;
-		this.objectID = objectID;
+		this.labelColor = foregroundColor;
 	}
 
 	left() {
@@ -77,7 +81,7 @@ export default class AnimatedSkipList extends AnimatedObject {
 			case 3: // Right
 				return [this.right(), this.y];
 			default:
-				return;
+				return this.getClosestCardinalPoint(fromX, fromY);
 		}
 	}
 
@@ -85,13 +89,13 @@ export default class AnimatedSkipList extends AnimatedObject {
 		return this.getClosestCardinalPoint(fromX, fromY); // Normal anchor
 	}
 
-	setWidth(wdth) {
-		this.w = wdth;
+	setWidth(w) {
+		this.w = w;
 		this.resetTextPosition();
 	}
 
-	setHeight(hght) {
-		this.h = hght;
+	setHeight(h) {
+		this.h = h;
 		this.resetTextPosition();
 	}
 
@@ -124,8 +128,8 @@ export default class AnimatedSkipList extends AnimatedObject {
 			context.stroke();
 			context.fill();
 		}
-		context.strokeStyle = this.edgeColor;
-		context.fillStyle = this.fillColor;
+		context.strokeStyle = this.foregroundColor;
+		context.fillStyle = this.backgroundColor;
 
 		context.beginPath();
 		context.moveTo(startX, startY);
@@ -144,7 +148,7 @@ export default class AnimatedSkipList extends AnimatedObject {
 
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;
-		if (this.label === '\u2212\u221E' /* -inf */ || this.label === '\u221E' /* inf */) {
+		if (this.label === NINF || this.label === PINF) {
 			context.font = '18px Arial';
 		}
 		context.fillText(this.label, this.labelPosX, this.labelPosY);
@@ -167,6 +171,12 @@ export default class AnimatedSkipList extends AnimatedObject {
 		this.resetTextPosition();
 	}
 
+	setHighlight(value) {
+		if (value !== this.highlighted) {
+			this.highlighted = value;
+		}
+	}
+
 	createUndoDelete() {
 		return new UndoDeleteSkipList(
 			this.objectID,
@@ -176,21 +186,15 @@ export default class AnimatedSkipList extends AnimatedObject {
 			this.x,
 			this.y,
 			this.labelColor,
-			this.fillColor,
-			this.edgeColor,
+			this.backgroundColor,
+			this.foregroundColor,
 			this.layer
 		);
-	}
-
-	setHighlight(value) {
-		if (value !== this.highlighted) {
-			this.highlighted = value;
-		}
 	}
 }
 
 class UndoDeleteSkipList extends UndoBlock {
-	constructor(objectID, label, w, h, x, y, labelColor, fillColor, edgeColor, layer) {
+	constructor(objectID, label, w, h, x, y, labelColor, backgroundColor, foregroundColor, layer) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -199,8 +203,8 @@ class UndoDeleteSkipList extends UndoBlock {
 		this.x = x;
 		this.y = y;
 		this.labelColor = labelColor;
-		this.fillColor = fillColor;
-		this.edgeColor = edgeColor;
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
 		this.layer = layer;
 	}
 
@@ -210,10 +214,10 @@ class UndoDeleteSkipList extends UndoBlock {
 			this.label,
 			this.w,
 			this.h,
-			this.labelColor,
-			this.fillColor,
-			this.edgeColor
+			this.backgroundColor,
+			this.foregroundColor
 		);
+		world.setTextColor(this.objectID, this.labelColor);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 	}

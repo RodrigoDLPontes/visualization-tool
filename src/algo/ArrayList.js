@@ -26,6 +26,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -163,7 +164,7 @@ export default class ArrayList extends Algorithm {
 			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.arrayID[i],
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -171,14 +172,13 @@ export default class ArrayList extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('CreateLabel', this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
-			this.cmd('SetForegroundColor', this.arrayLabelID[i], '#0000FF');
+			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
 		}
 
 		this.highlight1ID = this.nextIndex++;
-		this.highlight2ID = this.nextIndex++;
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -197,6 +197,7 @@ export default class ArrayList extends Algorithm {
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
+		this.highlight1ID = this.nextIndex++;
 	}
 	addIndexCallback() {
 		if (
@@ -273,54 +274,54 @@ export default class ArrayList extends Algorithm {
 		}
 		this.arrayData[index] = elemToAdd;
 
-		this.cmd('CreateLabel', labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd('CreateLabel', labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd('Step');
+		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.step);
 
 		for (let i = this.size - 1; i >= index; i--) {
 			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			const presentID = this.nextIndex + i;
-			this.cmd('CreateLabel', presentID, this.arrayData[i + 1], xpos, ypos);
-			this.cmd('Settext', this.arrayID[i], '');
-			this.cmd('Move', presentID, xpos + ARRAY_ELEM_WIDTH, ypos);
+			this.cmd(act.createLabel, presentID, this.arrayData[i + 1], xpos, ypos);
+			this.cmd(act.setText, this.arrayID[i], '');
+			this.cmd(act.move, presentID, xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		for (let i = this.size - 1; i >= index; i--) {
 			const presentID = this.nextIndex + i;
-			this.cmd('Settext', this.arrayID[i + 1], this.arrayData[i + 1]);
-			this.cmd('Delete', presentID);
+			this.cmd(act.setText, this.arrayID[i + 1], this.arrayData[i + 1]);
+			this.cmd(act.delete, presentID);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		this.nextIndex += this.size - index;
 
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			this.highlight1ID,
 			'#0000FF',
 			PUSH_ELEMENT_X,
 			PUSH_ELEMENT_Y
 		);
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		const xpos = (parseInt(index) % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(parseInt(index) / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
 			ARRAY_START_Y;
 
-		this.cmd('Move', this.highlight1ID, xpos, ypos);
-		this.cmd('Move', labPushValID, xpos, ypos);
-		this.cmd('Step');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos);
+		this.cmd(act.move, labPushValID, xpos, ypos);
+		this.cmd(act.step);
 
-		this.cmd('Settext', this.arrayID[index], elemToAdd);
-		this.cmd('Delete', labPushValID);
-		this.cmd('Delete', this.highlight1ID);
-		this.cmd('Step');
+		this.cmd(act.setText, this.arrayID[index], elemToAdd);
+		this.cmd(act.delete, labPushValID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.step);
 
-		this.cmd('Delete', labPushID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.step);
 
 		this.size = this.size + 1;
 		return this.commands;
@@ -335,33 +336,33 @@ export default class ArrayList extends Algorithm {
 		const xpos = (index % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos = Math.floor(index / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		this.cmd('CreateHighlightCircle', this.highlight1ID, '#0000FF', xpos, ypos);
-		this.cmd('CreateLabel', labPopValID, this.arrayData[index], xpos, ypos);
-		this.cmd('Settext', this.arrayID[index], '');
-		this.cmd('Move', this.highlight1ID, xpos, ypos - 100);
-		this.cmd('Move', labPopValID, xpos, ypos - 100);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', xpos, ypos);
+		this.cmd(act.createLabel, labPopValID, this.arrayData[index], xpos, ypos);
+		this.cmd(act.setText, this.arrayID[index], '');
+		this.cmd(act.move, this.highlight1ID, xpos, ypos - 100);
+		this.cmd(act.move, labPopValID, xpos, ypos - 100);
+		this.cmd(act.step);
 
-		this.cmd('Delete', labPopValID);
-		this.cmd('Delete', this.highlight1ID);
-		this.cmd('Step');
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.step);
 
 		for (let i = index + 1; i < this.size; i++) {
 			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			const presentID = this.nextIndex + i;
-			this.cmd('CreateLabel', presentID, this.arrayData[i], xpos, ypos);
-			this.cmd('Settext', this.arrayID[i], '');
-			this.cmd('Move', presentID, xpos - ARRAY_ELEM_WIDTH, ypos);
+			this.cmd(act.createLabel, presentID, this.arrayData[i], xpos, ypos);
+			this.cmd(act.setText, this.arrayID[i], '');
+			this.cmd(act.move, presentID, xpos - ARRAY_ELEM_WIDTH, ypos);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		for (let i = index + 1; i < this.size; i++) {
 			const presentID = this.nextIndex + i;
-			this.cmd('Settext', this.arrayID[i - 1], this.arrayData[i]);
-			this.cmd('Delete', presentID);
+			this.cmd(act.setText, this.arrayID[i - 1], this.arrayData[i]);
+			this.cmd(act.delete, presentID);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		for (let i = index; i < this.size; i++) {
 			this.arrayData[i] = this.arrayData[i + 1];
@@ -374,7 +375,7 @@ export default class ArrayList extends Algorithm {
 	clearAll() {
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('SetText', this.arrayID[i], '');
+			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.size = 0;
 		return this.commands;

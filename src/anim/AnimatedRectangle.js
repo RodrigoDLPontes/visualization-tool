@@ -1,4 +1,4 @@
-// Copyright 2011 David Galles, University of San Francisco. All rights reserved.
+// Copyright 2011 David Galles, University of San Francisco. All rights reserved.a
 //
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
@@ -30,23 +30,23 @@ import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedRectangle extends AnimatedObject {
-	constructor(id, val, wth, hgt, xJust, yJust, fillColor, edgeColor) {
+	constructor(objectID, label, w, h, xJustify, yJustify, backgroundColor, foregroundColor) {
 		super();
-		this.w = wth;
-		this.h = hgt;
-		this.xJustify = xJust;
-		this.yJustify = yJust;
-		this.label = val;
-		this.labelColor = edgeColor;
 
-		this.backgroundColor = fillColor;
-		this.foregroundColor = edgeColor;
-		this.labelColor = this.foregroundColor;
+		this.objectID = objectID;
+
+		this.w = w;
+		this.h = h;
+		this.xJustify = xJustify;
+		this.yJustify = yJustify;
+
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
 		this.highlighted = false;
-		this.objectID = id;
+
+		this.label = label;
+
 		this.nullPointer = false;
-		this.alpha = 1.0;
-		this.addedToScene = true;
 	}
 
 	setNull(np) {
@@ -62,8 +62,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x;
 		} else if (this.xJustify === 'center') {
 			return this.x - this.w / 2.0;
-		} // (this.xJustify == "right")
-		else {
+		} else { // right
 			return this.x - this.w;
 		}
 	}
@@ -73,8 +72,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x;
 		} else if (this.xJustify === 'left') {
 			return this.x + this.w / 2.0;
-		} // (this.xJustify == "right")
-		else {
+		} else { // right
 			return this.x - this.w / 2.0;
 		}
 	}
@@ -84,8 +82,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y;
 		} else if (this.yJustify === 'top') {
 			return this.y + this.h / 2.0;
-		} // (this.xJustify == "bottom")
-		else {
+		} else { // bottom
 			return this.y - this.w / 2.0;
 		}
 	}
@@ -95,8 +92,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y;
 		} else if (this.yJustify === 'center') {
 			return this.y - this.h / 2.0;
-		} //(this.xJustify == "bottom")
-		else {
+		} else { // bottom
 			return this.y - this.h;
 		}
 	}
@@ -106,8 +102,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y + this.h;
 		} else if (this.yJustify === 'center') {
 			return this.y + this.h / 2.0;
-		} //(this.xJustify == "bottom")
-		else {
+		} else { // bottom
 			return this.y;
 		}
 	}
@@ -117,8 +112,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x + this.w;
 		} else if (this.xJustify === 'center') {
 			return this.x + this.w / 2.0;
-		} // (this.xJustify == "right")
-		else {
+		} else { // right
 			return this.x;
 		}
 	}
@@ -144,12 +138,12 @@ export default class AnimatedRectangle extends AnimatedObject {
 		}
 	}
 
-	setWidth(wdth) {
-		this.w = wdth;
+	setWidth(w) {
+		this.w = w;
 	}
 
-	setHeight(hght) {
-		this.h = hght;
+	setHeight(h) {
+		this.h = h;
 	}
 
 	getWidth() {
@@ -160,40 +154,27 @@ export default class AnimatedRectangle extends AnimatedObject {
 		return this.h;
 	}
 
-	// TODO:  Fix me!
 	draw(context) {
-		if (!this.addedToScene) {
-			return;
-		}
-
-		let startX;
-		let startY;
-		// eslint-disable-next-line no-unused-vars
-		let labelPosX;
-		// eslint-disable-next-line no-unused-vars
-		let labelPosY;
+		if(!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
 
+		let startX;
+		let startY;
+
 		if (this.xJustify === 'left') {
 			startX = this.x;
-			labelPosX = this.x + this.w / 2.0;
 		} else if (this.xJustify === 'center') {
 			startX = this.x - this.w / 2.0;
-			labelPosX = this.x;
 		} else if (this.xJustify === 'right') {
 			startX = this.x - this.w;
-			labelPosX = this.x - this.w / 2.0;
 		}
 		if (this.yJustify === 'top') {
 			startY = this.y;
-			labelPosY = this.y + this.h / 2.0;
 		} else if (this.yJustify === 'center') {
 			startY = this.y - this.h / 2.0;
-			labelPosY = this.y;
 		} else if (this.yJustify === 'bottom') {
 			startY = this.y - this.h;
-			labelPosY = this.y - this.h / 2.0;
 		}
 
 		context.lineWidth = 1;
@@ -236,7 +217,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			context.stroke();
 		}
 
-		context.fillStyle = this.labelColor;
+		context.fillStyle = this.foregroundColor;
 
 		context.textAlign = 'center';
 		context.font = '10px sans-serif';
@@ -245,10 +226,13 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.fillText(this.label, this.x, this.y);
 	}
 
-	// eslint-disable-next-line no-unused-vars
 	setText(newText, textIndex) {
 		this.label = newText;
 		// TODO:  setting text position?
+	}
+
+	setHighlight(value) {
+		this.highlighted = value;
 	}
 
 	createUndoDelete() {
@@ -268,41 +252,37 @@ export default class AnimatedRectangle extends AnimatedObject {
 			this.layer
 		);
 	}
-
-	setHighlight(value) {
-		this.highlighted = value;
-	}
 }
 
 class UndoDeleteRectangle extends UndoBlock {
-	constructor(id, lab, x, y, w, h, xJust, yJust, bgColor, fgColor, highlight, lay) {
+	constructor(objectID, label, x, y, w, h, xJustify, yJustify, backgroundColor, foregroundColor, highlight, layer) {
 		super();
-		this.objectID = id;
-		this.posX = x;
-		this.posY = y;
-		this.width = w;
-		this.height = h;
-		this.xJustify = xJust;
-		this.yJustify = yJust;
-		this.backgroundColor = bgColor;
-		this.foregroundColor = fgColor;
-		this.nodeLabel = lab;
-		this.layer = lay;
+		this.objectID = objectID;
+		this.label = label;
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		this.xJustify = xJustify;
+		this.yJustify = yJustify;
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
 		this.highlighted = highlight;
+		this.layer = layer;
 	}
 
 	undoInitialStep(world) {
 		world.addRectangleObject(
 			this.objectID,
-			this.nodeLabel,
-			this.width,
-			this.height,
+			this.label,
+			this.w,
+			this.h,
 			this.xJustify,
 			this.yJustify,
 			this.backgroundColor,
 			this.foregroundColor
 		);
-		world.setNodePosition(this.objectID, this.posX, this.posY);
+		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 		world.setHighlight(this.objectID, this.highlighted);
 	}

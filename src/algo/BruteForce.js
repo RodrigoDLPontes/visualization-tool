@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 30;
@@ -145,7 +146,7 @@ export default class BruteForce extends Algorithm {
 			ypos = ARRAY_START_Y;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex,
 				text.charAt(i),
 				this.cellSize,
@@ -153,7 +154,7 @@ export default class BruteForce extends Algorithm {
 				xpos,
 				ypos
 			);
-			this.cmd('SetBackgroundColor', this.nextIndex++, '#D3D3D3');
+			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
 		for (let row = 0; row < text.length; row++) {
@@ -162,7 +163,7 @@ export default class BruteForce extends Algorithm {
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
 				this.comparisonMatrixID[row][col] = this.nextIndex;
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.nextIndex++,
 					'',
 					this.cellSize,
@@ -176,7 +177,7 @@ export default class BruteForce extends Algorithm {
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			iPointerID,
 			'#0000FF',
 			ARRAY_START_X,
@@ -184,7 +185,7 @@ export default class BruteForce extends Algorithm {
 			this.cellSize / 2
 		);
 		this.cmd(
-			'CreateHighlightCircle',
+			act.createHighlightCircle,
 			jPointerID,
 			'#0000FF',
 			ARRAY_START_X,
@@ -198,55 +199,55 @@ export default class BruteForce extends Algorithm {
 		while (i <= text.length - pattern.length) {
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
-					'SetText',
+					act.setText,
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
 					ypos
 				);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#2ECC71');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
-				this.cmd('Step');
+				this.cmd(act.step);
 				if (j !== pattern.length) {
 					const xpos = (i + j) * this.cellSize + ARRAY_START_X;
-					this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+					this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 					const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-					this.cmd('Move', jPointerID, xpos, ypos);
-					this.cmd('Step');
+					this.cmd(act.move, jPointerID, xpos, ypos);
+					this.cmd(act.step);
 				}
 			}
 			if (j !== pattern.length) {
-				this.cmd('SetBackgroundColor', this.comparisonMatrixID[row][i + j], '#E74C3C');
+				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 			}
 			i++;
 			j = 0;
 			row++;
 			if (i <= text.length - pattern.length) {
 				const xpos = (i + j) * this.cellSize + ARRAY_START_X;
-				this.cmd('Move', iPointerID, xpos, ARRAY_START_Y);
+				this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 				const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd('Move', jPointerID, xpos, ypos);
-				this.cmd('Step');
+				this.cmd(act.move, jPointerID, xpos, ypos);
+				this.cmd(act.step);
 			}
 		}
 
-		this.cmd('Delete', iPointerID);
-		this.cmd('Delete', jPointerID);
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
 		return this.commands;
 	}
 
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
-			this.cmd('Delete', this.textRowID[i]);
+			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
-				this.cmd('Delete', this.comparisonMatrixID[i][j]);
+				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
 		this.comparisonMatrixID = [];

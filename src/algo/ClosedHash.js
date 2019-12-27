@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Hash from './Hash.js';
+import { act } from '../anim/AnimationMain';
 import { addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
 
 const ARRAY_ELEM_WIDTH = 90;
@@ -119,23 +120,23 @@ export default class ClosedHash extends Hash {
 
 	insertElement(elem) {
 		this.commands = [];
-		this.cmd('SetText', this.ExplainLabel, 'Inserting element: ' + String(elem));
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
 		let index = this.doHash(elem);
 
 		index = this.getEmptyIndex(index, elem);
-		this.cmd('SetText', this.ExplainLabel, '');
+		this.cmd(act.setText, this.ExplainLabel, '');
 		if (index !== -1) {
 			const labID = this.nextIndex++;
-			this.cmd('CreateLabel', labID, elem, 20, 25);
+			this.cmd(act.createLabel, labID, elem, 20, 25);
 			this.cmd(
-				'Move',
+				act.move,
 				labID,
 				this.indexXPos[index],
 				this.indexYPos[index] - ARRAY_ELEM_HEIGHT
 			);
-			this.cmd('Step');
-			this.cmd('Delete', labID);
-			this.cmd('SetText', this.hashTableVisual[index], elem);
+			this.cmd(act.step);
+			this.cmd(act.delete, labID);
+			this.cmd(act.setText, this.hashTableVisual[index], elem);
 			this.hashTableValues[index] = elem;
 			this.empty[index] = false;
 			this.deleted[index] = false;
@@ -146,7 +147,7 @@ export default class ClosedHash extends Hash {
 	resetSkipDist(elem, labelID) {
 		const skipVal = 7 - (this.currHash % 7);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			labelID,
 			'hash2(' +
 				String(elem) +
@@ -171,16 +172,16 @@ export default class ClosedHash extends Hash {
 		let foundIndex = -1;
 		for (let i = 0; i < this.table_size; i++) {
 			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
-			this.cmd('SetHighlight', this.hashTableVisual[candidateIndex], 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.hashTableVisual[candidateIndex], 0);
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
 			if (this.empty[candidateIndex]) {
 				foundIndex = candidateIndex;
 				break;
 			}
 		}
 		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
-			this.cmd('Delete', --this.nextIndex);
+			this.cmd(act.delete, --this.nextIndex);
 		}
 		return foundIndex;
 	}
@@ -192,9 +193,9 @@ export default class ClosedHash extends Hash {
 		let foundIndex = -1;
 		for (let i = 0; i < this.table_size; i++) {
 			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
-			this.cmd('SetHighlight', this.hashTableVisual[candidateIndex], 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.hashTableVisual[candidateIndex], 0);
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
 			if (!this.empty[candidateIndex] && this.hashTableValues[candidateIndex] === elem) {
 				foundIndex = candidateIndex;
 				break;
@@ -203,30 +204,30 @@ export default class ClosedHash extends Hash {
 			}
 		}
 		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
-			this.cmd('Delete', --this.nextIndex);
+			this.cmd(act.delete, --this.nextIndex);
 		}
 		return foundIndex;
 	}
 
 	deleteElement(elem) {
 		this.commands = [];
-		this.cmd('SetText', this.ExplainLabel, 'Deleting element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Deleting element: ' + elem);
 		let index = this.doHash(elem);
 
 		index = this.getElemIndex(index, elem);
 
 		if (index > 0) {
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.ExplainLabel,
 				'Deleting element: ' + elem + '  Element deleted'
 			);
 			this.empty[index] = true;
 			this.deleted[index] = true;
-			this.cmd('SetText', this.hashTableVisual[index], '<deleted>');
+			this.cmd(act.setText, this.hashTableVisual[index], '<deleted>');
 		} else {
 			this.cmd(
-				'SetText',
+				act.setText,
 				this.ExplainLabel,
 				'Deleting element: ' + elem + '  Element not in table'
 			);
@@ -237,14 +238,14 @@ export default class ClosedHash extends Hash {
 	findElement(elem) {
 		this.commands = [];
 
-		this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem);
 		const index = this.doHash(elem);
 
 		const found = this.getElemIndex(index, elem) !== -1;
 		if (found) {
-			this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
 		} else {
-			this.cmd('SetText', this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
 		}
 		return this.commands;
 	}
@@ -277,7 +278,7 @@ export default class ClosedHash extends Hash {
 				ARRAY_ELEM_START_Y +
 				Math.floor(i / this.elements_per_row) * ARRAY_VERTICAL_SEPARATION;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				nextID,
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -291,11 +292,11 @@ export default class ClosedHash extends Hash {
 			this.indexXPos[i] = nextXPos;
 			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
 
-			this.cmd('CreateLabel', nextID, i, this.indexXPos[i], this.indexYPos[i]);
-			this.cmd('SetForegroundColor', nextID, INDEX_COLOR);
+			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd('CreateLabel', this.ExplainLabel, '', 10, 25, 0);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.resetIndex = this.nextIndex;
@@ -307,7 +308,7 @@ export default class ClosedHash extends Hash {
 		for (let i = 0; i < this.table_size; i++) {
 			this.empty[i] = true;
 			this.deleted[i] = false;
-			this.cmd('SetText', this.hashTableVisual[i], '');
+			this.cmd(act.setText, this.hashTableVisual[i], '');
 		}
 		return this.commands;
 		// Clear array, etc

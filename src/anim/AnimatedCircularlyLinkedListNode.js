@@ -27,38 +27,26 @@
 import AnimatedObject from "./AnimatedObject.js";
 import { UndoBlock } from "./UndoFunctions.js";
 
-export default class AnimatedCircularlyLinkedList extends AnimatedObject {
-	constructor(id, val, wth, hgt, linkPer, numLab, fillColor, edgeColor) {
+export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
+	constructor(objectID, label, w, h, linkPercent, backgroundColor, foregroundColor) {
 		super();
-		this.w = wth;
-		this.h = hgt;
-		this.backgroundColor = fillColor;
-		this.foregroundColor = edgeColor;
 
-		this.linkPercent = linkPer;
+		this.objectID = objectID;
 
-		this.numLabels = numLab;
+		this.w = w;
+		this.h = h;
 
-		this.labels = [];
-		this.labelPosX = [];
-		this.labelPosY = [];
-		this.labelColors = [];
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.highlighted = false;
+
+		this.linkPercent = linkPercent;
 		this.nullPointer = false;
 
-		this.currentHeightDif = 6;
-		this.maxHeightDiff = 5;
-		this.minHeightDiff = 3;
-
-		for (let i = 0; i < this.numLabels; i++) {
-			this.labels[i] = "";
-			this.labelPosX[i] = 0;
-			this.labelPosY[i] = 0;
-			this.labelColors[i] = this.foregroundColor;
-		}
-
-		this.labels[0] = val;
-		this.highlighted = false;
-		this.objectID = id;
+		this.label = label;
+		this.labelPosX = 0;
+		this.labelPosY = 0;
+		this.labelColor = foregroundColor;
 	}
 
 	setNull(np) {
@@ -87,18 +75,9 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 		return this.y + this.h / 2.0;
 	}
 
-	// TODO: Should we move this to the draw function, and save the
-	//       space of the arrays?  Bit of a leftover from the Flash code,
-	//       which did drawing differently
 	resetTextPosition() {
-		this.labelPosY[0] = this.y;
-		this.labelPosX[0] =
-			this.x + ((this.w * (1 - this.linkPercent)) / 2) * (1 / this.numLabels - 1);
-		for (let i = 1; i < this.numLabels; i++) {
-			this.labelPosY[i] = this.y;
-			this.labelPosX[i] =
-				this.labelPosX[i - 1] + (this.w * (1 - this.linkPercent)) / this.numLabels;
-		}
+		this.labelPosX = this.x;
+		this.labelPosY = this.y;
 	}
 
 	getTailPointerAttachPos() {
@@ -113,13 +92,13 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 		}
 	}
 
-	setWidth(wdth) {
-		this.w = wdth;
+	setWidth(w) {
+		this.w = w;
 		this.resetTextPosition();
 	}
 
-	setHeight(hght) {
-		this.h = hght;
+	setHeight(h) {
+		this.h = h;
 		this.resetTextPosition();
 	}
 
@@ -139,8 +118,8 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 		startY = this.top();
 
 		if (this.highlighted) {
-			context.strokeStyle = "#ff0000";
-			context.fillStyle = "#ff0000";
+			context.strokeStyle = "#FF0000";
+			context.fillStyle = "#FF0000";
 
 			context.beginPath();
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -168,17 +147,6 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
-		let i;
-		startY = this.top();
-		for (i = 1; i < this.numLabels; i++) {
-			startX = this.x + this.w * (1 - this.linkPercent) * (i / this.numLabels - 1 / 2);
-			context.beginPath();
-			context.moveTo(startX, startY);
-			context.lineTo(startX, startY + this.h);
-			context.closePath();
-			context.stroke();
-		}
-
 		startX = this.right() - this.w * this.linkPercent;
 		startY = this.top();
 
@@ -197,47 +165,25 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 		context.lineWidth = 1;
 
 		this.resetTextPosition();
-		for (i = 0; i < this.numLabels; i++) {
-			context.fillStyle = this.labelColors[i];
-			context.fillText(this.labels[i], this.labelPosX[i], this.labelPosY[i]);
-		}
+		context.fillStyle = this.labelColor;
+		context.fillText(this.label, this.labelPosX, this.labelPosY);
 	}
 
-	setTextColor(color, textIndex) {
-		this.labelColors[textIndex] = color;
+	setTextColor(color) {
+		this.labelColor = color;
 	}
 
-	getTextColor(textIndex) {
-		return this.labelColors[textIndex];
+	getTextColor() {
+		return this.labelColor;
 	}
 
-	getText(index) {
-		return this.labels[index];
+	getText() {
+		return this.label;
 	}
 
-	setText(newText, textIndex) {
-		this.labels[textIndex] = newText;
+	setText(newText) {
+		this.label = newText;
 		this.resetTextPosition();
-	}
-
-	createUndoDelete() {
-		return new UndoDeleteLinkedList(
-			this.objectID,
-			this.numLabels,
-			this.labels,
-			this.x,
-			this.y,
-			this.w,
-			this.h,
-			this.linkPercent,
-			this.linkPositionEnd,
-			this.vertical,
-			this.labelColors,
-			this.backgroundColor,
-			this.foregroundColor,
-			this.layer,
-			this.nullPointer
-		);
 	}
 
 	setHighlight(value) {
@@ -245,43 +191,68 @@ export default class AnimatedCircularlyLinkedList extends AnimatedObject {
 			this.highlighted = value;
 		}
 	}
+
+	createUndoDelete() {
+		return new UndoDeleteCircularlyLinkedList(
+			this.objectID,
+			this.label,
+			this.w,
+			this.h,
+			this.x,
+			this.y,
+			this.linkPercent,
+			this.backgroundColor,
+			this.foregroundColor,
+			this.labelColor,
+			this.layer,
+			this.nullPointer
+		);
+	}
 }
 
-class UndoDeleteLinkedList extends UndoBlock {
-	constructor(id, numlab, lab, x, y, w, h, linkper, labColors, bgColor, fgColor, l, np) {
+class UndoDeleteCircularlyLinkedList extends UndoBlock {
+	constructor(
+		objectID,
+		label,
+		w,
+		h,
+		x,
+		y,
+		linkPercent,
+		backgroundColor,
+		foregroundColor,
+		labelColor,
+		layer,
+		nullPointer
+	) {
 		super();
-		this.objectID = id;
-		this.posX = x;
-		this.posY = y;
-		this.width = w;
-		this.height = h;
-		this.backgroundColor = bgColor;
-		this.foregroundColor = fgColor;
-		this.labels = lab;
-		this.linkPercent = linkper;
-		this.labelColors = labColors;
-		this.layer = l;
-		this.numLabels = numlab;
-		this.nullPointer = np;
+		this.objectID = objectID;
+		this.label = label;
+		this.w = w;
+		this.h = h;
+		this.x = x;
+		this.y = y;
+		this.linkPercent = linkPercent;
+		this.backgroundColor = backgroundColor;
+		this.foregroundColor = foregroundColor;
+		this.labelColor = labelColor;
+		this.layer = layer;
+		this.nullPointer = nullPointer;
 	}
 
 	undoInitialStep(world) {
-		world.addLinkedListObject(
+		world.addCircularlyLinkedListObject(
 			this.objectID,
-			this.labels[0],
-			this.width,
-			this.height,
+			this.label,
+			this.w,
+			this.h,
 			this.linkPercent,
-			this.numLabels,
 			this.backgroundColor,
 			this.foregroundColor
 		);
-		world.setNodePosition(this.objectID, this.posX, this.posY);
+		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 		world.setNull(this.objectID, this.nullPointer);
-		for (let i = 0; i < this.numLabels; i++) {
-			world.setText(this.objectID, this.labels[i], i);
-			world.setTextColor(this.objectID, this.labelColors[i], i);
-		}
+		world.setTextColor(this.objectID, this.labelColor);
 	}
 }

@@ -24,20 +24,6 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-// bind() {
-// 	var _function = this;
-
-// 	var args = Array.prototype.slice.call(arguments);
-// 	var scope = args.shift()
-// 	return function() {
-// 		for (let i = 0; i < arguments.length; i++)
-// 		{
-// 			args.push(arguments[i]);
-// 		}
-// 		return _function.apply(scope, args);
-// 	}
-// }
-
 export default class EventListener {
 	constructor() {
 		this.events = [];

@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 export default class DPLCS extends Algorithm {
 	constructor(am, w, h) {
@@ -49,21 +50,21 @@ export default class DPLCS extends Algorithm {
 			for (j = 0; j < this.code[i].length; j++) {
 				this.codeID[i][j] = this.nextIndex++;
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					this.codeID[i][j],
 					this.code[i][j],
 					DPLCS.CODE_START_X,
 					DPLCS.CODE_START_Y + i * DPLCS.CODE_LINE_HEIGHT,
 					0
 				);
-				this.cmd('SetForegroundColor', this.codeID[i][j], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[i][j], DPLCS.CODE_STANDARD_COLOR);
 				if (j > 0) {
-					this.cmd('AlignRight', this.codeID[i][j], this.codeID[i][j - 1]);
+					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
 				}
 			}
 		}
 
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.initialIndex = this.nextIndex;
@@ -123,7 +124,7 @@ export default class DPLCS extends Algorithm {
 			if (i > 0) {
 				this.S1TableID[i - 1] = this.nextIndex++;
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					this.S1TableID[i - 1],
 					S1.charAt(i - 1),
 					DPLCS.TABLE_START_X + i * DPLCS.TABLE_ELEM_WIDTH,
@@ -134,13 +135,13 @@ export default class DPLCS extends Algorithm {
 			const index = this.nextIndex++;
 			this.oldIDs.push(index);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				index,
 				i - 1,
 				DPLCS.TABLE_START_X + i * DPLCS.TABLE_ELEM_WIDTH,
 				DPLCS.TABLE_START_Y - 1 * DPLCS.TABLE_ELEM_HEIGHT
 			);
-			this.cmd('SetForegroundColor', index, '#0000FF');
+			this.cmd(act.setForegroundColor, index, '#0000FF');
 		}
 
 		this.S2TableID = new Array(y);
@@ -148,7 +149,7 @@ export default class DPLCS extends Algorithm {
 			if (i > 0) {
 				this.S2TableID[i - 1] = this.nextIndex++;
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					this.S2TableID[i - 1],
 					S2.charAt(i - 1),
 					DPLCS.TABLE_START_X - 2 * DPLCS.TABLE_ELEM_WIDTH,
@@ -159,13 +160,13 @@ export default class DPLCS extends Algorithm {
 			const index = this.nextIndex++;
 			this.oldIDs.push(index);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				index,
 				i - 1,
 				DPLCS.TABLE_START_X - 1 * DPLCS.TABLE_ELEM_WIDTH,
 				DPLCS.TABLE_START_Y + i * DPLCS.TABLE_ELEM_HEIGHT
 			);
-			this.cmd('SetForegroundColor', index, '#0000FF');
+			this.cmd(act.setForegroundColor, index, '#0000FF');
 		}
 
 		for (i = 0; i <= x; i++) {
@@ -183,7 +184,7 @@ export default class DPLCS extends Algorithm {
 				this.tableYPos[i][j] = DPLCS.TABLE_START_Y + j * DPLCS.TABLE_ELEM_HEIGHT;
 
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.tableID[i][j],
 					'',
 					DPLCS.TABLE_ELEM_WIDTH,
@@ -197,7 +198,7 @@ export default class DPLCS extends Algorithm {
 
 	clearOldIDs() {
 		for (let i = 0; i < this.oldIDs.length; i++) {
-			this.cmd('Delete', this.oldIDs[i]);
+			this.cmd(act.delete, this.oldIDs[i]);
 		}
 		this.oldIDs = [];
 		this.nextIndex = this.initialIndex;
@@ -260,7 +261,7 @@ export default class DPLCS extends Algorithm {
 		const messageID = this.nextIndex++;
 		this.oldIDs.push(messageID);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			messageID,
 			'Enter two sequences in the text fields.\n' +
 				'Then press the LCS Recursive, LCS Table, or LCS Memoized button',
@@ -291,7 +292,7 @@ export default class DPLCS extends Algorithm {
 			functionCallID
 		);
 		this.cmd(
-			'SetText',
+			act.setText,
 			functionCallID,
 			'LCS(' +
 				sequences[0] +
@@ -310,7 +311,7 @@ export default class DPLCS extends Algorithm {
 	LCS(S1, S2, x, y, xPos, ID) {
 		const ID2 = this.nextIndex++;
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			ID,
 			'LCS(' + S1 + ', ' + S2 + ', ' + String(x) + ', ' + String(y) + ')',
 			xPos,
@@ -318,90 +319,90 @@ export default class DPLCS extends Algorithm {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			ID2,
 			'        [LCS(' + S1.substring(0, x + 1) + ',' + S2.substring(0, y + 1) + ')]'
 		);
-		this.cmd('SetForegroundColor', ID2, '#3333FF');
-		this.cmd('AlignRight', ID2, ID);
-		this.cmd('SetForegroundColor', this.codeID[0][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-		this.cmd('Step');
-		this.cmd('SetForegroundColor', this.codeID[0][1], DPLCS.CODE_STANDARD_COLOR);
+		this.cmd(act.setForegroundColor, ID2, '#3333FF');
+		this.cmd(act.alignRight, ID2, ID);
+		this.cmd(act.setForegroundColor, this.codeID[0][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+		this.cmd(act.step);
+		this.cmd(act.setForegroundColor, this.codeID[0][1], DPLCS.CODE_STANDARD_COLOR);
 
 		if (x === -1 || y === -1) {
 			if (x === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][1], DPLCS.CODE_HIGHLIGHT_COLOR);
 			}
 			if (y === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][3], DPLCS.CODE_HIGHLIGHT_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][3], DPLCS.CODE_HIGHLIGHT_COLOR);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			if (x === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][1], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][1], DPLCS.CODE_STANDARD_COLOR);
 			}
 			if (y === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][3], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][3], DPLCS.CODE_STANDARD_COLOR);
 			}
-			this.cmd('SetForegroundColor', this.codeID[2][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetText', ID, 0);
-			this.cmd('Delete', ID2);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[2][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[2][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setText, ID, 0);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[2][0], DPLCS.CODE_STANDARD_COLOR);
 			return 0;
 		}
-		this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-		this.cmd('Step');
-		this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
+		this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+		this.cmd(act.step);
+		this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
 
 		if (S1.charAt(x) === S2.charAt(y)) {
-			this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
 
 			const nextID = this.nextIndex++;
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
 			const subProb = this.LCS(S1, S2, x - 1, y - 1, xPos + DPLCS.RECURSIVE_DELTA_X, nextID);
 
-			this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
 
-			this.cmd('Delete', nextID);
-			this.cmd('SetText', ID, subProb + 1);
-			this.cmd('Delete', ID2);
-			this.cmd('step');
+			this.cmd(act.delete, nextID);
+			this.cmd(act.setText, ID, subProb + 1);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
 			this.currentY -= DPLCS.RECURSIVE_DELTA_Y;
 			return subProb + 1;
 		} else {
 			const firstID = this.nextIndex++;
 			const secondID = this.nextIndex++;
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
-			this.cmd('SetForegroundColor', this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][1], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][1], DPLCS.CODE_STANDARD_COLOR);
 
 			const subProb1 = this.LCS(S1, S2, x - 1, y, xPos + DPLCS.RECURSIVE_DELTA_X, firstID);
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
-			this.cmd('SetForegroundColor', this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][3], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][3], DPLCS.CODE_STANDARD_COLOR);
 
 			const subProb2 = this.LCS(S1, S2, x, y - 1, xPos + DPLCS.RECURSIVE_DELTA_X, secondID);
 
-			this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('Delete', firstID);
-			this.cmd('Delete', secondID);
+			this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.delete, firstID);
+			this.cmd(act.delete, secondID);
 			this.currentY -= 2 * DPLCS.RECURSIVE_DELTA_Y;
 			const best = Math.max(subProb1, subProb2);
-			this.cmd('SetText', ID, best);
-			this.cmd('Delete', ID2);
-			this.cmd('step');
+			this.cmd(act.setText, ID, best);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
 			return best;
 		}
 	}
@@ -415,41 +416,41 @@ export default class DPLCS extends Algorithm {
 		const header = this.nextIndex++;
 		this.oldIDs.push(header);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			header,
 			'Sequence',
 			DPLCS.SEQUENCE_START_X,
 			DPLCS.SEQUENCE_START_Y - 30,
 			0
 		);
-		this.cmd('SetForegroundColor', header, '#003300');
+		this.cmd(act.setForegroundColor, header, '#003300');
 
 		while (currX > 0 && currY > 0) {
-			this.cmd('SetHighlight', this.tableID[currX][currY], 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.S1TableID[currX - 1], 1);
-			this.cmd('SetHighlight', this.S2TableID[currY - 1], 1);
-			this.cmd('Step');
-			this.cmd('SetHighlight', this.S1TableID[currX - 1], 0);
-			this.cmd('SetHighlight', this.S2TableID[currY - 1], 0);
-			this.cmd('SetHighlight', this.tableID[currX][currY], 0);
+			this.cmd(act.setHighlight, this.tableID[currX][currY], 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.S1TableID[currX - 1], 1);
+			this.cmd(act.setHighlight, this.S2TableID[currY - 1], 1);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.S1TableID[currX - 1], 0);
+			this.cmd(act.setHighlight, this.S2TableID[currY - 1], 0);
+			this.cmd(act.setHighlight, this.tableID[currX][currY], 0);
 
 			if (S1.charAt(currX - 1) === S2.charAt(currY - 1)) {
 				const nextSequenceID = this.nextIndex++;
 				this.oldIDs.push(nextSequenceID);
 				sequence.push(nextSequenceID);
 				this.cmd(
-					'CreateLabel',
+					act.createLabel,
 					nextSequenceID,
 					S1.charAt(currX - 1),
 					DPLCS.TABLE_START_X + currX * DPLCS.TABLE_ELEM_WIDTH,
 					DPLCS.TABLE_START_Y - 2 * DPLCS.TABLE_ELEM_HEIGHT
 				);
-				this.cmd('SetForegroundColor', nextSequenceID, '#0000FF');
+				this.cmd(act.setForegroundColor, nextSequenceID, '#0000FF');
 
 				for (let i = sequence.length - 1; i >= 0; i--) {
 					this.cmd(
-						'Move',
+						act.move,
 						sequence[i],
 						DPLCS.SEQUENCE_START_X + (sequence.length - 1 - i) * DPLCS.SEQUENCE_DELTA_X,
 						DPLCS.SEQUENCE_START_Y
@@ -459,11 +460,11 @@ export default class DPLCS extends Algorithm {
 				currX = currX - 1;
 				currY = currY - 1;
 			} else {
-				this.cmd('SetHighlight', this.tableID[currX - 1][currY], 1);
-				this.cmd('SetHighlight', this.tableID[currX][currY - 1], 1);
-				this.cmd('Step');
-				this.cmd('SetHighlight', this.tableID[currX - 1][currY], 0);
-				this.cmd('SetHighlight', this.tableID[currX][currY - 1], 0);
+				this.cmd(act.setHighlight, this.tableID[currX - 1][currY], 1);
+				this.cmd(act.setHighlight, this.tableID[currX][currY - 1], 1);
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.tableID[currX - 1][currY], 0);
+				this.cmd(act.setHighlight, this.tableID[currX][currY - 1], 0);
 
 				if (this.tableVals[currX - 1][currY] > this.tableVals[currX][currY - 1]) {
 					currX = currX - 1;
@@ -488,74 +489,74 @@ export default class DPLCS extends Algorithm {
 		let i, j;
 
 		for (i = 0; i <= x; i++) {
-			this.cmd('SetText', this.tableID[i][0], '0');
+			this.cmd(act.setText, this.tableID[i][0], '0');
 			this.tableVals[i][0] = 0;
 		}
 		for (i = 0; i <= y; i++) {
-			this.cmd('SetText', this.tableID[0][i], '0');
+			this.cmd(act.setText, this.tableID[0][i], '0');
 			this.tableVals[0][i] = 0;
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 		for (j = 0; j < y; j++) {
 			for (i = 0; i < x; i++) {
-				this.cmd('SetHighlight', this.tableID[i + 1][j + 1], 1);
-				this.cmd('SetHighlight', this.S1TableID[i], 1);
-				this.cmd('SetHighlight', this.S2TableID[j], 1);
-				this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-				this.cmd('Step');
-				this.cmd('SetHighlight', this.S1TableID[i], 0);
-				this.cmd('SetHighlight', this.S2TableID[j], 0);
-				this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setHighlight, this.tableID[i + 1][j + 1], 1);
+				this.cmd(act.setHighlight, this.S1TableID[i], 1);
+				this.cmd(act.setHighlight, this.S2TableID[j], 1);
+				this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.S1TableID[i], 0);
+				this.cmd(act.setHighlight, this.S2TableID[j], 0);
+				this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
 				if (sequences[0].charAt(i) === sequences[1].charAt(j)) {
-					this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetHighlight', this.tableID[i + 1 - 1][j + 1 - 1], 1);
-					this.cmd('Step');
+					this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setHighlight, this.tableID[i + 1 - 1][j + 1 - 1], 1);
+					this.cmd(act.step);
 					this.cmd(
-						'CreateLabel',
+						act.createLabel,
 						moveID,
 						this.tableVals[i][j] + 1,
 						this.tableXPos[i][j],
 						this.tableYPos[i][j]
 					);
 					this.cmd(
-						'Move',
+						act.move,
 						moveID,
 						this.tableXPos[i + 1][j + 1],
 						this.tableYPos[i + 1][j + 1]
 					);
-					this.cmd('Step');
-					this.cmd('Delete', moveID);
-					this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
-					this.cmd('SetHighlight', this.tableID[i + 1 - 1][j + 1 - 1], 0);
+					this.cmd(act.step);
+					this.cmd(act.delete, moveID);
+					this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
+					this.cmd(act.setHighlight, this.tableID[i + 1 - 1][j + 1 - 1], 0);
 					this.tableVals[i + 1][j + 1] = this.tableVals[i][j] + 1;
-					this.cmd('SetText', this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
+					this.cmd(act.setText, this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
 				} else {
-					this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
 
-					this.cmd('SetHighlight', this.tableID[i][j + 1], 1);
-					this.cmd('SetHighlight', this.tableID[i + 1][j], 1);
-					this.cmd('Step');
-					this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
-					this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
+					this.cmd(act.setHighlight, this.tableID[i][j + 1], 1);
+					this.cmd(act.setHighlight, this.tableID[i + 1][j], 1);
+					this.cmd(act.step);
+					this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
+					this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
 
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
-						this.cmd('SetHighlight', this.tableID[i + 1][j], 0);
+						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
 						this.cmd(
-							'SetForegroundColor',
+							act.setForegroundColor,
 							this.codeID[6][3],
 							DPLCS.CODE_STANDARD_COLOR
 						);
 
 						this.tableVals[i + 1][j + 1] = this.tableVals[i][j + 1];
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							moveID,
 							this.tableVals[i][j + 1],
 							this.tableXPos[i][j + 1],
@@ -563,14 +564,14 @@ export default class DPLCS extends Algorithm {
 						);
 					} else {
 						this.cmd(
-							'SetForegroundColor',
+							act.setForegroundColor,
 							this.codeID[6][1],
 							DPLCS.CODE_STANDARD_COLOR
 						);
-						this.cmd('SetHighlight', this.tableID[i][j + 1], 0);
+						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 						this.tableVals[i + 1][j + 1] = this.tableVals[i + 1][j];
 						this.cmd(
-							'CreateLabel',
+							act.createLabel,
 							moveID,
 							this.tableVals[i + 1][j],
 							this.tableXPos[i + 1][j],
@@ -578,32 +579,32 @@ export default class DPLCS extends Algorithm {
 						);
 					}
 					this.cmd(
-						'Move',
+						act.move,
 						moveID,
 						this.tableXPos[i + 1][j + 1],
 						this.tableYPos[i + 1][j + 1]
 					);
-					this.cmd('Step');
-					this.cmd('SetText', this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
-					this.cmd('Delete', moveID);
+					this.cmd(act.step);
+					this.cmd(act.setText, this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
+					this.cmd(act.delete, moveID);
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
 						this.cmd(
-							'SetForegroundColor',
+							act.setForegroundColor,
 							this.codeID[6][1],
 							DPLCS.CODE_STANDARD_COLOR
 						);
-						this.cmd('SetHighlight', this.tableID[i][j + 1], 0);
+						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 					} else {
 						this.cmd(
-							'SetForegroundColor',
+							act.setForegroundColor,
 							this.codeID[6][3],
 							DPLCS.CODE_STANDARD_COLOR
 						);
-						this.cmd('SetHighlight', this.tableID[i + 1][j], 0);
+						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
 					}
 				}
-				this.cmd('SetHighlight', this.tableID[i + 1][j + 1], 0);
-				//this.cmd("Step");
+				this.cmd(act.setHighlight, this.tableID[i + 1][j + 1], 0);
+				//this.cmd(act.step);
 			}
 		}
 		this.buildLCSFromTable(sequences[0], sequences[1]);
@@ -613,7 +614,7 @@ export default class DPLCS extends Algorithm {
 	LCSMem(S1, S2, x, y, xPos, ID) {
 		const ID2 = this.nextIndex++;
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			ID,
 			'LCS(' + S1 + ', ' + S2 + ', ' + String(x) + ', ' + String(y) + ')',
 			xPos,
@@ -621,80 +622,80 @@ export default class DPLCS extends Algorithm {
 			0
 		);
 		this.cmd(
-			'CreateLabel',
+			act.createLabel,
 			ID2,
 			'        [LCS(' + S1.substring(0, x + 1) + ',' + S2.substring(0, y + 1) + ')]'
 		);
-		this.cmd('SetForegroundColor', ID2, '#3333FF');
-		this.cmd('AlignRight', ID2, ID);
-		this.cmd('SetForegroundColor', this.codeID[0][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-		this.cmd('Step');
-		this.cmd('SetForegroundColor', this.codeID[0][1], DPLCS.CODE_STANDARD_COLOR);
+		this.cmd(act.setForegroundColor, ID2, '#3333FF');
+		this.cmd(act.alignRight, ID2, ID);
+		this.cmd(act.setForegroundColor, this.codeID[0][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+		this.cmd(act.step);
+		this.cmd(act.setForegroundColor, this.codeID[0][1], DPLCS.CODE_STANDARD_COLOR);
 
 		if (this.tableVals[x + 1][y + 1] !== -1) {
 			const movingLabel = this.nextIndex++;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				movingLabel,
 				this.tableVals[x + 1][y + 1],
 				this.tableXPos[x + 1][y + 1],
 				this.tableYPos[x + 1][y + 1]
 			);
-			this.cmd('Move', movingLabel, xPos, this.currentY);
-			this.cmd('SetText', ID, '');
-			this.cmd('Step');
-			this.cmd('Delete', movingLabel);
+			this.cmd(act.move, movingLabel, xPos, this.currentY);
+			this.cmd(act.setText, ID, '');
+			this.cmd(act.step);
+			this.cmd(act.delete, movingLabel);
 
-			this.cmd('SetText', ID, this.tableVals[x + 1][y + 1]);
-			this.cmd('Delete', ID2);
-			this.cmd('Step');
+			this.cmd(act.setText, ID, this.tableVals[x + 1][y + 1]);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
 			return this.tableVals[x + 1][y + 1];
 		}
 
 		if (x === -1 || y === -1) {
 			if (x === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][1], DPLCS.CODE_HIGHLIGHT_COLOR);
 			}
 			if (y === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][3], DPLCS.CODE_HIGHLIGHT_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][3], DPLCS.CODE_HIGHLIGHT_COLOR);
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 			if (x === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][1], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][1], DPLCS.CODE_STANDARD_COLOR);
 			}
 			if (y === -1) {
-				this.cmd('SetForegroundColor', this.codeID[1][3], DPLCS.CODE_STANDARD_COLOR);
+				this.cmd(act.setForegroundColor, this.codeID[1][3], DPLCS.CODE_STANDARD_COLOR);
 			}
-			this.cmd('SetForegroundColor', this.codeID[2][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetText', ID, 0);
-			this.cmd('Delete', ID2);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[2][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[2][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setText, ID, 0);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[2][0], DPLCS.CODE_STANDARD_COLOR);
 
 			const movingLabel = this.nextIndex++;
-			this.cmd('CreateLabel', movingLabel, 0, xPos, this.currentY);
+			this.cmd(act.createLabel, movingLabel, 0, xPos, this.currentY);
 			this.cmd(
-				'Move',
+				act.move,
 				movingLabel,
 				this.tableXPos[x + 1][y + 1],
 				this.tableYPos[x + 1][y + 1]
 			);
-			this.cmd('Step');
-			this.cmd('Delete', movingLabel);
+			this.cmd(act.step);
+			this.cmd(act.delete, movingLabel);
 
 			this.tableVals[x + 1][y + 1] = 0;
-			this.cmd('SetText', this.tableID[x + 1][y + 1], 0);
+			this.cmd(act.setText, this.tableID[x + 1][y + 1], 0);
 
 			return 0;
 		}
-		this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-		this.cmd('Step');
-		this.cmd('SetForegroundColor', this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
+		this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+		this.cmd(act.step);
+		this.cmd(act.setForegroundColor, this.codeID[3][1], DPLCS.CODE_STANDARD_COLOR);
 
 		if (S1.charAt(x) === S2.charAt(y)) {
-			this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[4][1], DPLCS.CODE_STANDARD_COLOR);
 
 			const nextID = this.nextIndex++;
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
@@ -707,46 +708,46 @@ export default class DPLCS extends Algorithm {
 				nextID
 			);
 
-			this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[4][0], DPLCS.CODE_STANDARD_COLOR);
 
-			this.cmd('Delete', nextID);
-			this.cmd('SetText', ID, subProb + 1);
-			this.cmd('Delete', ID2);
-			this.cmd('step');
+			this.cmd(act.delete, nextID);
+			this.cmd(act.setText, ID, subProb + 1);
+			this.cmd(act.delete, ID2);
+			this.cmd(act.step);
 			this.currentY -= DPLCS.RECURSIVE_DELTA_Y;
 
 			// TODO:  Animate moving value into table here
 
 			const movingLabel = this.nextIndex++;
-			this.cmd('CreateLabel', movingLabel, subProb + 1, xPos, this.currentY);
+			this.cmd(act.createLabel, movingLabel, subProb + 1, xPos, this.currentY);
 			this.cmd(
-				'Move',
+				act.move,
 				movingLabel,
 				this.tableXPos[x + 1][y + 1],
 				this.tableYPos[x + 1][y + 1]
 			);
-			this.cmd('Step');
-			this.cmd('Delete', movingLabel);
+			this.cmd(act.step);
+			this.cmd(act.delete, movingLabel);
 
 			this.tableVals[x + 1][y + 1] = subProb + 1;
-			this.cmd('SetText', this.tableID[x + 1][y + 1], subProb + 1);
+			this.cmd(act.setText, this.tableID[x + 1][y + 1], subProb + 1);
 
 			return subProb + 1;
 		} else {
 			const firstID = this.nextIndex++;
 			const secondID = this.nextIndex++;
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
-			this.cmd('SetForegroundColor', this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][1], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][1], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][1], DPLCS.CODE_STANDARD_COLOR);
 
 			const subProb1 = this.LCSMem(S1, S2, x - 1, y, xPos + DPLCS.RECURSIVE_DELTA_X, firstID);
 			this.currentY += DPLCS.RECURSIVE_DELTA_Y;
-			this.cmd('SetForegroundColor', this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][3], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][3], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][3], DPLCS.CODE_STANDARD_COLOR);
 
 			const subProb2 = this.LCSMem(
 				S1,
@@ -757,36 +758,36 @@ export default class DPLCS extends Algorithm {
 				secondID
 			);
 
-			this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
-			this.cmd('Step');
-			this.cmd('SetForegroundColor', this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('SetForegroundColor', this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
-			this.cmd('Delete', firstID);
-			this.cmd('Delete', secondID);
+			this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_HIGHLIGHT_COLOR);
+			this.cmd(act.step);
+			this.cmd(act.setForegroundColor, this.codeID[6][0], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][2], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.setForegroundColor, this.codeID[6][4], DPLCS.CODE_STANDARD_COLOR);
+			this.cmd(act.delete, firstID);
+			this.cmd(act.delete, secondID);
 			this.currentY -= 2 * DPLCS.RECURSIVE_DELTA_Y;
 			const best = Math.max(subProb1, subProb2);
-			this.cmd('SetText', ID, best);
-			this.cmd('Delete', ID2);
+			this.cmd(act.setText, ID, best);
+			this.cmd(act.delete, ID2);
 
 			const movingLabel = this.nextIndex++;
-			this.cmd('CreateLabel', movingLabel, best, xPos, this.currentY);
+			this.cmd(act.createLabel, movingLabel, best, xPos, this.currentY);
 			this.cmd(
-				'Move',
+				act.move,
 				movingLabel,
 				this.tableXPos[x + 1][y + 1],
 				this.tableYPos[x + 1][y + 1]
 			);
-			this.cmd('Step');
-			this.cmd('Delete', movingLabel);
+			this.cmd(act.step);
+			this.cmd(act.delete, movingLabel);
 
 			// TODO:  Animate moving value into table here
 			this.tableVals[x + 1][y + 1] = best;
-			this.cmd('SetText', this.tableID[x + 1][y + 1], best);
+			this.cmd(act.setText, this.tableID[x + 1][y + 1], best);
 
-			this.cmd('step');
+			this.cmd(act.step);
 			return best;
 		}
 	}
@@ -814,7 +815,7 @@ export default class DPLCS extends Algorithm {
 		);
 
 		this.cmd(
-			'SetText',
+			act.setText,
 			functionCallID,
 			'LCS(' +
 				sequences[0] +

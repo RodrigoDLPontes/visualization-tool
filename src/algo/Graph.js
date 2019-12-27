@@ -40,6 +40,7 @@ import {
 	SMALL_X_POS_LOGICAL,
 	SMALL_Y_POS_LOGICAL,
 } from './util/GraphUtil.js';
+import { act } from '../anim/AnimationMain';
 
 const SMALL_ADJ_MATRIX_X_START = 700;
 const SMALL_ADJ_MATRIX_Y_START = 40;
@@ -187,20 +188,20 @@ export default class Graph extends Algorithm {
 	}
 
 	highlightEdge(i, j, highlightVal) {
-		this.cmd('SetHighlight', this.adj_list_edges[i][j], highlightVal);
-		this.cmd('SetHighlight', this.adj_matrixID[i][j], highlightVal);
-		this.cmd('SetEdgeHighlight', this.circleID[i], this.circleID[j], highlightVal);
+		this.cmd(act.setHighlight, this.adj_list_edges[i][j], highlightVal);
+		this.cmd(act.setHighlight, this.adj_matrixID[i][j], highlightVal);
+		this.cmd(act.setEdgeHighlight, this.circleID[i], this.circleID[j], highlightVal);
 		if (!this.directed) {
-			this.cmd('SetEdgeHighlight', this.circleID[j], this.circleID[i], highlightVal);
+			this.cmd(act.setEdgeHighlight, this.circleID[j], this.circleID[i], highlightVal);
 		}
 	}
 
 	setEdgeColor(i, j, color) {
-		this.cmd('SetForegroundColor', this.adj_list_edges[i][j], color);
-		this.cmd('SetTextColor', this.adj_matrixID[i][j], color);
-		this.cmd('SetEdgeColor', this.circleID[i], this.circleID[j], color);
+		this.cmd(act.setForegroundColor, this.adj_list_edges[i][j], color);
+		this.cmd(act.setTextColor, this.adj_matrixID[i][j], color);
+		this.cmd(act.setEdgeColor, this.circleID[i], this.circleID[j], color);
 		if (!this.directed) {
-			this.cmd('SetEdgeColor', this.circleID[j], this.circleID[i], color);
+			this.cmd(act.setEdgeColor, this.circleID[j], this.circleID[i], color);
 		}
 	}
 
@@ -208,7 +209,7 @@ export default class Graph extends Algorithm {
 		for (let i = 0; i < this.size; i++) {
 			for (let j = 0; j < this.size; j++) {
 				if (this.adj_matrix[i][j] >= 0) {
-					this.cmd('Disconnect', this.circleID[i], this.circleID[j]);
+					this.cmd(act.disconnect, this.circleID[i], this.circleID[j]);
 				}
 			}
 		}
@@ -226,7 +227,7 @@ export default class Graph extends Algorithm {
 					const edgeLabel = this.showEdgeCosts ? String(this.adj_matrix[i][j]) : '';
 					if (this.directed) {
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.circleID[i],
 							this.circleID[j],
 							EDGE_COLOR,
@@ -239,7 +240,7 @@ export default class Graph extends Algorithm {
 						);
 					} else if (i < j) {
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.circleID[i],
 							this.circleID[j],
 							EDGE_COLOR,
@@ -307,15 +308,15 @@ export default class Graph extends Algorithm {
 		for (let i = 0; i < this.size; i++) {
 			this.circleID[i] = this.nextIndex++;
 			this.cmd(
-				'CreateCircle',
+				act.createCircle,
 				this.circleID[i],
 				String.fromCharCode(65 + i),
 				this.x_pos_logical[i],
 				this.y_pos_logical[i]
 			);
-			this.cmd('SetTextColor', this.circleID[i], VERTEX_INDEX_COLOR, 0);
+			this.cmd(act.setTextColor, this.circleID[i], VERTEX_INDEX_COLOR, 0);
 
-			this.cmd('SetLayer', this.circleID[i], 1);
+			this.cmd(act.setLayer, this.circleID[i], 1);
 		}
 
 		this.adj_matrix = new Array(this.size);
@@ -383,7 +384,7 @@ export default class Graph extends Algorithm {
 							edgeLabel = '';
 						}
 						this.cmd(
-							'Connect',
+							act.connect,
 							this.circleID[i],
 							this.circleID[j],
 							EDGE_COLOR,
@@ -414,7 +415,7 @@ export default class Graph extends Algorithm {
 		this.buildAdjMatrix();
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
-		this.animationManager.StartNewAnimation(this.commands);
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.clearHistory();
@@ -429,23 +430,23 @@ export default class Graph extends Algorithm {
 			this.adj_matrix_index_x[i] = this.nextIndex++;
 			this.adj_matrix_index_y[i] = this.nextIndex++;
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.adj_matrix_index_x[i],
 				i,
 				this.adj_matrix_x_start + i * this.adj_matrix_width,
 				this.adj_matrix_y_start - this.adj_matrix_height
 			);
-			this.cmd('SetForegroundColor', this.adj_matrix_index_x[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setForegroundColor, this.adj_matrix_index_x[i], VERTEX_INDEX_COLOR);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.adj_matrix_index_y[i],
 				i,
 				this.adj_matrix_x_start - this.adj_matrix_width,
 				this.adj_matrix_y_start + i * this.adj_matrix_height
 			);
-			this.cmd('SetForegroundColor', this.adj_matrix_index_y[i], VERTEX_INDEX_COLOR);
-			this.cmd('SetLayer', this.adj_matrix_index_x[i], 3);
-			this.cmd('SetLayer', this.adj_matrix_index_y[i], 3);
+			this.cmd(act.setForegroundColor, this.adj_matrix_index_y[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setLayer, this.adj_matrix_index_x[i], 3);
+			this.cmd(act.setLayer, this.adj_matrix_index_y[i], 3);
 
 			for (let j = 0; j < this.size; j++) {
 				this.adj_matrixID[i][j] = this.nextIndex++;
@@ -456,7 +457,7 @@ export default class Graph extends Algorithm {
 					lab = String(this.adj_matrix[i][j]);
 				}
 				this.cmd(
-					'CreateRectangle',
+					act.createRectangle,
 					this.adj_matrixID[i][j],
 					lab,
 					this.adj_matrix_width,
@@ -464,18 +465,18 @@ export default class Graph extends Algorithm {
 					this.adj_matrix_x_start + j * this.adj_matrix_width,
 					this.adj_matrix_y_start + i * this.adj_matrix_height
 				);
-				this.cmd('SetLayer', this.adj_matrixID[i][j], 3);
+				this.cmd(act.setLayer, this.adj_matrixID[i][j], 3);
 			}
 		}
 	}
 
 	removeAdjList() {
 		for (let i = 0; i < this.size; i++) {
-			this.cmd('Delete', this.adj_list_list[i], 'RAL1');
-			this.cmd('Delete', this.adj_list_index[i], 'RAL2');
+			this.cmd(act.delete, this.adj_list_list[i], 'RAL1');
+			this.cmd(act.delete, this.adj_list_index[i], 'RAL2');
 			for (let j = 0; j < this.size; j++) {
 				if (this.adj_matrix[i][j] > 0) {
-					this.cmd('Delete', this.adj_list_edges[i][j], 'RAL3');
+					this.cmd(act.delete, this.adj_list_edges[i][j], 'RAL3');
 				}
 			}
 		}
@@ -492,7 +493,7 @@ export default class Graph extends Algorithm {
 			this.adj_list_index[i] = this.nextIndex++;
 			this.adj_list_list[i] = this.nextIndex++;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.adj_list_list[i],
 				'',
 				this.adj_list_width,
@@ -500,16 +501,16 @@ export default class Graph extends Algorithm {
 				this.adj_list_x_start,
 				this.adj_list_y_start + i * this.adj_list_height
 			);
-			this.cmd('SetLayer', this.adj_list_list[i], 2);
+			this.cmd(act.setLayer, this.adj_list_list[i], 2);
 			this.cmd(
-				'CreateLabel',
+				act.createLabel,
 				this.adj_list_index[i],
 				i,
 				this.adj_list_x_start - this.adj_list_width,
 				this.adj_list_y_start + i * this.adj_list_height
 			);
-			this.cmd('SetForegroundColor', this.adj_list_index[i], VERTEX_INDEX_COLOR);
-			this.cmd('SetLayer', this.adj_list_index[i], 2);
+			this.cmd(act.setForegroundColor, this.adj_list_index[i], VERTEX_INDEX_COLOR);
+			this.cmd(act.setLayer, this.adj_list_index[i], 2);
 			let lastElem = this.adj_list_list[i];
 			let nextXPos = this.adj_list_x_start + this.adj_list_width + this.adj_list_spacing;
 			let hasEdges = false;
@@ -518,7 +519,7 @@ export default class Graph extends Algorithm {
 					hasEdges = true;
 					this.adj_list_edges[i][j] = this.nextIndex++;
 					this.cmd(
-						'CreateLinkedList',
+						act.createLinkedListNode,
 						this.adj_list_edges[i][j],
 						j,
 						this.adj_list_elem_width,
@@ -530,19 +531,19 @@ export default class Graph extends Algorithm {
 						1,
 						2
 					);
-					this.cmd('SetNull', this.adj_list_edges[i][j], 1);
-					this.cmd('SetText', this.adj_list_edges[i][j], this.adj_matrix[i][j], 1);
-					this.cmd('SetTextColor', this.adj_list_edges[i][j], VERTEX_INDEX_COLOR, 0);
-					this.cmd('SetLayer', this.adj_list_edges[i][j], 2);
+					this.cmd(act.setNull, this.adj_list_edges[i][j], 1);
+					this.cmd(act.setText, this.adj_list_edges[i][j], this.adj_matrix[i][j], 1);
+					this.cmd(act.setTextColor, this.adj_list_edges[i][j], VERTEX_INDEX_COLOR, 0);
+					this.cmd(act.setLayer, this.adj_list_edges[i][j], 2);
 
 					nextXPos = nextXPos + this.adj_list_elem_width + this.adj_list_spacing;
-					this.cmd('Connect', lastElem, this.adj_list_edges[i][j]);
-					this.cmd('SetNull', lastElem, 0);
+					this.cmd(act.connect, lastElem, this.adj_list_edges[i][j]);
+					this.cmd(act.setNull, lastElem, 0);
 					lastElem = this.adj_list_edges[i][j];
 				}
 			}
 			if (!hasEdges) {
-				this.cmd('SetNull', this.adj_list_list[i], 1);
+				this.cmd(act.setNull, this.adj_list_list[i], 1);
 			}
 		}
 	}

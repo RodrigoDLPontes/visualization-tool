@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 120;
 const ARRAY_START_Y = 50;
@@ -124,7 +125,7 @@ export default class MergeSort extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
-			this.cmd('Delete', this.arrayID[i]);
+			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
 		this.displayData = [];
@@ -168,7 +169,7 @@ export default class MergeSort extends Algorithm {
 			}
 			this.displayData[i] = displayData;
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex++,
 				displayData,
 				ARRAY_ELEM_WIDTH,
@@ -177,7 +178,7 @@ export default class MergeSort extends Algorithm {
 				yPos
 			);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		if (this.arrayData.length !== 1) {
 			const mid = Math.ceil((this.arrayData.length - 1) / 2);
@@ -194,8 +195,8 @@ export default class MergeSort extends Algorithm {
 				this.arrayID
 			);
 		} else {
-			this.cmd('SetBackgroundColor', this.arrayID[0], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, this.arrayID[0], '#2ECC71');
+			this.cmd(act.step);
 		}
 
 		return this.commands;
@@ -213,8 +214,8 @@ export default class MergeSort extends Algorithm {
 			this.leftHelper(mid, right, offset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset - extraOffset, offset, tempArrayID);
 		} else {
-			this.cmd('SetBackgroundColor', tempArrayID[left], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
+			this.cmd(act.step);
 		}
 	}
 
@@ -230,8 +231,8 @@ export default class MergeSort extends Algorithm {
 			this.rightHelper(mid, right, offset + extraOffset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset, offset + extraOffset, tempArrayID);
 		} else {
-			this.cmd('SetBackgroundColor', tempArrayID[left], '#2ECC71');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
+			this.cmd(act.step);
 		}
 	}
 
@@ -245,7 +246,7 @@ export default class MergeSort extends Algorithm {
 			tempArrayID[i] = this.nextIndex;
 			this.arrayID.push(this.nextIndex);
 			this.cmd(
-				'CreateRectangle',
+				act.createRectangle,
 				this.nextIndex++,
 				'',
 				ARRAY_ELEM_WIDTH,
@@ -254,7 +255,7 @@ export default class MergeSort extends Algorithm {
 				yPos
 			);
 		}
-		this.cmd('Step');
+		this.cmd(act.step);
 
 		// Copy elements from big array to current subarray
 		for (let i = left; i <= right; i++) {
@@ -288,15 +289,15 @@ export default class MergeSort extends Algorithm {
 		const bottomYPos = ARRAY_START_Y + (row + 1) * ARRAY_LINE_SPACING;
 		const iPointerID = this.nextIndex++;
 		const iXPos = left * ARRAY_ELEM_WIDTH + ARRAY_START_X + leftOffset;
-		this.cmd('CreateHighlightCircle', iPointerID, '#0000FF', iXPos, bottomYPos);
+		this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', iXPos, bottomYPos);
 		const jPointerID = this.nextIndex++;
 		const jXPos = mid * ARRAY_ELEM_WIDTH + ARRAY_START_X + rightOffset;
-		this.cmd('CreateHighlightCircle', jPointerID, '#0000FF', jXPos, bottomYPos);
+		this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', jXPos, bottomYPos);
 		const kPointerID = this.nextIndex++;
 		const kXPos = left * ARRAY_ELEM_WIDTH + ARRAY_START_X + currOffset;
 		const topYPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
-		this.cmd('CreateHighlightCircle', kPointerID, '#0000FF', kXPos, topYPos);
-		this.cmd('Step');
+		this.cmd(act.createHighlightCircle, kPointerID, '#0000FF', kXPos, topYPos);
+		this.cmd(act.step);
 
 		// Merge data and animate
 		let i = left;
@@ -344,7 +345,7 @@ export default class MergeSort extends Algorithm {
 					this.movePointer(j, row + 1, rightOffset, jPointerID);
 				}
 			}
-			this.cmd('Step');
+			this.cmd(act.step);
 		}
 		while (i < mid) {
 			this.copyData(
@@ -390,38 +391,38 @@ export default class MergeSort extends Algorithm {
 		}
 
 		// Delete pointers
-		this.cmd('Delete', iPointerID);
-		this.cmd('Delete', jPointerID);
-		this.cmd('Delete', kPointerID);
-		this.cmd('Step');
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
+		this.cmd(act.delete, kPointerID);
+		this.cmd(act.step);
 	}
 
 	copyData(fromIndex, toIndex, fromOffset, toOffset, fromRow, toRow, value, cellID, pointerID) {
 		if (pointerID !== -1) {
-			this.cmd('SetForegroundColor', pointerID, '#FF0000');
-			this.cmd('Step');
+			this.cmd(act.setForegroundColor, pointerID, '#FF0000');
+			this.cmd(act.step);
 		}
 		const fromXPos = fromIndex * ARRAY_ELEM_WIDTH + ARRAY_START_X + fromOffset;
 		const fromYPos = ARRAY_START_Y + fromRow * ARRAY_LINE_SPACING;
 		const labelID = this.nextIndex++;
-		this.cmd('CreateLabel', labelID, value, fromXPos, fromYPos);
+		this.cmd(act.createLabel, labelID, value, fromXPos, fromYPos);
 		const toXPos = toIndex * ARRAY_ELEM_WIDTH + ARRAY_START_X + toOffset;
 		const toYPos = ARRAY_START_Y + toRow * ARRAY_LINE_SPACING;
-		this.cmd('Move', labelID, toXPos, toYPos);
-		this.cmd('Step');
-		this.cmd('SetText', cellID, value);
-		this.cmd('Delete', labelID);
+		this.cmd(act.move, labelID, toXPos, toYPos);
+		this.cmd(act.step);
+		this.cmd(act.setText, cellID, value);
+		this.cmd(act.delete, labelID);
 		if (pointerID !== -1) {
-			this.cmd('SetBackgroundColor', cellID, '#2ECC71');
-			this.cmd('SetForegroundColor', pointerID, '#0000FF');
-			this.cmd('Step');
+			this.cmd(act.setBackgroundColor, cellID, '#2ECC71');
+			this.cmd(act.setForegroundColor, pointerID, '#0000FF');
+			this.cmd(act.step);
 		}
 	}
 
 	movePointer(index, row, offset, pointerID) {
 		const xPos = index * ARRAY_ELEM_WIDTH + ARRAY_START_X + offset;
 		const yPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
-		this.cmd('Move', pointerID, xPos, yPos);
+		this.cmd(act.move, pointerID, xPos, yPos);
 	}
 
 	// Called by our superexport default class when we get an animation started event -- need to wait for the

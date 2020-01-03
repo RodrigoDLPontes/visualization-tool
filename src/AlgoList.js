@@ -51,12 +51,12 @@ export const algoList = [
 	'BST', 'Heap', 'AVL', 'BTree', 'SplayTree', 'SkipList',
 	'HashMaps',
 	'ClosedHash', 'OpenHash',
-	'Sorting Algorithms',
+	'Sorting',
 	'BubbleSort', 'CocktailSort', 'InsertionSort', 'SelectionSort', 'QuickSort', 'QuickSelect', 'MergeSort', 'LSDRadix',
-	'String Searching Algorithms',
+	'String Searching',
 	'BruteForce', 'BoyerMoore', 'KMP', 'RabinKarp',
 	'Graph Algorithms',
 	'BFS', 'DFS', 'Dijkstra', 'Prim', 'Kruskal',
-	'Dynamic Programming Algorithms',
+	'Dynamic Programming',
 	'DPLCS', 'Floyd'
 ]

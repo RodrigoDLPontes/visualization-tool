@@ -27,6 +27,9 @@ class Home extends React.Component {
 						<li>
 							<Link to="/about" onClick={this.toggleMenu}>About</Link>
 						</li>
+						<li>
+							<a href="https://github.com/RodrigoDLPontes/visualization-tool">Source Code</a>
+						</li>
 					</ul>
 				</div>
 

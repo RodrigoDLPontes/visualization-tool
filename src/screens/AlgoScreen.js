@@ -3,7 +3,7 @@ import AnimationManager from '../anim/AnimationMain';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
-import algoList from '../AlgoList';
+import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
 
 class AlgoScreen extends React.Component {
@@ -20,15 +20,11 @@ class AlgoScreen extends React.Component {
 		};
 	}
 
-	toggleExamples() {
-		this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
-	}
-
 	componentDidMount() {
-		if (algoList[this.state.algoName]) {
+		if (algoMap[this.state.algoName]) {
 			this.animManag = new AnimationManager(this.canvasRef, this.animBarRef);
 
-			this.currentAlg = new algoList[this.state.algoName][1](
+			this.currentAlg = new algoMap[this.state.algoName][1](
 				this.animManag,
 				this.canvasRef.current.width,
 				this.canvasRef.current.height
@@ -38,18 +34,18 @@ class AlgoScreen extends React.Component {
 
 	render() {
 		const algoName = this.state.algoName;
-		if (!algoList[algoName]) {
+		if (!algoMap[algoName]) {
 			return <h1>404!</h1>;
 		}
 
-		const header = algoList[algoName][2]
-			? algoList[algoName][2]
-			: algoList[algoName][0];
+		const header = algoMap[algoName][2]
+			? algoMap[algoName][2]
+			: algoMap[algoName][0];
 		return (
 			<div className="VisualizationMainPage">
 				<div id="container">
 					<div id="header">
-						<h1>{header}</h1>
+						<h1><Link to="/">&#x3008; </Link>{header}</h1>
 					</div>
 
 					<div id="mainContent">
@@ -59,7 +55,7 @@ class AlgoScreen extends React.Component {
 								<button
 									className={this.state.examplesEnabled ? 'selected' : ''}
 									id="examplesButton"
-									onClick={() => this.toggleExamples()}
+									onClick={this.toggleExamples}
 								></button>
 							)}
 						</div>
@@ -87,6 +83,8 @@ class AlgoScreen extends React.Component {
 			</div>
 		);
 	}
+
+	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
 }
 
 AlgoScreen.propTypes = {

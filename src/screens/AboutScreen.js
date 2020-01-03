@@ -1,7 +1,7 @@
 import React from 'react';
 
 const AboutScreen = () => (
-	<>
+	<div className="about">
 		<p>
 			This is a tool to help you visualize and understand the data structures and algorithms
 			covered in Georgia Tech's CS1332 course. It is based on the{' '}
@@ -25,7 +25,7 @@ const AboutScreen = () => (
 				Material UI
 			</a>.
 		</p>
-	</>
+	</div>
 );
 
 export default AboutScreen;

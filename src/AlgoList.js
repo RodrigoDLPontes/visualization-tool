@@ -2,7 +2,7 @@ import * as algos from './algo';
 
 // After adding the export in algos/index.js, add new algorithms in the following format:
 // AlgorithmName: ['Menu Display Name', algos.ClassName, 'Verbose Display Name (optional)']
-export default {
+export const algoMap = {
 	ArrayList: ['ArrayList', algos.ArrayList],
 	LinkedList: ['Singly LinkedList', algos.LinkedList],
 	DoublyLinkedList: ['Doubly LinkedList', algos.DoublyLinkedList],
@@ -41,3 +41,22 @@ export default {
 	DPLCS: ['LCS', algos.DPLCS, 'Longest Common Subsequence'],
 	Floyd: ['Floyd-Warshall', algos.Floyd],
 };
+
+export const algoList = [
+	'Lists',
+	'ArrayList', 'LinkedList', 'DoublyLinkedList', 'CircularlyLinkedList',
+	'Stacks, Queues and Deques',
+	'StackArray', 'StackLL', 'QueueArray', 'QueueLL', 'DequeArray', 'DequeLL',
+	'Trees and SkipList',
+	'BST', 'Heap', 'AVL', 'BTree', 'SplayTree', 'SkipList',
+	'HashMaps',
+	'ClosedHash', 'OpenHash',
+	'Sorting Algorithms',
+	'BubbleSort', 'CocktailSort', 'InsertionSort', 'SelectionSort', 'QuickSort', 'QuickSelect', 'MergeSort', 'LSDRadix',
+	'String Searching Algorithms',
+	'BruteForce', 'BoyerMoore', 'KMP', 'RabinKarp',
+	'Graph Algorithms',
+	'BFS', 'DFS', 'Dijkstra', 'Prim', 'Kruskal',
+	'Dynamic Programming Algorithms',
+	'DPLCS', 'Floyd'
+]

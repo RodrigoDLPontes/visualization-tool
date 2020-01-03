@@ -1,155 +1,159 @@
 .VisualizationMainPage #mainContent {
-	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-	background: #ffffff;
+    /* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+    background: #ffffff;
 }
 
 .VisualizationMainPage #container {
-	background: #ffffff;
-	/* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
-	text-align: left; /* this overrides the text-align: center on the body element. */
+    background: #ffffff;
+    /* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+    text-align: left; /* this overrides the text-align: center on the body element. */
 }
 
 .VisualizationMainPage #algoControlSection {
-	background: #f7c245;
-	color: #000000;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+    background: #f7c245;
+    color: #000000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .VisualizationMainPage #examplesButton {
-	background-image: url('../img/examples.png');
-	background-repeat: no-repeat;
-	background-size: 30px;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	width: 40px;
-	height: 40px;
-	outline: none;
+    background-image: url('../img/examples.png');
+    background-repeat: no-repeat;
+    background-size: 30px;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    width: 40px;
+    height: 40px;
+    outline: none;
 }
 
 .VisualizationMainPage #examplesButton.selected {
-	background-image: url('../img/examples-selected.png');
+    background-image: url('../img/examples-selected.png');
+}
+
+.VisualizationMainPage #examplesButton::-moz-focus-inner {
+    border: 0;
 }
 
 .VisualizationMainPage #generalAnimationControlSection {
-	background: #f7c245;
-	color: #006600;
+    background: #f7c245;
+    color: #006600;
 }
 
 .VisualizationMainPage #header {
-	background: #4277bb;
-	color: #f7c245;
-	padding: 0 10px 0 20px;
+    background: #4277bb;
+    color: #f7c245;
+    padding: 0 10px 0 5px;
 }
 
 .VisualizationMainPage #header a:visited {
-	text-decoration: none;
-	color: #f7c245;
+    text-decoration: none;
+    color: #f7c245;
 }
 
 .VisualizationMainPage #header h1 {
-	margin: 0;
-	padding: 10px 0;
+    margin: 0;
+    padding: 10px 0;
 }
 
 .VisualizationMainPage #header a:link {
-	text-decoration: none;
-	color: #f7c245;
+    text-decoration: none;
+    color: #f7c245;
 }
 
 .VisualizationMainPage #container {
-	background: #ffffff;
-	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
-	text-align: left; /* this overrides the text-align: center on the body element. */
+    background: #ffffff;
+    margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+    text-align: left; /* this overrides the text-align: center on the body element. */
 }
 
 .VisualizationMainPage #footer a:visited {
-	text-decoration: none;
-	color: #f7c245;
+    text-decoration: none;
+    color: #f7c245;
 }
 
 .VisualizationMainPage #footer a:link {
-	text-decoration: none;
-	color: #f7c245;
+    text-decoration: none;
+    color: #f7c245;
 }
 
 .VisualizationMainPage #mainContent h1 {
-	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+    padding: 0 20px;
+    background: #ffffff;
+    color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h2 {
-	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+    padding: 0 20px;
+    background: #ffffff;
+    color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h3 {
-	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+    padding: 0 20px;
+    background: #ffffff;
+    color: #4277bb;
 }
 
 .VisualizationMainPage #footer {
-	padding: 0 10px;
-	background: #4277bb;
-	color: #f7c245;
+    padding: 0 10px;
+    background: #4277bb;
+    color: #f7c245;
 }
 
 .VisualizationMainPage #footer p {
-	margin: 0;
-	padding: 10px 0;
+    margin: 0;
+    padding: 10px 0;
 }
 
 em {
-	text-decoration: bold;
+    text-decoration: bold;
 }
 
 .VisualizationMainPage .modal {
-	display: none;
-	position: absolute;
-	z-index: 1;
-	right: 20px;
-	top: 120px;
-	width: 350px;
-	height: 460px;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    right: 20px;
+    top: 120px;
+    width: 350px;
+    height: 460px;
 }
 
 .VisualizationMainPage .modal.show {
-	display: flex;
+    display: flex;
 }
 
 .VisualizationMainPage .modal-content {
-	background-color: #fefefe;
-	padding: 0px 30px 0px 0px;
-	height: 100%;
-	border-radius: 20px;
-	background-color: #f7c245;
+    background-color: #fefefe;
+    padding: 0px 30px 0px 0px;
+    height: 100%;
+    border-radius: 20px;
+    background-color: #f7c245;
 }
 
 .VisualizationMainPage li {
-	line-height: 1.4em;
-	margin: 0px 0px 15px 0px;
+    line-height: 1.4em;
+    margin: 0px 0px 15px 0px;
 }
 
 .VisualizationMainPage .equation {
-	font-family: Georgia, 'Times New Roman', Times, serif;
-	text-align: center;
-	margin: 5px 0px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+    margin: 5px 0px;
 }
 
 .VisualizationMainPage .vgroup {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .VisualizationMainPage .vgroup {
-	display: flex;
+    display: flex;
 }

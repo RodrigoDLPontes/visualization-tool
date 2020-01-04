@@ -20,7 +20,7 @@ body {
     height: 100%;
     width: 200px;
     background-color: #80b3ff;
-    opacity: 0%;
+    opacity: 0;
     line-height: 2.5em;
     padding: 1em;
     border-right: 2px solid #4277bb;
@@ -28,7 +28,7 @@ body {
 
 .menu.show {
     left: -20px;
-    opacity: 97%;
+    opacity: 0.97;
     animation-name: enter;
     animation-duration: 0.5s;
 }
@@ -249,11 +249,11 @@ input.button {
 }
 
 @keyframes enter {
-    from {left: -240px; opacity: 0%}
-    to {left: -20px; opacity: 97%;}
+    from {left: -240px; opacity: 0;}
+    to {left: -20px; opacity: 0.97;}
 }
 
 @keyframes exit {
-    from {left: -20px; opacity: 97%}
-    to {left: -240px; opacity: 0%;}
+    from {left: -20px; opacity: 0.97;}
+    to {left: -240px; opacity: 0;}
 }

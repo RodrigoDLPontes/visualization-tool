@@ -128,7 +128,7 @@ body {
 div.header h1 {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 50vw;
     transform: translate(-50%, -50%);
     margin: 0;
     white-space: nowrap;
@@ -151,11 +151,6 @@ div.footer {
 
 .footer a {
     color: #022639;
-}
-
-h1.header {
-    padding: 0;
-    margin: 0;
 }
 
 div.content {

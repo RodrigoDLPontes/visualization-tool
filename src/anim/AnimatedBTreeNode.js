@@ -220,7 +220,8 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 			this.backgroundColor,
 			this.foregroundColor,
 			this.layer,
-			this.highlighted
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }
@@ -238,7 +239,8 @@ class UndoDeleteBTreeNode extends UndoBlock {
 		backgroundColor,
 		foregroundColor,
 		layer,
-		highlighted
+		highlighted,
+		highlightColor
 	) {
 		super();
 		this.objectID = objectID;
@@ -253,6 +255,7 @@ class UndoDeleteBTreeNode extends UndoBlock {
 		this.foregroundColor = foregroundColor;
 		this.layer = layer;
 		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -270,6 +273,6 @@ class UndoDeleteBTreeNode extends UndoBlock {
 			world.setTextColor(this.objectID, this.labelColors[i], i);
 		}
 		world.setLayer(this.objectID, this.layer);
-		world.setHighlight(this.objectID, this.highlighted);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

@@ -343,17 +343,16 @@ export default class AVL extends Algorithm {
 			curr.left = this.addH(data, curr.left);
 			curr.left.parent = curr;
 			this.resizeTree();
-			this.connectSmart(curr.graphicID, curr.left.graphicID);
-			this.cmd(act.step);
+			const connected = this.connectSmart(curr.graphicID, curr.left.graphicID);
+			connected && this.cmd(act.step);
 		} else if (data > curr.data) {
 			this.cmd(act.setText, 0, `${data} > ${curr.data}. Looking at right subtree`);
 			this.cmd(act.step);
 			curr.right = this.addH(data, curr.right);
 			curr.right.parent = curr;
 			this.resizeTree();
-			// this.cmd(act.connect, curr.graphicID, curr.right.graphicID, AVL.LINK_COLOR);
-			this.connectSmart(curr.graphicID, curr.right.graphicID);
-			this.cmd(act.step);
+			const connected = this.connectSmart(curr.graphicID, curr.right.graphicID);
+			connected && this.cmd(act.step);
 		} else {
 			this.cmd(act.setText, 0, `${data} == ${curr.data}. Ignoring duplicate!`);
 			this.cmd(act.step);
@@ -540,7 +539,6 @@ export default class AVL extends Algorithm {
 			if (tree.height !== newHeight) {
 				tree.height = Math.max(this.getHeight(tree.left), this.getHeight(tree.right)) + 1;
 				this.cmd(act.setText, tree.heightLabelID, newHeight);
-				//			this.cmd(act.setText,tree.heightLabelID, newHeight);
 			}
 		}
 	}
@@ -560,8 +558,8 @@ export default class AVL extends Algorithm {
 
 		this.highlightID = this.nextIndex++;
 		this.treeRoot = this.removeH(this.treeRoot, data);
-		this.resizeTree();
 		this.cmd(act.setText, 0, '');
+		this.resizeTree();
 		return this.commands;
 	}
 
@@ -594,16 +592,19 @@ export default class AVL extends Algorithm {
 				this.cmd(act.setText, 0, 'Element to delete is a leaf node');
 				this.cmd(act.step);
 				this.deleteNode(curr);
+				this.cmd(act.step);
 				return null;
 			} else if (curr.left == null) {
 				this.cmd(act.setText, 0, `One-child case, replace with right child`);
 				this.cmd(act.step);
 				this.deleteNode(curr);
+				this.cmd(act.step);
 				return curr.right;
 			} else if (curr.right == null) {
 				this.cmd(act.setText, 0, `One-child case, replace with left child`);
 				this.cmd(act.step);
 				this.deleteNode(curr);
+				this.cmd(act.step);
 				return curr.left;
 			} else {
 				const dummy = [];
@@ -611,11 +612,14 @@ export default class AVL extends Algorithm {
 					this.cmd(act.setText, 0, `Two-child case, replace data with successor`);
 					this.cmd(act.step);
 					curr.right = this.removeSucc(curr.right, dummy);
+					curr.right && this.connectSmart(curr.graphicID, curr.right.graphicID);
 				} else {
 					this.cmd(act.setText, 0, `Two-child case, replace data with predecessor`);
 					this.cmd(act.step);
 					curr.left = this.removePred(curr.left, dummy);
+					curr.left && this.connectSmart(curr.graphicID, curr.left.graphicID);
 				}
+				this.resizeTree();
 				curr.data = dummy[0];
 				this.cmd(act.setText, curr.graphicID, curr.data);
 			}
@@ -634,6 +638,8 @@ export default class AVL extends Algorithm {
 			this.cmd(act.step);
 			dummy.push(curr.data);
 			this.deleteNode(curr);
+			this.cmd(act.step);
+			this.cmd(act.setText, 0, '');
 			return curr.right;
 		}
 		this.cmd(act.setText, 0, 'Left child exists, look left');
@@ -646,7 +652,6 @@ export default class AVL extends Algorithm {
 		}
 		curr = this.balance(curr);
 		this.cmd(act.setHighlight, curr.graphicID, 0);
-		this.cmd(act.setText, 0, '');
 		return curr;
 	}
 
@@ -658,6 +663,8 @@ export default class AVL extends Algorithm {
 			this.cmd(act.step);
 			dummy.push(curr.data);
 			this.deleteNode(curr);
+			this.cmd(act.step);
+			this.cmd(act.setText, 0, '');
 			return curr.left;
 		}
 		this.cmd(act.setText, 0, 'Right child exists, look right');
@@ -670,7 +677,6 @@ export default class AVL extends Algorithm {
 		}
 		curr = this.balance(curr);
 		this.cmd(act.setHighlight, curr.graphicID, 0);
-		this.cmd(act.setText, 0, '');
 		return curr;
 	}
 

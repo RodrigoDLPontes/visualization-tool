@@ -71,14 +71,15 @@ export class UndoCreate extends UndoBlock {
 }
 
 export class UndoHighlight extends UndoBlock {
-	constructor(id, val) {
+	constructor(id, val, color) {
 		super();
 		this.objectID = id;
 		this.highlightValue = val;
+		this.color = color;
 	}
 
 	undoInitialStep(world) {
-		world.setHighlight(this.objectID, this.highlightValue);
+		world.setHighlight(this.objectID, this.highlightValue, this.color);
 	}
 }
 

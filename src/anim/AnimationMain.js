@@ -1111,7 +1111,7 @@ export const act = {
 	},
 	setHighlight(params) { // id, highlight, color
 		this.animatedObjects.setHighlight(params[0], params[1], params[2]);
-		this.undoBlock.push(new UndoHighlight(params[0], !params[1]));
+		this.undoBlock.push(new UndoHighlight(params[0], !params[1], params[2]));
 	},
 	setAlpha(params) { // id, alpha
 		const oldAlpha = this.animatedObjects.getAlpha(params[0]);

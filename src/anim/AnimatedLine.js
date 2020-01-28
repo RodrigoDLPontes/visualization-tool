@@ -172,7 +172,8 @@ export default class AnimatedLine {
 			this.curve,
 			this.directed,
 			this.edgeLabel,
-			this.anchorPoint
+			this.anchorPoint,
+			this.highlighted
 		);
 	}
 }

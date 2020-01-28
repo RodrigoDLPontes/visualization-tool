@@ -205,7 +205,9 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 			this.foregroundColor,
 			this.labelColor,
 			this.layer,
-			this.nullPointer
+			this.nullPointer,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }
@@ -223,7 +225,9 @@ class UndoDeleteCircularlyLinkedList extends UndoBlock {
 		foregroundColor,
 		labelColor,
 		layer,
-		nullPointer
+		nullPointer,
+		highlighted,
+		highlightColor
 	) {
 		super();
 		this.objectID = objectID;
@@ -238,6 +242,8 @@ class UndoDeleteCircularlyLinkedList extends UndoBlock {
 		this.labelColor = labelColor;
 		this.layer = layer;
 		this.nullPointer = nullPointer;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -254,5 +260,6 @@ class UndoDeleteCircularlyLinkedList extends UndoBlock {
 		world.setLayer(this.objectID, this.layer);
 		world.setNull(this.objectID, this.nullPointer);
 		world.setTextColor(this.objectID, this.labelColor);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

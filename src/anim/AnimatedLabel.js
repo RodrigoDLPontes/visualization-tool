@@ -289,13 +289,15 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.centered,
 			this.labelColor,
 			this.layer,
-			this.highlightIndex
+			this.highlightIndex,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }
 
 class UndoDeleteLabel extends UndoBlock {
-	constructor(objectID, label, x, y, centered, labelColor, layer, highlightIndex) {
+	constructor(objectID, label, x, y, centered, labelColor, layer, highlightIndex, highlighted, highlightColor) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -305,7 +307,8 @@ class UndoDeleteLabel extends UndoBlock {
 		this.labelColor = labelColor;
 		this.layer = layer;
 		this.highlightIndex = highlightIndex;
-		this.dirty = true;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -313,5 +316,6 @@ class UndoDeleteLabel extends UndoBlock {
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setForegroundColor(this.objectID, this.labelColor);
 		world.setLayer(this.objectID, this.layer);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

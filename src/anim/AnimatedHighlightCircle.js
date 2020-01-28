@@ -58,7 +58,9 @@ export default class AnimatedHighlightCircle extends AnimatedObject {
 			this.foregroundColor,
 			this.radius,
 			this.layer,
-			this.alpha
+			this.alpha,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }

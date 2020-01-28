@@ -188,13 +188,28 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 			this.labelColor,
 			this.backgroundColor,
 			this.foregroundColor,
-			this.layer
+			this.layer,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }
 
 class UndoDeleteSkipList extends UndoBlock {
-	constructor(objectID, label, w, h, x, y, labelColor, backgroundColor, foregroundColor, layer) {
+	constructor(
+		objectID,
+		label,
+		w,
+		h,
+		x,
+		y,
+		labelColor,
+		backgroundColor,
+		foregroundColor,
+		layer,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -206,6 +221,8 @@ class UndoDeleteSkipList extends UndoBlock {
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
 		this.layer = layer;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -220,5 +237,6 @@ class UndoDeleteSkipList extends UndoBlock {
 		world.setTextColor(this.objectID, this.labelColor);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

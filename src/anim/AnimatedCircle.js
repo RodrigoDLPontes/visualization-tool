@@ -151,13 +151,15 @@ export default class AnimatedCircle extends AnimatedObject {
 			this.foregroundColor,
 			this.backgroundColor,
 			this.layer,
-			this.radius
+			this.radius,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 }
 
 class UndoDeleteCircle extends UndoBlock {
-	constructor(objectID, label, x, y, foregroundColor, backgroundColor, layer, radius) {
+	constructor(objectID, label, x, y, foregroundColor, backgroundColor, layer, radius, highlighted, highlightColor) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -167,6 +169,8 @@ class UndoDeleteCircle extends UndoBlock {
 		this.backgroundColor = backgroundColor;
 		this.layer = layer;
 		this.radius = radius;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -176,5 +180,6 @@ class UndoDeleteCircle extends UndoBlock {
 		world.setForegroundColor(this.objectID, this.foregroundColor);
 		world.setBackgroundColor(this.objectID, this.backgroundColor);
 		world.setLayer(this.objectID, this.layer);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

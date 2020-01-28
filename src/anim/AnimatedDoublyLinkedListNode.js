@@ -247,14 +247,32 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 			this.labelColor,
 			this.layer,
 			this.prevNullPointer,
-			this.nextNullPointer
+			this.nextNullPointer,
+			this.highlighted,
+			this.highlightColor
 		);
 	}
 
 }
 
 class UndoDeleteDoublyLinkedList extends UndoBlock {
-	constructor(objectID, label, w, h, x, y, linkPercent, backgroundColor, foregroundColor, labelColor, layer, pnp, nnp) {
+	constructor(
+		objectID,
+		label,
+		w,
+		h,
+		x,
+		y,
+		linkPercent,
+		backgroundColor,
+		foregroundColor,
+		labelColor,
+		layer,
+		pnp,
+		nnp,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -269,6 +287,8 @@ class UndoDeleteDoublyLinkedList extends UndoBlock {
 		this.layer = layer;
 		this.prevNullPointer = pnp;
 		this.nextNullPointer = nnp;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -286,5 +306,6 @@ class UndoDeleteDoublyLinkedList extends UndoBlock {
 		world.setPrevNull(this.objectID, this.prevNullPointer);
 		world.setNextNull(this.objectID, this.nextNullPointer);
 		world.setTextColor(this.objectID, this.labelColor);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

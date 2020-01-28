@@ -248,14 +248,29 @@ export default class AnimatedRectangle extends AnimatedObject {
 			this.yJustify,
 			this.backgroundColor,
 			this.foregroundColor,
+			this.layer,
 			this.highlighted,
-			this.layer
+			this.highlightColor
 		);
 	}
 }
 
 class UndoDeleteRectangle extends UndoBlock {
-	constructor(objectID, label, x, y, w, h, xJustify, yJustify, backgroundColor, foregroundColor, highlight, layer) {
+	constructor(
+		objectID,
+		label,
+		x,
+		y,
+		w,
+		h,
+		xJustify,
+		yJustify,
+		backgroundColor,
+		foregroundColor,
+		layer,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.label = label;
@@ -267,8 +282,9 @@ class UndoDeleteRectangle extends UndoBlock {
 		this.yJustify = yJustify;
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
-		this.highlighted = highlight;
 		this.layer = layer;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
@@ -284,6 +300,6 @@ class UndoDeleteRectangle extends UndoBlock {
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
-		world.setHighlight(this.objectID, this.highlighted);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

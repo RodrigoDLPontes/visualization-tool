@@ -2,7 +2,7 @@
     "name": "visualization-tool",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://rodrigodlpontes.github.io/visualization-tool/",
+    "homepage": "https://csvistool.com/",
     "dependencies": {
         "@material-ui/core": "^4.7.2",
         "gh-pages": "^2.1.1",

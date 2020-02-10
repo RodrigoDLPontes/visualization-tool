@@ -27,7 +27,8 @@
 import { act } from '../anim/AnimationMain';
 
 export function addLabelToAlgorithmBar(labelName, group) {
-	const element = document.createTextNode(labelName);
+	const element = document.createElement('p');
+	element.appendChild(document.createTextNode(labelName));
 
 	if (!group) {
 		const tableEntry = document.createElement('td');
@@ -38,6 +39,7 @@ export function addLabelToAlgorithmBar(labelName, group) {
 		controlBar.appendChild(tableEntry);
 	} else {
 		group.appendChild(element);
+		element.setAttribute('class', 'groupChild');
 	}
 
 	return element;
@@ -65,6 +67,7 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 		span.appendChild(label);
 
 		group.appendChild(span);
+		span.setAttribute('class', 'groupChild');
 	}
 
 	return element;
@@ -98,6 +101,7 @@ export function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group)
 		controlBar.appendChild(topLevelTableEntry);
 	} else {
 		group.appendChild(newTable);
+		newTable.setAttribute('class', 'groupChild');
 	}
 
 	return buttonList;
@@ -117,9 +121,22 @@ export function addControlToAlgorithmBar(type, value, group) {
 		controlBar.appendChild(tableEntry);
 	} else {
 		group.appendChild(element);
+		element.setAttribute('class', 'groupChild');
 	}
 
 	return element;
+}
+
+export function addDivisorToAlgorithmBar() {
+	const divisorLeft = document.createElement('td');
+	divisorLeft.setAttribute('class', 'divisorLeft');
+
+	const divisorRight = document.createElement('td');
+	divisorRight.setAttribute('class', 'divisorRight');
+
+	const controlBar = document.getElementById('AlgorithmSpecificControls');
+	controlBar.appendChild(divisorLeft);
+	controlBar.appendChild(divisorRight);
 }
 
 export function addGroupToAlgorithmBar(horizontal, parentGroup) {

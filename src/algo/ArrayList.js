@@ -147,6 +147,7 @@ export default class ArrayList extends Algorithm {
 		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 	}
+
 	setup() {
 		this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE);
@@ -182,6 +183,7 @@ export default class ArrayList extends Algorithm {
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
+
 	reset() {
 		// Reset all of your data structures to *exactly* the state they have immediately after the init
 		// function is called.  This method is called whenever an "undo" is performed.  Your data
@@ -199,6 +201,7 @@ export default class ArrayList extends Algorithm {
 		}
 		this.highlight1ID = this.nextIndex++;
 	}
+
 	addIndexCallback() {
 		if (
 			this.addValueField.value !== '' &&
@@ -214,6 +217,7 @@ export default class ArrayList extends Algorithm {
 			}
 		}
 	}
+
 	addFrontCallback() {
 		if (this.addValueField.value !== '' && this.size < SIZE) {
 			const addVal = this.addValueField.value;
@@ -221,6 +225,7 @@ export default class ArrayList extends Algorithm {
 			this.implementAction(_ => this.add(_), addVal + ',' + 0);
 		}
 	}
+
 	addBackCallback() {
 		if (this.addValueField.value !== '' && this.size < SIZE) {
 			const addVal = this.addValueField.value;

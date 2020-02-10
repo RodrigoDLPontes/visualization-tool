@@ -24,7 +24,13 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar,
+	addRadioButtonGroupToAlgorithmBar
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_SIZE = 32;
@@ -35,89 +41,83 @@ const ARRAY_INITIAL_X = 30;
 const ARRAY_Y_POS = 50;
 const ARRAY_LABEL_Y_POS = 70;
 
+const HEAP_X_POSITIONS = [
+	0,
+	450,
+	250,
+	650,
+	150,
+	350,
+	550,
+	750,
+	100,
+	200,
+	300,
+	400,
+	500,
+	600,
+	700,
+	800,
+	75,
+	125,
+	175,
+	225,
+	275,
+	325,
+	375,
+	425,
+	475,
+	525,
+	575,
+	625,
+	675,
+	725,
+	775,
+	825,
+];
+
+const HEAP_Y_POSITIONS = [
+	0,
+	100,
+	170,
+	170,
+	240,
+	240,
+	240,
+	240,
+	310,
+	310,
+	310,
+	310,
+	310,
+	310,
+	310,
+	310,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+	380,
+];
+
 export default class Heap extends Algorithm {
 	constructor(am) {
 		super(am);
 
 		this.addControls();
 		this.nextIndex = 0;
-		this.HeapXPositions = [
-			0,
-			450,
-			250,
-			650,
-			150,
-			350,
-			550,
-			750,
-			100,
-			200,
-			300,
-			400,
-			500,
-			600,
-			700,
-			800,
-			75,
-			125,
-			175,
-			225,
-			275,
-			325,
-			375,
-			425,
-			475,
-			525,
-			575,
-			625,
-			675,
-			725,
-			775,
-			825,
-		];
-		this.HeapYPositions = [
-			0,
-			100,
-			170,
-			170,
-			240,
-			240,
-			240,
-			240,
-			310,
-			310,
-			310,
-			310,
-			310,
-			310,
-			310,
-			310,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-			380,
-		];
-		this.commands = [];
 		this.createArray();
-
-		/*this.nextIndex = 0;
-	this.this.commands = [];
-	this.cmd(act.createLabel, 0, "", 20, 50, 0);
-	this.animationManager.startNewAnimation(this.this.commands);
-	this.animationManager.skipForward();
-	this.animationManager.clearHistory(); */
 	}
 
 	addControls() {
@@ -128,26 +128,67 @@ export default class Heap extends Algorithm {
 			4,
 			true
 		);
-		this.insertButton = addControlToAlgorithmBar('Button', 'Insert');
+
+		this.insertButton = addControlToAlgorithmBar('Button', 'Enqueue');
 		this.insertButton.onclick = this.insertCallback.bind(this);
-		this.removeSmallestButton = addControlToAlgorithmBar('Button', 'Remove Smallest');
-		this.removeSmallestButton.onclick = this.removeSmallestCallback.bind(this);
-		this.clearHeapButton = addControlToAlgorithmBar('Button', 'Clear Heap');
-		this.clearHeapButton.onclick = this.clearCallback.bind(this);
-		this.buildHeapButton = addControlToAlgorithmBar('Button', 'BuildHeap');
+
+		addDivisorToAlgorithmBar();
+
+		this.removeButton = addControlToAlgorithmBar('Button', 'Dequeue');
+		this.removeButton.onclick = this.removeCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		const verticalGroup = addGroupToAlgorithmBar(false);
+
+		addLabelToAlgorithmBar('Comma separated list (e.g. "3,1,2", max 31 elements)', verticalGroup);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
+
+
+		this.buildHeapField = addControlToAlgorithmBar('Text', '', horizontalGroup);
+		this.buildHeapField.onkeydown = this.returnSubmit(
+			this.buildHeapField,
+			this.buildHeapCallback.bind(this),
+			61,
+			false
+		);
+
+		this.buildHeapButton = addControlToAlgorithmBar('Button', 'BuildHeap', horizontalGroup);
 		this.buildHeapButton.onclick = this.buildHeapCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
+			['MinHeap', 'MaxHeap'],
+			'MinHeap/MaxHeap'
+		);
+
+		this.minHeapButton = minMaxButtonList[0];
+		this.minHeapButton.onclick = this.minHeapCallback.bind(this);
+		this.minHeapButton.checked = true;
+		this.maxHeapButton = minMaxButtonList[1];
+		this.maxHeapButton.onclick = this.maxHeapCallback.bind(this);
+		this.isMinHeap = true;
 	}
 
 	createArray() {
+		this.commands = [];
+
 		this.arrayData = new Array(ARRAY_SIZE);
 		this.arrayLabels = new Array(ARRAY_SIZE);
 		this.arrayRects = new Array(ARRAY_SIZE);
 		this.circleObjs = new Array(ARRAY_SIZE);
-		this.ArrayXPositions = new Array(ARRAY_SIZE);
+		this.arrayXPositions = new Array(ARRAY_SIZE);
 		this.currentHeapSize = 0;
 
 		for (let i = 0; i < ARRAY_SIZE; i++) {
-			this.ArrayXPositions[i] = ARRAY_INITIAL_X + i * ARRAY_ELEM_WIDTH;
+			this.arrayXPositions[i] = ARRAY_INITIAL_X + i * ARRAY_ELEM_WIDTH;
 			this.arrayLabels[i] = this.nextIndex++;
 			this.arrayRects[i] = this.nextIndex++;
 			this.circleObjs[i] = this.nextIndex++;
@@ -157,19 +198,19 @@ export default class Heap extends Algorithm {
 				'',
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
-				this.ArrayXPositions[i],
+				this.arrayXPositions[i],
 				ARRAY_Y_POS
 			);
 			this.cmd(
 				act.createLabel,
 				this.arrayLabels[i],
 				i,
-				this.ArrayXPositions[i],
+				this.arrayXPositions[i],
 				ARRAY_LABEL_Y_POS
 			);
 			this.cmd(act.setForegroundColor, this.arrayLabels[i], '#0000FF');
 		}
-		this.cmd(act.setText, this.arrayRects[0], '-INF');
+		this.cmd(act.setText, this.arrayRects[0], 'null');
 		this.swapLabel1 = this.nextIndex++;
 		this.swapLabel2 = this.nextIndex++;
 		this.swapLabel3 = this.nextIndex++;
@@ -177,7 +218,6 @@ export default class Heap extends Algorithm {
 		this.descriptLabel1 = this.nextIndex++;
 		this.descriptLabel2 = this.nextIndex++;
 		this.cmd(act.createLabel, this.descriptLabel1, '', 20, 10, 0);
-		//this.cmd(act.createLabel, this.descriptLabel2, "", this.nextIndex, 40, 120, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -191,14 +231,38 @@ export default class Heap extends Algorithm {
 		}
 	}
 
-	//TODO:  Make me undoable!!
+	removeCallback() {
+		this.implementAction(this.remove.bind(this), '');
+	}
+
 	clearCallback() {
-		this.commands = [];
 		this.implementAction(this.clear.bind(this), '');
 	}
 
-	//TODO:  Make me undoable!!
+	buildHeapCallback() {
+		if (this.buildHeapField.value !== '') {
+			const list = this.buildHeapField.value;
+			this.buildHeapField.value = '';
+			this.implementAction(this.buildHeap.bind(this), list);
+		}
+	}
+
+	minHeapCallback() {
+		if (!this.isMinHeap) {
+			this.implementAction(this.clear.bind(this));
+			this.isMinHeap = true;
+		}
+	}
+
+	maxHeapCallback() {
+		if (this.isMinHeap) {
+			this.implementAction(this.clear.bind(this));
+			this.isMinHeap = false;
+		}
+	}
+
 	clear() {
+		this.commands = [];
 		while (this.currentHeapSize > 0) {
 			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
 			this.cmd(act.setText, this.arrayRects[this.currentHeapSize], '');
@@ -211,10 +275,6 @@ export default class Heap extends Algorithm {
 		this.currentHeapSize = 0;
 	}
 
-	removeSmallestCallback() {
-		this.implementAction(this.removeSmallest.bind(this), '');
-	}
-
 	swap(index1, index2) {
 		this.cmd(act.setText, this.arrayRects[index1], '');
 		this.cmd(act.setText, this.arrayRects[index2], '');
@@ -224,34 +284,34 @@ export default class Heap extends Algorithm {
 			act.createLabel,
 			this.swapLabel1,
 			this.arrayData[index1],
-			this.ArrayXPositions[index1],
+			this.arrayXPositions[index1],
 			ARRAY_Y_POS
 		);
 		this.cmd(
 			act.createLabel,
 			this.swapLabel2,
 			this.arrayData[index2],
-			this.ArrayXPositions[index2],
+			this.arrayXPositions[index2],
 			ARRAY_Y_POS
 		);
 		this.cmd(
 			act.createLabel,
 			this.swapLabel3,
 			this.arrayData[index1],
-			this.HeapXPositions[index1],
-			this.HeapYPositions[index1]
+			HEAP_X_POSITIONS[index1],
+			HEAP_Y_POSITIONS[index1]
 		);
 		this.cmd(
 			act.createLabel,
 			this.swapLabel4,
 			this.arrayData[index2],
-			this.HeapXPositions[index2],
-			this.HeapYPositions[index2]
+			HEAP_X_POSITIONS[index2],
+			HEAP_Y_POSITIONS[index2]
 		);
-		this.cmd(act.move, this.swapLabel1, this.ArrayXPositions[index2], ARRAY_Y_POS);
-		this.cmd(act.move, this.swapLabel2, this.ArrayXPositions[index1], ARRAY_Y_POS);
-		this.cmd(act.move, this.swapLabel3, this.HeapXPositions[index2], this.HeapYPositions[index2]);
-		this.cmd(act.move, this.swapLabel4, this.HeapXPositions[index1], this.HeapYPositions[index1]);
+		this.cmd(act.move, this.swapLabel1, this.arrayXPositions[index2], ARRAY_Y_POS);
+		this.cmd(act.move, this.swapLabel2, this.arrayXPositions[index1], ARRAY_Y_POS);
+		this.cmd(act.move, this.swapLabel3, HEAP_X_POSITIONS[index2], HEAP_Y_POSITIONS[index2]);
+		this.cmd(act.move, this.swapLabel4, HEAP_X_POSITIONS[index1], HEAP_Y_POSITIONS[index1]);
 		const tmp = this.arrayData[index1];
 		this.arrayData[index1] = this.arrayData[index2];
 		this.arrayData[index2] = tmp;
@@ -272,10 +332,10 @@ export default class Heap extends Algorithm {
 	}
 
 	pushDown(index) {
-		let smallestIndex;
+		let childIndex; // Used to keep track of smallest (in MinHeap) or largest (in MaxHeap) child
 
 		while (index * 2 <= this.currentHeapSize) {
-			smallestIndex = 2 * index;
+			childIndex = 2 * index;
 
 			if (index * 2 + 1 <= this.currentHeapSize) {
 				this.setIndexHighlight(2 * index, 1);
@@ -283,26 +343,53 @@ export default class Heap extends Algorithm {
 				this.cmd(act.step);
 				this.setIndexHighlight(2 * index, 0);
 				this.setIndexHighlight(2 * index + 1, 0);
-				if (this.arrayData[2 * index + 1] < this.arrayData[2 * index]) {
-					smallestIndex = 2 * index + 1;
+				if (this.downheapCheckRightChild(index)) {
+					childIndex = 2 * index + 1;
 				}
 			}
 			this.setIndexHighlight(index, 1);
-			this.setIndexHighlight(smallestIndex, 1);
+			this.setIndexHighlight(childIndex, 1);
 			this.cmd(act.step);
 			this.setIndexHighlight(index, 0);
-			this.setIndexHighlight(smallestIndex, 0);
+			this.setIndexHighlight(childIndex, 0);
 
-			if (this.arrayData[smallestIndex] < this.arrayData[index]) {
-				this.swap(smallestIndex, index);
-				index = smallestIndex;
+			if (this.downheapCompare(childIndex, index)) {
+				this.swap(childIndex, index);
+				index = childIndex;
 			} else {
 				return;
 			}
 		}
 	}
 
-	removeSmallest() {
+	downheapCheckRightChild(index) {
+		// Checks if the right child is smaller (in MinHeap) or greater (in MaxHeap) than left child
+		if (this.isMinHeap) {
+			if (this.arrayData[2 * index + 1] < this.arrayData[2 * index]) {
+				return true;
+			}
+		} else {
+			if (this.arrayData[2 * index + 1] > this.arrayData[2 * index]) {
+				return true;
+			}
+		}
+	}
+
+	downheapCompare(childIndex, index) {
+		// Checks if smallest child is smaller than parent (in MinHeap)
+		// or greatest child is greater than parent (in MaxHeap)
+		if (this.isMinHeap) {
+			if (this.arrayData[childIndex] < this.arrayData[index]) {
+				return true;
+			}
+		} else {
+			if (this.arrayData[childIndex] > this.arrayData[index]) {
+				return true;
+			}
+		}
+	}
+
+	remove() {
 		this.commands = [];
 		this.cmd(act.setText, this.descriptLabel1, '');
 
@@ -310,7 +397,7 @@ export default class Heap extends Algorithm {
 			this.cmd(
 				act.setText,
 				this.descriptLabel1,
-				'Heap is empty, cannot remove smallest element'
+				'Heap is empty, cannot dequeue'
 			);
 			return this.commands;
 		}
@@ -320,8 +407,8 @@ export default class Heap extends Algorithm {
 			act.createLabel,
 			this.descriptLabel2,
 			this.arrayData[1],
-			this.HeapXPositions[1],
-			this.HeapYPositions[1],
+			HEAP_X_POSITIONS[1],
+			HEAP_Y_POSITIONS[1],
 			0
 		);
 		this.cmd(act.setText, this.circleObjs[1], '');
@@ -345,21 +432,23 @@ export default class Heap extends Algorithm {
 		return this.commands;
 	}
 
-	buildHeapCallback() {
-		this.implementAction(this.buildHeap.bind(this), '');
-	}
-
-	buildHeap() {
+	buildHeap(params) {
 		this.commands = [];
+		this.arrayData = params
+			.split(',') // Split on commas
+			.map(Number) // Map to numbers (to remove invalid characters)
+			.filter(x => x) // Remove stuff that was invalid
+			.slice(0, 31); // Get first 31 numbers
+		this.arrayData.unshift(0); // Add a 0 to start of array
 		this.clear();
-		for (let i = 1; i < ARRAY_SIZE; i++) {
-			this.arrayData[i] = this.normalizeNumber(String(ARRAY_SIZE - i), 4);
+		for (let i = 1; i < this.arrayData.length; i++) {
+			this.arrayData[i] = this.normalizeNumber(this.arrayData[i], 4);
 			this.cmd(
 				act.createCircle,
 				this.circleObjs[i],
 				this.arrayData[i],
-				this.HeapXPositions[i],
-				this.HeapYPositions[i]
+				HEAP_X_POSITIONS[i],
+				HEAP_Y_POSITIONS[i]
 			);
 			this.cmd(act.setText, this.arrayRects[i], this.arrayData[i]);
 			if (i > 1) {
@@ -367,7 +456,7 @@ export default class Heap extends Algorithm {
 			}
 		}
 		this.cmd(act.step);
-		this.currentHeapSize = ARRAY_SIZE - 1;
+		this.currentHeapSize = this.arrayData.length - 1;
 		let nextElem = this.currentHeapSize;
 		while (nextElem > 0) {
 			this.pushDown(nextElem);
@@ -384,17 +473,17 @@ export default class Heap extends Algorithm {
 			return this.commands;
 		}
 
-		this.cmd(act.setText, this.descriptLabel1, 'Inserting Element: ' + insertedValue);
+		this.cmd(act.setText, this.descriptLabel1, 'Enqueueing Element: ' + insertedValue);
 		this.cmd(act.step);
-		this.cmd(act.setText, this.descriptLabel1, 'Inserting Element: ');
+		this.cmd(act.setText, this.descriptLabel1, 'Enqueueing Element: ');
 		this.currentHeapSize++;
 		this.arrayData[this.currentHeapSize] = insertedValue;
 		this.cmd(
 			act.createCircle,
 			this.circleObjs[this.currentHeapSize],
 			'',
-			this.HeapXPositions[this.currentHeapSize],
-			this.HeapYPositions[this.currentHeapSize]
+			HEAP_X_POSITIONS[this.currentHeapSize],
+			HEAP_Y_POSITIONS[this.currentHeapSize]
 		);
 		this.cmd(act.createLabel, this.descriptLabel2, insertedValue, 120, 45, 1);
 		if (this.currentHeapSize > 1) {
@@ -408,8 +497,8 @@ export default class Heap extends Algorithm {
 		this.cmd(
 			act.move,
 			this.descriptLabel2,
-			this.HeapXPositions[this.currentHeapSize],
-			this.HeapYPositions[this.currentHeapSize]
+			HEAP_X_POSITIONS[this.currentHeapSize],
+			HEAP_Y_POSITIONS[this.currentHeapSize]
 		);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.circleObjs[this.currentHeapSize], insertedValue);
@@ -427,7 +516,7 @@ export default class Heap extends Algorithm {
 			this.setIndexHighlight(parentIndex, 0);
 		}
 
-		while (currentIndex > 1 && this.arrayData[currentIndex] < this.arrayData[parentIndex]) {
+		while (currentIndex > 1 && this.upheapCompare(currentIndex, parentIndex)) {
 			this.swap(currentIndex, parentIndex);
 			currentIndex = parentIndex;
 			parentIndex = Math.floor(parentIndex / 2);
@@ -444,19 +533,35 @@ export default class Heap extends Algorithm {
 		return this.commands;
 	}
 
+	upheapCompare(currentIndex, parentIndex) {
+		if (this.isMinHeap) {
+			if (this.arrayData[currentIndex] < this.arrayData[parentIndex]) {
+				return true;
+			}
+		} else {
+			if (this.arrayData[currentIndex] > this.arrayData[parentIndex]) {
+				return true;
+			}
+		}
+	}
+
 	disableUI() {
 		this.insertField.disabled = true;
 		this.insertButton.disabled = true;
-		this.removeSmallestButton.disabled = true;
-		this.clearHeapButton.disabled = true;
+		this.removeButton.disabled = true;
+		this.clearButton.disabled = true;
 		this.buildHeapButton.disabled = true;
+		this.minHeapButton.disabled = true;
+		this.maxHeapButton.disabled = true;
 	}
 
 	enableUI() {
 		this.insertField.disabled = false;
 		this.insertButton.disabled = false;
-		this.removeSmallestButton.disabled = false;
-		this.clearHeapButton.disabled = false;
+		this.removeButton.disabled = false;
+		this.clearButton.disabled = false;
 		this.buildHeapButton.disabled = false;
+		this.minHeapButton.disabled = false;
+		this.maxHeapButton.disabled = false;
 	}
 }

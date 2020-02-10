@@ -41,6 +41,10 @@
     border: 0;
 }
 
+.VisualizationMainPage .viewport {
+    position: relative;
+}
+
 .VisualizationMainPage #generalAnimationControlSection {
     background: #f7c245;
     color: #006600;
@@ -117,28 +121,26 @@ em {
 }
 
 .VisualizationMainPage .modal {
-    display: none;
     position: absolute;
-    z-index: 1;
     right: 20px;
-    top: 120px;
+    top: 20px;
     width: 350px;
-    height: 460px;
-}
-
-.VisualizationMainPage .modal.show {
-    display: flex;
+    height: 445px;
 }
 
 .VisualizationMainPage .modal-content {
     background-color: #fefefe;
-    padding: 0px 30px 0px 0px;
+    padding: 15px 30px 0px 0px;
     height: 100%;
     border-radius: 20px;
     background-color: #f7c245;
 }
 
-.VisualizationMainPage li {
+.VisualizationMainPage .modal-content ul {
+    margin: 0;
+}
+
+.VisualizationMainPage .modal-content li {
     line-height: 1.4em;
     margin: 0px 0px 15px 0px;
 }
@@ -154,6 +156,18 @@ em {
     flex-direction: column;
 }
 
-.VisualizationMainPage .vgroup {
+.VisualizationMainPage .hgroup {
     display: flex;
+}
+
+.VisualizationMainPage .groupChild {
+    margin: 0 5px 5px 0;
+}
+
+.VisualizationMainPage .divisorLeft {
+    width: 3px;
+}
+.VisualizationMainPage .divisorRight {
+    border-left: 2px #a4812f solid;
+    padding-right: 5px
 }

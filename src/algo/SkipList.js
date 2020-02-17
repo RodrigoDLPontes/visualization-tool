@@ -204,7 +204,7 @@ export default class SkipList extends Algorithm {
 	}
 
 	addWithHeadsCallback() {
-		if (this.addValueField.value !== '') {
+		if (this.addValueField.value !== '' && this.headsField.value !== '') {
 			const addVal = this.addValueField.value;
 			this.addValueField.value = '';
 			const heads = this.headsField.value;

@@ -148,7 +148,11 @@ em {
 .VisualizationMainPage .equation {
     font-family: Georgia, 'Times New Roman', Times, serif;
     text-align: center;
-    margin: 5px 0px;
+    margin: -5px 0px 5px 0px;
+}
+
+.VisualizationMainPage .inline-eq {
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .VisualizationMainPage .vgroup {
@@ -158,6 +162,8 @@ em {
 
 .VisualizationMainPage .hgroup {
     display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .VisualizationMainPage .groupChild {

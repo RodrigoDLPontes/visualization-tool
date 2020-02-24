@@ -24,7 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const SKIP_LIST_START_X = 100;
@@ -69,10 +74,14 @@ export default class SkipList extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Add');
+		const verticalGroup = addGroupToAlgorithmBar(false);
+		const topHorizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
+		const bottomHorizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
+
+		addLabelToAlgorithmBar('Add', topHorizontalGroup);
 
 		// Add's value text field
-		this.addValueField = addControlToAlgorithmBar('Text', '');
+		this.addValueField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
 			this.addRandomlyCallback.bind(this),
@@ -81,10 +90,10 @@ export default class SkipList extends Algorithm {
 		);
 		this.controls.push(this.addValueField);
 
-		addLabelToAlgorithmBar('with');
+		addLabelToAlgorithmBar('with', topHorizontalGroup);
 
 		// Heads' text field
-		this.headsField = addControlToAlgorithmBar('Text', '');
+		this.headsField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
 		this.headsField.onkeydown = this.returnSubmit(
 			this.headsField,
 			this.addWithHeadsCallback.bind(this),
@@ -93,19 +102,21 @@ export default class SkipList extends Algorithm {
 		);
 		this.controls.push(this.headsField);
 
-		addLabelToAlgorithmBar('heads');
+		addLabelToAlgorithmBar('heads', topHorizontalGroup);
 
 		// Add with heads button
-		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add with heads');
+		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add with heads', bottomHorizontalGroup);
 		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
 		this.controls.push(this.addWithHeadsButton);
 
-		addLabelToAlgorithmBar('or');
+		addLabelToAlgorithmBar('or', bottomHorizontalGroup);
 
 		// Add randomly button
-		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add randomly');
+		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add randomly', bottomHorizontalGroup);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Remove's text field
 		this.removeField = addControlToAlgorithmBar('Text', '');
@@ -122,6 +133,8 @@ export default class SkipList extends Algorithm {
 		this.removeButton.onclick = this.removeCallback.bind(this);
 		this.controls.push(this.removeButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Get's index text field
 		this.getField = addControlToAlgorithmBar('Text', '');
 		this.getField.onkeydown = this.returnSubmit(
@@ -136,6 +149,8 @@ export default class SkipList extends Algorithm {
 		this.getButton = addControlToAlgorithmBar('Button', 'Get');
 		this.getButton.onclick = this.getCallback.bind(this);
 		this.controls.push(this.getButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');

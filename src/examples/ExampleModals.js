@@ -63,7 +63,7 @@ export default {
 			<li>The best case is when we have a sorted array (terminates if no swaps are made)</li>
 			<li>
 				The worst case is when we have a reverse sorted array (we perform
-				<p className="equation" style={{ marginTop: '-5px' }}>
+				<p className="equation">
 					n + (n - 1) + (n - 2) + ... = n<sup>2</sup>
 				</p>
 				comparisons)
@@ -75,7 +75,7 @@ export default {
 			<li>The best case is when we have a sorted array (terminates if no swaps are made)</li>
 			<li>
 				The worst case is when we have a reverse sorted array (we perform
-				<p className="equation" style={{ marginTop: '-5px' }}>
+				<p className="equation">
 					n + (n - 1) + (n - 2) + ... = n<sup>2</sup>
 				</p>
 				comparisons)
@@ -93,7 +93,7 @@ export default {
 			<li>The best case is when we have a sorted array (terminates if no swaps are made)</li>
 			<li>
 				The worst case is when we have a reverse sorted array (we perform
-				<p className="equation" style={{ marginTop: '-5px' }}>
+				<p className="equation">
 					n + (n - 1) + (n - 2) + ... = n<sup>2</sup>
 				</p>
 				comparisons)
@@ -120,8 +120,13 @@ export default {
 	SkipList: (
 		<ul>
 			<li>
-				You can get a degenerate SkipList by always adding with a constant amount of heads
-				(for example 0 or 4)
+				You can get a degenerate SkipList by always adding with a constant amount of heads,
+				for example 0 or 4.
+			</li>
+			<li>
+				Note that in a real SkipList, you would have an <span className="inline-eq">O(log n) </span>
+				cap to the number of levels, so we wouldn't be able to add the first element with 4
+				heads, for example.
 			</li>
 		</ul>
 	),

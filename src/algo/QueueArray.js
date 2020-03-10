@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -61,8 +61,6 @@ export default class QueueArray extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.commands = [];
-		//this.tail_pos_y = h - LINKED_LIST_ELEM_HEIGHT;
-		//	this.tail_label_y = this.tail_pos_y;
 		this.setup();
 		this.initialIndex = this.nextIndex;
 	}
@@ -73,18 +71,23 @@ export default class QueueArray extends Algorithm {
 		this.enqueueField.onkeydown = this.returnSubmit(
 			this.enqueueField,
 			this.enqueueCallback.bind(this),
-			6
+			4
 		);
+
 		this.enqueueButton = addControlToAlgorithmBar('Button', 'Enqueue');
 		this.enqueueButton.onclick = this.enqueueCallback.bind(this);
 		this.controls.push(this.enqueueField);
 		this.controls.push(this.enqueueButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.dequeueButton = addControlToAlgorithmBar('Button', 'Dequeue');
 		this.dequeueButton.onclick = this.dequeueCallback.bind(this);
 		this.controls.push(this.dequeueButton);
 
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear Queue');
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 	}
@@ -184,12 +187,12 @@ export default class QueueArray extends Algorithm {
 
 	dequeueCallback() {
 		if (this.tail !== this.head) {
-			this.implementAction(this.dequeue.bind(this), '');
+			this.implementAction(this.dequeue.bind(this));
 		}
 	}
 
 	clearCallback() {
-		this.implementAction(this.clearAll.bind(this), '');
+		this.implementAction(this.clearAll.bind(this));
 	}
 
 	enqueue(elemToEnqueue) {

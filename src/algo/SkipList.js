@@ -38,14 +38,6 @@ const SKIP_LIST_ELEM_SIZE = 40;
 
 const SKIP_LIST_SPACING = 80;
 
-// const TOP_POS_X = 180;
-// const TOP_POS_Y = 100;
-// const TOP_LABEL_X = 130;
-// const TOP_LABEL_Y = 100;
-
-// const TOP_ELEM_WIDTH = 30;
-// const TOP_ELEM_HEIGHT = 30;
-
 const VALUE_LABEL_X = 50;
 const VALUE_LABEL_Y = 23;
 const VALUE_STRING_X = 120;
@@ -62,12 +54,8 @@ const PINF = '\u221E'; // Positive infinity
 export default class SkipList extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
 		this.setup();
 	}
 
@@ -104,17 +92,17 @@ export default class SkipList extends Algorithm {
 
 		addLabelToAlgorithmBar('heads', topHorizontalGroup);
 
-		// Add with heads button
-		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add with heads', bottomHorizontalGroup);
-		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
-		this.controls.push(this.addWithHeadsButton);
-
-		addLabelToAlgorithmBar('or', bottomHorizontalGroup);
-
 		// Add randomly button
 		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add randomly', bottomHorizontalGroup);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
+
+		addLabelToAlgorithmBar('or', bottomHorizontalGroup);
+
+		// Add with heads button
+		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add with heads', bottomHorizontalGroup);
+		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
+		this.controls.push(this.addWithHeadsButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -211,7 +199,7 @@ export default class SkipList extends Algorithm {
 
 	addRandomlyCallback() {
 		if (this.addValueField.value !== '') {
-			const addVal = this.addValueField.value;
+			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
 			this.headsField.value = '';
 			this.implementAction(this.add.bind(this), addVal);
@@ -220,11 +208,11 @@ export default class SkipList extends Algorithm {
 
 	addWithHeadsCallback() {
 		if (this.addValueField.value !== '' && this.headsField.value !== '') {
-			const addVal = this.addValueField.value;
+			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			const heads = this.headsField.value;
+			const heads = parseInt(this.headsField.value);
 			this.headsField.value = '';
-			this.implementAction(this.add.bind(this), addVal + ',' + heads);
+			this.implementAction(this.add.bind(this), addVal, heads);
 		}
 	}
 
@@ -245,18 +233,13 @@ export default class SkipList extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clearAll.bind(this), '');
+		this.implementAction(this.clearAll.bind(this));
 	}
 
-	add(params) {
+	add(value, heads) {
 		this.commands = [];
 
-		const value = parseInt(params.split(',')[0]);
-
-		let heads;
-		if (params.split(',').length === 2) {
-			heads = parseInt(params.split(',')[1]);
-		} else {
+		if (heads === undefined) {
 			heads = Math.floor(Math.random() * (this.size + 1));
 		}
 		heads = Math.min(heads, 4);

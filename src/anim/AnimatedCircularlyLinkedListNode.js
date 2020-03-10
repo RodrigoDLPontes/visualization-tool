@@ -111,6 +111,8 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 	}
 
 	draw(context) {
+		context.lineWidth = 2;
+
 		let startX;
 		let startY;
 
@@ -150,6 +152,7 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 		startX = this.right() - this.w * this.linkPercent;
 		startY = this.top();
 
+		context.lineWidth = 1;
 		context.beginPath();
 		context.moveTo(startX, startY + this.h);
 		context.lineTo(startX, startY);
@@ -160,9 +163,9 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 		context.stroke();
 
 		context.textAlign = "center";
-		context.font = "10px sans-serif";
+		context.font = "12px Arial";
 		context.textBaseline = "middle";
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;

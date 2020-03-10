@@ -39,7 +39,7 @@ const ARRAY_ELEM_HEIGHT = 25;
 const ARRAY_INITIAL_X = 30;
 
 const ARRAY_Y_POS = 50;
-const ARRAY_LABEL_Y_POS = 70;
+const ARRAY_LABEL_Y_POS = 75;
 
 const HEAP_X_POSITIONS = [
 	0,
@@ -78,37 +78,37 @@ const HEAP_X_POSITIONS = [
 
 const HEAP_Y_POSITIONS = [
 	0,
-	100,
-	170,
-	170,
-	240,
-	240,
-	240,
-	240,
-	310,
-	310,
-	310,
-	310,
-	310,
-	310,
-	310,
-	310,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
-	380,
+	110,
+	180,
+	180,
+	250,
+	250,
+	250,
+	250,
+	320,
+	320,
+	320,
+	320,
+	320,
+	320,
+	320,
+	320,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
+	390,
 ];
 
 export default class Heap extends Algorithm {
@@ -232,11 +232,11 @@ export default class Heap extends Algorithm {
 	}
 
 	removeCallback() {
-		this.implementAction(this.remove.bind(this), '');
+		this.implementAction(this.remove.bind(this));
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	buildHeapCallback() {
@@ -438,7 +438,8 @@ export default class Heap extends Algorithm {
 			.split(',') // Split on commas
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => x) // Remove stuff that was invalid
-			.slice(0, 31); // Get first 31 numbers
+			.slice(0, 31) // Get first 31 numbers
+			.map(String); // Map back to strings
 		this.arrayData.unshift(0); // Add a 0 to start of array
 		this.clear();
 		for (let i = 1; i < this.arrayData.length; i++) {

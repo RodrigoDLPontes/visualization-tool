@@ -27,6 +27,7 @@
 import Algorithm, {
 	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
@@ -43,14 +44,8 @@ let firstPivotEnabled = false;
 export default class QuickSelect extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -91,6 +86,8 @@ export default class QuickSelect extends Algorithm {
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Toggles
 		this.togglesGroup = addGroupToAlgorithmBar();
 		this.worstPivotToggle = addCheckboxToAlgorithmBar(
@@ -116,6 +113,10 @@ export default class QuickSelect extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.pPointerID = 0;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -139,7 +140,7 @@ export default class QuickSelect extends Algorithm {
 				.slice(0, 18);
 			const k = this.kField.value;
 			if (k > 0 && k <= list.length) {
-				this.implementAction(this.clear.bind(this), '');
+				this.implementAction(this.clear.bind(this));
 				this.listField.value = '';
 				this.kField.value = '';
 				this.implementAction(this.run.bind(this), listStr + '-' + k);
@@ -148,7 +149,7 @@ export default class QuickSelect extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	clear() {
@@ -182,7 +183,7 @@ export default class QuickSelect extends Algorithm {
 		for (let i = 0; i < this.arrayData.length; i++) {
 			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
 			if (count > 0) {
-				letterMap.set(this.arrayData[i], 'A');
+				letterMap.set(this.arrayData[i], 'a');
 			}
 			elemCounts.set(this.arrayData[i], count + 1);
 		}
@@ -391,12 +392,18 @@ export default class QuickSelect extends Algorithm {
 
 	toggleWorstPivot() {
 		worstPivotEnabled = !worstPivotEnabled;
-		this.firstPivotToggle.disabled = worstPivotEnabled;
+		if (firstPivotEnabled) {
+			firstPivotEnabled = false;
+			this.firstPivotToggle.checked = false;
+		}
 	}
 
 	toggleFirstPivot() {
 		firstPivotEnabled = !firstPivotEnabled;
-		this.worstPivotToggle.disabled = firstPivotEnabled;
+		if (worstPivotEnabled) {
+			worstPivotEnabled = false;
+			this.worstPivotToggle.checked = false;
+		}
 	}
 
 	// Called by our superexport default class when we get an animation started event -- need to wait for the

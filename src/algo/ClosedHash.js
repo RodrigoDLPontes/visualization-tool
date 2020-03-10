@@ -24,9 +24,9 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { addDivisorToAlgorithmBar, addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
-import { addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
 
 const ARRAY_ELEM_WIDTH = 90;
 const ARRAY_ELEM_HEIGHT = 30;
@@ -36,27 +36,22 @@ const ARRAY_VERTICAL_SEPARATION = 100;
 
 const CLOSED_HASH_TABLE_SIZE = 29;
 
-// const ARRAY_Y_POS = 350;
-
 const INDEX_COLOR = '#0000FF';
-
-// const MAX_DATA_VALUE = 999;
-
-// const HASH_TABLE_SIZE = 13;
 
 export default class ClosedHash extends Hash {
 	constructor(am, w, h) {
 		super(am, w, h);
 		this.elements_per_row = Math.floor(w / ARRAY_ELEM_WIDTH);
 
-		//Change me!
 		this.nextIndex = 0;
-		//this.POINTER_ARRAY_ELEM_Y = h - POINTER_ARRAY_ELEM_WIDTH;
 		this.setup();
 	}
 
 	addControls() {
 		super.addControls();
+
+		addDivisorToAlgorithmBar();
+
 		const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			[
 				'Linear Probing: f(i) = i',

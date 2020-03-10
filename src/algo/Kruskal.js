@@ -25,8 +25,8 @@
 // or implied, of the University of San Francisco
 
 import Graph, { EDGE_COLOR, VERTEX_INDEX_COLOR } from './Graph.js';
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import { addControlToAlgorithmBar } from './Algorithm.js';
 
 export default class Kruskal extends Graph {
 	constructor(am, w, h) {
@@ -37,6 +37,8 @@ export default class Kruskal extends Graph {
 	addControls() {
 		this.startButton = addControlToAlgorithmBar('Button', 'Run Kruskal');
 		this.startButton.onclick = this.startCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
 
 		super.addControls(false);
 	}
@@ -86,7 +88,7 @@ export default class Kruskal extends Graph {
 	}
 
 	startCallback() {
-		this.implementAction(this.doKruskal.bind(this), '');
+		this.implementAction(this.doKruskal.bind(this));
 	}
 
 	disjointSetFind(valueToFind, highlightCircleID) {

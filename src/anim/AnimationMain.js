@@ -58,29 +58,6 @@ import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@material-ui/core';
 import { UndoConnect } from './AnimatedLine.js';
 
-let swapped = false;
-
-function reorderSibling(node1, node2) {
-	node1.parentNode.replaceChild(node1, node2);
-	node1.parentNode.insertBefore(node2, node1);
-}
-
-function swapControlDiv() {
-	swapped = !swapped;
-	if (swapped) {
-		reorderSibling(
-			document.getElementById('canvas'),
-			document.getElementById('generalAnimationControlSection')
-		);
-		setCookie('VisualizationControlSwapped', 'true', 30);
-	} else {
-		reorderSibling(
-			document.getElementById('generalAnimationControlSection'),
-			document.getElementById('canvas')
-		);
-		setCookie('VisualizationControlSwapped', 'false', 30);
-	}
-}
 
 // Utility function to read a cookie
 function getCookie(cookieName) {
@@ -173,6 +150,17 @@ function addControlToAnimationBar(animBarRef, type, name, callback) {
 	return element;
 }
 
+function addDivisorToAnimationBar(animBarRef) {
+	const divisorLeft = document.createElement('td');
+	divisorLeft.setAttribute('class', 'divisorLeft');
+
+	const divisorRight = document.createElement('td');
+	divisorRight.setAttribute('class', 'divisorRight');
+
+	animBarRef.current.appendChild(divisorLeft);
+	animBarRef.current.appendChild(divisorRight);
+}
+
 export default class AnimationManager extends EventListener {
 	constructor(canvasRef, animBarRef) {
 		super();
@@ -225,15 +213,9 @@ export default class AnimationManager extends EventListener {
 
 		this.canvas = canvasRef;
 
-		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () =>
-			this.skipBack()
-		);
-		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () =>
-			this.stepBack()
-		);
-		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () =>
-			this.doPlayPause()
-		);
+		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () => this.skipBack());
+		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () => this.stepBack());
+		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () => this.doPlayPause());
 		this.stepForwardButton = addControlToAnimationBar(
 			animBarRef,
 			'Button',
@@ -246,6 +228,8 @@ export default class AnimationManager extends EventListener {
 			'Skip Forward',
 			() => this.skipForward()
 		);
+
+		addDivisorToAnimationBar(animBarRef);
 
 		const element = document.createElement('div');
 		element.setAttribute('display', 'inline-block');
@@ -297,26 +281,19 @@ export default class AnimationManager extends EventListener {
 
 		element.setAttribute('style', 'width:200px');
 
+		addDivisorToAnimationBar(animBarRef);
+
 		let width = getCookie('VisualizationWidth');
-		width = width == null || width === '' ? 1000 : parseInt(width);
+		width = width == null || width === '' ? 1500 : parseInt(width);
 
 		let height = getCookie('VisualizationHeight');
-		height = height == null || height === '' ? 500 : parseInt(height);
-
-		const swappedControls = getCookie('VisualizationControlSwapped');
-		swapped = swappedControls === 'true';
-		if (swapped) {
-			reorderSibling(
-				document.getElementById('canvas'),
-				document.getElementById('generalAnimationControlSection')
-			);
-		}
+		height = height == null || height === '' ? 505 : parseInt(height);
 
 		canvas.width = width;
 		canvas.height = height;
 
 		tableEntry = document.createElement('td');
-		txtNode = document.createTextNode(' w:');
+		txtNode = document.createTextNode('w:');
 		tableEntry.appendChild(txtNode);
 		controlBar.appendChild(tableEntry);
 
@@ -326,7 +303,7 @@ export default class AnimationManager extends EventListener {
 		this.widthEntry.size = 4;
 
 		tableEntry = document.createElement('td');
-		txtNode = document.createTextNode('       h:');
+		txtNode = document.createTextNode('h:');
 		tableEntry.appendChild(txtNode);
 		controlBar.appendChild(tableEntry);
 
@@ -339,17 +316,10 @@ export default class AnimationManager extends EventListener {
 			this.changeSize()
 		);
 
-		this.swapButton = addControlToAnimationBar(
-			animBarRef,
-			'Button',
-			'Move Controls',
-			swapControlDiv
-		);
-
 		this.addListener('AnimationStarted', this, this.animStarted);
 		this.addListener('AnimationEnded', this, this.animEnded);
 		this.addListener('AnimationWaiting', this, this.animWaiting);
-		this.addListener('AnimationUndoUnavailable', this, this.anumUndoUnavailable);
+		this.addListener('AnimationUndoUnavailable', this, this.animUndoUnavailable);
 		this.objectManager.width = canvas.width;
 		this.objectManager.height = canvas.height;
 	}
@@ -765,7 +735,7 @@ export default class AnimationManager extends EventListener {
 		this.objectManager.statusReport.setForegroundColor('#000000');
 	}
 
-	anumUndoUnavailable() {
+	animUndoUnavailable() {
 		this.skipBackButton.disabled = true;
 		this.stepBackButton.disabled = true;
 	}

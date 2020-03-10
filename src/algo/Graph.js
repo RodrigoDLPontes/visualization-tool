@@ -28,6 +28,7 @@
 
 import Algorithm, {
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import {
@@ -86,7 +87,6 @@ export default class Graph extends Algorithm {
 		dir = dir === undefined ? true : dir;
 		dag = dag === undefined ? false : dag;
 
-		// Graph.superclass.init.call(this, am, w, h);
 		this.nextIndex = 0;
 
 		this.currentLayer = 1;
@@ -105,6 +105,8 @@ export default class Graph extends Algorithm {
 		this.newGraphButton = addControlToAlgorithmBar('Button', 'New Graph');
 		this.newGraphButton.onclick = this.newGraphCallback.bind(this);
 
+		addDivisorToAlgorithmBar();
+
 		if (addDirection) {
 			const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 				['Directed Graph', 'Undirected Graph'],
@@ -116,6 +118,8 @@ export default class Graph extends Algorithm {
 			this.undirectedGraphButton.onclick = this.directedGraphCallback.bind(this, false);
 			this.directedGraphButton.checked = this.directed;
 			this.undirectedGraphButton.checked = !this.directed;
+
+			addDivisorToAlgorithmBar();
 		}
 
 		let radioButtonList = addRadioButtonGroupToAlgorithmBar(
@@ -127,6 +131,8 @@ export default class Graph extends Algorithm {
 		this.largeGraphButton = radioButtonList[1];
 		this.largeGraphButton.onclick = this.largeGraphCallback.bind(this);
 		this.smallGraphButton.checked = true;
+
+		addDivisorToAlgorithmBar();
 
 		radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			[

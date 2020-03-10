@@ -210,7 +210,7 @@ export default class DPLCS extends Algorithm {
 	}
 
 	emptyCallback() {
-		this.implementAction(this.helpMessage.bind(this), '');
+		this.implementAction(this.helpMessage.bind(this));
 		// TODO:  Put up a message to push the appropriate button?
 	}
 
@@ -223,7 +223,7 @@ export default class DPLCS extends Algorithm {
 				this.S1Field.value + ';' + this.S2Field.value
 			);
 		} else {
-			this.implementAction(this.helpMessage.bind(this), '');
+			this.implementAction(this.helpMessage.bind(this));
 		}
 	}
 
@@ -236,7 +236,7 @@ export default class DPLCS extends Algorithm {
 				this.S1Field.value + ';' + this.S2Field.value
 			);
 		} else {
-			this.implementAction(this.helpMessage.bind(this), '');
+			this.implementAction(this.helpMessage.bind(this));
 		}
 	}
 
@@ -249,7 +249,7 @@ export default class DPLCS extends Algorithm {
 				this.S1Field.value + ';' + this.S2Field.value
 			);
 		} else {
-			this.implementAction(this.helpMessage.bind(this), '');
+			this.implementAction(this.helpMessage.bind(this));
 		}
 	}
 

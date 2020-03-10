@@ -25,7 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
-import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const AUX_ARRAY_WIDTH = 25;
@@ -55,6 +55,9 @@ export default class DFS extends Graph {
 		);
 		this.startButton = addControlToAlgorithmBar('Button', 'Run DFS');
 		this.startButton.onclick = this.startCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
+
 		super.addControls();
 	}
 

@@ -34,7 +34,7 @@ const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
 const LARGE_OFFSET = 15;
-const SMALL_OFFSET = 7;
+const SMALL_OFFSET = 5;
 
 export default class MergeSort extends Algorithm {
 	constructor(am, w, h) {
@@ -136,7 +136,7 @@ export default class MergeSort extends Algorithm {
 		}
 		this.cmd(act.step);
 
-		if(this.arrayData.length != 1) {
+		if(this.arrayData.length !== 1) {
 			const mid = Math.ceil((this.arrayData.length - 1) / 2);
 			this.leftHelper(0, mid - 1, -LARGE_OFFSET, 0, 1);
 			this.rightHelper(mid, this.arrayData.length - 1, LARGE_OFFSET, 0, 1);
@@ -192,31 +192,13 @@ export default class MergeSort extends Algorithm {
 			const yPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
 			tempArrayID[i] = this.nextIndex;
 			this.arrayID.push(this.nextIndex);
-			this.cmd(
-				act.createRectangle,
-				this.nextIndex++,
-				'',
-				ARRAY_ELEM_WIDTH,
-				ARRAY_ELEM_HEIGHT,
-				xPos,
-				yPos
-			);
+			this.cmd(act.createRectangle, this.nextIndex++, '', ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
 		}
 		this.cmd(act.step);
 
 		// Copy elements from big array to current subarray
 		for (let i = left; i <= right; i++) {
-			this.copyData(
-				i,
-				i,
-				prevOffset,
-				offset,
-				row - 1,
-				row,
-				this.arrayData[i],
-				tempArrayID[i],
-				-1
-			);
+			this.copyData(i, i, prevOffset, offset, row - 1, row, this.arrayData[i], tempArrayID[i], -1);
 		}
 
 		return tempArrayID;
@@ -250,17 +232,7 @@ export default class MergeSort extends Algorithm {
 		let k = left;
 		while (i < mid && j <= right) {
 			if (tempArray[i] <= tempArray[j]) {
-				this.copyData(
-					i,
-					k,
-					leftOffset,
-					currOffset,
-					row + 1,
-					row,
-					tempArray[i],
-					currArrayID[k],
-					iPointerID
-				);
+				this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
 				this.arrayData[k] = tempArray[i];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
@@ -269,17 +241,7 @@ export default class MergeSort extends Algorithm {
 					this.movePointer(i, row + 1, leftOffset, iPointerID);
 				}
 			} else {
-				this.copyData(
-					j,
-					k,
-					rightOffset,
-					currOffset,
-					row + 1,
-					row,
-					tempArray[j],
-					currArrayID[k],
-					jPointerID
-				);
+				this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
 				this.arrayData[k] = tempArray[j];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
@@ -291,17 +253,7 @@ export default class MergeSort extends Algorithm {
 			this.cmd(act.step);
 		}
 		while (i < mid) {
-			this.copyData(
-				i,
-				k,
-				leftOffset,
-				currOffset,
-				row + 1,
-				row,
-				tempArray[i],
-				currArrayID[k],
-				iPointerID
-			);
+			this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
 			this.arrayData[k] = tempArray[i];
 			k++;
 			i++;
@@ -311,17 +263,7 @@ export default class MergeSort extends Algorithm {
 			}
 		}
 		while (j <= right) {
-			this.copyData(
-				j,
-				k,
-				rightOffset,
-				currOffset,
-				row + 1,
-				row,
-				tempArray[j],
-				currArrayID[k],
-				jPointerID
-			);
+			this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
 			this.arrayData[k] = tempArray[j];
 			j++;
 			k++;

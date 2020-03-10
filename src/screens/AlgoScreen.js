@@ -61,7 +61,7 @@ class AlgoScreen extends React.Component {
 						</div>
 
 						<div className="viewport">
-							<canvas id="canvas" width="1000" height="503" ref={this.canvasRef}></canvas>
+							<canvas id="canvas" width="1500" height="505" ref={this.canvasRef}></canvas>
 							{this.state.examplesEnabled && (
 								<div className="modal">
 									<div className="modal-content">{modals[algoName]}</div>

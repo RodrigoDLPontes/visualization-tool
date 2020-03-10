@@ -142,14 +142,14 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 		context.fill();
 
 		context.textAlign = 'center';
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 		context.textBaseline = 'middle';
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;
 		if (this.label === NINF || this.label === PINF) {
-			context.font = '18px Arial';
+			context.font = '18px sans-serif';
 		}
 		context.fillText(this.label, this.labelPosX, this.labelPosY);
 	}

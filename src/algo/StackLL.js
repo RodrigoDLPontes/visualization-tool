@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
@@ -71,18 +71,23 @@ export default class StackLL extends Algorithm {
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),
-			6
+			4
 		);
+
 		this.pushButton = addControlToAlgorithmBar('Button', 'Push');
 		this.pushButton.onclick = this.pushCallback.bind(this);
 		this.controls.push(this.pushField);
 		this.controls.push(this.pushButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.popButton = addControlToAlgorithmBar('Button', 'Pop');
 		this.popButton.onclick = this.popCallback.bind(this);
 		this.controls.push(this.popButton);
 
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear Stack');
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 	}
@@ -158,12 +163,12 @@ export default class StackLL extends Algorithm {
 
 	popCallback() {
 		if (this.top > 0) {
-			this.implementAction(this.pop.bind(this), '');
+			this.implementAction(this.pop.bind(this));
 		}
 	}
 
 	clearCallback() {
-		this.implementAction(this.clearAll.bind(this), '');
+		this.implementAction(this.clearAll.bind(this));
 	}
 
 	push(elemToPush) {

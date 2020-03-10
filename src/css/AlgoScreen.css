@@ -19,6 +19,7 @@
 
 .VisualizationMainPage #AlgorithmSpecificControls {
     vertical-align: middle;
+    padding: 2px 5px;
 }
 
 .VisualizationMainPage #examplesButton {
@@ -48,6 +49,10 @@
 .VisualizationMainPage #generalAnimationControlSection {
     background: #f7c245;
     color: #006600;
+}
+
+.VisualizationMainPage #GeneralAnimationControls {
+    padding: 2px 5px;
 }
 
 .VisualizationMainPage #header {
@@ -176,4 +181,31 @@ em {
 .VisualizationMainPage .divisorRight {
     border-left: 2px #a4812f solid;
     padding-right: 5px
+}
+
+.VisualizationMainPage input[type=button] {
+    font-family: Cantarell;
+    background: linear-gradient(#FFF, #DDD);
+    border: #999 1px solid;
+    border-radius: 5px;
+    padding: 5px 20px;
+}
+
+.VisualizationMainPage input[type=button]::-moz-focus-inner {
+    border: 0;
+}
+
+.VisualizationMainPage input[type=button]:focus {
+    outline: none;
+}
+
+.VisualizationMainPage input[type=button]:active:not([disabled]) {
+    background: linear-gradient(#CCC, #DDD);
+}
+
+.VisualizationMainPage input[type=text] {
+    background: white;
+    border: #BBB 1px solid;
+    border-radius: 5px;
+    padding: 6px;
 }

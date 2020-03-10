@@ -25,8 +25,8 @@
 // or implied, of the University of San Francisco
 
 import Graph, { LARGE_SIZE, SMALL_SIZE } from './Graph.js';
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import { addControlToAlgorithmBar } from './Algorithm.js';
 
 export default class Floyd extends Graph {
 	constructor(am, w, h) {
@@ -37,6 +37,8 @@ export default class Floyd extends Graph {
 	addControls() {
 		this.startButton = addControlToAlgorithmBar('Button', 'Run Floyd-Warshall');
 		this.startButton.onclick = this.startCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
 
 		super.addControls();
 		this.smallGraphButton.onclick = this.smallGraphCallback.bind(this);
@@ -257,7 +259,7 @@ export default class Floyd extends Graph {
 	}
 
 	startCallback() {
-		this.implementAction(this.doFloydWarshall.bind(this), '');
+		this.implementAction(this.doFloydWarshall.bind(this));
 	}
 
 	doFloydWarshall() {

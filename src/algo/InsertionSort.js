@@ -32,32 +32,11 @@ const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-// const ARRRAY_ELEMS_PER_LINE = 15;
-// const ARRAY_LINE_SPACING = 130;
-
-// const TOP_POS_X = 180;
-// const TOP_POS_Y = 100;
-// const TOP_LABEL_X = 130;
-// const TOP_LABEL_Y = 100;
-
-// const PUSH_LABEL_X = 50;
-// const PUSH_LABEL_Y = 30;
-// const PUSH_ELEMENT_X = 120;
-// const PUSH_ELEMENT_Y = 30;
-
-// const SIZE = 10;
-
 export default class InsertionSort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -93,6 +72,10 @@ export default class InsertionSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -108,7 +91,7 @@ export default class InsertionSort extends Algorithm {
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -116,7 +99,7 @@ export default class InsertionSort extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	clear() {
@@ -147,7 +130,7 @@ export default class InsertionSort extends Algorithm {
 		for (let i = 0; i < length; i++) {
 			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
 			if (count > 0) {
-				letterMap.set(this.arrayData[i], 'A');
+				letterMap.set(this.arrayData[i], 'a');
 			}
 			elemCounts.set(this.arrayData[i], count + 1);
 		}

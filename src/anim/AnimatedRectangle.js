@@ -158,6 +158,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 		if(!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
+		context.lineWidth = 2;
 
 		let startX;
 		let startY;
@@ -177,7 +178,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			startY = this.y - this.h;
 		}
 
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 
 		if (this.highlighted) {
 			context.strokeStyle = '#ff0000';
@@ -209,6 +210,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
+		context.lineWidth = 1.2;
 		if (this.nullPointer) {
 			context.beginPath();
 			context.moveTo(startX, startY);
@@ -220,9 +222,9 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.fillStyle = this.foregroundColor;
 
 		context.textAlign = 'center';
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 		context.textBaseline = 'middle';
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		context.fillText(this.label, this.x, this.y);
 	}
 

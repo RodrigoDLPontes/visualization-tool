@@ -243,10 +243,10 @@ export default class Algorithm {
 		this.recordAnimation = true;
 	}
 
-	implementAction(funct, val) {
-		const nxt = [funct, val];
-		this.actionHistory.push(nxt);
-		const retVal = funct(val);
+	implementAction(func, ...args) {
+		const next = [func, args];
+		this.actionHistory.push(next);
+		const retVal = func(...args);
 		this.animationManager.startNewAnimation(retVal);
 	}
 
@@ -255,7 +255,7 @@ export default class Algorithm {
 		if (!isAllDigits(input) || input === '') {
 			return input;
 		}
-		return ('OOO0000' + input).substr(-maxLen, maxLen);
+		return input.substr(-maxLen);
 	}
 
 	returnSubmit(field, funct, maxsize, intOnly) {

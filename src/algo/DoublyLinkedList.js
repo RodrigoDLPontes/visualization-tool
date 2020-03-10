@@ -24,7 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar
+} from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
@@ -39,14 +44,6 @@ const LINKED_LIST_ELEMS_PER_LINE = 8;
 const LINKED_LIST_ELEM_SPACING = 150;
 const LINKED_LIST_LINE_SPACING = 100;
 
-// const TOP_POS_X = 180;
-// const TOP_POS_Y = 100;
-// const TOP_LABEL_X = 130;
-// const TOP_LABEL_Y = 100;
-
-// const TOP_ELEM_WIDTH = 30;
-// const TOP_ELEM_HEIGHT = 30;
-
 const PUSH_LABEL_X = 50;
 const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
@@ -58,99 +55,109 @@ export default class DoublyLinkedList extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
 		this.setup();
-
 		this.initialIndex = this.nextIndex;
 	}
 
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Value');
+		const addVerticalGroup = addGroupToAlgorithmBar(false);
+		const addTopHorizontalGroup = addGroupToAlgorithmBar(true, addVerticalGroup);
+		const addBottomHorizontalGroup = addGroupToAlgorithmBar(true, addVerticalGroup);
+
+		addLabelToAlgorithmBar('Add', addTopHorizontalGroup);
 
 		// Add's value text field
-		this.addValueField = addControlToAlgorithmBar('Text', '');
+		this.addValueField = addControlToAlgorithmBar('Text', '', addTopHorizontalGroup);
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
-			this.addIndexCallback.bind(this),
+			() => this.addIndexCallback(),
 			4,
 			true
 		);
 		this.controls.push(this.addValueField);
 
-		addLabelToAlgorithmBar('at index');
+		addLabelToAlgorithmBar('at index', addTopHorizontalGroup);
 
 		// Add's index text field
-		this.addIndexField = addControlToAlgorithmBar('Text', '');
+		this.addIndexField = addControlToAlgorithmBar('Text', '', addTopHorizontalGroup);
 		this.addIndexField.onkeydown = this.returnSubmit(
 			this.addIndexField,
-			this.addIndexCallback.bind(this),
+			() => this.addIndexCallback(),
 			4,
 			true
 		);
 		this.controls.push(this.addIndexField);
 
-		// Add at index button
-		this.addIndexButton = addControlToAlgorithmBar('Button', 'Add at Index');
-		this.addIndexButton.onclick = this.addIndexCallback.bind(this);
-		this.controls.push(this.addIndexButton);
-
-		addLabelToAlgorithmBar('or');
-
 		// Add to front button
-		this.addFrontButton = addControlToAlgorithmBar('Button', 'Add to Front');
+		this.addFrontButton = addControlToAlgorithmBar('Button', 'Add to Front', addBottomHorizontalGroup);
 		this.addFrontButton.onclick = this.addFrontCallback.bind(this);
 		this.controls.push(this.addFrontButton);
 
 		// Add to back button
-		this.addBackButton = addControlToAlgorithmBar('Button', 'Add to Back');
-		this.addBackButton.onclick = this.addBackCallback.bind(this);
+		this.addBackButton = addControlToAlgorithmBar('Button', 'Add to Back', addBottomHorizontalGroup);
+		this.addBackButton.onclick = () => this.addBackCallback();
 		this.controls.push(this.addBackButton);
 
+		addLabelToAlgorithmBar('or', addBottomHorizontalGroup);
+
+		// Add at index button
+		this.addIndexButton = addControlToAlgorithmBar('Button', 'Add at Index', addBottomHorizontalGroup);
+		this.addIndexButton.onclick = this.addIndexCallback.bind(this);
+		this.controls.push(this.addIndexButton);
+
+		addDivisorToAlgorithmBar();
+
+		const removeVerticalGroup = addGroupToAlgorithmBar(false);
+		const removeTopHorizontalGroup = addGroupToAlgorithmBar(true, removeVerticalGroup);
+		const removeBottomHorizontalGroup = addGroupToAlgorithmBar(true, removeVerticalGroup);
+
+		addLabelToAlgorithmBar('Index', removeTopHorizontalGroup);
+
 		// Remove's index text field
-		this.removeField = addControlToAlgorithmBar('Text', '');
+		this.removeField = addControlToAlgorithmBar('Text', '', removeTopHorizontalGroup);
 		this.removeField.onkeydown = this.returnSubmit(
 			this.removeField,
-			this.removeIndexCallback.bind(this),
+			() => this.removeIndexCallback(),
 			4,
 			true
 		);
 		this.controls.push(this.removeField);
 
 		// Remove from index button
-		this.removeIndexButton = addControlToAlgorithmBar('Button', 'Remove from Index');
-		this.removeIndexButton.onclick = this.removeIndexCallback.bind(this);
+		this.removeIndexButton = addControlToAlgorithmBar('Button', 'Remove from Index', removeTopHorizontalGroup);
+		this.removeIndexButton.onclick = () => this.removeIndexCallback();
 		this.controls.push(this.removeIndexButton);
 
-		addLabelToAlgorithmBar('or');
+		addLabelToAlgorithmBar('or', removeBottomHorizontalGroup);
 
 		// Remove from front button
-		this.removeFrontButton = addControlToAlgorithmBar('Button', 'Remove from Front');
-		this.removeFrontButton.onclick = this.removeFrontCallback.bind(this);
+		this.removeFrontButton = addControlToAlgorithmBar('Button', 'Remove from Front', removeBottomHorizontalGroup);
+		this.removeFrontButton.onclick = () => this.removeFrontCallback();
 		this.controls.push(this.removeFrontButton);
 
 		// Remove from back button
-		this.removeBackButton = addControlToAlgorithmBar('Button', 'Remove from Back');
-		this.removeBackButton.onclick = this.removeBackCallback.bind(this);
+		this.removeBackButton = addControlToAlgorithmBar('Button', 'Remove from Back', removeBottomHorizontalGroup);
+		this.removeBackButton.onclick = () => this.removeBackCallback();
 		this.controls.push(this.removeBackButton);
 
 		// Get's index text field
 		// this.getField = addControlToAlgorithmBar("Text", "");
-		// this.getField.onkeydown = this.returnSubmit(this.getField, this.getCallback.bind(this), 4, true);
+		// this.getField.onkeydown = this.returnSubmit(this.getField, () => this.getCallback(), 4, true);
 		// this.controls.push(this.getField);
 
 		// Get button
 		// this.getButton = addControlToAlgorithmBar("Button", "Get");
-		// this.getButton.onclick = this.getCallback.bind(this);
+		// this.getButton.onclick = () => this.getCallback();
 		// this.controls.push(this.getButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 	}
 
@@ -187,29 +194,29 @@ export default class DoublyLinkedList extends Algorithm {
 
 	addIndexCallback() {
 		if (this.addValueField.value !== '' && this.addIndexField.value !== '') {
-			const addVal = this.addValueField.value;
-			const index = this.addIndexField.value;
+			const addVal = parseInt(this.addValueField.value);
+			const index = parseInt(this.addIndexField.value);
 			if (index >= 0 && index <= this.size) {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
-				this.implementAction(this.add.bind(this), addVal + ',' + index);
+				this.implementAction(this.add.bind(this), addVal, index);
 			}
 		}
 	}
 
 	addFrontCallback() {
 		if (this.addValueField.value !== '') {
-			const addVal = this.addValueField.value;
+			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			this.implementAction(this.add.bind(this), addVal + ',' + 0);
+			this.implementAction(this.add.bind(this), addVal, 0);
 		}
 	}
 
 	addBackCallback() {
 		if (this.addValueField.value !== '') {
-			const addVal = this.addValueField.value;
+			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			this.implementAction(this.add.bind(this), addVal + ',' + this.size);
+			this.implementAction(this.add.bind(this), addVal, this.size);
 		}
 	}
 
@@ -244,14 +251,12 @@ export default class DoublyLinkedList extends Algorithm {
 	// }
 
 	clearCallback() {
-		this.implementAction(this.clearAll.bind(this), '');
+		this.implementAction(this.clearAll.bind(this));
 	}
 
-	add(params) {
+	add(elemToAdd, index) {
 		this.commands = [];
 
-		const elemToAdd = parseInt(params.split(',')[0]);
-		const index = parseInt(params.split(',')[1]);
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 

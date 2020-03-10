@@ -141,6 +141,8 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 	}
 
 	draw(context) {
+		context.lineWidth = 2;
+
 		let startX;
 		let startY;
 
@@ -183,6 +185,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			startY = this.top();
 		}
 
+		context.lineWidth = 1;
 		if (this.vertical && this.linkPosEnd) {
 			startX = this.left();
 			startY = this.bottom() - this.h * this.linkPercent;
@@ -234,9 +237,9 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		}
 
 		context.textAlign = "center";
-		context.font = "10px sans-serif";
+		context.font = "12px Arial";
 		context.textBaseline = "middle";
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;

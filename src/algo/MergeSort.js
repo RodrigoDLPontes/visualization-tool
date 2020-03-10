@@ -33,34 +33,14 @@ const ARRAY_LINE_SPACING = 80;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-// const ARRRAY_ELEMS_PER_LINE = 15;
-
-// const TOP_POS_X = 180;
-// const TOP_POS_Y = 100;
-// const TOP_LABEL_X = 130;
-// const TOP_LABEL_Y = 100;
-
-// const PUSH_LABEL_X = 50;
-// const PUSH_LABEL_Y = 30;
-// const PUSH_ELEMENT_X = 120;
-// const PUSH_ELEMENT_Y = 30;
-
-// const SIZE = 10;
-
 const LARGE_OFFSET = 15;
 const SMALL_OFFSET = 7;
 
 export default class MergeSort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -96,6 +76,10 @@ export default class MergeSort extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -111,7 +95,7 @@ export default class MergeSort extends Algorithm {
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -119,7 +103,7 @@ export default class MergeSort extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	clear() {
@@ -174,7 +158,7 @@ export default class MergeSort extends Algorithm {
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
 			this.leftHelper(left, mid - 1, offset - extraOffset, offset, row + 1);
-			this.leftHelper(mid, right, offset, offset, row + 1);
+			this.rightHelper(mid, right, offset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset - extraOffset, offset, tempArrayID);
 		} else {
 			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
@@ -190,7 +174,7 @@ export default class MergeSort extends Algorithm {
 		if (left !== right) {
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
-			this.rightHelper(left, mid - 1, offset, offset, row + 1);
+			this.leftHelper(left, mid - 1, offset, offset, row + 1);
 			this.rightHelper(mid, right, offset + extraOffset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset, offset + extraOffset, tempArrayID);
 		} else {
@@ -382,16 +366,12 @@ export default class MergeSort extends Algorithm {
 		this.cmd(act.move, pointerID, xPos, yPos);
 	}
 
-	// Called by our superexport default class when we get an animation started event -- need to wait for the
-	// event to finish before we start doing anything
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}
 	}
 
-	// Called by our superexport default class when we get an animation completed event -- we can
-	/// now interact again.
 	enableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;

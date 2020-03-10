@@ -26,6 +26,7 @@
 
 import Algorithm, {
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
@@ -58,6 +59,8 @@ export default class Hash extends Algorithm {
 	}
 
 	addControls() {
+		this.controls = [];
+
 		this.insertField = addControlToAlgorithmBar('Text', '');
 		this.insertField.size = MAX_HASH_LENGTH;
 		this.insertField.onkeydown = this.returnSubmit(
@@ -66,8 +69,13 @@ export default class Hash extends Algorithm {
 			MAX_HASH_LENGTH,
 			true
 		);
+		this.controls.push(this.insertField);
+
 		this.insertButton = addControlToAlgorithmBar('Button', 'Insert');
 		this.insertButton.onclick = this.insertCallback.bind(this);
+		this.controls.push(this.insertButton);
+
+		addDivisorToAlgorithmBar();
 
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.size = MAX_HASH_LENGTH;
@@ -77,8 +85,13 @@ export default class Hash extends Algorithm {
 			MAX_HASH_LENGTH,
 			true
 		);
+		this.controls.push(this.deleteField);
+
 		this.deleteButton = addControlToAlgorithmBar('Button', 'Delete');
 		this.deleteButton.onclick = this.deleteCallback.bind(this);
+		this.controls.push(this.deleteButton);
+
+		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.size = MAX_HASH_LENGTH;
@@ -88,8 +101,13 @@ export default class Hash extends Algorithm {
 			MAX_HASH_LENGTH,
 			true
 		);
+		this.controls.push(this.findField);
+
 		this.findButton = addControlToAlgorithmBar('Button', 'Find');
 		this.findButton.onclick = this.findCallback.bind(this);
+		this.controls.push(this.findButton);
+
+		addDivisorToAlgorithmBar();
 
 		const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			['Hash Integer', 'Hash Strings'],
@@ -97,12 +115,11 @@ export default class Hash extends Algorithm {
 		);
 		this.hashIntegerButton = radioButtonList[0];
 		this.hashIntegerButton.onclick = this.changeHashTypeCallback.bind(this, true);
-		//  this.hashIntegerButton.onclick = this.hashIntegerCallback.bind(this);
+		this.controls.push(this.hashIntegerButton);
 		this.hashStringButton = radioButtonList[1];
 		this.hashStringButton.onclick = this.changeHashTypeCallback.bind(this, false);
-
-		//	this.hashStringButton.onclick = this.hashStringCallback.bind(this);
 		this.hashIntegerButton.checked = true;
+		this.controls.push(this.hashStringButton);
 	}
 
 	// Do this extra level of wrapping to get undo to work properly.
@@ -199,7 +216,6 @@ export default class Hash extends Algorithm {
 
 			return index;
 		} else {
-			// const oldnextIndex = this.nextIndex;
 			const label1 = this.nextIndex++;
 			this.cmd(act.createLabel, label1, 'Hashing:', 10, 45, 0);
 			const wordToHashID = new Array(input.length);
@@ -478,7 +494,6 @@ export default class Hash extends Algorithm {
 			this.cmd(act.delete, highlightID);
 			this.cmd(act.delete, label1);
 			this.cmd(act.delete, label2);
-			//this.nextIndex = oldnextIndex;
 
 			return index;
 		}
@@ -515,41 +530,19 @@ export default class Hash extends Algorithm {
 		}
 	}
 
-	insertElement() {}
-
-	deleteElement() {}
-
-	findElement() {}
-
-	// NEED TO OVERRIDE IN PARENT
 	reset() {
 		this.hashIntegerButton.checked = true;
 	}
 
 	disableUI() {
-		this.insertField.disabled = true;
-		this.insertButton.disabled = true;
-		this.deleteField.disabled = true;
-		this.deleteButton.disabled = true;
-		this.findField.disabled = true;
-		this.findButton.disabled = true;
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = true;
+		}
 	}
 
 	enableUI() {
-		this.insertField.disabled = false;
-		this.insertButton.disabled = false;
-		this.deleteField.disabled = false;
-		this.deleteButton.disabled = false;
-		this.findField.disabled = false;
-		this.findButton.disabled = false;
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = false;
+		}
 	}
 }
-
-/* no init, this is only a base export default class! 
-var currentAlg;
-function init()
-{
-	var animManag = new AnimationManager();;
-	currentAlg = new Hash(animManag, canvas.width, canvas.height);
-}
-*/

@@ -35,13 +35,8 @@ const LINKED_ITEM_HEIGHT = 30;
 const LINKED_ITEM_WIDTH = 65;
 
 const LINKED_ITEM_Y_DELTA = 50;
-// var LINKED_ITEM_POINTER_PERCENT = 0.25;
-
-// var MAX_DATA_VALUE = 999;
 
 const HASH_TABLE_SIZE = 13;
-
-// var ARRAY_Y_POS = 350;
 
 const INDEX_COLOR = '#0000FF';
 
@@ -55,8 +50,6 @@ export default class OpenHash extends Hash {
 
 	addControls() {
 		super.addControls();
-
-		// Add new controls
 	}
 
 	insertElement(elem) {

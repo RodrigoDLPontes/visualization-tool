@@ -25,7 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
-import { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const AUX_ARRAY_WIDTH = 25;
@@ -45,8 +45,7 @@ const QUEUE_SPACING = 30;
 
 export default class BFS extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h); // TODO:  add no edge label flag to this?
-
+		super(am, w, h);
 		this.showEdgeCosts = false;
 	}
 
@@ -62,7 +61,9 @@ export default class BFS extends Graph {
 		this.startField.size = 2;
 		this.startButton = addControlToAlgorithmBar('Button', 'Run BFS');
 		this.startButton.onclick = this.startCallback.bind(this);
-		// BFS.superclass.addControls.call(this);
+
+		addDivisorToAlgorithmBar();
+
 		super.addControls();
 	}
 

@@ -46,14 +46,8 @@ const BUCKET_ELEM_SPACING = 15;
 export default class LSDRadix extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -93,6 +87,10 @@ export default class LSDRadix extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.infoLabelID = this.nextIndex++;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -108,7 +106,7 @@ export default class LSDRadix extends Algorithm {
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -116,7 +114,7 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	clear() {
@@ -149,7 +147,7 @@ export default class LSDRadix extends Algorithm {
 		for (let i = 0; i < length; i++) {
 			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
 			if (count > 0) {
-				letterMap.set(this.arrayData[i], 'A');
+				letterMap.set(this.arrayData[i], 'a');
 			}
 			elemCounts.set(this.arrayData[i], count + 1);
 		}

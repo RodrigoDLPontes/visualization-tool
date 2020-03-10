@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -66,24 +66,41 @@ export default class DequeArray extends Algorithm {
 
 	addControls() {
 		this.controls = [];
+
+		// Add's value text field
 		this.addField = addControlToAlgorithmBar('Text', '');
-		// this.addField.onkeydown = this.returnSubmit(this.addField,  this.addLastCallback.bind(this), 6);
-		this.addFirstButton = addControlToAlgorithmBar('Button', 'Add First');
-		this.addLastButton = addControlToAlgorithmBar('Button', 'Add Last');
-		this.addFirstButton.onclick = this.addFirstCallBack.bind(this);
-		this.addLastButton.onclick = this.addLastCallback.bind(this);
+		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4); 
 		this.controls.push(this.addField);
+
+		// Add first button
+		this.addFirstButton = addControlToAlgorithmBar('Button', 'Add First');
+		this.addFirstButton.onclick = this.addFirstCallBack.bind(this);
 		this.controls.push(this.addFirstButton);
+
+		addLabelToAlgorithmBar('or');
+
+		// Add last button
+		this.addLastButton = addControlToAlgorithmBar('Button', 'Add Last');
+		this.addLastButton.onclick = this.addLastCallback.bind(this);
 		this.controls.push(this.addLastButton);
 
+		addDivisorToAlgorithmBar();
+
+		// Remove first button
 		this.removeFirstButton = addControlToAlgorithmBar('Button', 'Remove First');
 		this.removeFirstButton.onclick = this.removeFirstCallback.bind(this);
 		this.controls.push(this.removeFirstButton);
 
+		addLabelToAlgorithmBar('or');
+
+		// Remove last button
 		this.removeLastButton = addControlToAlgorithmBar('Button', 'Remove Last');
 		this.removeLastButton.onclick = this.removeLastCallback.bind(this);
 		this.controls.push(this.removeLastButton);
 
+		addDivisorToAlgorithmBar();
+
+		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
@@ -187,13 +204,13 @@ export default class DequeArray extends Algorithm {
 
 	removeFirstCallback() {
 		if (this.size !== 0) {
-			this.implementAction(this.removeFirst.bind(this), '');
+			this.implementAction(this.removeFirst.bind(this));
 		}
 	}
 
 	removeLastCallback() {
 		if (this.size !== 0) {
-			this.implementAction(this.removeLast.bind(this), '');
+			this.implementAction(this.removeLast.bind(this));
 		}
 	}
 
@@ -206,7 +223,7 @@ export default class DequeArray extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clearAll.bind(this), '');
+		this.implementAction(this.clearAll.bind(this));
 	}
 
 	addLast(elemToaddLast) {

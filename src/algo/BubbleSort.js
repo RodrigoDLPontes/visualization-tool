@@ -27,6 +27,7 @@
 import Algorithm, {
 	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
@@ -36,22 +37,13 @@ const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-// const ARRRAY_ELEMS_PER_LINE = 15;
-// const ARRAY_LINE_SPACING = 130;
-
 let lastSwapEnabled = true;
 
 export default class BubbleSort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -80,6 +72,8 @@ export default class BubbleSort extends Algorithm {
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Last swap optimization toggle
 		this.lastSwapCheckbox = addCheckboxToAlgorithmBar('Enable last swap optimization', true);
 		this.lastSwapCheckbox.onclick = this.toggleLastSwap.bind(this);
@@ -92,6 +86,10 @@ export default class BubbleSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -107,7 +105,7 @@ export default class BubbleSort extends Algorithm {
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -115,7 +113,7 @@ export default class BubbleSort extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	toggleLastSwap() {
@@ -149,7 +147,7 @@ export default class BubbleSort extends Algorithm {
 		for (let i = 0; i < length; i++) {
 			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
 			if (count > 0) {
-				letterMap.set(this.arrayData[i], 'A');
+				letterMap.set(this.arrayData[i], 'a');
 			}
 			elemCounts.set(this.arrayData[i], count + 1);
 		}

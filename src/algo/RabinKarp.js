@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -42,14 +42,8 @@ const PATTERN_HASH_LABEL_START_Y = 115;
 export default class RabinKarp extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
-
-		// Useful for memory management
 		this.nextIndex = 0;
-
-		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
-		// structures, etc.
 		this.setup();
 	}
 
@@ -85,6 +79,8 @@ export default class RabinKarp extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -100,6 +96,10 @@ export default class RabinKarp extends Algorithm {
 		this.textHashCalculationID = this.nextIndex++;
 		this.patternHashLabelID = this.nextIndex++;
 		this.patternHashCalculationID = this.nextIndex++;
+
+		this.animationManager.startNewAnimation();
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -119,29 +119,27 @@ export default class RabinKarp extends Algorithm {
 			this.patternField.value !== '' &&
 			this.textField.value.length >= this.patternField.value.length
 		) {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const text = this.textField.value;
 			const pattern = this.patternField.value;
 			this.textField.value = '';
 			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text + ',' + pattern);
+			this.implementAction(this.find.bind(this), text, pattern);
 		}
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
-	find(params) {
+	find(text, pattern) {
 		this.commands = [];
 
 		// Filter non-letters from string and make lower case
-		const text = params
-			.split(',')[0]
+		text = text
 			.replace(/[^a-zA-Z]/g, '')
 			.toLowerCase();
-		const pattern = params
-			.split(',')[1]
+		pattern = pattern
 			.replace(/[^a-zA-Z]/g, '')
 			.toLowerCase();
 
@@ -235,7 +233,7 @@ export default class RabinKarp extends Algorithm {
 			textCalculation.substring(0, textCalculation.length - 2) + ' = ' + textHash;
 		patternCalculation =
 			patternCalculation.substring(0, patternCalculation.length - 2) + ' = ' + patternHash;
-		const calculationsX = ARRAY_START_X + text.length * this.cellSize + 80;
+		const calculationsX = ARRAY_START_X + text.length * this.cellSize + 100;
 		this.cmd(
 			act.createLabel,
 			this.textHashCalculationID,

@@ -131,6 +131,8 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 	}
 
 	draw(context) {
+		context.lineWidth = 2;
+
 		let startX;
 		let startY;
 
@@ -170,6 +172,7 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
+		context.lineWidth = 1;
 		// Left inner line between node and pointer area
 		startX = this.left() + this.w * this.linkPercent;
 		startY = this.top();
@@ -202,9 +205,9 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 
 		// Label
 		context.textAlign = 'center';
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 		context.textBaseline = 'middle';
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		this.resetTextPosition();
 		context.fillStyle = this.labelColor;
 		context.fillText(this.label, this.labelPosX, this.labelPosY);

@@ -53,7 +53,7 @@ export default class AnimatedLabel extends AnimatedObject {
 		if(!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 
 		let startingXForHighlight = this.x;
 
@@ -89,7 +89,7 @@ export default class AnimatedLabel extends AnimatedObject {
 		}
 		context.strokeStyle = this.labelColor;
 		context.fillStyle = this.labelColor;
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		const strList = this.label.split('\n');
 		if (strList.length === 1) {
 			if (this.highlightIndex === -1) {

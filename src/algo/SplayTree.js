@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const LINK_COLOR = '#007700';
@@ -59,32 +59,59 @@ export default class SplayTree extends Algorithm {
 	}
 
 	addControls() {
+		this.controls = [];
+
 		this.insertField = addControlToAlgorithmBar('Text', '');
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
 			4
 		);
+		this.controls.push(this.insertField);
+
 		this.insertButton = addControlToAlgorithmBar('Button', 'Insert');
 		this.insertButton.onclick = this.insertCallback.bind(this);
+		this.controls.push(this.insertButton);
+
+		addDivisorToAlgorithmBar();
+
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
 			4
 		);
+		this.controls.push(this.deleteField);
+
 		this.deleteButton = addControlToAlgorithmBar('Button', 'Delete');
 		this.deleteButton.onclick = this.deleteCallback.bind(this);
+		this.controls.push(this.deleteButton);
+
+		addDivisorToAlgorithmBar();
+
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),
 			4
 		);
+		this.controls.push(this.findField);
+
 		this.findButton = addControlToAlgorithmBar('Button', 'Find');
 		this.findButton.onclick = this.findCallback.bind(this);
+		this.controls.push(this.findButton);
+
+		addDivisorToAlgorithmBar();
+
 		this.printButton = addControlToAlgorithmBar('Button', 'Print');
 		this.printButton.onclick = this.printCallback.bind(this);
+		this.controls.push(this.printButton);
+
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
 	}
 
 	reset() {
@@ -170,7 +197,7 @@ export default class SplayTree extends Algorithm {
 	}
 
 	printCallback() {
-		this.implementAction(this.printTree.bind(this), '');
+		this.implementAction(this.printTree.bind(this));
 	}
 
 	printTree() {
@@ -226,6 +253,25 @@ export default class SplayTree extends Algorithm {
 			this.cmd(act.step);
 		}
 		return;
+	}
+
+	clearCallback() {
+		this.implementAction(this.clear.bind(this));
+	}
+
+	clear() {
+		this.commands = [];
+		this.recClear(this.treeRoot);
+		this.treeRoot = null;
+		return this.commands;
+	}
+
+	recClear(curr) {
+		if (curr != null) {
+			this.cmd(act.delete, curr.graphicID);
+			this.recClear(curr.left);
+			this.recClear(curr.right);
+		}
 	}
 
 	findCallback() {
@@ -893,23 +939,15 @@ export default class SplayTree extends Algorithm {
 	}
 
 	disableUI() {
-		this.insertField.disabled = true;
-		this.insertButton.disabled = true;
-		this.deleteField.disabled = true;
-		this.deleteButton.disabled = true;
-		this.findField.disabled = true;
-		this.findButton.disabled = true;
-		this.printButton.disabled = true;
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = true;
+		}
 	}
 
 	enableUI() {
-		this.insertField.disabled = false;
-		this.insertButton.disabled = false;
-		this.deleteField.disabled = false;
-		this.deleteButton.disabled = false;
-		this.findField.disabled = false;
-		this.findButton.disabled = false;
-		this.printButton.disabled = false;
+		for (let i = 0; i < this.controls.length; i++) {
+			this.controls[i].disabled = false;
+		}
 	}
 }
 

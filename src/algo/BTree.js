@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const FIRST_PRINT_POS_X = 50;
@@ -33,7 +33,6 @@ const PRINT_MAX = 990;
 const PRINT_HORIZONTAL_GAP = 50;
 
 const MIN_MAX_DEGREE = 4;
-// const MAX_MAX_DEGREE = 7;
 
 const HEIGHT_DELTA = 50;
 const NODE_SPACING = 3;
@@ -44,8 +43,6 @@ const NODE_HEIGHT = 20;
 const MESSAGE_X = 5;
 const MESSAGE_Y = 10;
 
-// const LINK_COLOR = "#007700";
-// const HIGHLIGHT_CIRCLE_COLOR = "#007700";
 const FOREGROUND_COLOR = '#007700';
 const BACKGROUND_COLOR = '#EEFFEE';
 const PRINT_COLOR = FOREGROUND_COLOR;
@@ -98,6 +95,8 @@ export default class BTree extends Algorithm {
 		this.insertButton.onclick = this.insertCallback.bind(this);
 		this.controls.push(this.insertButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
@@ -109,6 +108,8 @@ export default class BTree extends Algorithm {
 		this.deleteButton = addControlToAlgorithmBar('Button', 'Delete');
 		this.deleteButton.onclick = this.deleteCallback.bind(this);
 		this.controls.push(this.deleteButton);
+
+		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.onkeydown = this.returnSubmit(
@@ -122,33 +123,17 @@ export default class BTree extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.printButton = addControlToAlgorithmBar('Button', 'Print');
 		this.printButton.onclick = this.printCallback.bind(this);
 		this.controls.push(this.printButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
-
-		// var i;
-		// radioButtonNames = [];
-		// for (i = MIN_MAX_DEGREE; i <= MAX_MAX_DEGREE; i++)
-		// {
-		// 	radioButtonNames.push("Max. Degree = " + String(i));
-		// }
-		//
-		// this.maxDegreeRadioButtons = addRadioButtonGroupToAlgorithmBar(radioButtonNames, "MaxDegree");
-		//
-		// this.maxDegreeRadioButtons[0].checked = true;
-		// for(i = 0; i < this.maxDegreeRadioButtons.length; i++)
-		// {
-		// 	this.maxDegreeRadioButtons[i].onclick = this.maxDegreeChangedHandler.bind(this,i+MIN_MAX_DEGREE);
-		// }
-
-		// this.premptiveSplitBox = addCheckboxToAlgorithmBar("Preemtive Split / Merge (Even max degree only)");
-		// this.premptiveSplitBox.onclick = this.premtiveSplitCallback.bind(this);
-
-		// Other buttons ...
 	}
 
 	reset() {
@@ -160,7 +145,6 @@ export default class BTree extends Algorithm {
 		// NOTE: The order of these last two this.commands matters!
 		this.treeRoot = null;
 		this.ignoreInputs = true;
-		// maxDegreeButtonArray[this.max_degree].selected = true;
 		this.ignoreInputs = false;
 	}
 
@@ -169,46 +153,14 @@ export default class BTree extends Algorithm {
 		for (i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;
 		}
-
-		// TODO  Only enable even maxdegree if preemptive merge is on
-
-		// if (this.preemptiveSplit)
-		// {
-		// 	var initialEven = MIN_MAX_DEGREE % 2;
-		// 	var i;
-		// 	for (i = initialEven; i <= MAX_MAX_DEGREE - MIN_MAX_DEGREE; i+= 2)
-		// 	{
-		// 		this.maxDegreeRadioButtons[i].disabled = false;
-		// 	}
-		// }
-		// else
-		// {
-		// 	for (i = 0; i < this.maxDegreeRadioButtons.length; i++)
-		// 	{
-		// 		this.maxDegreeRadioButtons[i].disabled = false;
-		// 	}
-		// }
-
-		// if (this.max_degree % 2 == 0)
-		// {
-		// 	this.premptiveSplitBox.disabled = false;
-		// }
 	}
 
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}
-
-		// for (i = 0; i < this.maxDegreeRadioButtons.length; i++)
-		// {
-		// 	this.maxDegreeRadioButtons[i].disabled = true;
-		// }
-
-		// this.premptiveSplitBox.disabled = true;
 	}
 
-	//TODO:  Fix me!
 	maxDegreeChangedHandler(newMaxDegree) {
 		if (this.max_degree !== newMaxDegree) {
 			this.implementAction(this.changeDegree.bind(this), newMaxDegree);
@@ -235,7 +187,7 @@ export default class BTree extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clearTree.bind(this), '');
+		this.implementAction(this.clearTree.bind(this));
 	}
 
 	premtiveSplitCallback() {
@@ -258,7 +210,7 @@ export default class BTree extends Algorithm {
 	}
 
 	printCallback() {
-		this.implementAction(this.printTree.bind(this), '');
+		this.implementAction(this.printTree.bind(this));
 	}
 
 	printTree() {
@@ -340,7 +292,6 @@ export default class BTree extends Algorithm {
 				for (let i = 0; i <= tree.numKeys; i++) {
 					this.cmd(act.disconnect, tree.graphicID, tree.children[i].graphicID);
 					this.deleteTree(tree.children[i]);
-					// tree.children[i] = null;
 				}
 			}
 			this.cmd(act.delete, tree.graphicID);
@@ -354,7 +305,6 @@ export default class BTree extends Algorithm {
 		this.nextIndex = 3;
 		const newDegree = degree;
 		this.ignoreInputs = true;
-		//TODO:  Check me!
 		this.maxDegreeRadioButtons[newDegree - MIN_MAX_DEGREE].checked = true;
 
 		this.ignoreInputs = false;
@@ -681,11 +631,9 @@ export default class BTree extends Algorithm {
 		}
 		const leftNode = tree;
 		leftNode.numKeys = this.split_index;
-		// TO MAKE UNDO WORK -- CAN REMOVE LATER VV
 		for (let i = this.split_index; i < tree.numKeys; i++) {
 			this.cmd(act.setText, tree.graphicID, '', i);
 		}
-		// TO MAKE UNDO WORK -- CAN REMOVE LATER ^^
 		this.cmd(act.setNumElements, tree.graphicID, this.split_index);
 
 		if (tree.parent != null) {
@@ -704,7 +652,7 @@ export default class BTree extends Algorithm {
 			this.cmd(act.delete, this.moveLabel1ID);
 			this.cmd(act.setText, currentParent.graphicID, risingNode, parentIndex);
 			return tree.parent;
-		} //			if (tree.parent == null)
+		}
 		else {
 			this.treeRoot = new BTreeNode(this.nextIndex++, this.starting_x, STARTING_Y);
 			this.cmd(
@@ -880,7 +828,7 @@ export default class BTree extends Algorithm {
 							0
 						);
 						// Trees to left and right of node to delete don't have enough keys
-						//   Do a merge, and then recursively delete the element
+						// Do a merge, and then recursively delete the element
 						if (tree.children[i + 1].numKeys === this.min_keys) {
 							this.cmd(
 								act.setText,
@@ -1102,7 +1050,6 @@ export default class BTree extends Algorithm {
 
 		tree.keys[tree.numKeys] = parentNode.keys[parentIndex];
 		const fromParentIndex = tree.numKeys;
-		//this.cmd(act.setText, tree.graphicID, tree.keys[tree.numKeys], tree.numKeys);
 		this.cmd(act.setText, tree.graphicID, '', tree.numKeys);
 		this.cmd(
 			act.createLabel,
@@ -1161,15 +1108,12 @@ export default class BTree extends Algorithm {
 		this.cmd(act.setNumElements, parentNode.graphicID, parentNode.numKeys);
 		this.cmd(act.setHighlight, tree.graphicID, 0);
 		this.cmd(act.setHighlight, parentNode.graphicID, 0);
-		//	this.cmd(act.setHighlight, rightSib.graphicID, 0);
 
-		//	this.cmd(act.step);
 		this.cmd(act.delete, rightSib.graphicID);
 		tree.numKeys = tree.numKeys + rightSib.numKeys + 1;
 		this.cmd(act.move, this.moveLabel1ID, this.getLabelX(tree, fromParentIndex), tree.y);
 
 		this.cmd(act.step);
-		// resizeTree();
 		this.cmd(act.delete, this.moveLabel1ID);
 		this.cmd(act.setText, tree.graphicID, tree.keys[fromParentIndex], fromParentIndex);
 
@@ -1239,7 +1183,6 @@ export default class BTree extends Algorithm {
 				'', // Label
 				tree.numKeys
 			);
-			// TODO::CHECKME!
 
 			for (let i = 1; i < rightSib.numKeys + 1; i++) {
 				this.cmd(act.disconnect, rightSib.graphicID, rightSib.children[i].graphicID);

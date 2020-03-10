@@ -125,7 +125,7 @@ export default class AnimatedLine {
 		}
 
 		context.textAlign = 'center';
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 		context.textBaseline = 'middle';
 		context.fillText(this.edgeLabel, labelPosX, labelPosY);
 

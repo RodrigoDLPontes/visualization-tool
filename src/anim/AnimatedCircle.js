@@ -78,7 +78,7 @@ export default class AnimatedCircle extends AnimatedObject {
 
 		context.fillStyle = this.backgroundColor;
 		context.strokeStyle = this.foregroundColor;
-		context.lineWidth = 1;
+		context.lineWidth = 1.2;
 		context.beginPath();
 		context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
 		context.closePath();
@@ -86,9 +86,9 @@ export default class AnimatedCircle extends AnimatedObject {
 		context.stroke();
 
 		context.textAlign = 'center';
-		context.font = '10px sans-serif';
+		context.font = '12px Arial';
 		context.textBaseline = 'middle';
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		context.fillStyle = this.foregroundColor;
 		const strList = this.label.split('\n');
 		if (strList.length === 1) {

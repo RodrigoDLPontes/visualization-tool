@@ -51,7 +51,7 @@ export const algoList = [
 	'BST', 'Heap', 'AVL', 'BTree', 'SplayTree', 'SkipList',
 	'HashMaps',
 	'ClosedHash', 'OpenHash',
-	'Sorting',
+	'Sorting and QuickSelect',
 	'BubbleSort', 'CocktailSort', 'InsertionSort', 'SelectionSort', 'QuickSort', 'QuickSelect', 'MergeSort', 'LSDRadix',
 	'String Searching',
 	'BruteForce', 'BoyerMoore', 'KMP', 'RabinKarp',

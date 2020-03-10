@@ -26,6 +26,7 @@
 
 import Algorithm, {
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
@@ -62,6 +63,8 @@ export default class BST extends Algorithm {
 		this.insertButton.onclick = this.insertCallback.bind(this);
 		this.controls.push(this.insertButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
@@ -73,6 +76,8 @@ export default class BST extends Algorithm {
 		this.deleteButton = addControlToAlgorithmBar('Button', 'Delete');
 		this.deleteButton.onclick = this.deleteCallback.bind(this);
 		this.controls.push(this.deleteButton);
+
+		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.onkeydown = this.returnSubmit(
@@ -86,13 +91,19 @@ export default class BST extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.printButton = addControlToAlgorithmBar('Button', 'Print');
 		this.printButton.onclick = this.printCallback.bind(this);
 		this.controls.push(this.printButton);
 
+		addDivisorToAlgorithmBar();
+
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
+
+		addDivisorToAlgorithmBar();
 
 		const predSuccButtonList = addRadioButtonGroupToAlgorithmBar(
 			['Predecessor', 'Successor'],
@@ -114,40 +125,37 @@ export default class BST extends Algorithm {
 	}
 
 	insertCallback() {
-		let insertedValue = this.insertField.value;
+		const insertedValue = this.insertField.value;
 		// Get text value
-		insertedValue = this.normalizeNumber(insertedValue, 4);
 		if (insertedValue !== '') {
 			// set text value
 			this.insertField.value = '';
-			this.implementAction(_ => this.add(_), insertedValue);
+			this.implementAction(this.add.bind(this), insertedValue);
 		}
 	}
 
 	deleteCallback() {
-		let deletedValue = this.deleteField.value;
+		const deletedValue = this.deleteField.value;
 		if (deletedValue !== '') {
-			deletedValue = this.normalizeNumber(deletedValue, 4);
 			this.deleteField.value = '';
-			this.implementAction(_ => this.remove(_), deletedValue);
+			this.implementAction(this.remove.bind(this), deletedValue);
 		}
 	}
 
 	findCallback() {
-		let findValue = this.findField.value;
+		const findValue = this.findField.value;
 		if (findValue !== '') {
-			findValue = this.normalizeNumber(findValue, 4);
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), findValue);
 		}
 	}
 
 	printCallback() {
-		this.implementAction(this.printTree.bind(this), '');
+		this.implementAction(this.printTree.bind(this));
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	sizeChanged(newWidth) {

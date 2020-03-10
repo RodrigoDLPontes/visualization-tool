@@ -128,7 +128,6 @@ export default class MergeSort extends Algorithm {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
-		this.displayData = [];
 		this.arrayID = [];
 		return this.commands;
 	}
@@ -142,60 +141,24 @@ export default class MergeSort extends Algorithm {
 			.map(Number)
 			.filter(x => x)
 			.slice(0, 12);
-		this.displayData = new Array(this.arrayData.length);
 
-		const elemCounts = new Map();
-		const letterMap = new Map();
-
-		for (let i = 0; i < this.arrayData.length; i++) {
-			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
-			if (count > 0) {
-				letterMap.set(this.arrayData[i], 'A');
-			}
-			elemCounts.set(this.arrayData[i], count + 1);
-		}
-
-		for (let i = 0; i < this.arrayData.length; i++) {
+		for (let i = 0; i < this.arrayData.length; i++)
+		{
 			this.arrayData[i] = parseInt(this.arrayData[i]);
 			const xPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const yPos = ARRAY_START_Y;
 			this.arrayID.push(this.nextIndex);
-
-			let displayData = this.arrayData[i].toString();
-			if (letterMap.has(this.arrayData[i])) {
-				const currChar = letterMap.get(this.arrayData[i]);
-				displayData += currChar;
-				letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
-			}
-			this.displayData[i] = displayData;
-			this.cmd(
-				act.createRectangle,
-				this.nextIndex++,
-				displayData,
-				ARRAY_ELEM_WIDTH,
-				ARRAY_ELEM_HEIGHT,
-				xPos,
-				yPos
-			);
+			this.cmd(act.createRectangle, this.nextIndex++, this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
 		}
 		this.cmd(act.step);
 
-		if (this.arrayData.length !== 1) {
+		if(this.arrayData.length != 1) {
 			const mid = Math.ceil((this.arrayData.length - 1) / 2);
 			this.leftHelper(0, mid - 1, -LARGE_OFFSET, 0, 1);
 			this.rightHelper(mid, this.arrayData.length - 1, LARGE_OFFSET, 0, 1);
-			this.merge(
-				0,
-				this.arrayData.length - 1,
-				mid,
-				0,
-				0,
-				-LARGE_OFFSET,
-				LARGE_OFFSET,
-				this.arrayID
-			);
+			this.merge(0, this.arrayData.length - 1, mid, 0, 0, -LARGE_OFFSET, LARGE_OFFSET, this.arrayID);
 		} else {
-			this.cmd(act.setBackgroundColor, this.arrayID[0], '#2ECC71');
+			this.cmd(act.setBackgroundColor, this.arrayID[0], "#2ECC71");
 			this.cmd(act.step);
 		}
 
@@ -266,7 +229,7 @@ export default class MergeSort extends Algorithm {
 				offset,
 				row - 1,
 				row,
-				this.displayData[i],
+				this.arrayData[i],
 				tempArrayID[i],
 				-1
 			);
@@ -277,12 +240,10 @@ export default class MergeSort extends Algorithm {
 
 	merge(left, right, mid, row, currOffset, leftOffset, rightOffset, currArrayID) {
 		const tempArray = new Array(this.arrayData.length); // Temporary array to store data for sorting
-		const tempDisplay = new Array(this.arrayData.length);
 
 		// Copy data to temporary array
 		for (let i = left; i <= right; i++) {
 			tempArray[i] = this.arrayData[i];
-			tempDisplay[i] = this.displayData[i];
 		}
 
 		// Create pointers
@@ -312,12 +273,11 @@ export default class MergeSort extends Algorithm {
 					currOffset,
 					row + 1,
 					row,
-					tempDisplay[i],
+					tempArray[i],
 					currArrayID[k],
 					iPointerID
 				);
 				this.arrayData[k] = tempArray[i];
-				this.displayData[k] = tempDisplay[i];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
 				i++;
@@ -332,12 +292,11 @@ export default class MergeSort extends Algorithm {
 					currOffset,
 					row + 1,
 					row,
-					tempDisplay[j],
+					tempArray[j],
 					currArrayID[k],
 					jPointerID
 				);
 				this.arrayData[k] = tempArray[j];
-				this.displayData[k] = tempDisplay[i];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
 				j++;
@@ -355,12 +314,11 @@ export default class MergeSort extends Algorithm {
 				currOffset,
 				row + 1,
 				row,
-				tempDisplay[i],
+				tempArray[i],
 				currArrayID[k],
 				iPointerID
 			);
 			this.arrayData[k] = tempArray[i];
-			this.displayData[k] = tempDisplay[i];
 			k++;
 			i++;
 			if (k <= right) {
@@ -376,12 +334,11 @@ export default class MergeSort extends Algorithm {
 				currOffset,
 				row + 1,
 				row,
-				tempDisplay[j],
+				tempArray[j],
 				currArrayID[k],
 				jPointerID
 			);
 			this.arrayData[k] = tempArray[j];
-			this.displayData[k] = tempDisplay[j];
 			j++;
 			k++;
 			if (k <= right) {

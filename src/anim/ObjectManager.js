@@ -319,7 +319,7 @@ export default class ObjectManager {
 
 	backgroundColor(objectID) {
 		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].fillColor;
+			return this.Nodes[objectID].backgroundColor;
 		} else {
 			return '#000000';
 		}
@@ -327,7 +327,7 @@ export default class ObjectManager {
 
 	foregroundColor(objectID) {
 		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].edgeColor;
+			return this.Nodes[objectID].foregroundColor;
 		} else {
 			return '#000000';
 		}

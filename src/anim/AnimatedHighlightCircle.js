@@ -79,6 +79,7 @@ class UndoDeleteHighlightCircle extends UndoBlock {
 
 	undoInitialStep(world) {
 		world.addHighlightCircleObject(this.objectID, this.color, this.r);
+		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 		world.setAlpha(this.objectID, this.alpha);
 	}

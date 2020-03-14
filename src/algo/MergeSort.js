@@ -109,7 +109,7 @@ export default class MergeSort extends Algorithm {
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this), '');
+			this.implementAction(this.clear.bind(this));
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -117,7 +117,7 @@ export default class MergeSort extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this), '');
+		this.implementAction(this.clear.bind(this));
 	}
 
 	clear() {

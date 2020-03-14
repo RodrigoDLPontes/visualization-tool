@@ -1,4 +1,5 @@
 import '../css/AlgoScreen.css';
+import '../css/App.css';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -41,15 +42,15 @@ class AlgoScreen extends React.Component {
 			return (
 				<div className="container">
 					<Header/>
-
 					<div className="content">
-						<h1>404!</h1>
-						<h3>
-							Algorithm not found! Click <Link to="/">here</Link> to return to the home screen and choose
-							another algorithm.
-						</h3>
+						<div className="four-o-four">
+							<h1>404!</h1>
+							<h3>
+								Algorithm not found! Click <Link to="/">here</Link> to return to the home screen and choose
+								another algorithm.
+							</h3>
+						</div>
 					</div>
-
 					<Footer/>
 				</div>
 			);

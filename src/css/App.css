@@ -69,11 +69,16 @@ body {
 }
 
 .content a {
-    text-decoration: none;
-    color: #5c9ba4;
+    cursor: default;
 }
 
-.content a:hover {
+.about a, .four-o-four a {
+    text-decoration: none;
+    color: #5c9ba4;
+    cursor: pointer;
+}
+
+.about a:hover, .four-o-four a:hover {
     color: #f7c245;
 }
 
@@ -162,29 +167,39 @@ div.content {
     position: absolute;
 }
 
-.content a {
-    cursor: default;
-}
-
-input.button {
+.inner-flex input.button {
     font-family: Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
     font-size: 1.5em;
     font-weight: bold;
     color: #f7c245;
-    background-color: #022639;
+    background: linear-gradient(#033754, #022639);
     width: 90%;
     padding: 10px;
     margin: 15px;
     cursor: pointer;
+    border: 2px #00333d solid;
+    border-radius: 4px;
 }
 
-.outerFlex {
+.inner-flex input.button:active {
+    background: linear-gradient(#011a27, #033754);
+}
+
+.inner-flex input.button:focus, .inner-flex a:focus {
+    outline: none;
+}
+
+.inner-flex input.button::-moz-focus-inner, .inner-flex a::-moz-focus-inner {
+    border: 0;
+}
+
+.outer-flex {
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
-.innerFlex {
+.inner-flex {
     display: flex;
     flex-wrap: wrap;
     width: 90%;

@@ -9,12 +9,11 @@ import React from 'react';
 const HomeScreen = () => (
 	<div className="container">
 		<Header/>
-
 		<div className="content">
 			<Switch>
 				<Route exact path="/">
-					<div className="outerFlex">
-						<div className="innerFlex">
+					<div className="outer-flex">
+						<div className="inner-flex">
 						{
 							algoList.map((name, idx) => algoMap[name] ?
 								<Link to={`/${name}`} key={idx}>
@@ -30,11 +29,10 @@ const HomeScreen = () => (
 					</div>
 				</Route>
 				<Route path="/about">
-					<AboutScreen />
+					<AboutScreen/>
 				</Route>
 			</Switch>
 		</div>
-
 		<Footer/>
 	</div>
 );

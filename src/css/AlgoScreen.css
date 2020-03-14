@@ -66,6 +66,10 @@
     color: #f7c245;
 }
 
+.VisualizationMainPage #header a:focus {
+    outline: none;
+}
+
 .VisualizationMainPage #header h1 {
     margin: 0;
     padding: 10px 0;

@@ -120,14 +120,13 @@ export default class QuickSelect extends Algorithm {
 	}
 
 	reset() {
-		// Reset all of your data structures to *exactly* the state they have immediately after the init
-		// function is called.  This method is called whenever an "undo" is performed.  Your data
-		// structures are completely cleaned, and then all of the actions *up to but not including* the
-		// last action are then redone.  If you implement all of your actions through the "implementAction"
-		// method below, then all of this work is done for you in the Animation "superexport default class"
-
-		// Reset the (very simple) memory manager
 		this.nextIndex = 0;
+		this.arrayData = [];
+		this.displayData = [];
+		this.arrayID = [];
+		this.iPointerID = 0;
+		this.jPointerID = 0;
+		this.pPointerID = 0;
 	}
 
 	runCallback() {
@@ -143,7 +142,7 @@ export default class QuickSelect extends Algorithm {
 				this.implementAction(this.clear.bind(this));
 				this.listField.value = '';
 				this.kField.value = '';
-				this.implementAction(this.run.bind(this), listStr + '-' + k);
+				this.implementAction(this.run.bind(this), listStr, k);
 			}
 		}
 	}
@@ -163,11 +162,10 @@ export default class QuickSelect extends Algorithm {
 		return this.commands;
 	}
 
-	run(params) {
+	run(list, k) {
 		this.commands = [];
 
-		const list = params.split('-')[0];
-		this.k = Number(params.split('-')[1]);
+		this.k = Number(k);
 
 		this.arrayID = [];
 		this.arrayData = list
@@ -406,16 +404,12 @@ export default class QuickSelect extends Algorithm {
 		}
 	}
 
-	// Called by our superexport default class when we get an animation started event -- need to wait for the
-	// event to finish before we start doing anything
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}
 	}
 
-	// Called by our superexport default class when we get an animation completed event -- we can
-	/// now interact again.
 	enableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;

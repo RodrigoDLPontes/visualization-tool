@@ -79,14 +79,12 @@ export default class InsertionSort extends Algorithm {
 	}
 
 	reset() {
-		// Reset all of your data structures to *exactly* the state they have immediately after the init
-		// function is called.  This method is called whenever an "undo" is performed.  Your data
-		// structures are completely cleaned, and then all of the actions *up to but not including* the
-		// last action are then redone.  If you implement all of your actions through the "implementAction"
-		// method below, then all of this work is done for you in the Animation "superexport default class"
-
-		// Reset the (very simple) memory manager
 		this.nextIndex = 0;
+		this.arrayData = [];
+		this.arrayID = [];
+		this.displayData = [];
+		this.iPointerID = this.nextIndex++;
+		this.jPointerID = this.nextIndex++;
 	}
 
 	sortCallback() {
@@ -236,16 +234,12 @@ export default class InsertionSort extends Algorithm {
 		this.cmd(act.step);
 	}
 
-	// Called by our superexport default class when we get an animation started event -- need to wait for the
-	// event to finish before we start doing anything
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}
 	}
 
-	// Called by our superexport default class when we get an animation completed event -- we can
-	/// now interact again.
 	enableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;

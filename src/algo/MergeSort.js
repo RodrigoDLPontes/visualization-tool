@@ -33,14 +33,34 @@ const ARRAY_LINE_SPACING = 80;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
+// const ARRRAY_ELEMS_PER_LINE = 15;
+
+// const TOP_POS_X = 180;
+// const TOP_POS_Y = 100;
+// const TOP_LABEL_X = 130;
+// const TOP_LABEL_Y = 100;
+
+// const PUSH_LABEL_X = 50;
+// const PUSH_LABEL_Y = 30;
+// const PUSH_ELEMENT_X = 120;
+// const PUSH_ELEMENT_Y = 30;
+
+// const SIZE = 10;
+
 const LARGE_OFFSET = 15;
-const SMALL_OFFSET = 5;
+const SMALL_OFFSET = 7;
 
 export default class MergeSort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
+
 		this.addControls();
+
+		// Useful for memory management
 		this.nextIndex = 0;
+
+		// TODO:  Add any code necessary to set up your own algorithm.  Initialize data
+		// structures, etc.
 		this.setup();
 	}
 
@@ -76,26 +96,20 @@ export default class MergeSort extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
-
-		this.animationManager.startNewAnimation();
-		this.animationManager.skipForward();
-		this.animationManager.clearHistory();
 	}
 
 	reset() {
-		// Reset all of your data structures to *exactly* the state they have immediately after the init
-		// function is called.  This method is called whenever an "undo" is performed.  Your data
-		// structures are completely cleaned, and then all of the actions *up to but not including* the
-		// last action are then redone.  If you implement all of your actions through the "implementAction"
-		// method below, then all of this work is done for you in the Animation "superexport default class"
-
-		// Reset the (very simple) memory manager
 		this.nextIndex = 0;
+		this.arrayData = [];
+		this.arrayID = [];
+		this.iPointerID = 0;
+		this.jPointerID = 0;
+		this.kPointerID = 0;
 	}
 
 	sortCallback() {
 		if (this.listField.value !== '') {
-			this.implementAction(this.clear.bind(this));
+			this.implementAction(this.clear.bind(this), '');
 			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -103,7 +117,7 @@ export default class MergeSort extends Algorithm {
 	}
 
 	clearCallback() {
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), '');
 	}
 
 	clear() {
@@ -112,11 +126,13 @@ export default class MergeSort extends Algorithm {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 		this.arrayData = [];
+		this.displayData = [];
 		this.arrayID = [];
 		return this.commands;
 	}
 
 	sort(params) {
+		console.log(params);
 		this.commands = [];
 
 		this.arrayID = [];
@@ -125,24 +141,59 @@ export default class MergeSort extends Algorithm {
 			.map(Number)
 			.filter(x => x)
 			.slice(0, 12);
+		this.displayData = new Array(this.arrayData.length);
 
-		for (let i = 0; i < this.arrayData.length; i++)
-		{
-			this.arrayData[i] = parseInt(this.arrayData[i]);
+		const elemCounts = new Map();
+		const letterMap = new Map();
+
+		for (let i = 0; i < this.arrayData.length; i++) {
+			const count = elemCounts.has(this.arrayData[i]) ? elemCounts.get(this.arrayData[i]) : 0;
+			if (count > 0) {
+				letterMap.set(this.arrayData[i], 'a');
+			}
+			elemCounts.set(this.arrayData[i], count + 1);
+		}
+
+		for (let i = 0; i < this.arrayData.length; i++) {
 			const xPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const yPos = ARRAY_START_Y;
 			this.arrayID.push(this.nextIndex);
-			this.cmd(act.createRectangle, this.nextIndex++, this.arrayData[i], ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
+
+			let displayData = this.arrayData[i].toString();
+			if (letterMap.has(this.arrayData[i])) {
+				const currChar = letterMap.get(this.arrayData[i]);
+				displayData += currChar;
+				letterMap.set(this.arrayData[i], String.fromCharCode(currChar.charCodeAt(0) + 1));
+			}
+			this.displayData[i] = displayData;
+			this.cmd(
+				act.createRectangle,
+				this.nextIndex++,
+				displayData,
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xPos,
+				yPos
+			);
 		}
 		this.cmd(act.step);
 
-		if(this.arrayData.length !== 1) {
+		if (this.arrayData.length !== 1) {
 			const mid = Math.ceil((this.arrayData.length - 1) / 2);
 			this.leftHelper(0, mid - 1, -LARGE_OFFSET, 0, 1);
 			this.rightHelper(mid, this.arrayData.length - 1, LARGE_OFFSET, 0, 1);
-			this.merge(0, this.arrayData.length - 1, mid, 0, 0, -LARGE_OFFSET, LARGE_OFFSET, this.arrayID);
+			this.merge(
+				0,
+				this.arrayData.length - 1,
+				mid,
+				0,
+				0,
+				-LARGE_OFFSET,
+				LARGE_OFFSET,
+				this.arrayID
+			);
 		} else {
-			this.cmd(act.setBackgroundColor, this.arrayID[0], "#2ECC71");
+			this.cmd(act.setBackgroundColor, this.arrayID[0], '#2ECC71');
 			this.cmd(act.step);
 		}
 
@@ -158,7 +209,7 @@ export default class MergeSort extends Algorithm {
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
 			this.leftHelper(left, mid - 1, offset - extraOffset, offset, row + 1);
-			this.rightHelper(mid, right, offset, offset, row + 1);
+			this.leftHelper(mid, right, offset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset - extraOffset, offset, tempArrayID);
 		} else {
 			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
@@ -174,7 +225,7 @@ export default class MergeSort extends Algorithm {
 		if (left !== right) {
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
-			this.leftHelper(left, mid - 1, offset, offset, row + 1);
+			this.rightHelper(left, mid - 1, offset, offset, row + 1);
 			this.rightHelper(mid, right, offset + extraOffset, offset, row + 1);
 			this.merge(left, right, mid, row, offset, offset, offset + extraOffset, tempArrayID);
 		} else {
@@ -192,13 +243,31 @@ export default class MergeSort extends Algorithm {
 			const yPos = ARRAY_START_Y + row * ARRAY_LINE_SPACING;
 			tempArrayID[i] = this.nextIndex;
 			this.arrayID.push(this.nextIndex);
-			this.cmd(act.createRectangle, this.nextIndex++, '', ARRAY_ELEM_WIDTH, ARRAY_ELEM_HEIGHT, xPos, yPos);
+			this.cmd(
+				act.createRectangle,
+				this.nextIndex++,
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xPos,
+				yPos
+			);
 		}
 		this.cmd(act.step);
 
 		// Copy elements from big array to current subarray
 		for (let i = left; i <= right; i++) {
-			this.copyData(i, i, prevOffset, offset, row - 1, row, this.arrayData[i], tempArrayID[i], -1);
+			this.copyData(
+				i,
+				i,
+				prevOffset,
+				offset,
+				row - 1,
+				row,
+				this.displayData[i],
+				tempArrayID[i],
+				-1
+			);
 		}
 
 		return tempArrayID;
@@ -206,10 +275,12 @@ export default class MergeSort extends Algorithm {
 
 	merge(left, right, mid, row, currOffset, leftOffset, rightOffset, currArrayID) {
 		const tempArray = new Array(this.arrayData.length); // Temporary array to store data for sorting
+		const tempDisplay = new Array(this.arrayData.length);
 
 		// Copy data to temporary array
 		for (let i = left; i <= right; i++) {
 			tempArray[i] = this.arrayData[i];
+			tempDisplay[i] = this.displayData[i];
 		}
 
 		// Create pointers
@@ -232,8 +303,19 @@ export default class MergeSort extends Algorithm {
 		let k = left;
 		while (i < mid && j <= right) {
 			if (tempArray[i] <= tempArray[j]) {
-				this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
+				this.copyData(
+					i,
+					k,
+					leftOffset,
+					currOffset,
+					row + 1,
+					row,
+					tempDisplay[i],
+					currArrayID[k],
+					iPointerID
+				);
 				this.arrayData[k] = tempArray[i];
+				this.displayData[k] = tempDisplay[i];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
 				i++;
@@ -241,8 +323,19 @@ export default class MergeSort extends Algorithm {
 					this.movePointer(i, row + 1, leftOffset, iPointerID);
 				}
 			} else {
-				this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
+				this.copyData(
+					j,
+					k,
+					rightOffset,
+					currOffset,
+					row + 1,
+					row,
+					tempDisplay[j],
+					currArrayID[k],
+					jPointerID
+				);
 				this.arrayData[k] = tempArray[j];
+				this.displayData[k] = tempDisplay[j];
 				k++;
 				this.movePointer(k, row, currOffset, kPointerID);
 				j++;
@@ -253,8 +346,19 @@ export default class MergeSort extends Algorithm {
 			this.cmd(act.step);
 		}
 		while (i < mid) {
-			this.copyData(i, k, leftOffset, currOffset, row + 1, row, tempArray[i], currArrayID[k], iPointerID);
+			this.copyData(
+				i,
+				k,
+				leftOffset,
+				currOffset,
+				row + 1,
+				row,
+				tempDisplay[i],
+				currArrayID[k],
+				iPointerID
+			);
 			this.arrayData[k] = tempArray[i];
+			this.displayData[k] = tempDisplay[i];
 			k++;
 			i++;
 			if (k <= right) {
@@ -263,8 +367,19 @@ export default class MergeSort extends Algorithm {
 			}
 		}
 		while (j <= right) {
-			this.copyData(j, k, rightOffset, currOffset, row + 1, row, tempArray[j], currArrayID[k], jPointerID);
+			this.copyData(
+				j,
+				k,
+				rightOffset,
+				currOffset,
+				row + 1,
+				row,
+				tempDisplay[j],
+				currArrayID[k],
+				jPointerID
+			);
 			this.arrayData[k] = tempArray[j];
+			this.displayData[k] = tempDisplay[j];
 			j++;
 			k++;
 			if (k <= right) {

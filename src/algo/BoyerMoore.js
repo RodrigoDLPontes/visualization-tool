@@ -87,7 +87,7 @@ export default class BoyerMoore extends Algorithm {
 	setup() {
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
-		this.patternTableLableID = this.nextIndex++;
+		this.patternTableLabelID = this.nextIndex++;
 		this.patternTableCharacterID = [];
 		this.patternTableIndexID = [];
 		this.lastTableLabelID = this.nextIndex++;
@@ -100,14 +100,15 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	reset() {
-		// Reset all of your data structures to *exactly* the state they have immediately after the init
-		// function is called.  This method is called whenever an "undo" is performed.  Your data
-		// structures are completely cleaned, and then all of the actions *up to but not including* the
-		// last action are then redone.  If you implement all of your actions through the "implementAction"
-		// method below, then all of this work is done for you in the Animation "superclass"
-
-		// Reset the (very simple) memory manager
 		this.nextIndex = 0;
+		this.textRowID = [];
+		this.comparisonMatrixID = [];
+		this.patternTableLabelID = this.nextIndex++;
+		this.patternTableCharacterID = [];
+		this.patternTableIndexID = [];
+		this.lastTableLabelID = this.nextIndex++;
+		this.lastTableCharacterID = [];
+		this.lastTableValueID = [];
 	}
 
 	findCallback() {
@@ -263,7 +264,7 @@ export default class BoyerMoore extends Algorithm {
 	buildLastTable(textLength, pattern) {
 		// Display labels
 		const labelsX = ARRAY_START_X + textLength * this.cellSize + 10;
-		this.cmd(act.createLabel, this.patternTableLableID, 'Pattern:', labelsX, PATTERN_START_Y, 0);
+		this.cmd(act.createLabel, this.patternTableLabelID, 'Pattern:', labelsX, PATTERN_START_Y, 0);
 		this.cmd(
 			act.createLabel,
 			this.lastTableLabelID,
@@ -294,7 +295,7 @@ export default class BoyerMoore extends Algorithm {
 		}
 
 		// Create empty last occurence table
-		const characters = {}; // This is a HashMap (JavaScript is weird...)
+		const characters = {};
 		for (let i = 0; i < pattern.length; i++) {
 			characters[pattern.charAt(i)] = null;
 		}
@@ -376,7 +377,7 @@ export default class BoyerMoore extends Algorithm {
 		}
 		this.comparisonMatrixID = [];
 		if (this.patternTableCharacterID.length !== 0) {
-			this.cmd(act.delete, this.patternTableLableID);
+			this.cmd(act.delete, this.patternTableLabelID);
 		}
 		for (let i = 0; i < this.patternTableCharacterID.length; i++) {
 			this.cmd(act.delete, this.patternTableCharacterID[i]);
@@ -396,16 +397,12 @@ export default class BoyerMoore extends Algorithm {
 		return this.commands;
 	}
 
-	// Called by our superclass when we get an animation started event -- need to wait for the
-	// event to finish before we start doing anything
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}
 	}
 
-	// Called by our superclass when we get an animation completed event -- we can
-	/// now interact again.
 	enableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;

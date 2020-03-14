@@ -58,15 +58,14 @@ body {
 }
 
 .content h1 {
-    color: #4277bb;
-}
-
-.content h2 {
+    font-size: 3em;
+    text-align: center;
     color: #4277bb;
 }
 
 .content h3 {
-    color: #4277bb;
+    text-align: center;
+    font-weight: 100;
 }
 
 .content a {

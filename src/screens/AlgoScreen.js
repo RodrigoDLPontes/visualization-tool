@@ -1,5 +1,7 @@
 import '../css/AlgoScreen.css';
 import AnimationManager from '../anim/AnimationMain';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -7,6 +9,7 @@ import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
 
 class AlgoScreen extends React.Component {
+
 	constructor(props) {
 		super(props);
 
@@ -35,7 +38,21 @@ class AlgoScreen extends React.Component {
 	render() {
 		const algoName = this.state.algoName;
 		if (!algoMap[algoName]) {
-			return <h1>404!</h1>;
+			return (
+				<div className="container">
+					<Header/>
+
+					<div className="content">
+						<h1>404!</h1>
+						<h3>
+							Algorithm not found! Click <Link to="/">here</Link> to return to the home screen and choose
+							another algorithm.
+						</h3>
+					</div>
+
+					<Footer/>
+				</div>
+			);
 		}
 
 		const header = algoMap[algoName][2]
@@ -45,7 +62,7 @@ class AlgoScreen extends React.Component {
 			<div className="VisualizationMainPage">
 				<div id="container">
 					<div id="header">
-						<h1><Link to="/">&#x3008; </Link>{header}</h1>
+						<h1><Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}</h1>
 					</div>
 
 					<div id="mainContent">

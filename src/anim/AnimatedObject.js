@@ -88,7 +88,7 @@ export default class AnimatedObject {
 
 	setHighlight(value, color) {
 		this.highlighted = value;
-		this.highlightColor = color == null ? '#ff0000' : color;
+		this.highlightColor = color || '#ff0000';
 	}
 
 	centerX() {

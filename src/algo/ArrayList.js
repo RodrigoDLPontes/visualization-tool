@@ -269,7 +269,6 @@ export default class ArrayList extends Algorithm {
 	}
 
 	add(elemToAdd, index) {
-		console.log(elemToAdd, index);
 		this.commands = [];
 
 		const labPushID = this.nextIndex++;

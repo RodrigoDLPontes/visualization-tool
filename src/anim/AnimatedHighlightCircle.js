@@ -30,12 +30,12 @@ import AnimatedObject from "./AnimatedObject.js";
 import { UndoBlock } from "./UndoFunctions.js";
 
 export default class AnimatedHighlightCircle extends AnimatedObject {
-	constructor(objectID, color, radius) {
+	constructor(objectID, foregroundColor, radius) {
 		super();
 		this.objectID = objectID;
 		this.radius = radius;
 		this.thickness = 4;
-		this.foregroundColor = color;
+		this.foregroundColor = foregroundColor;
 		this.x = 0;
 		this.y = 0;
 	}
@@ -66,21 +66,24 @@ export default class AnimatedHighlightCircle extends AnimatedObject {
 }
 
 class UndoDeleteHighlightCircle extends UndoBlock {
-	constructor(objectID, x, y, circleColor, r, layer, alpha) {
+	constructor(objectID, x, y, foregroundColor, radius, layer, alpha, highlighted, highlightColor) {
 		super();
 		this.objectID = objectID;
 		this.x = x;
 		this.y = y;
-		this.color = circleColor;
-		this.r = r;
+		this.foregroundColor = foregroundColor;
+		this.radius = radius;
 		this.layer = layer;
 		this.alpha = alpha;
+		this.highlighted = highlighted;
+		this.highlightColor = highlightColor;
 	}
 
 	undoInitialStep(world) {
-		world.addHighlightCircleObject(this.objectID, this.color, this.r);
+		world.addHighlightCircleObject(this.objectID, this.foregroundColor, this.radius);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 		world.setAlpha(this.objectID, this.alpha);
+		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

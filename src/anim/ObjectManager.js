@@ -125,9 +125,7 @@ export default class ObjectManager {
 	addHighlightCircleObject(objectID, objectColor, radius) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
-				'addHighlightCircleObject:Object with same ID (' +
-					String(objectID) +
-					') already Exists!'
+				'addHighlightCircleObject:Object with same ID (' + String(objectID) + ') already Exists!'
 			);
 		}
 		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
@@ -818,7 +816,6 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		console.log(this.nodes, this.nodes[objectID], objectID, nodeLabel);
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addRectangleObject:Object with same ID already Exists!');
 		}

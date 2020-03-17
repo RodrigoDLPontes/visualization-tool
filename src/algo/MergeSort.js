@@ -132,7 +132,6 @@ export default class MergeSort extends Algorithm {
 	}
 
 	sort(params) {
-		console.log(params);
 		this.commands = [];
 
 		this.arrayID = [];

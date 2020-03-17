@@ -49,9 +49,9 @@ import AnimatedSkipListNode from './AnimatedSkipListNode';
 
 export default class ObjectManager {
 	constructor(canvasRef) {
-		this.Nodes = [];
-		this.Edges = [];
-		this.BackEdges = [];
+		this.nodes = [];
+		this.edges = [];
+		this.backEdges = [];
 		this.activeLayers = [];
 		this.activeLayers[0] = true;
 		this.ctx = canvasRef.current.getContext('2d');
@@ -71,41 +71,41 @@ export default class ObjectManager {
 
 		let i;
 		let j;
-		for (i = 0; i < this.Nodes.length; i++) {
+		for (i = 0; i < this.nodes.length; i++) {
 			if (
-				this.Nodes[i] != null &&
-				!this.Nodes[i].highlighted &&
-				this.Nodes[i].addedToScene &&
-				!this.Nodes[i].alwaysOnTop
+				this.nodes[i] != null &&
+				!this.nodes[i].highlighted &&
+				this.nodes[i].addedToScene &&
+				!this.nodes[i].alwaysOnTop
 			) {
-				this.Nodes[i].draw(this.ctx);
+				this.nodes[i].draw(this.ctx);
 			}
 		}
-		for (i = 0; i < this.Nodes.length; i++) {
+		for (i = 0; i < this.nodes.length; i++) {
 			if (
-				this.Nodes[i] != null &&
-				this.Nodes[i].highlighted &&
-				!this.Nodes[i].alwaysOnTop &&
-				this.Nodes[i].addedToScene
+				this.nodes[i] != null &&
+				this.nodes[i].highlighted &&
+				!this.nodes[i].alwaysOnTop &&
+				this.nodes[i].addedToScene
 			) {
-				this.Nodes[i].pulseHighlight(this.framenum);
-				this.Nodes[i].draw(this.ctx);
+				this.nodes[i].pulseHighlight(this.framenum);
+				this.nodes[i].draw(this.ctx);
 			}
 		}
 
-		for (i = 0; i < this.Nodes.length; i++) {
-			if (this.Nodes[i] != null && this.Nodes[i].alwaysOnTop && this.Nodes[i].addedToScene) {
-				this.Nodes[i].pulseHighlight(this.framenum);
-				this.Nodes[i].draw(this.ctx);
+		for (i = 0; i < this.nodes.length; i++) {
+			if (this.nodes[i] != null && this.nodes[i].alwaysOnTop && this.nodes[i].addedToScene) {
+				this.nodes[i].pulseHighlight(this.framenum);
+				this.nodes[i].draw(this.ctx);
 			}
 		}
 
-		for (i = 0; i < this.Edges.length; i++) {
-			if (this.Edges[i] != null) {
-				for (j = 0; j < this.Edges[i].length; j++) {
-					if (this.Edges[i][j].addedToScene) {
-						this.Edges[i][j].pulseHighlight(this.framenum);
-						this.Edges[i][j].draw(this.ctx);
+		for (i = 0; i < this.edges.length; i++) {
+			if (this.edges[i] != null) {
+				for (j = 0; j < this.edges[i].length; j++) {
+					if (this.edges[i][j].addedToScene) {
+						this.edges[i][j].pulseHighlight(this.framenum);
+						this.edges[i][j].draw(this.ctx);
 					}
 				}
 			}
@@ -123,7 +123,7 @@ export default class ObjectManager {
 	}
 
 	addHighlightCircleObject(objectID, objectColor, radius) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
 				'addHighlightCircleObject:Object with same ID (' +
 					String(objectID) +
@@ -131,21 +131,21 @@ export default class ObjectManager {
 			);
 		}
 		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	setEdgeAlpha(fromID, toID, alphaVal) {
 		let oldAlpha = 1.0;
-		if (this.Edges[fromID] != null && this.Edges[fromID] !== undefined) {
-			const len = this.Edges[fromID].length;
+		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
+			const len = this.edges[fromID].length;
 			for (let i = len - 1; i >= 0; i--) {
 				if (
-					this.Edges[fromID][i] != null &&
-					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].toID === this.Nodes[toID]
+					this.edges[fromID][i] != null &&
+					this.edges[fromID][i] !== undefined &&
+					this.edges[fromID][i].toID === this.nodes[toID]
 				) {
-					oldAlpha = this.Edges[fromID][i].alpha;
-					this.Edges[fromID][i].alpha = alphaVal;
+					oldAlpha = this.edges[fromID][i].alpha;
+					this.edges[fromID][i].alpha = alphaVal;
 				}
 			}
 		}
@@ -153,36 +153,36 @@ export default class ObjectManager {
 	}
 
 	setAlpha(nodeID, alphaVal) {
-		if (this.Nodes[nodeID] != null && this.Nodes[nodeID] !== undefined) {
-			this.Nodes[nodeID].setAlpha(alphaVal);
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			this.nodes[nodeID].setAlpha(alphaVal);
 		}
 	}
 
 	getAlpha(nodeID) {
-		if (this.Nodes[nodeID] != null && this.Nodes[nodeID] !== undefined) {
-			return this.Nodes[nodeID].getAlpha();
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			return this.nodes[nodeID].getAlpha();
 		} else {
 			return -1;
 		}
 	}
 
 	getTextColor(nodeID, index) {
-		if (this.Nodes[nodeID] != null && this.Nodes[nodeID] !== undefined) {
-			return this.Nodes[nodeID].getTextColor(index);
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			return this.nodes[nodeID].getTextColor(index);
 		} else {
 			return '#000000';
 		}
 	}
 
 	setTextColor(nodeID, color, index) {
-		if (this.Nodes[nodeID] != null && this.Nodes[nodeID] !== undefined) {
-			this.Nodes[nodeID].setTextColor(color, index);
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			this.nodes[nodeID].setTextColor(color, index);
 		}
 	}
 
 	setHighlightIndex(nodeID, index) {
-		if (this.Nodes[nodeID] != null && this.Nodes[nodeID] !== undefined) {
-			this.Nodes[nodeID].setHighlightIndex(index);
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			this.nodes[nodeID].setHighlightIndex(index);
 		}
 	}
 
@@ -196,18 +196,18 @@ export default class ObjectManager {
 
 	resetLayers() {
 		let i;
-		for (i = 0; i < this.Nodes.length; i++) {
-			if (this.Nodes[i] != null && this.Nodes[i] !== undefined) {
-				this.Nodes[i].addedToScene = this.activeLayers[this.Nodes[i].layer] === true;
+		for (i = 0; i < this.nodes.length; i++) {
+			if (this.nodes[i] != null && this.nodes[i] !== undefined) {
+				this.nodes[i].addedToScene = this.activeLayers[this.nodes[i].layer] === true;
 			}
 		}
-		for (i = this.Edges.length - 1; i >= 0; i--) {
-			if (this.Edges[i] != null && this.Edges[i] !== undefined) {
-				for (let j = 0; j < this.Edges[i].length; j++) {
-					if (this.Edges[i][j] != null && this.Edges[i][j] !== undefined) {
-						this.Edges[i][j].addedToScene =
-							this.activeLayers[this.Edges[i][j].fromID.layer] === true &&
-							this.activeLayers[this.Edges[i][j].toID.layer] === true;
+		for (i = this.edges.length - 1; i >= 0; i--) {
+			if (this.edges[i] != null && this.edges[i] !== undefined) {
+				for (let j = 0; j < this.edges[i].length; j++) {
+					if (this.edges[i][j] != null && this.edges[i][j] !== undefined) {
+						this.edges[i][j].addedToScene =
+							this.activeLayers[this.edges[i][j].fromID.layer] === true &&
+							this.activeLayers[this.edges[i][j].toID.layer] === true;
 					}
 				}
 			}
@@ -215,25 +215,25 @@ export default class ObjectManager {
 	}
 
 	setLayer(objectID, layer) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			this.Nodes[objectID].layer = layer;
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			this.nodes[objectID].layer = layer;
 			if (this.activeLayers[layer]) {
-				this.Nodes[objectID].addedToScene = true;
+				this.nodes[objectID].addedToScene = true;
 			} else {
-				this.Nodes[objectID].addedToScene = false;
+				this.nodes[objectID].addedToScene = false;
 			}
-			if (this.Edges[objectID] != null && this.Edges[objectID] !== undefined) {
-				for (let i = 0; i < this.Edges[objectID].length; i++) {
-					const nextEdge = this.Edges[objectID][i];
+			if (this.edges[objectID] != null && this.edges[objectID] !== undefined) {
+				for (let i = 0; i < this.edges[objectID].length; i++) {
+					const nextEdge = this.edges[objectID][i];
 					if (nextEdge != null && nextEdge !== undefined) {
 						nextEdge.addedToScene =
 							nextEdge.fromID.addedToScene && nextEdge.toID.addedToScene;
 					}
 				}
 			}
-			if (this.BackEdges[objectID] != null && this.BackEdges[objectID] !== undefined) {
-				for (let i = 0; i < this.BackEdges[objectID].length; i++) {
-					const nextEdge = this.BackEdges[objectID][i];
+			if (this.backEdges[objectID] != null && this.backEdges[objectID] !== undefined) {
+				for (let i = 0; i < this.backEdges[objectID].length; i++) {
+					const nextEdge = this.backEdges[objectID][i];
 					if (nextEdge != null && nextEdge !== undefined) {
 						nextEdge.addedToScene =
 							nextEdge.fromID.addedToScene && nextEdge.toID.addedToScene;
@@ -244,90 +244,90 @@ export default class ObjectManager {
 	}
 
 	clearAllObjects() {
-		this.Nodes = [];
-		this.Edges = [];
-		this.BackEdges = [];
+		this.nodes = [];
+		this.edges = [];
+		this.backEdges = [];
 	}
 
 	setForegroundColor(objectID, color) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			this.Nodes[objectID].setForegroundColor(color);
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			this.nodes[objectID].setForegroundColor(color);
 		}
 	}
 
 	setBackgroundColor(objectID, color) {
-		if (this.Nodes[objectID] != null) {
-			this.Nodes[objectID].setBackgroundColor(color);
+		if (this.nodes[objectID] != null) {
+			this.nodes[objectID].setBackgroundColor(color);
 		}
 	}
 
 	setHighlight(nodeID, val, color) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return;
 		}
-		this.Nodes[nodeID].setHighlight(val, color);
+		this.nodes[nodeID].setHighlight(val, color);
 	}
 
 	getHighlight(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return false;
 		}
-		return this.Nodes[nodeID].getHighlight();
+		return this.nodes[nodeID].getHighlight();
 	}
 
 	getHighlightIndex(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return false;
 		}
-		return this.Nodes[nodeID].getHighlightIndex();
+		return this.nodes[nodeID].getHighlightIndex();
 	}
 
 	setWidth(nodeID, val) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return;
 		}
-		this.Nodes[nodeID].setWidth(val);
+		this.nodes[nodeID].setWidth(val);
 	}
 
 	setHeight(nodeID, val) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return;
 		}
-		this.Nodes[nodeID].setHeight(val);
+		this.nodes[nodeID].setHeight(val);
 	}
 
 	getHeight(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return -1;
 		}
-		return this.Nodes[nodeID].getHeight();
+		return this.nodes[nodeID].getHeight();
 	}
 
 	getWidth(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return -1;
 		}
-		return this.Nodes[nodeID].getWidth();
+		return this.nodes[nodeID].getWidth();
 	}
 
 	backgroundColor(objectID) {
-		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].backgroundColor;
+		if (this.nodes[objectID] != null) {
+			return this.nodes[objectID].backgroundColor;
 		} else {
 			return '#000000';
 		}
 	}
 
 	foregroundColor(objectID) {
-		if (this.Nodes[objectID] != null) {
-			return this.Nodes[objectID].foregroundColor;
+		if (this.nodes[objectID] != null) {
+			return this.nodes[objectID].foregroundColor;
 		} else {
 			return '#000000';
 		}
@@ -337,33 +337,33 @@ export default class ObjectManager {
 		let undo = null;
 		let len;
 		let deleted;
-		if (this.Edges[objectIDfrom] != null) {
-			len = this.Edges[objectIDfrom].length;
+		if (this.edges[objectIDfrom] != null) {
+			len = this.edges[objectIDfrom].length;
 			for (let i = len - 1; i >= 0; i--) {
 				if (
-					this.Edges[objectIDfrom][i] != null &&
-					this.Edges[objectIDfrom][i].toID === this.Nodes[objectIDto]
+					this.edges[objectIDfrom][i] != null &&
+					this.edges[objectIDfrom][i].toID === this.nodes[objectIDto]
 				) {
-					deleted = this.Edges[objectIDfrom][i];
+					deleted = this.edges[objectIDfrom][i];
 					undo = deleted.createUndoConnect();
-					this.Edges[objectIDfrom][i] = this.Edges[objectIDfrom][len - 1];
+					this.edges[objectIDfrom][i] = this.edges[objectIDfrom][len - 1];
 					len -= 1;
-					this.Edges[objectIDfrom].pop();
+					this.edges[objectIDfrom].pop();
 				}
 			}
 		}
-		if (this.BackEdges[objectIDto] != null) {
-			len = this.BackEdges[objectIDto].length;
+		if (this.backEdges[objectIDto] != null) {
+			len = this.backEdges[objectIDto].length;
 			for (let i = len - 1; i >= 0; i--) {
 				if (
-					this.BackEdges[objectIDto][i] != null &&
-					this.BackEdges[objectIDto][i].fromID === this.Nodes[objectIDfrom]
+					this.backEdges[objectIDto][i] != null &&
+					this.backEdges[objectIDto][i].fromID === this.nodes[objectIDfrom]
 				) {
-					deleted = this.BackEdges[objectIDto][i];
+					deleted = this.backEdges[objectIDto][i];
 					// Note:  Don't need to remove this child, did it above on the regular edge
-					this.BackEdges[objectIDto][i] = this.BackEdges[objectIDto][len - 1];
+					this.backEdges[objectIDto][i] = this.backEdges[objectIDto][len - 1];
 					len -= 1;
-					this.BackEdges[objectIDto].pop();
+					this.backEdges[objectIDto].pop();
 				}
 			}
 		}
@@ -374,77 +374,77 @@ export default class ObjectManager {
 		const undoStack = [];
 		let len;
 		let deleted;
-		if (this.Edges[objectID] != null) {
-			len = this.Edges[objectID].length;
+		if (this.edges[objectID] != null) {
+			len = this.edges[objectID].length;
 			for (let i = len - 1; i >= 0; i--) {
-				deleted = this.Edges[objectID][i];
+				deleted = this.edges[objectID][i];
 				const node2ID = deleted.toID.identifier();
 				undoStack.push(deleted.createUndoConnect());
 
-				let len2 = this.BackEdges[node2ID].length;
+				let len2 = this.backEdges[node2ID].length;
 				for (let j = len2 - 1; j >= 0; j--) {
-					if (this.BackEdges[node2ID][j] === deleted) {
-						this.BackEdges[node2ID][j] = this.BackEdges[node2ID][len2 - 1];
+					if (this.backEdges[node2ID][j] === deleted) {
+						this.backEdges[node2ID][j] = this.backEdges[node2ID][len2 - 1];
 						len2 -= 1;
-						this.BackEdges[node2ID].pop();
+						this.backEdges[node2ID].pop();
 					}
 				}
 			}
-			this.Edges[objectID] = null;
+			this.edges[objectID] = null;
 		}
-		if (this.BackEdges[objectID] != null) {
-			len = this.BackEdges[objectID].length;
+		if (this.backEdges[objectID] != null) {
+			len = this.backEdges[objectID].length;
 			for (let i = len - 1; i >= 0; i--) {
-				deleted = this.BackEdges[objectID][i];
+				deleted = this.backEdges[objectID][i];
 				const node1ID = deleted.fromID.identifier();
 				undoStack.push(deleted.createUndoConnect());
 
-				let len2 = this.Edges[node1ID].length;
+				let len2 = this.edges[node1ID].length;
 				for (let j = len2 - 1; j >= 0; j--) {
-					if (this.Edges[node1ID][j] === deleted) {
-						this.Edges[node1ID][j] = this.Edges[node1ID][len2 - 1];
+					if (this.edges[node1ID][j] === deleted) {
+						this.edges[node1ID][j] = this.edges[node1ID][len2 - 1];
 						len2 -= 1;
-						this.Edges[node1ID].pop();
+						this.edges[node1ID].pop();
 					}
 				}
 			}
-			this.BackEdges[objectID] = null;
+			this.backEdges[objectID] = null;
 		}
 		return undoStack;
 	}
 
-	removeObject(ObjectID) {
-		const OldObject = this.Nodes[ObjectID];
-		if (ObjectID === this.Nodes.length - 1) {
-			this.Nodes.pop();
+	removeObject(objectID) {
+		const oldObject = this.nodes[objectID];
+		if (objectID === this.nodes.length - 1) {
+			this.nodes.pop();
 		} else {
-			this.Nodes[ObjectID] = null;
+			this.nodes[objectID] = null;
 		}
-		return OldObject;
+		return oldObject;
 	}
 
 	getObject(objectID) {
-		if (this.Nodes[objectID] == null || this.Nodes[objectID] === undefined) {
+		if (this.nodes[objectID] == null || this.nodes[objectID] === undefined) {
 			throw new Error('getObject:Object with ID (' + String(objectID) + ') does not exist');
 		}
-		return this.Nodes[objectID];
+		return this.nodes[objectID];
 	}
 
 	addCircleObject(objectID, objectLabel) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
 				'addCircleObject:Object with same ID (' + String(objectID) + ') already Exists!'
 			);
 		}
 		const newNode = new AnimatedCircle(objectID, objectLabel);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	getNodeX(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			throw new Error('getting x position of an object that does not exit');
 		}
-		return this.Nodes[nodeID].x;
+		return this.nodes[nodeID].x;
 	}
 
 	getTextWidth(text) {
@@ -464,79 +464,79 @@ export default class ObjectManager {
 	}
 
 	setText(nodeID, text, index) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			throw new Error('setting text of an object that does not exist');
 		}
-		this.Nodes[nodeID].setText(text, index, this.getTextWidth(text));
+		this.nodes[nodeID].setText(text, index, this.getTextWidth(text));
 	}
 
 	getText(nodeID, index) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			throw new Error('getting text of an object that does not exit');
 		}
-		return this.Nodes[nodeID].getText(index);
+		return this.nodes[nodeID].getText(index);
 	}
 
 	getNodeY(nodeID) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			throw new Error('getting y position of an object that does not exit');
 		}
-		return this.Nodes[nodeID].y;
+		return this.nodes[nodeID].y;
 	}
 
 	connectEdge(objectIDfrom, objectIDto, color, curve, directed, lab, connectionPoint) {
-		const fromObj = this.Nodes[objectIDfrom];
-		const toObj = this.Nodes[objectIDto];
+		const fromObj = this.nodes[objectIDfrom];
+		const toObj = this.nodes[objectIDto];
 		if (fromObj == null || toObj == null) {
 			throw new Error("Tried to connect two nodes, one didn't exist!");
 		}
 		const l = new AnimatedLine(fromObj, toObj, color, curve, directed, lab, connectionPoint);
-		if (this.Edges[objectIDfrom] == null) {
-			this.Edges[objectIDfrom] = [];
+		if (this.edges[objectIDfrom] == null) {
+			this.edges[objectIDfrom] = [];
 		}
-		if (this.BackEdges[objectIDto] == null) {
-			this.BackEdges[objectIDto] = [];
+		if (this.backEdges[objectIDto] == null) {
+			this.backEdges[objectIDto] = [];
 		}
 		l.addedToScene = fromObj.addedToScene && toObj.addedToScene;
-		this.Edges[objectIDfrom].push(l);
-		this.BackEdges[objectIDto].push(l);
+		this.edges[objectIDfrom].push(l);
+		this.backEdges[objectIDto].push(l);
 	}
 
 	setNull(objectID, nullVal) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			this.Nodes[objectID].setNull(nullVal);
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			this.nodes[objectID].setNull(nullVal);
 		}
 	}
 
 	setPrevNull(objectID, nullVal) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			this.Nodes[objectID].setPrevNull(nullVal);
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			this.nodes[objectID].setPrevNull(nullVal);
 		}
 	}
 
 	setNextNull(objectID, nullVal) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			this.Nodes[objectID].setNextNull(nullVal);
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			this.nodes[objectID].setNextNull(nullVal);
 		}
 	}
 
 	getNull(objectID) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			return this.Nodes[objectID].getNull();
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			return this.nodes[objectID].getNull();
 		}
 		return false; // TODO:  Error here?
 	}
 
 	getLeftNull(objectID) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			return this.Nodes[objectID].getLeftNull();
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			return this.nodes[objectID].getLeftNull();
 		}
 		return false; // TODO:  Error here?
 	}
 
 	getRightNull(objectID) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
-			return this.Nodes[objectID].getRightNull();
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
+			return this.nodes[objectID].getRightNull();
 		}
 		return false; // TODO:  Error here?
 	}
@@ -547,16 +547,16 @@ export default class ObjectManager {
 		color // returns old color
 	) {
 		let oldColor = '#000000';
-		if (this.Edges[fromID] != null && this.Edges[fromID] !== undefined) {
-			const len = this.Edges[fromID].length;
+		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
+			const len = this.edges[fromID].length;
 			for (let i = len - 1; i >= 0; i--) {
 				if (
-					this.Edges[fromID][i] != null &&
-					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].toID === this.Nodes[toID]
+					this.edges[fromID][i] != null &&
+					this.edges[fromID][i] !== undefined &&
+					this.edges[fromID][i].toID === this.nodes[toID]
 				) {
-					oldColor = this.Edges[fromID][i].color();
-					this.Edges[fromID][i].setColor(color);
+					oldColor = this.edges[fromID][i].color();
+					this.edges[fromID][i].setColor(color);
 				}
 			}
 		}
@@ -565,86 +565,86 @@ export default class ObjectManager {
 
 	alignTop(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		this.Nodes[id1].alignTop(this.Nodes[id2]);
+		this.nodes[id1].alignTop(this.nodes[id2]);
 	}
 
 	alignLeft(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		this.Nodes[id1].alignLeft(this.Nodes[id2]);
+		this.nodes[id1].alignLeft(this.nodes[id2]);
 	}
 
 	alignRight(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		this.Nodes[id1].alignRight(this.Nodes[id2]);
+		this.nodes[id1].alignRight(this.nodes[id2]);
 	}
 
 	getAlignRightPos(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		return this.Nodes[id1].getAlignRightPos(this.Nodes[id2]);
+		return this.nodes[id1].getAlignRightPos(this.nodes[id2]);
 	}
 
 	getAlignLeftPos(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		return this.Nodes[id1].getAlignLeftPos(this.Nodes[id2]);
+		return this.nodes[id1].getAlignLeftPos(this.nodes[id2]);
 	}
 
 	alignBottom(id1, id2) {
 		if (
-			this.Nodes[id1] == null ||
-			this.Nodes[id1] === undefined ||
-			this.Nodes[id2] == null ||
-			this.Nodes[id2] === undefined
+			this.nodes[id1] == null ||
+			this.nodes[id1] === undefined ||
+			this.nodes[id2] == null ||
+			this.nodes[id2] === undefined
 		) {
 			throw new Error(
 				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
-		this.Nodes[id1].alignBottom(this.Nodes[id2]);
+		this.nodes[id1].alignBottom(this.nodes[id2]);
 	}
 
 	setEdgeHighlight(
@@ -653,16 +653,16 @@ export default class ObjectManager {
 		val // returns old color
 	) {
 		let oldHighlight = false;
-		if (this.Edges[fromID] != null && this.Edges[fromID] !== undefined) {
-			const len = this.Edges[fromID].length;
+		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
+			const len = this.edges[fromID].length;
 			for (let i = len - 1; i >= 0; i--) {
 				if (
-					this.Edges[fromID][i] != null &&
-					this.Edges[fromID][i] !== undefined &&
-					this.Edges[fromID][i].toID === this.Nodes[toID]
+					this.edges[fromID][i] != null &&
+					this.edges[fromID][i] !== undefined &&
+					this.edges[fromID][i].toID === this.nodes[toID]
 				) {
-					oldHighlight = this.Edges[fromID][i].highlighted;
-					this.Edges[fromID][i].setHighlight(val);
+					oldHighlight = this.edges[fromID][i].highlighted;
+					this.edges[fromID][i].setHighlight(val);
 				}
 			}
 		}
@@ -670,7 +670,7 @@ export default class ObjectManager {
 	}
 
 	addLabelObject(objectID, objectLabel, centering) {
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addLabelObject: Object Already Exists!');
 		}
 
@@ -680,7 +680,7 @@ export default class ObjectManager {
 			centering,
 			this.getTextWidth(objectLabel)
 		);
-		this.Nodes[objectID] = newLabel;
+		this.nodes[objectID] = newLabel;
 	}
 
 	addLinkedListObject(
@@ -694,7 +694,7 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		if (this.Nodes[objectID] != null) {
+		if (this.nodes[objectID] != null) {
 			throw new Error('addLinkedListObject:Object with same ID already Exists!');
 		}
 		const newNode = new AnimatedLinkedListNode(
@@ -708,7 +708,7 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	addDoublyLinkedListObject(
@@ -720,7 +720,7 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		if (this.Nodes[objectID] != null) {
+		if (this.nodes[objectID] != null) {
 			throw new Error('addDoublyLinkedListObject:Object with same ID already Exists!');
 		}
 		const newNode = new AnimatedDoublyLinkedListNode(
@@ -732,7 +732,7 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	addCircularlyLinkedListObject(
@@ -744,7 +744,7 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		if (this.Nodes[objectID] != null) {
+		if (this.nodes[objectID] != null) {
 			throw new Error('addCircularlyLinkedListObject:Object with same ID already Exists!');
 		}
 		const newNode = new AnimatedCircularlyLinkedListNode(
@@ -756,7 +756,7 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	addSkipListObject(
@@ -767,7 +767,7 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		if (this.Nodes[objectID] != null) {
+		if (this.nodes[objectID] != null) {
 			throw new Error('addSkipListObject:Object with same ID already Exists!');
 		}
 		const newNode = new AnimatedSkipListNode(
@@ -778,22 +778,22 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	getNumElements(objectID) {
-		return this.Nodes[objectID].getNumElements();
+		return this.nodes[objectID].getNumElements();
 	}
 
 	setNumElements(objectID, numElems) {
-		this.Nodes[objectID].setNumElements(numElems);
+		this.nodes[objectID].setNumElements(numElems);
 	}
 
 	addBTreeNode(objectID, widthPerElem, height, numElems, backgroundColor, foregroundColor) {
 		backgroundColor = backgroundColor === undefined ? '#FFFFFF' : backgroundColor;
 		foregroundColor = foregroundColor === undefined ? '#FFFFFF' : foregroundColor;
 
-		if (this.Nodes[objectID] != null && this.Nodes[objectID] !== undefined) {
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addBTreeNode:Object with same ID already Exists!');
 		}
 
@@ -805,7 +805,7 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	addRectangleObject(
@@ -818,7 +818,8 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor
 	) {
-		if (this.Nodes[objectID] != null || this.Nodes[objectID] !== undefined) {
+		console.log(this.nodes, this.nodes[objectID], objectID, nodeLabel);
+		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addRectangleObject:Object with same ID already Exists!');
 		}
 		const newNode = new AnimatedRectangle(
@@ -831,19 +832,19 @@ export default class ObjectManager {
 			backgroundColor,
 			foregroundColor
 		);
-		this.Nodes[objectID] = newNode;
+		this.nodes[objectID] = newNode;
 	}
 
 	setNodePosition(nodeID, newX, newY) {
-		if (this.Nodes[nodeID] == null || this.Nodes[nodeID] === undefined) {
+		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
 			// TODO:  Error here?
 			return;
 		}
 		if (newX === undefined || newY === undefined) {
 			return;
 		}
-		this.Nodes[nodeID].x = newX;
-		this.Nodes[nodeID].y = newY;
+		this.nodes[nodeID].x = newX;
+		this.nodes[nodeID].y = newY;
 		/* Don't need to dirty anything, since we repaint everything every frame
 		 (TODO:  Revisit if we do conditional redraws) */
 	}

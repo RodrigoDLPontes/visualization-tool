@@ -133,7 +133,7 @@ export default class SelectionSort extends Algorithm {
 		this.arrayData = params
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 18);
 		const length = this.arrayData.length;
 		this.displayData = new Array(length);
@@ -172,7 +172,13 @@ export default class SelectionSort extends Algorithm {
 			);
 		}
 
-		this.cmd(act.createHighlightCircle, this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.iPointerID,
+			'#FF0000',
+			ARRAY_START_X,
+			ARRAY_START_Y
+		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,

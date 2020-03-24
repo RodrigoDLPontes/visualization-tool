@@ -135,7 +135,7 @@ export default class QuickSelect extends Algorithm {
 			const list = listStr
 				.split(',')
 				.map(Number)
-				.filter(x => x)
+				.filter(x => !Number.isNaN(x))
 				.slice(0, 18);
 			const k = this.kField.value;
 			if (k > 0 && k <= list.length) {
@@ -171,7 +171,7 @@ export default class QuickSelect extends Algorithm {
 		this.arrayData = list
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 18);
 		this.displayData = new Array(this.arrayData.length);
 

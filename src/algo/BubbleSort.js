@@ -136,7 +136,7 @@ export default class BubbleSort extends Algorithm {
 		this.arrayData = params
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 18);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
@@ -172,7 +172,13 @@ export default class BubbleSort extends Algorithm {
 				ypos
 			);
 		}
-		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.iPointerID,
+			'#0000FF',
+			ARRAY_START_X,
+			ARRAY_START_Y
+		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,

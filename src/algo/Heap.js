@@ -29,7 +29,7 @@ import Algorithm, {
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
-	addRadioButtonGroupToAlgorithmBar
+	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
@@ -146,10 +146,12 @@ export default class Heap extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-		addLabelToAlgorithmBar('Comma separated list (e.g. "3,1,2", max 31 elements)', verticalGroup);
+		addLabelToAlgorithmBar(
+			'Comma separated list (e.g. "3,1,2", max 31 elements)',
+			verticalGroup
+		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
-
 
 		this.buildHeapField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.buildHeapField.onkeydown = this.returnSubmit(
@@ -394,11 +396,7 @@ export default class Heap extends Algorithm {
 		this.cmd(act.setText, this.descriptLabel1, '');
 
 		if (this.currentHeapSize === 0) {
-			this.cmd(
-				act.setText,
-				this.descriptLabel1,
-				'Heap is empty, cannot dequeue'
-			);
+			this.cmd(act.setText, this.descriptLabel1, 'Heap is empty, cannot dequeue');
 			return this.commands;
 		}
 
@@ -437,7 +435,7 @@ export default class Heap extends Algorithm {
 		this.arrayData = params
 			.split(',') // Split on commas
 			.map(Number) // Map to numbers (to remove invalid characters)
-			.filter(x => x) // Remove stuff that was invalid
+			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
 			.slice(0, 31) // Get first 31 numbers
 			.map(String); // Map back to strings
 		this.arrayData.unshift(0); // Add a 0 to start of array

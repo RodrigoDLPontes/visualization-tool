@@ -145,7 +145,7 @@ export default class LSDRadix extends Algorithm {
 		this.arrayData = params
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 9);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
@@ -215,7 +215,13 @@ export default class LSDRadix extends Algorithm {
 			INFO_LABEL_Y,
 			0
 		);
-		this.cmd(act.createHighlightCircle, this.iPointerID, '#FF0000', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.iPointerID,
+			'#FF0000',
+			ARRAY_START_X,
+			ARRAY_START_Y
+		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,

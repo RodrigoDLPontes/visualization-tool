@@ -138,7 +138,7 @@ export default class MergeSort extends Algorithm {
 		this.arrayData = params
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 12);
 		this.displayData = new Array(this.arrayData.length);
 

@@ -135,7 +135,7 @@ export default class CocktailSort extends Algorithm {
 		this.arrayData = params
 			.split(',')
 			.map(Number)
-			.filter(x => x)
+			.filter(x => !Number.isNaN(x))
 			.slice(0, 18);
 		this.displayData = new Array(this.arrayData.length);
 		const length = this.arrayData.length;
@@ -173,7 +173,13 @@ export default class CocktailSort extends Algorithm {
 				ypos
 			);
 		}
-		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', ARRAY_START_X, ARRAY_START_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.iPointerID,
+			'#0000FF',
+			ARRAY_START_X,
+			ARRAY_START_Y
+		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,

@@ -49,10 +49,15 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 	const element = document.createElement('input');
 
 	element.setAttribute('type', 'checkbox');
+	element.setAttribute('id', boxLabel);
+	element.setAttribute('name', boxLabel);
 	element.setAttribute('value', boxLabel);
 	checked && element.setAttribute('checked', 'true');
 
-	const label = document.createTextNode(boxLabel);
+	const label = document.createElement('label');
+	label.setAttribute('for', boxLabel);
+	const txtNode = document.createTextNode(boxLabel);
+	label.appendChild(txtNode);
 
 	if (!group) {
 		const tableEntry = document.createElement('td');
@@ -84,11 +89,15 @@ export function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group)
 		const button = document.createElement('input');
 		button.setAttribute('type', 'radio');
 		button.setAttribute('name', groupName);
+		button.setAttribute('id', buttonNames[i]);
 		button.setAttribute('value', buttonNames[i]);
 		bottomLevel.appendChild(button);
 		midLevel.appendChild(bottomLevel);
+		const label = document.createElement('label');
+		label.setAttribute('for', buttonNames[i]);
 		const txtNode = document.createTextNode(' ' + buttonNames[i]);
-		bottomLevel.appendChild(txtNode);
+		label.appendChild(txtNode);
+		bottomLevel.appendChild(label);
 		newTable.appendChild(midLevel);
 		buttonList.push(button);
 	}
@@ -294,21 +303,21 @@ export default class Algorithm {
 
 	// eslint-disable-next-line no-unused-vars
 	sizeChanged(newWidth, newHeight) {
-		throw new Error('sizeChanged should be implemented in base class');
+		throw new Error('sizeChanged() should be implemented in base class');
 	}
 
 	// eslint-disable-next-line no-unused-vars
 	disableUI(event) {
-		throw new Error('disableUI should be implemented in base class');
+		throw new Error('disableUI() should be implemented in base class');
 	}
 
 	// eslint-disable-next-line no-unused-vars
 	enableUI(event) {
-		throw new Error('enableUI should be implemented in base class');
+		throw new Error('enableUI() should be implemented in base class');
 	}
 
 	reset() {
-		throw new Error('reset should be implemented in base class');
+		throw new Error('reset() should be implemented in base class');
 	}
 }
 

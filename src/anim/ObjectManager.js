@@ -125,7 +125,7 @@ export default class ObjectManager {
 	addHighlightCircleObject(objectID, objectColor, radius) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
-				'addHighlightCircleObject:Object with same ID (' + String(objectID) + ') already Exists!'
+				'addHighlightCircleObject: object with same ID (' + String(objectID) + ') already exists!'
 			);
 		}
 		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
@@ -431,7 +431,7 @@ export default class ObjectManager {
 	addCircleObject(objectID, objectLabel) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
-				'addCircleObject:Object with same ID (' + String(objectID) + ') already Exists!'
+				'addCircleObject: object with same ID (' + String(objectID) + ') already exists!'
 			);
 		}
 		const newNode = new AnimatedCircle(objectID, objectLabel);
@@ -440,7 +440,7 @@ export default class ObjectManager {
 
 	getNodeX(nodeID) {
 		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
-			throw new Error('getting x position of an object that does not exit');
+			throw new Error('Getting x position of an object that does not exist');
 		}
 		return this.nodes[nodeID].x;
 	}
@@ -470,14 +470,14 @@ export default class ObjectManager {
 
 	getText(nodeID, index) {
 		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
-			throw new Error('getting text of an object that does not exit');
+			throw new Error('getting text of an object that does not exist');
 		}
 		return this.nodes[nodeID].getText(index);
 	}
 
 	getNodeY(nodeID) {
 		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
-			throw new Error('getting y position of an object that does not exit');
+			throw new Error('getting y position of an object that does not exist');
 		}
 		return this.nodes[nodeID].y;
 	}
@@ -669,7 +669,7 @@ export default class ObjectManager {
 
 	addLabelObject(objectID, objectLabel, centering) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
-			throw new Error('addLabelObject: Object Already Exists!');
+			throw new Error('addLabelObject: object already exists!');
 		}
 
 		const newLabel = new AnimatedLabel(
@@ -693,7 +693,7 @@ export default class ObjectManager {
 		foregroundColor
 	) {
 		if (this.nodes[objectID] != null) {
-			throw new Error('addLinkedListObject:Object with same ID already Exists!');
+			throw new Error('addLinkedListObject: object with same ID already exists!');
 		}
 		const newNode = new AnimatedLinkedListNode(
 			objectID,
@@ -719,7 +719,7 @@ export default class ObjectManager {
 		foregroundColor
 	) {
 		if (this.nodes[objectID] != null) {
-			throw new Error('addDoublyLinkedListObject:Object with same ID already Exists!');
+			throw new Error('addDoublyLinkedListObject: object with same ID already exists!');
 		}
 		const newNode = new AnimatedDoublyLinkedListNode(
 			objectID,
@@ -743,7 +743,7 @@ export default class ObjectManager {
 		foregroundColor
 	) {
 		if (this.nodes[objectID] != null) {
-			throw new Error('addCircularlyLinkedListObject:Object with same ID already Exists!');
+			throw new Error('addCircularlyLinkedListObject: object with same ID already exists!');
 		}
 		const newNode = new AnimatedCircularlyLinkedListNode(
 			objectID,
@@ -766,7 +766,7 @@ export default class ObjectManager {
 		foregroundColor
 	) {
 		if (this.nodes[objectID] != null) {
-			throw new Error('addSkipListObject:Object with same ID already Exists!');
+			throw new Error('addSkipListObject: object with same ID already exists!');
 		}
 		const newNode = new AnimatedSkipListNode(
 			objectID,
@@ -792,7 +792,7 @@ export default class ObjectManager {
 		foregroundColor = foregroundColor === undefined ? '#FFFFFF' : foregroundColor;
 
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
-			throw new Error('addBTreeNode:Object with same ID already Exists!');
+			throw new Error('addBTreeNode: object with same ID already exists!');
 		}
 
 		const newNode = new AnimatedBTreeNode(
@@ -817,7 +817,7 @@ export default class ObjectManager {
 		foregroundColor
 	) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
-			throw new Error('addRectangleObject:Object with same ID already Exists!');
+			throw new Error('addRectangleObject: object with same ID already exists!');
 		}
 		const newNode = new AnimatedRectangle(
 			objectID,

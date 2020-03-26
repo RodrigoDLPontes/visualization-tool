@@ -216,6 +216,7 @@ export default class AnimationManager extends EventListener {
 		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () => this.skipBack());
 		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () => this.stepBack());
 		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () => this.doPlayPause());
+		this.playPauseBackButton.setAttribute('style', 'width: 80px');
 		this.stepForwardButton = addControlToAnimationBar(
 			animBarRef,
 			'Button',

@@ -457,7 +457,7 @@ export default class DijkstraPrim extends Graph {
 			startvalue = this.startField.value;
 			this.startField.value = '';
 			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue < this.size)
+			if (startvalue >= 0 && startvalue < this.size)
 				this.implementAction(this.doDijkstraPrim.bind(this), startvalue);
 		}
 	}

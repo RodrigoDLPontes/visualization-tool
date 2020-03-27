@@ -44,36 +44,38 @@ import {
 import { act } from '../anim/AnimationMain';
 
 const SMALL_ADJ_MATRIX_X_START = 700;
-const SMALL_ADJ_MATRIX_Y_START = 40;
+const SMALL_ADJ_MATRIX_Y_START = 45;
 const SMALL_ADJ_MATRIX_WIDTH = 30;
 const SMALL_ADJ_MATRIX_HEIGHT = 30;
 
 const SMALL_ADJ_LIST_X_START = 600;
 const SMALL_ADJ_LIST_Y_START = 30;
 
-const SMALL_ADJ_LIST_ELEM_WIDTH = 50;
+const SMALL_ADJ_LIST_ELEM_WIDTH = 80;
 const SMALL_ADJ_LIST_ELEM_HEIGHT = 30;
 
 const SMALL_ADJ_LIST_HEIGHT = 36;
 const SMALL_ADJ_LIST_WIDTH = 36;
 
-const SMALL_ADJ_LIST_SPACING = 10;
+const SMALL_ADJ_LIST_SPACING_AFTER_LIST = 15;
+const SMALL_ADJ_LIST_SPACING_BETWEEN_NODES = 15;
 
 const LARGE_ADJ_MATRIX_X_START = 575;
-const LARGE_ADJ_MATRIX_Y_START = 30;
+const LARGE_ADJ_MATRIX_Y_START = 40;
 const LARGE_ADJ_MATRIX_WIDTH = 23;
 const LARGE_ADJ_MATRIX_HEIGHT = 23;
 
 const LARGE_ADJ_LIST_X_START = 600;
 const LARGE_ADJ_LIST_Y_START = 30;
 
-const LARGE_ADJ_LIST_ELEM_WIDTH = 50;
-const LARGE_ADJ_LIST_ELEM_HEIGHT = 26;
+const LARGE_ADJ_LIST_ELEM_WIDTH = 80;
+const LARGE_ADJ_LIST_ELEM_HEIGHT = 20;
 
-const LARGE_ADJ_LIST_HEIGHT = 30;
-const LARGE_ADJ_LIST_WIDTH = 30;
+const LARGE_ADJ_LIST_HEIGHT = 25;
+const LARGE_ADJ_LIST_WIDTH = 20;
 
-const LARGE_ADJ_LIST_SPACING = 10;
+const LARGE_ADJ_LIST_SPACING_AFTER_LIST = 25;
+const LARGE_ADJ_LIST_SPACING_BETWEEN_NODES = 15;
 
 export const VERTEX_INDEX_COLOR = '#0000FF';
 export const EDGE_COLOR = '#000000';
@@ -275,7 +277,8 @@ export default class Graph extends Algorithm {
 		this.adj_list_elem_height = SMALL_ADJ_LIST_ELEM_HEIGHT;
 		this.adj_list_height = SMALL_ADJ_LIST_HEIGHT;
 		this.adj_list_width = SMALL_ADJ_LIST_WIDTH;
-		this.adj_list_spacing = SMALL_ADJ_LIST_SPACING;
+		this.adj_list_spacing_after_list = SMALL_ADJ_LIST_SPACING_AFTER_LIST;
+		this.adj_list_spacing_between_nodes = SMALL_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = SMALL_SIZE;
 		this.setup();
 	}
@@ -295,13 +298,14 @@ export default class Graph extends Algorithm {
 		this.adj_list_elem_height = LARGE_ADJ_LIST_ELEM_HEIGHT;
 		this.adj_list_height = LARGE_ADJ_LIST_HEIGHT;
 		this.adj_list_width = LARGE_ADJ_LIST_WIDTH;
-		this.adj_list_spacing = LARGE_ADJ_LIST_SPACING;
+		this.adj_list_spacing_after_list = LARGE_ADJ_LIST_SPACING_AFTER_LIST;
+		this.adj_list_spacing_between_nodes = LARGE_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = LARGE_SIZE;
 		this.setup();
 	}
 
 	adjustCurveForDirectedEdges(curve, bidirectional) {
-		if (!bidirectional || Math.abs(curve) > 0.01) {
+		if (!this.directed || !bidirectional || Math.abs(curve) > 0.01) {
 			return curve;
 		} else {
 			return 0.1;
@@ -438,7 +442,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_matrix_index_x[i],
-				i,
+				String.fromCharCode(65 + i),
 				this.adj_matrix_x_start + i * this.adj_matrix_width,
 				this.adj_matrix_y_start - this.adj_matrix_height
 			);
@@ -446,7 +450,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_matrix_index_y[i],
-				i,
+				String.fromCharCode(65 + i),
 				this.adj_matrix_x_start - this.adj_matrix_width,
 				this.adj_matrix_y_start + i * this.adj_matrix_height
 			);
@@ -511,14 +515,18 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_list_index[i],
-				i,
+				String.fromCharCode(65 + i),
 				this.adj_list_x_start - this.adj_list_width,
 				this.adj_list_y_start + i * this.adj_list_height
 			);
 			this.cmd(act.setForegroundColor, this.adj_list_index[i], VERTEX_INDEX_COLOR);
 			this.cmd(act.setLayer, this.adj_list_index[i], 2);
 			let lastElem = this.adj_list_list[i];
-			let nextXPos = this.adj_list_x_start + this.adj_list_width + this.adj_list_spacing;
+			let nextXPos =
+				this.adj_list_x_start +
+				this.adj_list_width +
+				this.adj_list_spacing_after_list +
+				this.adj_list_spacing_between_nodes;
 			let hasEdges = false;
 			for (let j = 0; j < this.size; j++) {
 				if (this.adj_matrix[i][j] > 0) {
@@ -527,22 +535,20 @@ export default class Graph extends Algorithm {
 					this.cmd(
 						act.createLinkedListNode,
 						this.adj_list_edges[i][j],
-						j,
+						[String.fromCharCode(65 + j), this.adj_matrix[i][j]],
 						this.adj_list_elem_width,
 						this.adj_list_elem_height,
 						nextXPos,
 						this.adj_list_y_start + i * this.adj_list_height,
 						0.25,
 						0,
-						1,
-						2
+						1
 					);
 					this.cmd(act.setNull, this.adj_list_edges[i][j], 1);
-					this.cmd(act.setText, this.adj_list_edges[i][j], this.adj_matrix[i][j], 1);
 					this.cmd(act.setTextColor, this.adj_list_edges[i][j], VERTEX_INDEX_COLOR, 0);
 					this.cmd(act.setLayer, this.adj_list_edges[i][j], 2);
 
-					nextXPos = nextXPos + this.adj_list_elem_width + this.adj_list_spacing;
+					nextXPos = nextXPos + this.adj_list_elem_width + this.adj_list_spacing_between_nodes;
 					this.cmd(act.connect, lastElem, this.adj_list_edges[i][j]);
 					this.cmd(act.setNull, lastElem, 0);
 					lastElem = this.adj_list_edges[i][j];
@@ -554,9 +560,9 @@ export default class Graph extends Algorithm {
 		}
 	}
 
-	// NEED TO OVERRIDE IN PARENT
+	// Should be overwritten in child
 	reset() {
-		// Throw an error?
+		throw new Error('reset() should be implemented in child');
 	}
 
 	disableUI() {

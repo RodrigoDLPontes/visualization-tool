@@ -69,7 +69,7 @@ const CHECKMARK = '\u2713';
 
 export default class DFS extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h);
+		super(am, w, h, false);
 		this.showEdgeCosts = false;
 	}
 
@@ -308,7 +308,7 @@ export default class DFS extends Graph {
 								this.curve[vertex][neighbor],
 								this.adj_matrix[neighbor][vertex] >= 0
 							),
-							1,
+							this.directed,
 							''
 						);
 						this.stack.push(neighbor);
@@ -470,7 +470,7 @@ export default class DFS extends Graph {
 								this.curve[startVertex][neighbor],
 								this.adj_matrix[neighbor][startVertex] >= 0
 							),
-							1,
+							this.directed,
 							''
 						);
 						this.cmd(

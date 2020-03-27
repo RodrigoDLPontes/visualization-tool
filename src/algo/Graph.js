@@ -84,16 +84,18 @@ export const SMALL_SIZE = 8;
 export const LARGE_SIZE = 18;
 
 export default class Graph extends Algorithm {
-	constructor(am, w, h, dir, dag) {
+	constructor(am, w, h, dir, dag, costs) {
 		super(am, w, h);
 		dir = dir === undefined ? true : dir;
 		dag = dag === undefined ? false : dag;
+		costs = costs === undefined ? false : costs;
 
 		this.nextIndex = 0;
 
 		this.currentLayer = 1;
-		this.isDAG = dag;
 		this.directed = dir;
+		this.isDAG = dag;
+		this.showEdgeCosts = costs;
 		this.currentLayer = 1;
 		this.addControls();
 
@@ -111,15 +113,15 @@ export default class Graph extends Algorithm {
 
 		if (addDirection) {
 			const radioButtonList = addRadioButtonGroupToAlgorithmBar(
-				['Directed Graph', 'Undirected Graph'],
+				['Undirected Graph', 'Directed Graph'],
 				'GraphType'
 			);
-			this.directedGraphButton = radioButtonList[0];
-			this.directedGraphButton.onclick = this.directedGraphCallback.bind(this, true);
-			this.undirectedGraphButton = radioButtonList[1];
+			this.undirectedGraphButton = radioButtonList[0];
 			this.undirectedGraphButton.onclick = this.directedGraphCallback.bind(this, false);
-			this.directedGraphButton.checked = this.directed;
 			this.undirectedGraphButton.checked = !this.directed;
+			this.directedGraphButton = radioButtonList[1];
+			this.directedGraphButton.onclick = this.directedGraphCallback.bind(this, true);
+			this.directedGraphButton.checked = this.directed;
 
 			addDivisorToAlgorithmBar();
 		}

@@ -58,7 +58,7 @@ const CHECKMARK = '\u2713';
 
 export default class BFS extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h);
+		super(am, w, h, false);
 		this.showEdgeCosts = false;
 	}
 
@@ -293,7 +293,7 @@ export default class BFS extends Graph {
 								this.curve[vertex][neighbor],
 								this.adj_matrix[neighbor][vertex] >= 0
 							),
-							1,
+							this.directed,
 							''
 						);
 						this.queue[tail] = neighbor;

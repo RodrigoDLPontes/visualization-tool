@@ -28,7 +28,7 @@ import AnimatedObject from "./AnimatedObject.js";
 import { UndoBlock } from "./UndoFunctions.js";
 
 export default class AnimatedLinkedListNode extends AnimatedObject {
-	constructor(objectID, label, w, h, linkPercent, vertical, linkPosEnd, backgroundColor, foregroundColor) {
+	constructor(objectID, labels, w, h, linkPercent, vertical, linkPosEnd, backgroundColor, foregroundColor) {
 		super();
 
 		this.objectID = objectID;
@@ -45,10 +45,10 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		this.linkPercent = linkPercent;
 		this.nullPointer = false;
 
-		this.label = label;
-		this.labelPosX = 0;
-		this.labelPosY = 0;
-		this.labelColor = foregroundColor;
+		this.labels = labels;
+		this.labelPosX = [0];
+		this.labelPosY = [0];
+		this.labelColors = [foregroundColor];
 	}
 
 	left() {
@@ -101,11 +101,6 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		}
 	}
 
-	resetTextPosition() {
-		this.labelPosX = this.x;
-		this.labelPosY = this.y;
-	}
-
 	getTailPointerAttachPos(fromX, fromY, anchor) {
 		if (this.vertical && this.linkPosEnd) {
 			return [this.x, this.y + this.h / 2.0];
@@ -124,12 +119,10 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 
 	setWidth(w) {
 		this.w = w;
-		this.resetTextPosition();
 	}
 
 	setHeight(h) {
 		this.h = h;
-		this.resetTextPosition();
 	}
 
 	getWidth() {
@@ -181,8 +174,24 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 
 		if (this.vertical) {
 			startX = this.left();
+			for (let i = 1; i < this.labels.length; i++) {
+				startY = this.y + this.h * (1 - this.linkPercent) * (i / this.labels.length - 0.5);
+				context.beginPath();
+				context.moveTo(startX ,startY);
+				context.lineTo(startX + this.w, startY);
+				context.closePath();
+				context.stroke();
+			}
 		} else {
 			startY = this.top();
+			for (let i = 1; i < this.labels.length; i++) {
+				startX = this.x + this.w * (1 - this.linkPercent) * (i / this.labels.length - 0.5);
+				context.beginPath();
+				context.moveTo(startX ,startY);
+				context.lineTo(startX, startY + this.h);
+				context.closePath();
+				context.stroke();
+			}
 		}
 
 		context.lineWidth = 1;
@@ -241,26 +250,42 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		context.textBaseline = "middle";
 		context.lineWidth = 2;
 
-		this.resetTextPosition();
-		context.fillStyle = this.labelColor;
-		context.fillText(this.label, this.labelPosX, this.labelPosY);
+		if (this.vertical) {
+			this.labelPosX[0] = this.x;
+			this.labelPosY[0] = this.y + this.h * (1 - this.linkPercent) / 2 * (1 / this.labels.length - 1);
+			for (let i = 1; i < this.labels.length; i++) {
+				this.labelPosX[i] = this.x;
+				this.labelPosY[i] = this.labelPosY[i-1] + this.h * (1 - this.linkPercent) / this.labels.length;
+			}
+		} else {
+			this.labelPosY[0] = this.y;
+			this.labelPosX[0] = this.x + this.w * (1 - this.linkPercent) / 2 * (1 / this.labels.length - 1);
+			for (let i = 1; i < this.labels.length; i++) {
+				this.labelPosY[i] = this.y;
+				this.labelPosX[i] = this.labelPosX[i-1] + this.w * (1 - this.linkPercent) / this.labels.length;
+			}
+		}
+
+		for (let i = 0; i < this.labels.length; i++) {
+			context.fillStyle = this.labelColors[i];
+			context.fillText(this.labels[i], this.labelPosX[i], this.labelPosY[i]); 
+		}
 	}
 
-	setTextColor(color) {
-		this.labelColor = color;
+	setTextColor(color, index) {
+		this.labelColors[index] = color;
 	}
 
-	getTextColor() {
-		return this.labelColor;
+	getTextColor(index) {
+		return this.labelColors[index];
 	}
 
-	getText() {
-		return this.label;
+	getText(index) {
+		return this.labels[index];
 	}
 
-	setText(newText) {
-		this.label = newText;
-		this.resetTextPosition();
+	setText(newText, index) {
+		this.labels[index] = newText;
 	}
 
 	setHighlight(value) {
@@ -272,7 +297,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 	createUndoDelete() {
 		return new UndoDeleteLinkedList(
 			this.objectID,
-			this.label,
+			this.labels,
 			this.w,
 			this.h,
 			this.x,
@@ -282,7 +307,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			this.linkPosEnd,
 			this.backgroundColor,
 			this.foregroundColor,
-			this.labelColor,
+			this.labelColors,
 			this.layer,
 			this.nullPointer,
 			this.highlighted,
@@ -294,7 +319,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 class UndoDeleteLinkedList extends UndoBlock {
 	constructor(
 		objectID,
-		label,
+		labels,
 		w,
 		h,
 		x,
@@ -304,7 +329,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 		linkPosEnd,
 		backgroundColor,
 		foregroundColor,
-		labelColor,
+		labelColors,
 		layer,
 		nullPointer,
 		highlighted,
@@ -312,7 +337,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 	) {
 		super();
 		this.objectID = objectID;
-		this.label = label;
+		this.labels = labels;
 		this.w = w;
 		this.h = h;
 		this.x = x;
@@ -322,7 +347,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 		this.linkPosEnd = linkPosEnd;
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
-		this.labelColor = labelColor;
+		this.labelColors = labelColors;
 		this.layer = layer;
 		this.nullPointer = nullPointer;
 		this.highlighted = highlighted;
@@ -332,7 +357,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 	undoInitialStep(world) {
 		world.addLinkedListObject(
 			this.objectID,
-			this.label,
+			this.labels,
 			this.w,
 			this.h,
 			this.linkPercent,
@@ -344,7 +369,9 @@ class UndoDeleteLinkedList extends UndoBlock {
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);
 		world.setNull(this.objectID, this.nullPointer);
-		world.setTextColor(this.objectID, this.labelColor);
+		for (let i = 0; i < this.labels.length; i++) {
+			world.setTextColor(this.objectID, this.labelColors[i], i);
+		}
 		world.setHighlight(this.objectID, this.highlighted, this.highlightColor);
 	}
 }

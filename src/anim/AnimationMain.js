@@ -943,6 +943,7 @@ export const act = {
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
 	createLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, vertical, linkPosEnd, bgColor, fgColor
+		params[1] = Array.isArray(params[1]) ? params[1].map(x => String(x)) : [String(params[1])];
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
 		params[6] = params[6] === undefined ? 0.25 : params[6];
@@ -952,7 +953,7 @@ export const act = {
 		params[10] = params[10] || "#000000";
 		this.animatedObjects.addLinkedListObject(
 			params[0],
-			String(params[1]),
+			params[1],
 			params[2],
 			params[3],
 			params[6],

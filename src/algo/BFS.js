@@ -28,20 +28,33 @@ import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const TERMINATION_MSG_X = 25;
+const TERMINATION_MSG_Y = 15;
+
 const AUX_ARRAY_WIDTH = 25;
 const AUX_ARRAY_HEIGHT = 25;
 const AUX_ARRAY_START_Y = 50;
 
 const VISITED_START_X = 475;
-const PARENT_START_X = 400;
 
 const HIGHLIGHT_CIRCLE_COLOR = '#000000';
 const BFS_TREE_COLOR = '#0000FF';
 const BFS_QUEUE_HEAD_COLOR = '#0000FF';
 
+const LIST_START_X = 30;
+const LIST_START_Y = 70;
+const LIST_SPACING = 20;
+
+const CURRENT_VERTEX_LABEL_X = 25; 
+const CURRENT_VERTEX_LABEL_Y = 110;
+const CURRENT_VERTEX_X = 115; 
+const CURRENT_VERTEX_Y = 116;
+
 const QUEUE_START_X = 30;
-const QUEUE_START_Y = 50;
+const QUEUE_START_Y = 170;
 const QUEUE_SPACING = 30;
+
+const CHECKMARK = '\u2713';
 
 export default class BFS extends Graph {
 	constructor(am, w, h) {
@@ -69,22 +82,23 @@ export default class BFS extends Graph {
 
 	setup() {
 		super.setup();
-		this.messageID = [];
 		this.commands = [];
+		this.messageID = [];
+
 		this.visitedID = new Array(this.size);
 		this.visitedIndexID = new Array(this.size);
-		this.parentID = new Array(this.size);
-		this.parentIndexID = new Array(this.size);
+
+		this.visited = [];
+		this.queueID = [];
+		this.listID = [];
 
 		for (let i = 0; i < this.size; i++) {
 			this.visitedID[i] = this.nextIndex++;
 			this.visitedIndexID[i] = this.nextIndex++;
-			this.parentID[i] = this.nextIndex++;
-			this.parentIndexID[i] = this.nextIndex++;
 			this.cmd(
 				act.createRectangle,
 				this.visitedID[i],
-				'F',
+				'',
 				AUX_ARRAY_WIDTH,
 				AUX_ARRAY_HEIGHT,
 				VISITED_START_X,
@@ -98,36 +112,22 @@ export default class BFS extends Graph {
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
 			this.cmd(act.setForegroundColor, this.visitedIndexID[i], VERTEX_INDEX_COLOR);
-			this.cmd(
-				act.createRectangle,
-				this.parentID[i],
-				'',
-				AUX_ARRAY_WIDTH,
-				AUX_ARRAY_HEIGHT,
-				PARENT_START_X,
-				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
-			);
-			this.cmd(
-				act.createLabel,
-				this.parentIndexID[i],
-				String.fromCharCode(65 + i),
-				PARENT_START_X - AUX_ARRAY_WIDTH,
-				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
-			);
-			this.cmd(act.setForegroundColor, this.parentIndexID[i], VERTEX_INDEX_COLOR);
 		}
+
+		this.terminationLabelID = this.nextIndex++;
 		this.cmd(
 			act.createLabel,
-			this.nextIndex++,
-			'Parent',
-			PARENT_START_X - AUX_ARRAY_WIDTH,
-			AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5,
+			this.terminationLabelID,
+			'',
+			TERMINATION_MSG_X,
+			TERMINATION_MSG_Y,
 			0
 		);
+
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
-			'Visited',
+			'Visited:',
 			VISITED_START_X - AUX_ARRAY_WIDTH,
 			AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5,
 			0
@@ -135,8 +135,24 @@ export default class BFS extends Graph {
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
-			'BFS Queue',
-			QUEUE_START_X,
+			'List:',
+			LIST_START_X - 5,
+			LIST_START_Y - 30,
+			0
+		);
+		this.cmd(
+			act.createLabel,
+			this.nextIndex++,
+			'Current vertex:',
+			CURRENT_VERTEX_LABEL_X,
+			CURRENT_VERTEX_LABEL_Y,
+			0
+		);
+		this.cmd(
+			act.createLabel,
+			this.nextIndex++,
+			'Queue:',
+			QUEUE_START_X - 5,
 			QUEUE_START_Y - 30,
 			0
 		);
@@ -147,26 +163,37 @@ export default class BFS extends Graph {
 		this.highlightCircleL = this.nextIndex++;
 		this.highlightCircleAL = this.nextIndex++;
 		this.highlightCircleAM = this.nextIndex++;
+		this.lastIndex = this.nextIndex;
+	}
+
+	reset() {
+		this.nextIndex = this.lastIndex;
+		this.listID = [];
+		this.messageID = [];
 	}
 
 	startCallback() {
-		let startvalue;
-
 		if (this.startField.value !== '') {
-			startvalue = this.startField.value;
+			let startvalue = this.startField.value;
 			this.startField.value = '';
 			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue < this.size) this.implementAction(this.doBFS.bind(this), startvalue);
+			if (startvalue >= 0 && startvalue < this.size) {
+				this.implementAction(this.doBFS.bind(this), startvalue);
+			}
 		}
 	}
 
 	doBFS(startVetex) {
-		this.visited = new Array(this.size);
 		this.commands = [];
+
+		this.clear();
+
+		this.visited = new Array(this.size);
 		this.queue = new Array(this.size);
+		this.queueID = new Array(this.size);
+		this.listID = [];
 		let head = 0;
 		let tail = 0;
-		const queueID = new Array(this.size);
 		let queueSize = 0;
 
 		if (this.messageID != null) {
@@ -174,30 +201,51 @@ export default class BFS extends Graph {
 				this.cmd(act.delete, this.messageID[i]);
 			}
 		}
-
 		this.rebuildEdges();
 		this.messageID = [];
-		for (let i = 0; i < this.size; i++) {
-			this.cmd(act.setText, this.visitedID[i], 'F');
-			this.cmd(act.setText, this.parentID[i], '');
-			this.visited[i] = false;
-			queueID[i] = this.nextIndex++;
-		}
+
+		this.cmd(act.setText, this.terminationLabelID, '');
 		let vertex = startVetex;
 		this.visited[vertex] = true;
+		this.cmd(act.setText, this.visitedID[vertex], CHECKMARK);
+		this.cmd(act.setBackgroundColor, this.circleID[vertex], "#99CCFF");
 		this.queue[tail] = vertex;
+		this.queueID[tail] = this.nextIndex++;
 		this.cmd(
 			act.createLabel,
-			queueID[tail],
+			this.queueID[tail],
 			String.fromCharCode(65 + vertex),
-			QUEUE_START_X + queueSize * QUEUE_SPACING,
+			QUEUE_START_X,
 			QUEUE_START_Y
 		);
-		queueSize = queueSize + 1;
+		queueSize++;
 		tail = (tail + 1) % this.size;
+		this.cmd(act.step);
 
-		while (queueSize > 0) {
+		while (queueSize > 0 && this.listID.length < this.size) {
 			vertex = this.queue[head];
+
+			this.cmd(act.setTextColor, this.queueID[head], BFS_QUEUE_HEAD_COLOR);
+			this.cmd(act.move, this.queueID[head], CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
+			for (let i = 1; i < queueSize; i++) {
+				const nextQueueIndex = (i + head) % this.size;
+				this.cmd(
+					act.move,
+					this.queueID[nextQueueIndex],
+					QUEUE_START_X + (i - 1) * QUEUE_SPACING,
+					QUEUE_START_Y
+				);
+			}
+
+			this.listID.push(this.nextIndex);
+			this.cmd(
+				act.createLabel,
+				this.nextIndex++,
+				String.fromCharCode(65 + vertex),
+				LIST_START_X + (this.listID.length - 1) * LIST_SPACING,
+				LIST_START_Y
+			);
+
 			this.cmd(
 				act.createHighlightCircle,
 				this.highlightCircleL,
@@ -223,7 +271,7 @@ export default class BFS extends Graph {
 			);
 			this.cmd(act.setLayer, this.highlightCircleAM, 3);
 
-			this.cmd(act.setTextColor, queueID[head], BFS_QUEUE_HEAD_COLOR);
+			this.cmd(act.step);
 
 			for (let neighbor = 0; neighbor < this.size; neighbor++) {
 				if (this.adj_matrix[vertex][neighbor] > 0) {
@@ -232,12 +280,8 @@ export default class BFS extends Graph {
 					this.cmd(act.step);
 					if (!this.visited[neighbor]) {
 						this.visited[neighbor] = true;
-						this.cmd(act.setText, this.visitedID[neighbor], 'T');
-						this.cmd(
-							act.setText,
-							this.parentID[neighbor],
-							String.fromCharCode(65 + vertex)
-						);
+						this.cmd(act.setText, this.visitedID[neighbor], CHECKMARK);
+						this.cmd(act.setBackgroundColor, this.circleID[neighbor], "#99CCFF")
 						this.highlightEdge(vertex, neighbor, 0);
 						this.cmd(act.disconnect, this.circleID[vertex], this.circleID[neighbor]);
 						this.cmd(
@@ -245,20 +289,24 @@ export default class BFS extends Graph {
 							this.circleID[vertex],
 							this.circleID[neighbor],
 							BFS_TREE_COLOR,
-							this.curve[vertex][neighbor],
+							this.adjustCurveForDirectedEdges(
+								this.curve[vertex][neighbor],
+								this.adj_matrix[neighbor][vertex] >= 0
+							),
 							1,
 							''
 						);
 						this.queue[tail] = neighbor;
+						this.queueID[tail] = this.nextIndex++;
 						this.cmd(
 							act.createLabel,
-							queueID[tail],
+							this.queueID[tail],
 							String.fromCharCode(65 + neighbor),
-							QUEUE_START_X + queueSize * QUEUE_SPACING,
+							QUEUE_START_X + (queueSize - 1) * QUEUE_SPACING,
 							QUEUE_START_Y
 						);
 						tail = (tail + 1) % this.size;
-						queueSize = queueSize + 1;
+						queueSize++;
 					} else {
 						this.highlightEdge(vertex, neighbor, 0);
 					}
@@ -266,37 +314,40 @@ export default class BFS extends Graph {
 					this.cmd(act.step);
 				}
 			}
-			this.cmd(act.delete, queueID[head]);
+
+			this.cmd(act.delete, this.queueID[head]);
 			head = (head + 1) % this.size;
-			queueSize = queueSize - 1;
-			for (let i = 0; i < queueSize; i++) {
-				const nextQueueIndex = (i + head) % this.size;
-				this.cmd(
-					act.move,
-					queueID[nextQueueIndex],
-					QUEUE_START_X + i * QUEUE_SPACING,
-					QUEUE_START_Y
-				);
-			}
+			queueSize--;
 
 			this.cmd(act.delete, this.highlightCircleL);
 			this.cmd(act.delete, this.highlightCircleAM);
 			this.cmd(act.delete, this.highlightCircleAL);
 		}
 
+		if (queueSize > 0) {
+			this.cmd(act.setText, this.terminationLabelID, 'All vertices have been visited, done.');
+		} else {
+			this.cmd(act.setText, this.terminationLabelID, 'Queue is empty, done.');
+		}
+
 		return this.commands;
 	}
 
-	// NEED TO OVERRIDE IN PARENT
-	reset() {
-		// Throw an error?
+	clear() {
+		for (let i = 0; i < this.size; i++) {
+			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
+			this.cmd(act.setText, this.visitedID[i], '');
+			this.visited[i] = false;
+		}
+		for (let i = 0; i < this.listID.length; i++) {
+			this.cmd(act.delete, this.listID[i]);
+		}
 	}
 
 	enableUI(event) {
 		this.startField.disabled = false;
 		this.startButton.disabled = false;
 
-		// BFS.superclass.enableUI.call(this,event);
 		super.enableUI(event);
 	}
 
@@ -305,6 +356,5 @@ export default class BFS extends Graph {
 		this.startButton.disabled = true;
 
 		super.disableUI(event);
-		// BFS.superclass.disableUI.call(this, event);
 	}
 }

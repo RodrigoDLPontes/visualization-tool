@@ -74,6 +74,13 @@ export default class KMP extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		addLabelToAlgorithmBar('or');
+
+		// Build Failure Table button
+		this.bftButton = addControlToAlgorithmBar('Button', 'Build Failure Table');
+		this.bftButton.onclick = this.buildFailureTableCallback.bind(this);
+		this.controls.push(this.bftButton);
+
 		addDivisorToAlgorithmBar();
 
 		// Clear button
@@ -118,6 +125,15 @@ export default class KMP extends Algorithm {
 		}
 	}
 
+	buildFailureTableCallback() {
+		if (this.patternField.value !== '') {
+			this.implementAction(this.clear.bind(this));
+			const pattern = this.patternField.value;
+			this.patternField.value = '';
+			this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
+		}
+	}
+
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
@@ -125,17 +141,18 @@ export default class KMP extends Algorithm {
 	find(text, pattern) {
 		this.commands = [];
 
-		if (text.length <= 14) {
+		const maxRows = this.getMaxRows(text, pattern);
+		if (maxRows <= 14) {
 			this.cellSize = 30;
-		} else if (text.length <= 17) {
+		} else if (maxRows <= 17) {
 			this.cellSize = 25;
 		} else {
 			this.cellSize = 20;
 		}
 
 		this.textRowID = new Array(text.length);
-		this.comparisonMatrixID = new Array(text.length);
-		for (let i = 0; i < text.length; i++) {
+		this.comparisonMatrixID = new Array(maxRows);
+		for (let i = 0; i < maxRows; i++) {
 			this.comparisonMatrixID[i] = new Array(text.length);
 		}
 
@@ -156,7 +173,7 @@ export default class KMP extends Algorithm {
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
-		for (let row = 0; row < text.length; row++) {
+		for (let row = 0; row < maxRows; row++) {
 			for (let col = 0; col < text.length; col++) {
 				xpos = col * this.cellSize + ARRAY_START_X;
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
@@ -206,6 +223,9 @@ export default class KMP extends Algorithm {
 					xpos,
 					ypos
 				);
+				if (k - i < j) {
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][k], '#FFFF4D');
+				}
 			}
 			this.cmd(act.step);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
@@ -246,6 +266,51 @@ export default class KMP extends Algorithm {
 		return this.commands;
 	}
 
+	getMaxRows(text, pattern) {
+		const failureTable = [];
+		failureTable[0] = 0;
+		let i = 0;
+		let j = 1;
+		while (j < pattern.length) {
+			if (pattern.charAt(i) === pattern.charAt(j)) {
+				i++;
+				failureTable[j] = i;
+				j++;
+			} else {
+				if (i === 0) {
+					failureTable[j] = i;
+					j++;
+				} else {
+					i = failureTable[i - 1];
+				}
+			}
+		}
+		i = 0;
+		j = 0;
+		let maxRows = 0;
+		while (i <= text.length - pattern.length) {
+			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
+				j++;
+			}
+			if (j === 0) {
+				i++;
+			} else {
+				const nextAlignment = failureTable[j - 1];
+				i += j - nextAlignment;
+				j = nextAlignment;
+			}
+			maxRows++;
+		}
+		return maxRows;
+	}
+
+	onlyBuildFailureTable(textLength, pattern) {
+		this.commands = [];
+		this.cellSize = 30;
+		this.buildFailureTable(textLength, pattern);
+		return this.commands;
+	}
+
 	buildFailureTable(textLength, pattern) {
 		// Display label
 		const labelX = ARRAY_START_X + textLength * this.cellSize + 10;
@@ -254,12 +319,12 @@ export default class KMP extends Algorithm {
 			this.failureTableLabelID,
 			'Failure table:',
 			labelX,
-			FAILURE_TABLE_START_Y,
+			FAILURE_TABLE_START_Y + 10,
 			0
 		);
 
 		// Display empty failure table
-		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 100;
+		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 110;
 		this.failureTableCharacterID = new Array(pattern.length);
 		this.failureTableValueID = new Array(pattern.length);
 		for (let i = 0; i < pattern.length; i++) {
@@ -375,7 +440,7 @@ export default class KMP extends Algorithm {
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
-			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
+			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}

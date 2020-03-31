@@ -117,17 +117,18 @@ export default class BruteForce extends Algorithm {
 	find(text, pattern) {
 		this.commands = [];
 
-		if (text.length <= 14) {
+		const maxRows = text.length - pattern.length + 1;
+		if (maxRows <= 14) {
 			this.cellSize = 30;
-		} else if (text.length <= 17) {
+		} else if (maxRows <= 17) {
 			this.cellSize = 25;
 		} else {
 			this.cellSize = 20;
 		}
 
 		this.textRowID = new Array(text.length);
-		this.comparisonMatrixID = new Array(text.length);
-		for (let i = 0; i < text.length; i++) {
+		this.comparisonMatrixID = new Array(maxRows);
+		for (let i = 0; i < maxRows; i++) {
 			this.comparisonMatrixID[i] = new Array(text.length);
 		}
 
@@ -149,7 +150,7 @@ export default class BruteForce extends Algorithm {
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
-		for (let row = 0; row < text.length; row++) {
+		for (let row = 0; row < maxRows; row++) {
 			for (let col = 0; col < text.length; col++) {
 				xpos = col * this.cellSize + ARRAY_START_X;
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
@@ -238,7 +239,7 @@ export default class BruteForce extends Algorithm {
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
-			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
+			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}

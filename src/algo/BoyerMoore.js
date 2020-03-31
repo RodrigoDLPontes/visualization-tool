@@ -76,6 +76,13 @@ export default class BoyerMoore extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		addLabelToAlgorithmBar('or');
+
+		// Build Last Occurrence Table button
+		this.blotButton = addControlToAlgorithmBar('Button', 'Build Last Occurrence Table');
+		this.blotButton.onclick = this.buildLastOccurrenceTableCallback.bind(this);
+		this.controls.push(this.blotButton);
+
 		addDivisorToAlgorithmBar();
 
 		// Clear button
@@ -126,6 +133,15 @@ export default class BoyerMoore extends Algorithm {
 		}
 	}
 
+	buildLastOccurrenceTableCallback() {
+		if (this.patternField.value !== '') {
+			this.implementAction(this.clear.bind(this));
+			const pattern = this.patternField.value;
+			this.patternField.value = '';
+			this.implementAction(this.onlyBuildLastOccurrenceTable.bind(this), 0, pattern);
+		}
+	}
+
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
@@ -133,18 +149,19 @@ export default class BoyerMoore extends Algorithm {
 	find(text, pattern) {
 		this.commands = [];
 
-		this.textRowID = new Array(text.length);
-		this.comparisonMatrixID = new Array(text.length);
-		for (let i = 0; i < text.length; i++) {
-			this.comparisonMatrixID[i] = new Array(text.length);
-		}
-
-		if (text.length <= 14) {
+		const maxRows = this.getMaxRows(text, pattern);
+		if (maxRows <= 14) {
 			this.cellSize = 30;
-		} else if (text.length <= 17) {
+		} else if (maxRows <= 17) {
 			this.cellSize = 25;
 		} else {
 			this.cellSize = 20;
+		}
+
+		this.textRowID = new Array(text.length);
+		this.comparisonMatrixID = new Array(maxRows);
+		for (let i = 0; i < maxRows; i++) {
+			this.comparisonMatrixID[i] = new Array(text.length);
 		}
 
 		for (let i = 0; i < text.length; i++) {
@@ -165,7 +182,7 @@ export default class BoyerMoore extends Algorithm {
 
 		let xpos;
 		let ypos;
-		for (let row = 0; row < text.length; row++) {
+		for (let row = 0; row < maxRows; row++) {
 			for (let col = 0; col < text.length; col++) {
 				xpos = col * this.cellSize + ARRAY_START_X;
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
@@ -252,7 +269,6 @@ export default class BoyerMoore extends Algorithm {
 				this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
 				const ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
 				this.cmd(act.move, jPointerID, xpos, ypos);
-				this.cmd(act.step);
 			}
 		}
 
@@ -261,21 +277,61 @@ export default class BoyerMoore extends Algorithm {
 		return this.commands;
 	}
 
+	getMaxRows(text, pattern) {
+		const lastTable = {};
+		for (let i = 0; i < pattern.length; i++) {
+			lastTable[pattern.charAt(i)] = i;
+		}
+		let i = 0;
+		let j = pattern.length - 1;
+		let maxRows = 0;
+		while (i <= text.length - pattern.length) {
+			while (j >= 0 && pattern.charAt(j) === text.charAt(i + j)) {
+				j--;
+			}
+			if (j === -1) {
+				i++;
+			} else {
+				let shift;
+				if (text.charAt(i + j) in lastTable) {
+					shift = lastTable[text.charAt(i + j)];
+				} else {
+					shift = -1;
+				}
+				if (shift < j) {
+					i += j - shift;
+				} else {
+					i++;
+				}
+			}
+			j = pattern.length - 1;
+			maxRows++;
+		}
+		return maxRows;
+	}
+
+	onlyBuildLastOccurrenceTable(textLength, pattern) {
+		this.commands = [];
+		this.cellSize = 30;
+		this.buildLastTable(textLength, pattern);
+		return this.commands;
+	}
+
 	buildLastTable(textLength, pattern) {
 		// Display labels
 		const labelsX = ARRAY_START_X + textLength * this.cellSize + 10;
-		this.cmd(act.createLabel, this.patternTableLabelID, 'Pattern:', labelsX, PATTERN_START_Y, 0);
+		this.cmd(act.createLabel, this.patternTableLabelID, 'Pattern:', labelsX, PATTERN_START_Y - 5, 0);
 		this.cmd(
 			act.createLabel,
 			this.lastTableLabelID,
 			'Last occurence table:',
 			labelsX,
-			LAST_TABLE_START_Y,
+			LAST_TABLE_START_Y + 10,
 			0
 		);
 
 		// Display pattern table
-		let patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
+		const patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
 		this.patternTableCharacterID = new Array(pattern.length);
 		this.patternTableIndexID = new Array(pattern.length);
 		for (let i = 0; i < pattern.length; i++) {
@@ -294,45 +350,65 @@ export default class BoyerMoore extends Algorithm {
 			this.cmd(act.createLabel, this.nextIndex++, i, xpos, PATTERN_START_Y + this.cellSize);
 		}
 
-		// Create empty last occurence table
-		const characters = {};
-		for (let i = 0; i < pattern.length; i++) {
-			characters[pattern.charAt(i)] = null;
-		}
-
-		// Display empty last occurence table
+		// Create and display last occurrence table
+		const lastTable = {};
+		const lotStartX = ARRAY_START_X + textLength * this.cellSize + 155;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
-		patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 140;
 		let j = 0;
-		for (const character in characters) {
-			const xpos = patternTableStartX + j * this.cellSize;
-			this.lastTableCharacterID.push(this.nextIndex);
-			this.cmd(
-				act.createRectangle,
-				this.nextIndex,
-				character,
-				this.cellSize,
-				this.cellSize,
-				xpos,
-				LAST_TABLE_START_Y
-			);
-			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
-			characters[character] = this.nextIndex;
-			this.lastTableValueID.push(this.nextIndex);
-			this.cmd(
-				act.createRectangle,
-				this.nextIndex++,
-				'',
-				this.cellSize,
-				this.cellSize,
-				xpos,
-				LAST_TABLE_START_Y + this.cellSize
-			);
-			j++;
+
+		const lotPointerID = this.nextIndex++;
+		this.cmd(
+			act.createHighlightCircle,
+			lotPointerID,
+			'#0000FF',
+			patternTableStartX,
+			PATTERN_START_Y,
+			this.cellSize / 2
+		);
+		this.cmd(act.setHighlight, lotPointerID, 1);
+
+		for (let i = 0; i < pattern.length; i++) {
+			let xpos = patternTableStartX + i * this.cellSize;
+			this.cmd(act.move, lotPointerID, xpos, PATTERN_START_Y);
+			if (lastTable[pattern.charAt(i)]) {
+				this.cmd(act.setText, lastTable[pattern.charAt(i)][1], i);
+				this.cmd(act.setHighlight, lastTable[pattern.charAt(i)][1], 1);
+				lastTable[pattern.charAt(i)][0] = i;
+			} else {
+				xpos = lotStartX + j * this.cellSize;
+				this.lastTableCharacterID.push(this.nextIndex);
+				this.cmd(
+					act.createRectangle,
+					this.nextIndex,
+					pattern.charAt(i),
+					this.cellSize,
+					this.cellSize,
+					xpos,
+					LAST_TABLE_START_Y
+				);
+				this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
+				this.lastTableValueID.push(this.nextIndex);
+				this.cmd(
+					act.createRectangle,
+					this.nextIndex,
+					i,
+					this.cellSize,
+					this.cellSize,
+					xpos,
+					LAST_TABLE_START_Y + this.cellSize
+				);
+				this.cmd(act.setHighlight, this.nextIndex, 1);
+				j++;
+				lastTable[pattern.charAt(i)] = [i, this.nextIndex++];
+			}
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, lastTable[pattern.charAt(i)][1], 0);
 		}
-		// Display "*" entry
-		const xpos = patternTableStartX + j * this.cellSize;
+
+		// Display '*' entry
+		this.cmd(act.delete, lotPointerID);
+		const xpos = lotStartX + j * this.cellSize;
 		this.lastTableCharacterID.push(this.nextIndex);
 		this.cmd(
 			act.createRectangle,
@@ -354,13 +430,9 @@ export default class BoyerMoore extends Algorithm {
 			xpos,
 			LAST_TABLE_START_Y + this.cellSize
 		);
+		this.cmd(act.step);
 
-		// Fill out last occurence table
-		const lastTable = {};
-		for (let i = 0; i < pattern.length; i++) {
-			lastTable[pattern.charAt(i)] = i;
-			this.cmd(act.setText, characters[pattern.charAt(i)], i);
-		}
+		Object.keys(lastTable).map(char => lastTable[char] = lastTable[char][0]); // Return only indices
 		return lastTable;
 	}
 
@@ -371,7 +443,7 @@ export default class BoyerMoore extends Algorithm {
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
-			for (let j = 0; j < this.comparisonMatrixID.length; j++) {
+			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}

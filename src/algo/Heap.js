@@ -229,7 +229,7 @@ export default class Heap extends Algorithm {
 		const insertedValue = this.normalizeNumber(this.insertField.value, 4);
 		if (insertedValue !== '') {
 			this.insertField.value = '';
-			this.implementAction(this.insertElement.bind(this), insertedValue);
+			this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
 		}
 	}
 

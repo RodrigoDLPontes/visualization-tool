@@ -55,7 +55,8 @@ export default class BST extends Algorithm {
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.insertField);
 
@@ -69,7 +70,8 @@ export default class BST extends Algorithm {
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.deleteField);
 
@@ -83,7 +85,8 @@ export default class BST extends Algorithm {
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.findField);
 
@@ -130,7 +133,7 @@ export default class BST extends Algorithm {
 		if (insertedValue !== '') {
 			// set text value
 			this.insertField.value = '';
-			this.implementAction(this.add.bind(this), insertedValue);
+			this.implementAction(this.add.bind(this), parseInt(insertedValue));
 		}
 	}
 
@@ -138,7 +141,7 @@ export default class BST extends Algorithm {
 		const deletedValue = this.deleteField.value;
 		if (deletedValue !== '') {
 			this.deleteField.value = '';
-			this.implementAction(this.remove.bind(this), deletedValue);
+			this.implementAction(this.remove.bind(this), parseInt(deletedValue));
 		}
 	}
 
@@ -146,7 +149,7 @@ export default class BST extends Algorithm {
 		const findValue = this.findField.value;
 		if (findValue !== '') {
 			this.findField.value = '';
-			this.implementAction(this.findElement.bind(this), findValue);
+			this.implementAction(this.findElement.bind(this), parseInt(findValue));
 		}
 	}
 
@@ -225,7 +228,7 @@ export default class BST extends Algorithm {
 	}
 
 	doFind(tree, value) {
-		this.cmd(act.setText, 0, 'Searchiing for ' + value);
+		this.cmd(act.setText, 0, 'Searching for ' + value);
 		if (tree != null) {
 			this.cmd(act.setHighlight, tree.graphicID, 1);
 			if (tree.data === value) {
@@ -298,10 +301,10 @@ export default class BST extends Algorithm {
 			this.cmd(
 				act.setText,
 				0,
-				' Searching for ' + value + ' : < Empty Tree > (Element not found)'
+				'Searching for ' + value + ' : < Empty Tree > (Element not found)'
 			);
 			this.cmd(act.step);
-			this.cmd(act.setText, 0, ' Searching for ' + value + ' :  (Element not found)');
+			this.cmd(act.setText, 0, 'Searching for ' + value + ' :  (Element not found)');
 		}
 	}
 
@@ -319,7 +322,7 @@ export default class BST extends Algorithm {
 
 	add(data) {
 		this.commands = [];
-		this.cmd(act.setText, 0, ' Inserting ' + data);
+		this.cmd(act.setText, 0, 'Inserting ' + data);
 		this.treeRoot = this.addH(data, this.treeRoot);
 		this.resizeTree();
 		return this.commands;

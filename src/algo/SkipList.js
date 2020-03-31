@@ -218,7 +218,7 @@ export default class SkipList extends Algorithm {
 
 	removeCallback() {
 		if (this.removeField.value !== '') {
-			const value = this.removeField.value;
+			const value = parseInt(this.removeField.value);
 			this.removeField.value = '';
 			this.implementAction(this.remove.bind(this), value);
 		}
@@ -226,7 +226,7 @@ export default class SkipList extends Algorithm {
 
 	getCallback() {
 		if (this.getField.value !== '') {
-			const value = this.getField.value;
+			const value = parseInt(this.getField.value);
 			this.getField.value = '';
 			this.implementAction(this.get.bind(this), value);
 		}

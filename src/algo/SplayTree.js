@@ -65,7 +65,8 @@ export default class SplayTree extends Algorithm {
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.insertField);
 
@@ -79,7 +80,8 @@ export default class SplayTree extends Algorithm {
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.deleteField);
 
@@ -93,7 +95,8 @@ export default class SplayTree extends Algorithm {
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),
-			4
+			4,
+			true
 		);
 		this.controls.push(this.findField);
 
@@ -126,7 +129,7 @@ export default class SplayTree extends Algorithm {
 		if (insertedValue !== '') {
 			// set text value
 			this.insertField.value = '';
-			this.implementAction(this.insertElement.bind(this), insertedValue);
+			this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
 		}
 	}
 
@@ -135,7 +138,7 @@ export default class SplayTree extends Algorithm {
 		if (deletedValue !== '') {
 			deletedValue = this.normalizeNumber(deletedValue, 4);
 			this.deleteField.value = '';
-			this.implementAction(this.deleteElement.bind(this), deletedValue);
+			this.implementAction(this.deleteElement.bind(this), parseInt(deletedValue));
 		}
 	}
 
@@ -277,7 +280,7 @@ export default class SplayTree extends Algorithm {
 	findCallback() {
 		const findValue = this.normalizeNumber(this.findField.value, 4);
 		this.findField.value = '';
-		this.implementAction(this.findElement.bind(this), findValue);
+		this.implementAction(this.findElement.bind(this), parseInt(findValue));
 	}
 
 	findElement(findValue) {

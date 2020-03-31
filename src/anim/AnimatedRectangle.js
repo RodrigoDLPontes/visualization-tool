@@ -42,6 +42,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 
 		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
+		this.textColor = foregroundColor;
 		this.highlighted = false;
 
 		this.label = label;
@@ -219,8 +220,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			context.stroke();
 		}
 
-		context.fillStyle = this.foregroundColor;
-
+		context.fillStyle = this.textColor;
 		context.textAlign = 'center';
 		context.font = '12px Arial';
 		context.textBaseline = 'middle';
@@ -228,9 +228,16 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.fillText(this.label, this.x, this.y);
 	}
 
-	setText(newText, textIndex) {
+	setText(newText) {
 		this.label = newText;
-		// TODO:  setting text position?
+	}
+
+	setTextColor(color) {
+		this.textColor = color;
+	}
+
+	getTextColor() {
+		return this.textColor;
 	}
 
 	setHighlight(value) {
@@ -238,7 +245,6 @@ export default class AnimatedRectangle extends AnimatedObject {
 	}
 
 	createUndoDelete() {
-		// TODO: Add color?
 		return new UndoDeleteRectangle(
 			this.objectID,
 			this.label,

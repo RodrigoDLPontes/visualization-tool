@@ -482,13 +482,13 @@ export default class ObjectManager {
 		return this.nodes[nodeID].y;
 	}
 
-	connectEdge(objectIDfrom, objectIDto, color, curve, directed, lab, connectionPoint) {
+	connectEdge(objectIDfrom, objectIDto, color, curve, directed, lab, connectionPoint, thickness) {
 		const fromObj = this.nodes[objectIDfrom];
 		const toObj = this.nodes[objectIDto];
 		if (fromObj == null || toObj == null) {
 			throw new Error("Tried to connect two nodes, one didn't exist!");
 		}
-		const l = new AnimatedLine(fromObj, toObj, color, curve, directed, lab, connectionPoint);
+		const l = new AnimatedLine(fromObj, toObj, color, curve, directed, lab, connectionPoint, thickness);
 		if (this.edges[objectIDfrom] == null) {
 			this.edges[objectIDfrom] = [];
 		}
@@ -645,11 +645,7 @@ export default class ObjectManager {
 		this.nodes[id1].alignBottom(this.nodes[id2]);
 	}
 
-	setEdgeHighlight(
-		fromID,
-		toID,
-		val // returns old color
-	) {
+	setEdgeHighlight(fromID, toID, val) {
 		let oldHighlight = false;
 		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
 			const len = this.edges[fromID].length;
@@ -665,6 +661,24 @@ export default class ObjectManager {
 			}
 		}
 		return oldHighlight;
+	}
+
+	setEdgeThickness(fromID, toID, val) {
+		let oldThickness = 1;
+		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
+			const len = this.edges[fromID].length;
+			for (let i = len - 1; i >= 0; i--) {
+				if (
+					this.edges[fromID][i] != null &&
+					this.edges[fromID][i] !== undefined &&
+					this.edges[fromID][i].toID === this.nodes[toID]
+				) {
+					oldThickness = this.edges[fromID][i].thickness;
+					this.edges[fromID][i].setThickness(val);
+				}
+			}
+		}
+		return oldThickness;
 	}
 
 	addLabelObject(objectID, objectLabel, centering) {

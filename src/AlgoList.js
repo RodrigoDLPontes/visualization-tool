@@ -35,9 +35,9 @@ export const algoMap = {
 	RabinKarp: ['Rabin-Karp', algos.RabinKarp],
 	BFS: ['Breadth-First Search', algos.BFS],
 	DFS: ['Depth-First Search', algos.DFS],
-	Dijkstra: ["Dijkstra's", algos.Dijkstra],
-	Prim: ["Prim's", algos.Prim],
-	Kruskal: ["Kruskal's", algos.Kruskal],
+	Dijkstra: ["Dijkstra's", algos.Dijkstras],
+	Prim: ["Prim's", algos.Prims],
+	Kruskal: ["Kruskal's", algos.Kruskals],
 	DPLCS: ['LCS', algos.DPLCS, 'Longest Common Subsequence'],
 	Floyd: ['Floyd-Warshall', algos.Floyd],
 };

@@ -42,9 +42,9 @@ const AUX_ARRAY_START_Y = 50;
 
 const VISITED_START_X = 475;
 
-const HIGHLIGHT_CIRCLE_COLOR = '#000000';
-const DFS_TREE_COLOR = '#0000FF';
+const HIGHLIGHTED_EDGE_COLOR = '#0000FF';
 const DFS_STACK_TOP_COLOR = '#0000FF';
+const VISITED_COLOR = '#99CCFF';
 
 const LIST_START_X = 30;
 const LIST_START_Y = 70;
@@ -71,10 +71,13 @@ export default class DFS extends Graph {
 	constructor(am, w, h) {
 		super(am, w, h, false);
 		this.showEdgeCosts = false;
+		this.addControls();
+		this.stackType = 'physical';
 	}
 
 	addControls() {
-		addLabelToAlgorithmBar('Start Vertex: ');
+		addLabelToAlgorithmBar('Start vertex: ');
+
 		this.startField = addControlToAlgorithmBar('Text', '');
 		this.startField.onkeydown = this.returnSubmit(
 			this.startField,
@@ -82,8 +85,11 @@ export default class DFS extends Graph {
 			1,
 			false
 		);
-		this.startButton = addControlToAlgorithmBar('Button', 'Run DFS');
+		this.controls.push(this.startField);
+
+		this.startButton = addControlToAlgorithmBar('Button', 'Run');
 		this.startButton.onclick = this.startCallback.bind(this);
+		this.controls.push(this.startButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -91,12 +97,15 @@ export default class DFS extends Graph {
 			['Stack', 'Recursion'],
 			'StackType'
 		);
+
 		this.physicalStackButton = radioButtonList[0];
-		this.recursiveStackButton = radioButtonList[1];
 		this.physicalStackButton.onclick = () => (this.stackType = 'physical');
-		this.recursiveStackButton.onclick = () => (this.stackType = 'recursive');
 		this.physicalStackButton.checked = true;
-		this.stackType = 'physical';
+		this.controls.push(this.physicalStackButton);
+
+		this.recursiveStackButton = radioButtonList[1];
+		this.recursiveStackButton.onclick = () => (this.stackType = 'recursive');
+		this.controls.push(this.recursiveStackButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -130,7 +139,7 @@ export default class DFS extends Graph {
 			this.cmd(
 				act.createLabel,
 				this.visitedIndexID[i],
-				String.fromCharCode(65 + i),
+				this.toStr(i),
 				VISITED_START_X - AUX_ARRAY_WIDTH,
 				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
 			);
@@ -183,9 +192,6 @@ export default class DFS extends Graph {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
-		this.highlightCircleL = this.nextIndex++;
-		this.highlightCircleAL = this.nextIndex++;
-		this.highlightCircleAM = this.nextIndex++;
 		this.lastIndex = this.nextIndex;
 	}
 
@@ -233,13 +239,13 @@ export default class DFS extends Graph {
 		let vertexID = this.nextIndex++;
 		this.visited[vertex] = true;
 		this.cmd(act.setText, this.visitedID[vertex], CHECKMARK);
-		this.cmd(act.setBackgroundColor, this.circleID[vertex], "#99CCFF");
+		this.cmd(act.setBackgroundColor, this.circleID[vertex], VISITED_COLOR);
 		this.stack.push(vertex);
 		this.stackID.push(vertexID);
 		this.cmd(
 			act.createLabel,
 			vertexID,
-			String.fromCharCode(65 + vertex),
+			this.toStr(vertex),
 			STACK_START_X,
 			STACK_START_Y
 		);
@@ -256,35 +262,12 @@ export default class DFS extends Graph {
 			this.cmd(
 				act.createLabel,
 				this.nextIndex++,
-				String.fromCharCode(65 + vertex),
+				this.toStr(vertex),
 				LIST_START_X + (this.listID.length - 1) * LIST_SPACING,
 				LIST_START_Y
 			);
 
-			this.cmd(
-				act.createHighlightCircle,
-				this.highlightCircleL,
-				HIGHLIGHT_CIRCLE_COLOR,
-				this.x_pos_logical[vertex],
-				this.y_pos_logical[vertex]
-			);
-			this.cmd(act.setLayer, this.highlightCircleL, 1);
-			this.cmd(
-				act.createHighlightCircle,
-				this.highlightCircleAL,
-				HIGHLIGHT_CIRCLE_COLOR,
-				this.adj_list_x_start - this.adj_list_width,
-				this.adj_list_y_start + vertex * this.adj_list_height
-			);
-			this.cmd(act.setLayer, this.highlightCircleAL, 2);
-			this.cmd(
-				act.createHighlightCircle,
-				this.highlightCircleAM,
-				HIGHLIGHT_CIRCLE_COLOR,
-				this.adj_matrix_x_start - this.adj_matrix_width,
-				this.adj_matrix_y_start + vertex * this.adj_matrix_height
-			);
-			this.cmd(act.setLayer, this.highlightCircleAM, 3);
+			this.visitVertex(vertex);
 
 			this.cmd(act.step);
 
@@ -296,14 +279,14 @@ export default class DFS extends Graph {
 					if (!this.visited[neighbor]) {
 						this.visited[neighbor] = true;
 						this.cmd(act.setText, this.visitedID[neighbor], CHECKMARK);
-						this.cmd(act.setBackgroundColor, this.circleID[neighbor], "#99CCFF")
+						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR)
 						this.highlightEdge(vertex, neighbor, 0);
 						this.cmd(act.disconnect, this.circleID[vertex], this.circleID[neighbor]);
 						this.cmd(
 							act.connect,
 							this.circleID[vertex],
 							this.circleID[neighbor],
-							DFS_TREE_COLOR,
+							HIGHLIGHTED_EDGE_COLOR,
 							this.adjustCurveForDirectedEdges(
 								this.curve[vertex][neighbor],
 								this.adj_matrix[neighbor][vertex] >= 0
@@ -316,7 +299,7 @@ export default class DFS extends Graph {
 						this.cmd(
 							act.createLabel,
 							this.nextIndex++,
-							String.fromCharCode(65 + neighbor),
+							this.toStr(neighbor),
 							STACK_START_X,
 							STACK_START_Y - (this.stack.length - 1) * STACK_SPACING
 						);
@@ -330,15 +313,13 @@ export default class DFS extends Graph {
 
 			this.cmd(act.delete, vertexID);
 
-			this.cmd(act.delete, this.highlightCircleL);
-			this.cmd(act.delete, this.highlightCircleAM);
-			this.cmd(act.delete, this.highlightCircleAL);
+			this.leaveVertex();
 		}
 
 		if (this.stack.length > 0) {
-			this.cmd(act.setText, this.terminationLabelID, 'All vertices have been visited, done.');
+			this.cmd(act.setText, this.terminationLabelID, 'All vertices have been visited, done');
 		} else {
-			this.cmd(act.setText, this.terminationLabelID, 'Stack is empty, done.');
+			this.cmd(act.setText, this.terminationLabelID, 'Stack is empty, done');
 		}
 
 		return this.commands;
@@ -374,38 +355,13 @@ export default class DFS extends Graph {
 		);
 		this.cmd(act.setTextColor, this.currentID, DFS_STACK_TOP_COLOR);
 
-		this.cmd(
-			act.createHighlightCircle,
-			this.highlightCircleL,
-			HIGHLIGHT_CIRCLE_COLOR,
-			this.x_pos_logical[vertex],
-			this.y_pos_logical[vertex]
-		);
-		this.cmd(act.setLayer, this.highlightCircleL, 1);
-		this.cmd(
-			act.createHighlightCircle,
-			this.highlightCircleAL,
-			HIGHLIGHT_CIRCLE_COLOR,
-			this.adj_list_x_start - this.adj_list_width,
-			this.adj_list_y_start + vertex * this.adj_list_height
-		);
-		this.cmd(act.setLayer, this.highlightCircleAL, 2);
-		this.cmd(
-			act.createHighlightCircle,
-			this.highlightCircleAM,
-			HIGHLIGHT_CIRCLE_COLOR,
-			this.adj_matrix_x_start - this.adj_matrix_width,
-			this.adj_matrix_y_start + vertex * this.adj_matrix_height
-		);
-		this.cmd(act.setLayer, this.highlightCircleAM, 3);
+		this.visitVertex(vertex);
 
 		this.messageY = RECURSION_START_Y;
 		this.dfsVisit(vertex, RECURSION_START_X);
 
 		this.cmd(act.setText, this.terminationLabelID, 'Done.');
-		this.cmd(act.delete, this.highlightCircleL);
-		this.cmd(act.delete, this.highlightCircleAL);
-		this.cmd(act.delete, this.highlightCircleAM);
+		this.leaveVertex();
 
 		return this.commands;
 	}
@@ -414,11 +370,11 @@ export default class DFS extends Graph {
 		let nextMessage = this.nextIndex++;
 		this.messageID.push(nextMessage);
 
-		this.cmd(act.setText, this.currentID, String.fromCharCode(65 + startVertex));
+		this.cmd(act.setText, this.currentID, this.toStr(startVertex));
 		this.cmd(
 			act.createLabel,
 			nextMessage,
-			'DFS(' + String.fromCharCode(65 + startVertex) + ')',
+			'DFS(' + this.toStr(startVertex) + ')',
 			messageX,
 			this.messageY,
 			0
@@ -430,12 +386,12 @@ export default class DFS extends Graph {
 			this.cmd(
 				act.createLabel,
 				this.nextIndex++,
-				String.fromCharCode(65 + startVertex),
+				this.toStr(startVertex),
 				LIST_START_X + (this.listID.length - 1) * LIST_SPACING,
 				LIST_START_Y
 			);
 			this.cmd(act.setText, this.visitedID[startVertex], CHECKMARK);
-			this.cmd(act.setBackgroundColor, this.circleID[startVertex], "#99CCFF");
+			this.cmd(act.setBackgroundColor, this.circleID[startVertex], VISITED_COLOR);
 			this.cmd(act.step);
 			for (let neighbor = 0; neighbor < this.size; neighbor++) {
 				if (this.adj_matrix[startVertex][neighbor] > 0) {
@@ -446,7 +402,7 @@ export default class DFS extends Graph {
 						this.cmd(
 							act.createLabel,
 							nextMessage,
-							'Vertex ' + String.fromCharCode(65 + neighbor) + ' already visited.',
+							'Vertex ' + this.toStr(neighbor) + ' already visited.',
 							messageX,
 							this.messageY,
 							0
@@ -465,7 +421,7 @@ export default class DFS extends Graph {
 							act.connect,
 							this.circleID[startVertex],
 							this.circleID[neighbor],
-							DFS_TREE_COLOR,
+							HIGHLIGHTED_EDGE_COLOR,
 							this.adjustCurveForDirectedEdges(
 								this.curve[startVertex][neighbor],
 								this.adj_matrix[neighbor][startVertex] >= 0
@@ -473,56 +429,22 @@ export default class DFS extends Graph {
 							this.directed,
 							''
 						);
-						this.cmd(
-							act.move,
-							this.highlightCircleL,
-							this.x_pos_logical[neighbor],
-							this.y_pos_logical[neighbor]
-						);
-						this.cmd(
-							act.move,
-							this.highlightCircleAL,
-							this.adj_list_x_start - this.adj_list_width,
-							this.adj_list_y_start + neighbor * this.adj_list_height
-						);
-						this.cmd(
-							act.move,
-							this.highlightCircleAM,
-							this.adj_matrix_x_start - this.adj_matrix_width,
-							this.adj_matrix_y_start + neighbor * this.adj_matrix_height
-						);
+						this.leaveVertex();
+						this.visitVertex(neighbor);
 
 						this.dfsVisit(neighbor, messageX + 20);
 						nextMessage = this.nextIndex;
 						this.cmd(
 							act.createLabel,
 							nextMessage,
-							'Returning from recursive call: DFS(' +
-								String.fromCharCode(65 + neighbor) +
-								')',
+							'Returning from recursive call: DFS(' + this.toStr(neighbor) + ')',
 							messageX + 20,
 							this.messageY,
 							0
 						);
 
-						this.cmd(
-							act.move,
-							this.highlightCircleAL,
-							this.adj_list_x_start - this.adj_list_width,
-							this.adj_list_y_start + startVertex * this.adj_list_height
-						);
-						this.cmd(
-							act.move,
-							this.highlightCircleL,
-							this.x_pos_logical[startVertex],
-							this.y_pos_logical[startVertex]
-						);
-						this.cmd(
-							act.move,
-							this.highlightCircleAM,
-							this.adj_matrix_x_start - this.adj_matrix_width,
-							this.adj_matrix_y_start + startVertex * this.adj_matrix_height
-						);
+						this.leaveVertex();
+						this.visitVertex(startVertex);
 						this.cmd(act.step);
 						this.cmd(act.delete, nextMessage);
 					}
@@ -543,21 +465,15 @@ export default class DFS extends Graph {
 		}
 	}
 
-	enableUI(event) {
-		this.startField.disabled = false;
-		this.startButton.disabled = false;
-		this.physicalStackButton.disabled = false;
-		this.recursiveStackButton.disabled = false;
-
-		super.enableUI(event);
+	enableUI() {
+		for (const control of this.controls) {
+			control.disabled = false;
+		}
 	}
 
-	disableUI(event) {
-		this.startField.disabled = true;
-		this.startButton.disabled = true;
-		this.physicalStackButton.disabled = true;
-		this.recursiveStackButton.disabled = true;
-
-		super.disableUI(event);
+	disableUI() {
+		for (const control of this.controls) {
+			control.disabled = true;
+		}
 	}
 }

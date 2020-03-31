@@ -40,7 +40,7 @@ import {
 	SMALL_CURVE,
 	SMALL_X_POS_LOGICAL,
 	SMALL_Y_POS_LOGICAL,
-} from './util/GraphUtil.js';
+} from './util/GraphValues.js';
 import { act } from '../anim/AnimationMain';
 
 const SMALL_ADJ_MATRIX_X_START = 700;
@@ -80,12 +80,15 @@ const LARGE_ADJ_LIST_SPACING_BETWEEN_NODES = 15;
 export const VERTEX_INDEX_COLOR = '#0000FF';
 export const EDGE_COLOR = '#000000';
 
+const HIGHLIGHT_CIRCLE_COLOR = '#000000';
+
 export const SMALL_SIZE = 8;
 export const LARGE_SIZE = 18;
 
 export default class Graph extends Algorithm {
 	constructor(am, w, h, dir, dag, costs) {
 		super(am, w, h);
+		this.controls = [];
 		dir = dir === undefined ? true : dir;
 		dag = dag === undefined ? false : dag;
 		costs = costs === undefined ? false : costs;
@@ -97,7 +100,6 @@ export default class Graph extends Algorithm {
 		this.isDAG = dag;
 		this.showEdgeCosts = costs;
 		this.currentLayer = 1;
-		this.addControls();
 
 		this.setup_small();
 	}
@@ -106,8 +108,10 @@ export default class Graph extends Algorithm {
 		if (addDirection == null) {
 			addDirection = true;
 		}
+
 		this.newGraphButton = addControlToAlgorithmBar('Button', 'New Graph');
 		this.newGraphButton.onclick = this.newGraphCallback.bind(this);
+		this.controls.push(this.newGraphButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -116,12 +120,16 @@ export default class Graph extends Algorithm {
 				['Undirected Graph', 'Directed Graph'],
 				'GraphType'
 			);
+
 			this.undirectedGraphButton = radioButtonList[0];
 			this.undirectedGraphButton.onclick = this.directedGraphCallback.bind(this, false);
 			this.undirectedGraphButton.checked = !this.directed;
+			this.controls.push(this.undirectedGraphButton);
+
 			this.directedGraphButton = radioButtonList[1];
 			this.directedGraphButton.onclick = this.directedGraphCallback.bind(this, true);
 			this.directedGraphButton.checked = this.directed;
+			this.controls.push(this.directedGraphButton);
 
 			addDivisorToAlgorithmBar();
 		}
@@ -130,14 +138,20 @@ export default class Graph extends Algorithm {
 			['Small Graph', 'Large Graph'],
 			'GraphSize'
 		);
+
 		this.smallGraphButton = radioButtonList[0];
 		this.smallGraphButton.onclick = this.smallGraphCallback.bind(this);
+		this.smallGraphButton.checked = true;
+		this.controls.push(this.smallGraphButton);
+
 		this.largeGraphButton = radioButtonList[1];
 		this.largeGraphButton.onclick = this.largeGraphCallback.bind(this);
-		this.smallGraphButton.checked = true;
+		this.controls.push(this.largeGraphButton);
 
 		addDivisorToAlgorithmBar();
 
+		// We are explicitly not adding the buttons below to this.controls
+		// since we don't want them to be disabled
 		radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			[
 				'Logical Representation',
@@ -146,10 +160,13 @@ export default class Graph extends Algorithm {
 			],
 			'GraphRepresentation'
 		);
+
 		this.logicalButton = radioButtonList[0];
 		this.logicalButton.onclick = this.graphRepChangedCallback.bind(this, 1);
+
 		this.adjacencyListButton = radioButtonList[1];
 		this.adjacencyListButton.onclick = this.graphRepChangedCallback.bind(this, 2);
+
 		this.adjacencyMatrixButton = radioButtonList[2];
 		this.adjacencyMatrixButton.onclick = this.graphRepChangedCallback.bind(this, 3);
 		this.logicalButton.checked = true;
@@ -192,6 +209,7 @@ export default class Graph extends Algorithm {
 			for (let j = 0; j < this.size; j++) {
 				if (this.adj_matrix[i][j] >= 0) {
 					this.setEdgeColor(i, j, EDGE_COLOR);
+					this.setEdgeThickness(i, j, 1);
 				}
 			}
 		}
@@ -206,12 +224,52 @@ export default class Graph extends Algorithm {
 		}
 	}
 
+	visitVertex(i) {
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightCircleL,
+			HIGHLIGHT_CIRCLE_COLOR,
+			this.x_pos_logical[i],
+			this.y_pos_logical[i]
+		);
+		this.cmd(act.setLayer, this.highlightCircleL, 1);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightCircleAL,
+			HIGHLIGHT_CIRCLE_COLOR,
+			this.adj_list_x_start - this.adj_list_width,
+			this.adj_list_y_start + i * this.adj_list_height
+		);
+		this.cmd(act.setLayer, this.highlightCircleAL, 2);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightCircleAM,
+			HIGHLIGHT_CIRCLE_COLOR,
+			this.adj_matrix_x_start - this.adj_matrix_width,
+			this.adj_matrix_y_start + i * this.adj_matrix_height
+		);
+		this.cmd(act.setLayer, this.highlightCircleAM, 3);
+	}
+
+	leaveVertex() {
+		this.cmd(act.delete, this.highlightCircleL);
+		this.cmd(act.delete, this.highlightCircleAM);
+		this.cmd(act.delete, this.highlightCircleAL);
+	}
+
 	setEdgeColor(i, j, color) {
 		this.cmd(act.setForegroundColor, this.adj_list_edges[i][j], color);
 		this.cmd(act.setTextColor, this.adj_matrixID[i][j], color);
 		this.cmd(act.setEdgeColor, this.circleID[i], this.circleID[j], color);
 		if (!this.directed) {
 			this.cmd(act.setEdgeColor, this.circleID[j], this.circleID[i], color);
+		}
+	}
+
+	setEdgeThickness(i, j, thickness) {
+		this.cmd(act.setEdgeThickness, this.circleID[i], this.circleID[j], thickness);
+		if (!this.directed) {
+			this.cmd(act.setEdgeThickness, this.circleID[j], this.circleID[i], thickness);
 		}
 	}
 
@@ -282,6 +340,9 @@ export default class Graph extends Algorithm {
 		this.adj_list_spacing_after_list = SMALL_ADJ_LIST_SPACING_AFTER_LIST;
 		this.adj_list_spacing_between_nodes = SMALL_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = SMALL_SIZE;
+		this.highlightCircleL = this.nextIndex++;
+		this.highlightCircleAL = this.nextIndex++;
+		this.highlightCircleAM = this.nextIndex++;
 		this.setup();
 	}
 
@@ -303,6 +364,9 @@ export default class Graph extends Algorithm {
 		this.adj_list_spacing_after_list = LARGE_ADJ_LIST_SPACING_AFTER_LIST;
 		this.adj_list_spacing_between_nodes = LARGE_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = LARGE_SIZE;
+		this.highlightCircleL = this.nextIndex++;
+		this.highlightCircleAL = this.nextIndex++;
+		this.highlightCircleAM = this.nextIndex++;
 		this.setup();
 	}
 
@@ -322,7 +386,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createCircle,
 				this.circleID[i],
-				String.fromCharCode(65 + i),
+				this.toStr(i),
 				this.x_pos_logical[i],
 				this.y_pos_logical[i]
 			);
@@ -444,7 +508,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_matrix_index_x[i],
-				String.fromCharCode(65 + i),
+				this.toStr(i),
 				this.adj_matrix_x_start + i * this.adj_matrix_width,
 				this.adj_matrix_y_start - this.adj_matrix_height
 			);
@@ -452,7 +516,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_matrix_index_y[i],
-				String.fromCharCode(65 + i),
+				this.toStr(i),
 				this.adj_matrix_x_start - this.adj_matrix_width,
 				this.adj_matrix_y_start + i * this.adj_matrix_height
 			);
@@ -517,7 +581,7 @@ export default class Graph extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.adj_list_index[i],
-				String.fromCharCode(65 + i),
+				this.toStr(i),
 				this.adj_list_x_start - this.adj_list_width,
 				this.adj_list_y_start + i * this.adj_list_height
 			);
@@ -537,7 +601,7 @@ export default class Graph extends Algorithm {
 					this.cmd(
 						act.createLinkedListNode,
 						this.adj_list_edges[i][j],
-						[String.fromCharCode(65 + j), this.adj_matrix[i][j]],
+						[this.toStr(j), this.adj_matrix[i][j]],
 						this.adj_list_elem_width,
 						this.adj_list_elem_height,
 						nextXPos,
@@ -567,23 +631,7 @@ export default class Graph extends Algorithm {
 		throw new Error('reset() should be implemented in child');
 	}
 
-	disableUI() {
-		this.newGraphButton.disabled = true;
-		if (this.directedGraphButton != null)
-			this.directedGraphButton.disabled = true;
-		if (this.undirectedGraphButton != null)
-			this.undirectedGraphButton.disabled = true;
-		this.smallGraphButton.disabled = true;
-		this.largeGraphButton.disabled = true;
-	}
-
-	enableUI() {
-		this.newGraphButton.disabled = false;
-		if (this.directedGraphButton != null)
-			this.directedGraphButton.disabled = false;
-		if (this.undirectedGraphButton != null)
-			this.undirectedGraphButton.disabled = false;
-		this.smallGraphButton.disabled = false;
-		this.largeGraphButton.disabled = false;
+	toStr(vertex) {
+		return String.fromCharCode(65 + vertex);
 	}
 }

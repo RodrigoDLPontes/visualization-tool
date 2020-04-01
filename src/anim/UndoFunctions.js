@@ -257,6 +257,19 @@ export class UndoHighlightEdge extends UndoBlock {
 	}
 }
 
+export class UndoSetEdgeThickness extends UndoBlock {
+	constructor(from, to, val) {
+		super();
+		this.fromID = from;
+		this.toID = to;
+		this.thickness = val;
+	}
+
+	undoInitialStep(world) {
+		world.setEdgeThickness(this.fromID, this.toID, this.thickness);
+	}
+}
+
 export class UndoSetEdgeColor extends UndoBlock {
 	constructor(from, to, oldColor) {
 		super();

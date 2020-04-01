@@ -38,6 +38,7 @@ import {
 	UndoSetBackgroundColor,
 	UndoSetEdgeAlpha,
 	UndoSetEdgeColor,
+	UndoSetEdgeThickness,
 	UndoSetForegroundColor,
 	UndoSetHeight,
 	UndoSetHighlightIndex,
@@ -806,12 +807,13 @@ export const act = {
 			this.animatedObjects.removeObject(params[0]);
 		}
 	},
-	connect(params) { // fromID, toID | color, curve, directed, label, anchorPos
+	connect(params) { // fromID, toID | color, curve, directed, label, anchorPos, thickness
 		params[2] = params[2] || "#000000";
 		params[3] = params[3] || 0.0;
 		params[4] = params[4] !== false && params[4] !== 0;
 		params[5] = params[5] === undefined ? "" : params[5];
 		params[6] = params[6] || 0;
+		params[7] = params[7] === undefined ? 1 : params[7];
 		this.animatedObjects.connectEdge(
 			params[0],
 			params[1],
@@ -819,7 +821,8 @@ export const act = {
 			params[3],
 			params[4],
 			String(params[5]),
-			params[6]
+			params[6],
+			params[7]
 		);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
@@ -1101,6 +1104,10 @@ export const act = {
 	setEdgeHighlight(params) { // fromID, toID, highlight
 		const oldHighlight = this.animatedObjects.setEdgeHighlight(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoHighlightEdge(params[0], params[1], oldHighlight));
+	},
+	setEdgeThickness(params) { // fromID, toID, thickness
+		const oldThickness = this.animatedObjects.setEdgeThickness(params[0], params[1], params[2]);
+		this.undoBlock.push(new UndoSetEdgeThickness(params[0], params[1], oldThickness));
 	},
 	setHeight(params) { // id, height
 		const oldHeight = this.animatedObjects.getHeight(params[0]);

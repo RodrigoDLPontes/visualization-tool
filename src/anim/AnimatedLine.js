@@ -32,7 +32,7 @@ const LINE_MIN_HEIGHT_DIFF = 3;
 const LINE_RANGE = LINE_MAX_HEIGHT_DIFF - LINE_MIN_HEIGHT_DIFF + 1;
 
 export default class AnimatedLine {
-	constructor(fromID, toID, color, curve, directed, edgeLabel, anchorPoint) {
+	constructor(fromID, toID, color, curve, directed, edgeLabel, anchorPoint, thickness) {
 		this.fromID = fromID;
 		this.toID = toID;
 
@@ -46,6 +46,7 @@ export default class AnimatedLine {
 		this.anchorPoint = anchorPoint;
 
 		this.alpha = 1.0;
+		this.thickness = thickness;
 		this.arrowHeight = 8;
 		this.arrowWidth = 4;
 		this.curve = curve;
@@ -64,11 +65,15 @@ export default class AnimatedLine {
 		this.highlighted = highlightVal;
 	}
 
+	setThickness(thickness) {
+		this.thickness = thickness;
+	}
+
 	pulseHighlight(frameNum) {
 		if (this.highlighted) {
 			const frameMod = frameNum / 14.0;
 			const delta = Math.abs((frameMod % (2 * LINE_RANGE - 2)) - LINE_RANGE + 1);
-			this.highlightDiff = delta + LINE_MIN_HEIGHT_DIFF;
+			this.highlightDiff = delta + this.thickness + LINE_MIN_HEIGHT_DIFF;
 			this.dirty = true;
 		}
 	}
@@ -85,10 +90,10 @@ export default class AnimatedLine {
 		}
 	}
 
-	drawArrow(penSize, color, context) {
+	drawArrow(thickness, color, context) {
 		context.strokeStyle = color;
 		context.fillStyle = color;
-		context.lineWidth = penSize;
+		context.lineWidth = thickness;
 
 		const fromPos = this.fromID.getTailPointerAttachPos(
 			this.toID.x,
@@ -160,7 +165,7 @@ export default class AnimatedLine {
 		context.globalAlpha = this.alpha;
 
 		if (this.highlighted) this.drawArrow(this.highlightDiff, '#FF0000', context);
-		this.drawArrow(1, this.foregroundColor, context);
+		this.drawArrow(this.thickness, this.foregroundColor, context);
 	}
 
 	createUndoConnect() {
@@ -173,13 +178,14 @@ export default class AnimatedLine {
 			this.directed,
 			this.edgeLabel,
 			this.anchorPoint,
+			this.thickness,
 			this.highlighted
 		);
 	}
 }
 
 export class UndoConnect {
-	constructor(fromID, toID, createConnection, color, curve, directed, edgeLabel, anchorPoint) {
+	constructor(fromID, toID, createConnection, color, curve, directed, edgeLabel, anchorPoint, thickness, highlighted) {
 		this.fromID = fromID;
 		this.toID = toID;
 		this.createConnection = createConnection;
@@ -188,6 +194,8 @@ export class UndoConnect {
 		this.directed = directed;
 		this.edgeLabel = edgeLabel;
 		this.anchorPoint = anchorPoint;
+		this.thickness = thickness;
+		this.highlighted = highlighted;
 	}
 
 	undoInitialStep(world) {
@@ -199,8 +207,10 @@ export class UndoConnect {
 				this.curve,
 				this.directed,
 				this.edgeLabel,
-				this.anchorPoint
+				this.anchorPoint,
+				this.thickness
 			);
+			world.setEdgeHighlight(this.fromID, this.toID, this.highlighted);
 		} else {
 			world.disconnect(this.fromID, this.toID);
 		}

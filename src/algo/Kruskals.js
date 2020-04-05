@@ -54,6 +54,8 @@ const EDGE_LIST_START_Y = 110;
 
 const HIGHLIGHT_CIRCLE_COLOR_1 = '#FF9999';
 const HIGHLIGHT_CIRCLE_COLOR_2 = '#FF0000';
+const HIGHLIGHT_CIRCLE_COLOR_3 = '#0000FF';
+const HIGHLIGHT_CIRCLE_RADIUS = 12;
 
 const MST_EDGE_COLOR = '#3399FF';
 const MST_EDGE_THICKNESS = 4;
@@ -81,6 +83,8 @@ export default class Kruskals extends Graph {
 		this.setID = new Array(this.size);
 		this.setIndexID = new Array(this.size);
 		this.setData = new Array(this.size);
+		this.edgesListLeftID = [];
+		this.edgesListRightID = [];
 
 		let i;
 		for (i = 0; i < this.size; i++) {
@@ -135,6 +139,16 @@ export default class Kruskals extends Graph {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
+		this.lastIndex = this.nextIndex;
+	}
+
+	reset() {
+		this.nextIndex = this.lastIndex;
+		this.messageID = [];
+		this.edgesListLeft = [];
+		this.edgesListRight = [];
+		this.edgesListLeftID = [];
+		this.edgesListRightID = [];
 	}
 
 	startCallback() {
@@ -166,6 +180,12 @@ export default class Kruskals extends Graph {
 	doKruskal() {
 		this.commands = [];
 
+		console.log(this.edgesListLeftID);
+		for (let k = 0; k < this.edgesListLeftID.length; k++) {
+			this.cmd(act.delete, this.edgesListLeftID[k]);
+			this.cmd(act.delete, this.edgesListRightID[k]);
+		}
+
 		this.edgesListLeftID = [];
 		this.edgesListRightID = [];
 		this.edgesListLeft = [];
@@ -174,7 +194,7 @@ export default class Kruskals extends Graph {
 		let i;
 		let j;
 		for (i = 0; i < this.size; i++) {
-			this.setData[i] = -1;
+			this.setData[i] = i;
 			this.cmd(act.setText, this.setID[i], this.toStr(i));
 		}
 
@@ -285,7 +305,7 @@ export default class Kruskals extends Graph {
 		const findLabelRight = this.nextIndex++;
 		const highlightCircle1 = this.nextIndex++;
 		const highlightCircle2 = this.nextIndex++;
-		const moveLabelID = this.nextIndex++;
+		const highlightCircle3 = this.nextIndex++;
 
 		let edgesAdded = 0;
 		let nextListIndex = 0;
@@ -306,6 +326,7 @@ export default class Kruskals extends Graph {
 			0
 		);
 
+		// Run algorithm
 		while (edgesAdded < this.size - 1 && nextListIndex < edgeCount) {
 			this.cmd(
 				act.setText,
@@ -339,14 +360,16 @@ export default class Kruskals extends Graph {
 				HIGHLIGHT_CIRCLE_COLOR_1,
 				EDGE_LIST_START_X +
 					Math.floor(nextListIndex / EDGE_LIST_MAX_PER_COLUMN) *
-						EDGE_LIST_COLUMN_WIDTH,
+						EDGE_LIST_COLUMN_WIDTH - 3,
 				EDGE_LIST_START_Y +
 					(nextListIndex % EDGE_LIST_MAX_PER_COLUMN) *
 						EDGE_LIST_ELEM_HEIGHT,
-				15
+				HIGHLIGHT_CIRCLE_RADIUS
 			);
 			this.cmd(act.step);
 
+			const left = this.edgesListLeft[nextListIndex];
+			const leftRoot = this.setData[left];
 			this.cmd(
 				act.move,
 				highlightCircle1,
@@ -354,11 +377,10 @@ export default class Kruskals extends Graph {
 				SET_ARRAY_START_Y +
 					this.edgesListLeft[nextListIndex] * SET_ARRAY_ELEM_HEIGHT
 			);
-			const left = this.disjointSetFind(this.edgesListLeft[nextListIndex], highlightCircle1);
 			this.cmd(
 				act.setText,
 				findLabelLeft,
-				'find(' + this.toStr(this.edgesListLeft[nextListIndex]) + ') = ' + this.toStr(left)
+				'find(' + this.toStr(this.edgesListLeft[nextListIndex]) + ') = ' + this.toStr(leftRoot)
 			);
 			this.cmd(act.step);
 
@@ -375,14 +397,16 @@ export default class Kruskals extends Graph {
 				EDGE_LIST_START_X +
 					EDGE_LIST_ELEM_WIDTH +
 					Math.floor(nextListIndex / EDGE_LIST_MAX_PER_COLUMN) *
-						EDGE_LIST_COLUMN_WIDTH,
+						EDGE_LIST_COLUMN_WIDTH + 2,
 				EDGE_LIST_START_Y +
 					(nextListIndex % EDGE_LIST_MAX_PER_COLUMN) *
 						EDGE_LIST_ELEM_HEIGHT,
-				15
+				HIGHLIGHT_CIRCLE_RADIUS
 			);
 			this.cmd(act.step);
 
+			const right = this.edgesListRight[nextListIndex];
+			const rightRoot = this.setData[right];
 			this.cmd(
 				act.move,
 				highlightCircle2,
@@ -390,20 +414,14 @@ export default class Kruskals extends Graph {
 				SET_ARRAY_START_Y +
 					this.edgesListRight[nextListIndex] * SET_ARRAY_ELEM_HEIGHT
 			);
-
-			const right = this.disjointSetFind(
-				this.edgesListRight[nextListIndex],
-				highlightCircle2
-			);
 			this.cmd(
 				act.setText,
 				findLabelRight,
-				'find(' + this.toStr(this.edgesListRight[nextListIndex]) + ') = ' + this.toStr(right)
+				'find(' + this.toStr(this.edgesListRight[nextListIndex]) + ') = ' + this.toStr(rightRoot)
 			);
-
 			this.cmd(act.step);
 
-			if (left !== right) {
+			if (leftRoot !== rightRoot) {
 				this.cmd(
 					act.setText,
 					this.messageLabelID,
@@ -430,20 +448,49 @@ export default class Kruskals extends Graph {
 				this.cmd(
 					act.setText,
 					this.messageLabelID,
-					'union(' + this.toStr(left) + ', ' + this.toStr(right) + ')',
+					'Union sets with roots ' + this.toStr(leftRoot) + ' and ' + this.toStr(rightRoot)
 				);
-				if (this.setData[left] < this.setData[right]) {
-					this.setData[left] = this.setData[left] + this.setData[right];
-					this.setData[right] = left;
-				} else {
-					this.setData[right] = this.setData[right] + this.setData[left];
-					this.setData[left] = right;
+				this.cmd(
+					act.setText,
+					findLabelLeft, // reusing find label
+					'union(' + this.toStr(left) + ', ' + this.toStr(right) + ')'
+				);
+				this.cmd(act.setText, findLabelRight, '');
+				this.cmd(act.step);
+				const minRoot = Math.min(leftRoot, rightRoot);
+				const maxRoot = Math.max(leftRoot, rightRoot);
+				let firstMatch = true;
+				for (let k = 0; k < this.size; k++) {
+					if (this.setData[k] === maxRoot) {
+						if (firstMatch) {
+							firstMatch = false;
+							this.cmd(
+								act.createHighlightCircle,
+								highlightCircle3,
+								HIGHLIGHT_CIRCLE_COLOR_3,
+								SET_ARRAY_START_X,
+								SET_ARRAY_START_Y + k * SET_ARRAY_ELEM_HEIGHT,
+								HIGHLIGHT_CIRCLE_RADIUS
+							);
+							this.cmd(act.setHighlight, highlightCircle3, 1);
+						} else {
+							this.cmd(
+								act.move,
+								highlightCircle3,
+								SET_ARRAY_START_X,
+								SET_ARRAY_START_Y + k * SET_ARRAY_ELEM_HEIGHT,
+							);
+						}
+						this.cmd(act.step);
+						this.setData[k] = minRoot;
+						this.cmd(act.setText, this.setID[k], this.toStr(minRoot));
+						this.cmd(act.step);
+					}
 				}
-				this.cmd(act.setText, this.setID[left], this.toStr(this.setData[left]));
-				this.cmd(act.setText, this.setID[right], this.toStr(this.setData[right]));
+				this.cmd(act.delete, highlightCircle3);
 			} else {
 				this.cmd(
-					act.createLabel,
+					act.setText,
 					this.messageLabelID,
 					'Vertices in the same tree, skip edge',
 				);
@@ -468,11 +515,16 @@ export default class Kruskals extends Graph {
 		this.cmd(act.delete, findLabelLeft);
 		this.cmd(act.delete, findLabelRight);
 
-		return this.commands;
-	}
+		this.edgesListLeftID = this.edgesListLeftID.slice(nextListIndex);
+		this.edgesListRightID = this.edgesListRightID.slice(nextListIndex);
 
-	reset() {
-		this.messageID = [];
+		if (edgesAdded === this.size - 1) {
+			this.cmd(act.setText, this.messageLabelID, 'Enough edges added to MST, done');
+		} else {
+			this.cmd(act.setText, this.messageLabelID, 'Priority queue is empty, done');
+		}
+
+		return this.commands;
 	}
 
 	enableUI() {

@@ -1,3 +1,7 @@
+.VisualizationMainPage body {
+    font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
 .VisualizationMainPage #mainContent {
     /* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
     background: #ffffff;
@@ -188,7 +192,6 @@ em {
 }
 
 .VisualizationMainPage input[type=button] {
-    font-family: Cantarell;
     background: linear-gradient(#FFF, #DDD);
     border: #999 1px solid;
     border-radius: 5px;

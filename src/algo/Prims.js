@@ -24,44 +24,41 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Graph from './Graph.js';
+import { PRIMS_KRUSKALS_ADJ_LIST } from './util/GraphValues';
 import PriorityQueue from './util/PriorityQueue';
 import { act } from '../anim/AnimationMain';
-
-const AUX_ARRAY_WIDTH = 25;
-const AUX_ARRAY_HEIGHT = 25;
-const AUX_ARRAY_START_Y = 50;
-
-const VISITED_START_X = 500;
 
 const PQ_DEQUEUED_COLOR = '#0000FF';
 const VISITED_COLOR = '#99CCFF';
 const MST_EDGE_COLOR = '#3399FF';
 const MST_EDGE_THICKNESS = 4;
 
-const MESSAGE_LABEL_1_X = 20;
-const MESSAGE_LABEL_1_Y = 15;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
-const CURRENT_VERTEX_LABEL_X = 20;
-const CURRENT_VERTEX_LABEL_Y = 40;
+const VISITED_START_X = 30;
+const VISITED_START_Y = 65;
+const VISITED_SPACING = 20;
+
+const CURRENT_EDGE_LABEL_X = 25;
+const CURRENT_EDGE_LABEL_Y = 90;
 const CURRENT_VERTEX_X = 110; 
-const CURRENT_VERTEX_Y = 46;
+const CURRENT_VERTEX_Y = 96;
 
-const PQ_LABEL_X = 20;
-const PQ_LABEL_Y = 65;
+const PQ_LABEL_X = 25;
+const PQ_LABEL_Y = 115;
 
-const PQ_X = 40;
-const PQ_Y = 93;
-const PQ_SPACING = 45;
+const PQ_X = 45;
+const PQ_Y = 143;
+const PQ_SPACING = 50;
 const PQ_LINE_SPACING = 25;
-const PQ_MAX_PER_LINE = 9;
-
-const CHECKMARK = '\u2713';
+const PQ_MAX_PER_LINE = 8;
 
 export default class Prims extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h, false, false, true);
+		super(am, w, h, PRIMS_KRUSKALS_ADJ_LIST, false, false, true);
 		this.addControls();
 	}
 
@@ -87,62 +84,39 @@ export default class Prims extends Graph {
 		super.addControls(false);
 	}
 
-	setup() {
-		super.setup();
+	setup(adjMatrix) {
+		super.setup(adjMatrix);
 		this.commands = [];
 		this.messageID = null;
 
 		this.visited = [];
-		this.visitedID = new Array(this.size);
-		this.visitedIndexID = new Array(this.size);
+		this.visitedID = [];
 		this.pq = new PriorityQueue();
 
-		for (let i = 0; i < this.size; i++) {
-			this.visitedID[i] = this.nextIndex++;
-			this.visitedIndexID[i] = this.nextIndex++;
-			this.cmd(
-				act.createRectangle,
-				this.visitedID[i],
-				'',
-				AUX_ARRAY_WIDTH,
-				AUX_ARRAY_HEIGHT,
-				VISITED_START_X,
-				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
-			);
-			this.cmd(
-				act.createLabel,
-				this.visitedIndexID[i],
-				this.toStr(i),
-				VISITED_START_X - AUX_ARRAY_WIDTH,
-				AUX_ARRAY_START_Y + i * AUX_ARRAY_HEIGHT
-			);
-			this.cmd(act.setForegroundColor, this.visitedIndexID[i], VERTEX_INDEX_COLOR);
-		}
-
-		this.message1ID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.cmd(
 			act.createLabel,
-			this.message1ID,
+			this.infoLabelID,
 			'',
-			MESSAGE_LABEL_1_X,
-			MESSAGE_LABEL_1_Y,
+			INFO_MSG_X,
+			INFO_MSG_Y,
 			0
 		);
 
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
-			'Visited:',
-			VISITED_START_X - AUX_ARRAY_WIDTH,
-			AUX_ARRAY_START_Y - AUX_ARRAY_HEIGHT * 1.5,
+			'Visited Set:',
+			VISITED_START_X - 5,
+			VISITED_START_Y - 25,
 			0
 		);
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
 			'Current edge:',
-			CURRENT_VERTEX_LABEL_X,
-			CURRENT_VERTEX_LABEL_Y,
+			CURRENT_EDGE_LABEL_X,
+			CURRENT_EDGE_LABEL_Y,
 			0
 		);
 		this.cmd(
@@ -161,10 +135,13 @@ export default class Prims extends Graph {
 		this.highlightCircleL = this.nextIndex++;
 		this.highlightCircleAL = this.nextIndex++;
 		this.highlightCircleAM = this.nextIndex++;
+		this.lastIndex = this.nextIndex;
 	}
 
 	reset() {
+		this.nextIndex = this.lastIndex;
 		this.messageID = [];
+		this.visitedID = [];
 		this.pq = new PriorityQueue();
 	}
 
@@ -183,21 +160,23 @@ export default class Prims extends Graph {
 
 		this.clear();
 
-		if (this.messageID != null) {
-			for (let i = 0; i < this.messageID.length; i++) {
-				this.cmd(act.delete, this.messageID[i]);
-			}
-		}
-		this.messageID = [];
+		this.visitedID = [];
 
 		this.visitVertex(startVertex);
 
 		this.visited[startVertex] = true;
-		this.cmd(act.setText, this.visitedID[startVertex], CHECKMARK);
+		this.visitedID.push(this.nextIndex);
+		this.cmd(
+			act.createLabel,
+			this.nextIndex++,
+			this.toStr(startVertex),
+			VISITED_START_X,
+			VISITED_START_Y
+		);
 		this.cmd(act.setBackgroundColor, this.circleID[startVertex], VISITED_COLOR);
 		this.cmd(
 			act.setText,
-			this.message1ID,
+			this.infoLabelID,
 			'Adding ' + this.toStr(startVertex) + ' to visited set'
 		);
 		this.cmd(act.step);
@@ -206,7 +185,7 @@ export default class Prims extends Graph {
 		let pqIDs = [];
 		this.cmd(
 			act.setText,
-			this.message1ID,
+			this.infoLabelID,
 			'Enqueuing edges of ' + this.toStr(startVertex)
 		);
 		for (let neighbor = 0; neighbor < this.size; neighbor++) {
@@ -246,7 +225,7 @@ export default class Prims extends Graph {
 			let edgeStr = this.toStr(edge[0]) + this.toStr(edge[1]);
 			this.cmd(
 				act.setText,
-				this.message1ID,
+				this.infoLabelID,
 				'Dequeued ' + edgeStr + ', with destination ' + this.toStr(edge[1])
 			);
 			this.cmd(act.move, edgeID, CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
@@ -266,53 +245,55 @@ export default class Prims extends Graph {
 			this.cmd(act.step);
 
 			if (!this.visited[edge[1]]) {
-				this.cmd(act.setText, this.message1ID, 'Adding ' + edgeStr + ' to MST');
+				this.cmd(act.setText, this.infoLabelID, 'Adding ' + edgeStr + ' to MST');
 				this.highlightEdge(edge[0], edge[1], 0);
 				this.setEdgeColor(edge[0], edge[1], MST_EDGE_COLOR);
 				this.setEdgeThickness(edge[0], edge[1], MST_EDGE_THICKNESS)
 				this.cmd(act.step);
 
 				this.visited[edge[1]] = true;
-				this.cmd(act.setHighlight, this.visitedID[edge[1]], 1);
-				this.cmd(act.setText, this.message1ID, 'Adding ' + this.toStr(edge[1]) + ' to visited set');
-				this.cmd(act.setText, this.visitedID[edge[1]], CHECKMARK);
+				this.cmd(act.setText, this.infoLabelID, 'Adding ' + this.toStr(edge[1]) + ' to visited set');
+				this.visitedID.push(this.nextIndex);
+				this.cmd(
+					act.createLabel,
+					this.nextIndex++,
+					this.toStr(edge[1]),
+					VISITED_START_X + (this.visitedID.length - 1) * VISITED_SPACING,
+					VISITED_START_Y
+				);
 				this.cmd(act.setBackgroundColor, this.circleID[edge[1]], VISITED_COLOR);
 				this.cmd(act.step);
 
-				this.cmd(act.setHighlight, this.visitedID[edge[1]], 0);
 				this.cmd(
 					act.setText,
-					this.message1ID,
+					this.infoLabelID,
 					'Enqueuing edges of ' + this.toStr(edge[1])
 				);
 				for (let neighbor = 0; neighbor < this.size; neighbor++) {
 					if (this.adj_matrix[edge[1]][neighbor] >= 0) {
 						this.highlightEdge(edge[1], neighbor, 1);
 						this.cmd(act.setHighlight, this.circleID[neighbor], 1);
-						this.cmd(act.setHighlight, this.visitedID[neighbor], 1);
 						if (this.visited[neighbor]) {
 							this.cmd(
 								act.setText,
-								this.message1ID,
+								this.infoLabelID,
 								'Vertex ' + this.toStr(neighbor) + ' has already been visited, skipping'
 							);
 							this.cmd(act.step);
 							this.cmd(act.setHighlight, this.circleID[neighbor], 0);
-							this.cmd(act.setHighlight, this.visitedID[neighbor], 0);
 						} else {
 							this.cmd(
 								act.setText,
-								this.message1ID,
+								this.infoLabelID,
 								'Vertex ' + this.toStr(neighbor) + ' has not yet been visited'
 							);
 							this.cmd(act.step);
 
 							this.cmd(act.setHighlight, this.circleID[neighbor], 0);
-							this.cmd(act.setHighlight, this.visitedID[neighbor], 0);
 							edgeStr = this.toStr(edge[1]) + this.toStr(neighbor);
 							this.cmd(
 								act.setText,
-								this.message1ID,
+								this.infoLabelID,
 								'Enqueueing edge ' + edgeStr + ' with weight ' + this.adj_matrix[edge[1]][neighbor]
 							);
 							this.cmd(
@@ -345,14 +326,12 @@ export default class Prims extends Graph {
 				}
 			} else {
 				this.highlightEdge(edge[0], edge[1], 0);
-				this.cmd(act.setHighlight, this.visitedID[edge[1]], 1);
 				this.cmd(
 					act.setText,
-					this.message1ID,
+					this.infoLabelID,
 					this.toStr(edge[1]) + ' has already been visited, skipping'
 				);
 				this.cmd(act.step);
-				this.cmd(act.setHighlight, this.visitedID[edge[1]], 0);
 			}
 			this.leaveVertex();
 			this.cmd(act.delete, edgeID);
@@ -361,11 +340,11 @@ export default class Prims extends Graph {
 		if (this.pq.size() > 0) {
 			this.cmd(
 				act.setText,
-				this.message1ID,
+				this.infoLabelID,
 				'MST has correct amount of edges / all vertices have been visited, done'
 			);
 		} else {
-			this.cmd(act.setText, this.message1ID, 'Priority queue is empty, done');
+			this.cmd(act.setText, this.infoLabelID, 'Priority queue is empty, done');
 		}
 
 		return this.commands;
@@ -375,24 +354,20 @@ export default class Prims extends Graph {
 		this.recolorGraph();
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
-			this.cmd(act.setText, this.visitedID[i], '');
 			this.visited[i] = false;
+		}
+		for (let i = 0; i < this.visitedID.length; i++) {
+			this.cmd(act.delete, this.visitedID[i]);
 		}
 		const pqIDs = this.pq.getIDs();
 		for (const id of pqIDs) {
 			this.cmd(act.delete, id);
 		}
-	}
-
-	enableUI() {
-		for (const control of this.controls) {
-			control.disabled = false;
+		if (this.messageID != null) {
+			for (let i = 0; i < this.messageID.length; i++) {
+				this.cmd(act.delete, this.messageID[i]);
+			}
 		}
-	}
-
-	disableUI() {
-		for (const control of this.controls) {
-			control.disabled = true;
-		}
+		this.messageID = [];
 	}
 }

@@ -29,6 +29,7 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import {
@@ -86,22 +87,24 @@ export const SMALL_SIZE = 8;
 export const LARGE_SIZE = 18;
 
 export default class Graph extends Algorithm {
-	constructor(am, w, h, dir, dag, costs) {
+	constructor(am, w, h, defaultEdges, dir, dag, costs) {
 		super(am, w, h);
 		this.controls = [];
-		dir = dir === undefined ? true : dir;
+		defaultEdges = defaultEdges === [] ? undefined : defaultEdges;
+		dir = dir === undefined ? false : dir;
 		dag = dag === undefined ? false : dag;
 		costs = costs === undefined ? false : costs;
 
 		this.nextIndex = 0;
 
 		this.currentLayer = 1;
+		this.defaultEdges = defaultEdges;
 		this.directed = dir;
 		this.isDAG = dag;
 		this.showEdgeCosts = costs;
 		this.currentLayer = 1;
 
-		this.setup_small();
+		this.setup_small(this.defaultEdges);
 	}
 
 	addControls(addDirection) {
@@ -109,9 +112,14 @@ export default class Graph extends Algorithm {
 			addDirection = true;
 		}
 
-		this.newGraphButton = addControlToAlgorithmBar('Button', 'New Graph');
+		const verticalGroup = addGroupToAlgorithmBar(false);
+		this.newGraphButton = addControlToAlgorithmBar('Button', 'New Graph', verticalGroup);
 		this.newGraphButton.onclick = this.newGraphCallback.bind(this);
 		this.controls.push(this.newGraphButton);
+		this.defaultGraphButton = addControlToAlgorithmBar('Button', 'Default Graph', verticalGroup);
+		this.defaultGraphButton.onclick = this.defaultGraphCallback.bind(this);
+		this.defaultGraphButton.disabled = true;
+		this.controls.push(this.defaultGraphButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -174,6 +182,7 @@ export default class Graph extends Algorithm {
 
 	directedGraphCallback(newDirected) {
 		if (newDirected !== this.directed) {
+			this.defaultGraphButton.disabled = newDirected;
 			this.directed = newDirected;
 			this.animationManager.resetAll();
 			this.setup();
@@ -197,6 +206,11 @@ export default class Graph extends Algorithm {
 	newGraphCallback() {
 		this.animationManager.resetAll();
 		this.setup();
+	}
+
+	defaultGraphCallback() {
+		this.animationManager.resetAll();
+		this.setup(this.defaultEdges);
 	}
 
 	graphRepChangedCallback(newLayer) {
@@ -322,7 +336,7 @@ export default class Graph extends Algorithm {
 		}
 	}
 
-	setup_small() {
+	setup_small(adj_matrix) {
 		this.allowed = SMALL_ALLLOWED;
 		this.curve = SMALL_CURVE;
 		this.x_pos_logical = SMALL_X_POS_LOGICAL;
@@ -340,10 +354,11 @@ export default class Graph extends Algorithm {
 		this.adj_list_spacing_after_list = SMALL_ADJ_LIST_SPACING_AFTER_LIST;
 		this.adj_list_spacing_between_nodes = SMALL_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = SMALL_SIZE;
+		this.isLarge = false;
 		this.highlightCircleL = this.nextIndex++;
 		this.highlightCircleAL = this.nextIndex++;
 		this.highlightCircleAM = this.nextIndex++;
-		this.setup();
+		this.setup(adj_matrix);
 	}
 
 	setup_large() {
@@ -364,6 +379,7 @@ export default class Graph extends Algorithm {
 		this.adj_list_spacing_after_list = LARGE_ADJ_LIST_SPACING_AFTER_LIST;
 		this.adj_list_spacing_between_nodes = LARGE_ADJ_LIST_SPACING_BETWEEN_NODES;
 		this.size = LARGE_SIZE;
+		this.isLarge = true;
 		this.highlightCircleL = this.nextIndex++;
 		this.highlightCircleAL = this.nextIndex++;
 		this.highlightCircleAM = this.nextIndex++;
@@ -378,7 +394,7 @@ export default class Graph extends Algorithm {
 		}
 	}
 
-	setup() {
+	setup(adj_matrix) {
 		this.commands = [];
 		this.circleID = new Array(this.size);
 		for (let i = 0; i < this.size; i++) {
@@ -395,90 +411,102 @@ export default class Graph extends Algorithm {
 			this.cmd(act.setLayer, this.circleID[i], 1);
 		}
 
-		this.adj_matrix = new Array(this.size);
-		this.adj_matrixID = new Array(this.size);
-		for (let i = 0; i < this.size; i++) {
-			this.adj_matrix[i] = new Array(this.size);
-			this.adj_matrixID[i] = new Array(this.size);
-		}
-
-		let edgePercent;
-		if (this.size === SMALL_SIZE) {
-			if (this.directed) {
-				edgePercent = 0.4;
-			} else {
-				edgePercent = 0.5;
-			}
-		} else {
-			if (this.directed) {
-				edgePercent = 0.35;
-			} else {
-				edgePercent = 0.6;
-			}
-		}
-
-		if (this.directed) {
+		if (adj_matrix) {
+			this.adj_matrix = adj_matrix;
+			this.adj_matrixID = new Array(this.size);
 			for (let i = 0; i < this.size; i++) {
+				this.adj_matrixID[i] = new Array(this.size);
 				for (let j = 0; j < this.size; j++) {
 					this.adj_matrixID[i][j] = this.nextIndex++;
-					if (
-						this.allowed[i][j] &&
-						Math.random() <= edgePercent &&
-						(i < j ||
-							Math.abs(this.curve[i][j]) < 0.01 ||
-							this.adj_matrixID[j][i] === -1) &&
-						(!this.isDAG || i < j)
-					) {
-						if (this.showEdgeCosts) {
-							this.adj_matrix[i][j] = Math.floor(Math.random() * 9) + 1;
-						} else {
-							this.adj_matrix[i][j] = 1;
-						}
-					} else {
-						this.adj_matrix[i][j] = -1;
-					}
 				}
 			}
 			this.buildEdges();
 		} else {
+			this.adj_matrix = new Array(this.size);
+			this.adj_matrixID = new Array(this.size);
 			for (let i = 0; i < this.size; i++) {
-				for (let j = i + 1; j < this.size; j++) {
-					this.adj_matrixID[i][j] = this.nextIndex++;
-					this.adj_matrixID[j][i] = this.nextIndex++;
+				this.adj_matrix[i] = new Array(this.size);
+				this.adj_matrixID[i] = new Array(this.size);
+			}
 
-					if (this.allowed[i][j] && Math.random() <= edgePercent) {
-						if (this.showEdgeCosts) {
-							this.adj_matrix[i][j] = Math.floor(Math.random() * 9) + 1;
-						} else {
-							this.adj_matrix[i][j] = 1;
-						}
-						this.adj_matrix[j][i] = this.adj_matrix[i][j];
-						let edgeLabel;
-						if (this.showEdgeCosts) {
-							edgeLabel = String(this.adj_matrix[i][j]);
-						} else {
-							edgeLabel = '';
-						}
-						this.cmd(
-							act.connect,
-							this.circleID[i],
-							this.circleID[j],
-							EDGE_COLOR,
-							this.curve[i][j],
-							0,
-							edgeLabel
-						);
-					} else {
-						this.adj_matrix[i][j] = -1;
-						this.adj_matrix[j][i] = -1;
-					}
+			let edgePercent;
+			if (this.size === SMALL_SIZE) {
+				if (this.directed) {
+					edgePercent = 0.4;
+				} else {
+					edgePercent = 0.5;
+				}
+			} else {
+				if (this.directed) {
+					edgePercent = 0.35;
+				} else {
+					edgePercent = 0.6;
 				}
 			}
 
-			this.buildEdges();
+			if (this.directed) {
+				for (let i = 0; i < this.size; i++) {
+					for (let j = 0; j < this.size; j++) {
+						this.adj_matrixID[i][j] = this.nextIndex++;
+						if (
+							this.allowed[i][j] &&
+							Math.random() <= edgePercent &&
+							(i < j ||
+								Math.abs(this.curve[i][j]) < 0.01 ||
+								this.adj_matrixID[j][i] === -1) &&
+							(!this.isDAG || i < j)
+						) {
+							if (this.showEdgeCosts) {
+								this.adj_matrix[i][j] = Math.floor(Math.random() * 9) + 1;
+							} else {
+								this.adj_matrix[i][j] = 1;
+							}
+						} else {
+							this.adj_matrix[i][j] = -1;
+						}
+					}
+				}
+				this.buildEdges();
+			} else {
+				for (let i = 0; i < this.size; i++) {
+					for (let j = i + 1; j < this.size; j++) {
+						this.adj_matrixID[i][j] = this.nextIndex++;
+						this.adj_matrixID[j][i] = this.nextIndex++;
 
-			for (let i = 0; i < this.size; i++) {
-				this.adj_matrix[i][i] = -1;
+						if (this.allowed[i][j] && Math.random() <= edgePercent) {
+							if (this.showEdgeCosts) {
+								this.adj_matrix[i][j] = Math.floor(Math.random() * 9) + 1;
+							} else {
+								this.adj_matrix[i][j] = 1;
+							}
+							this.adj_matrix[j][i] = this.adj_matrix[i][j];
+							let edgeLabel;
+							if (this.showEdgeCosts) {
+								edgeLabel = String(this.adj_matrix[i][j]);
+							} else {
+								edgeLabel = '';
+							}
+							this.cmd(
+								act.connect,
+								this.circleID[i],
+								this.circleID[j],
+								EDGE_COLOR,
+								this.curve[i][j],
+								0,
+								edgeLabel
+							);
+						} else {
+							this.adj_matrix[i][j] = -1;
+							this.adj_matrix[j][i] = -1;
+						}
+					}
+				}
+
+				this.buildEdges();
+
+				for (let i = 0; i < this.size; i++) {
+					this.adj_matrix[i][i] = -1;
+				}
 			}
 		}
 
@@ -595,7 +623,7 @@ export default class Graph extends Algorithm {
 				this.adj_list_spacing_between_nodes;
 			let hasEdges = false;
 			for (let j = 0; j < this.size; j++) {
-				if (this.adj_matrix[i][j] > 0) {
+				if (this.adj_matrix[i][j] >= 0) {
 					hasEdges = true;
 					this.adj_list_edges[i][j] = this.nextIndex++;
 					this.cmd(
@@ -633,5 +661,22 @@ export default class Graph extends Algorithm {
 
 	toStr(vertex) {
 		return String.fromCharCode(65 + vertex);
+	}
+
+	enableUI() {
+		for (const control of this.controls) {
+			if (control === this.defaultGraphButton
+					&& (this.directed || this.isLarge || this.adj_matrix === this.defaultEdges)) {
+				control.disabled = true;
+			} else {
+				control.disabled = false;
+			}
+		}
+	}
+
+	disableUI() {
+		for (const control of this.controls) {
+			control.disabled = true;
+		}
 	}
 }

@@ -30,12 +30,12 @@ import { act } from '../anim/AnimationMain';
 
 export default class Floyd extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h, true, false);
-		this.showEdgeCosts = true;
+		super(am, w, h, [], false, false, true);
+		this.addControls();
 	}
 
 	addControls() {
-		this.startButton = addControlToAlgorithmBar('Button', 'Run Floyd-Warshall');
+		this.startButton = addControlToAlgorithmBar('Button', 'Run');
 		this.startButton.onclick = this.startCallback.bind(this);
 
 		addDivisorToAlgorithmBar();
@@ -414,16 +414,6 @@ export default class Floyd extends Graph {
 		this.nextIndex = oldIndex;
 
 		return this.commands;
-	}
-
-	enableUI(event) {
-		this.startButton.disabled = false;
-		super.enableUI(event);
-	}
-
-	disableUI(event) {
-		this.startButton.disabled = true;
-		super.disableUI(event);
 	}
 }
 

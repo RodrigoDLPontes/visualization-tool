@@ -26,37 +26,43 @@
 
 import Graph, { VERTEX_INDEX_COLOR } from './Graph.js';
 import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import { DIJKSTRAS_ADJ_LIST } from './util/GraphValues';
 import PriorityQueue from './util/PriorityQueue';
 import { act } from '../anim/AnimationMain';
 
 const PQ_DEQUEUED_COLOR = '#0000FF';
 const VISITED_COLOR = '#99CCFF';
 
-const MESSAGE_LABEL_1_X = 20;
-const MESSAGE_LABEL_1_Y = 15;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
-const CURRENT_VERTEX_LABEL_X = 20;
-const CURRENT_VERTEX_LABEL_Y = 40;
-const CURRENT_VERTEX_X = 105; 
-const CURRENT_VERTEX_Y = 40;
+const VISITED_START_X = 30;
+const VISITED_START_Y = 65;
+const VISITED_SPACING = 20;
 
-const PQ_LABEL_X = 20;
-const PQ_LABEL_Y = 65;
+const CURRENT_VERTEX_LABEL_X = 25;
+const CURRENT_VERTEX_LABEL_Y = 85;
+const CURRENT_VERTEX_X = 110; 
+const CURRENT_VERTEX_Y = 85;
 
-const PQ_X = 105;
-const PQ_Y = 65;
-const PQ_SPACING = 40;
+const PQ_LABEL_X = 25;
+const PQ_LABEL_Y = 110;
+
+const PQ_X = 110;
+const PQ_Y = 110;
+const PQ_SPACING = 42;
+const PQ_LINE_SPACING = 25;
+const PQ_MAX_PER_LINE = 9;
 
 const TABLE_ENTRY_WIDTH = 50;
-const TABLE_ENTRY_HEIGHT = 20;
+const SMALL_TABLE_ENTRY_HEIGHT = 20;
+const LARGE_TABLE_ENTRY_HEIGHT = 17;
 const TABLE_START_X = 50;
-const TABLE_START_Y = 120;
-
-const CHECKMARK = '\u2713';
+const TABLE_START_Y = 180;
 
 export default class Dijkstras extends Graph {
 	constructor(am, w, h) {
-		super(am, w, h, false, false, true);
+		super(am, w, h, DIJKSTRAS_ADJ_LIST, false, false, true);
 		this.addControls();
 	}
 
@@ -82,64 +88,64 @@ export default class Dijkstras extends Graph {
 		super.addControls();
 	}
 
-	setup() {
-		super.setup();
+	setup(adjMatrix) {
+		super.setup(adjMatrix);
 
 		this.commands = [];
 
 		this.vertexID = new Array(this.size);
-		this.visited = new Array(this.size);
-		this.visitedID = new Array(this.size);
+
 		this.distance = new Array(this.size);
 		this.distanceID = new Array(this.size);
+
+		this.visited = [];
+		this.visitedID = [];
+
 		this.pq = new PriorityQueue();
 
-		this.messageID = null;
-
+		this.tableEntryHeight = this.isLarge ? LARGE_TABLE_ENTRY_HEIGHT : SMALL_TABLE_ENTRY_HEIGHT;
 		for (let i = 0; i < this.size; i++) {
 			this.vertexID[i] = this.nextIndex++;
-			this.visitedID[i] = this.nextIndex++;
 			this.distanceID[i] = this.nextIndex++;
 			this.cmd(
 				act.createRectangle,
 				this.vertexID[i],
 				this.toStr(i),
 				TABLE_ENTRY_WIDTH,
-				TABLE_ENTRY_HEIGHT,
+				this.tableEntryHeight,
 				TABLE_START_X,
-				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
-			);
-			this.cmd(
-				act.createRectangle,
-				this.visitedID[i],
-				'',
-				TABLE_ENTRY_WIDTH,
-				TABLE_ENTRY_HEIGHT,
-				TABLE_START_X + TABLE_ENTRY_WIDTH,
-				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
+				TABLE_START_Y + i * this.tableEntryHeight
 			);
 			this.cmd(
 				act.createRectangle,
 				this.distanceID[i],
 				'',
 				TABLE_ENTRY_WIDTH,
-				TABLE_ENTRY_HEIGHT,
-				TABLE_START_X + 2 * TABLE_ENTRY_WIDTH,
-				TABLE_START_Y + i * TABLE_ENTRY_HEIGHT
+				this.tableEntryHeight,
+				TABLE_START_X + TABLE_ENTRY_WIDTH,
+				TABLE_START_Y + i * this.tableEntryHeight
 			);
 			this.cmd(act.setTextColor, this.vertexID[i], VERTEX_INDEX_COLOR);
 		}
 
-		this.message1ID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.cmd(
 			act.createLabel,
-			this.message1ID,
+			this.infoLabelID,
 			'',
-			MESSAGE_LABEL_1_X,
-			MESSAGE_LABEL_1_Y,
+			INFO_MSG_X,
+			INFO_MSG_Y,
 			0
 		);
 
+		this.cmd(
+			act.createLabel,
+			this.nextIndex++,
+			'Visited Set:',
+			VISITED_START_X - 5,
+			VISITED_START_Y - 25,
+			0
+		);
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
@@ -159,23 +165,9 @@ export default class Dijkstras extends Graph {
 		this.cmd(
 			act.createLabel,
 			this.nextIndex++,
-			'Vertex',
-			TABLE_START_X,
-			TABLE_START_Y - TABLE_ENTRY_HEIGHT
-		);
-		this.cmd(
-			act.createLabel,
-			this.nextIndex++,
-			'Visited',
-			TABLE_START_X + TABLE_ENTRY_WIDTH,
-			TABLE_START_Y - TABLE_ENTRY_HEIGHT
-		);
-		this.cmd(
-			act.createLabel,
-			this.nextIndex++,
-			'Distance',
-			TABLE_START_X + 2 * TABLE_ENTRY_WIDTH,
-			TABLE_START_Y - TABLE_ENTRY_HEIGHT
+			'Distance Map:',
+			TABLE_START_X + 0.5 * TABLE_ENTRY_WIDTH,
+			TABLE_START_Y - SMALL_TABLE_ENTRY_HEIGHT
 		);
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
@@ -183,10 +175,13 @@ export default class Dijkstras extends Graph {
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.comparisonMessageID = this.nextIndex++;
+		this.lastIndex = this.nextIndex;
 	}
 
 	reset() {
+		this.nextIndex = this.lastIndex;
 		this.messageID = [];
+		this.visitedID = [];
 		this.pq = new PriorityQueue();
 	}
 
@@ -210,12 +205,7 @@ export default class Dijkstras extends Graph {
 
 		this.clear();
 
-		if (this.messageID != null) {
-			for (let i = 0; i < this.messageID.length; i++) {
-				this.cmd(act.delete, this.messageID[i]);
-			}
-		}
-		this.messageID = [];
+		this.visitedID = [];
 
 		this.distance[current] = 0;
 		this.cmd(act.setText, this.distanceID[current], 0);
@@ -232,8 +222,8 @@ export default class Dijkstras extends Graph {
 		);
 		this.cmd(
 			act.setText,
-			this.message1ID,
-			'Enqueued ' + this.toStr(current) + ' with distance 0'
+			this.infoLabelID,
+			'Enqueueing ' + this.toStr(current) + ' with distance 0 and updating distance map'
 		);
 		this.cmd(act.step);
 
@@ -241,31 +231,42 @@ export default class Dijkstras extends Graph {
 			[current, currentID] = this.pq.dequeue();
 			this.cmd(
 				act.setText,
-				this.message1ID,
-				'Dequeued ' + this.toStr(current)
+				this.infoLabelID,
+				'Dequeueing ' + this.toStr(current)
 			);
 			this.cmd(act.move, currentID, CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
 			this.cmd(act.setText, currentID, this.toStr(current));
 			this.cmd(act.setTextColor, currentID, PQ_DEQUEUED_COLOR);
 			let pqIDs = this.pq.getIDs();
 			for (let i = 0; i < this.pq.size(); i++) {
-				this.cmd(act.move, pqIDs[i], PQ_X + i * PQ_SPACING, PQ_Y);
+				this.cmd(
+					act.move,
+					pqIDs[i],
+					PQ_X + i % PQ_MAX_PER_LINE * PQ_SPACING,
+					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+				);
 			}
 
 			this.visitVertex(current);
+			this.cmd(act.step);
 
 			if (!this.visited[current]) {
 				this.visited[current] = true;
-				this.cmd(act.setHighlight, this.visitedID[current], 1);
-				this.cmd(act.setText, this.message1ID, 'Adding ' + this.toStr(current) + ' to visited set');
-				this.cmd(act.setText, this.visitedID[current], CHECKMARK);
+				this.cmd(act.setText, this.infoLabelID, 'Adding ' + this.toStr(current) + ' to visited set');
+				this.visitedID.push(this.nextIndex);
+				this.cmd(
+					act.createLabel,
+					this.nextIndex++,
+					this.toStr(current),
+					VISITED_START_X + (this.visitedID.length - 1) * VISITED_SPACING,
+					VISITED_START_Y
+				);
 				this.cmd(act.setBackgroundColor, this.circleID[current], VISITED_COLOR);
 				this.cmd(act.step);
 
-				this.cmd(act.setHighlight, this.visitedID[current], 0);
 				this.cmd(
 					act.setText,
-					this.message1ID,
+					this.infoLabelID,
 					'Updating neighbors of vertex ' + this.toStr(current)
 				);
 				for (let neighbor = 0; neighbor < this.size; neighbor++) {
@@ -274,16 +275,14 @@ export default class Dijkstras extends Graph {
 						if (this.visited[neighbor]) {
 							this.cmd(
 								act.setText,
-								this.message1ID,
+								this.infoLabelID,
 								this.toStr(neighbor) + ' has already been visited, skipping'
 							);
-							this.cmd(act.setHighlight, this.visitedID[neighbor], 1);
 							this.cmd(act.step);
-							this.cmd(act.setHighlight, this.visitedID[neighbor], 0);
 						} else {
 							this.cmd(
 								act.setText,
-								this.message1ID,
+								this.infoLabelID,
 								'Comparing distances'
 							);
 							this.cmd(act.setHighlight, this.distanceID[current], 1);
@@ -304,11 +303,16 @@ export default class Dijkstras extends Graph {
 										+ ') is less than old distance ('
 										+ oldDistStr
 										+ '), updating',
-									TABLE_START_X + 2.8 * TABLE_ENTRY_WIDTH,
-									TABLE_START_Y + neighbor * TABLE_ENTRY_HEIGHT - 5,
+									TABLE_START_X + 2 * TABLE_ENTRY_WIDTH - 15,
+									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
 									0
 								);
 								this.cmd(act.step);
+								this.cmd(
+									act.setText,
+									this.infoLabelID,
+									'Updating distance'
+								);
 								this.cmd(act.setText, this.distanceID[neighbor], this.distance[neighbor]);
 								this.cmd(act.setHighlight, this.distanceID[current], 0);
 								this.cmd(act.setHighlight, this.distanceID[neighbor], 0);
@@ -317,15 +321,15 @@ export default class Dijkstras extends Graph {
 								this.pq.enqueue(neighbor, this.nextIndex, newDist);
 								this.cmd(
 									act.setText,
-									this.message1ID,
+									this.infoLabelID,
 									'Enqueueing ' + this.toStr(neighbor) + ' with distance ' + newDist
 								);
 								this.cmd(
 									act.createLabel,
 									this.nextIndex++,
 									'(' + this.toStr(neighbor) + ', ' + newDist + ')',
-									PQ_X + (this.pq.size() - 1) * PQ_SPACING,
-									PQ_Y,
+									PQ_X + (this.pq.size() - 1) % PQ_MAX_PER_LINE * PQ_SPACING,
+									PQ_Y + Math.floor((this.pq.size() - 1) / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 									0
 								);
 								this.cmd(act.step);
@@ -334,7 +338,12 @@ export default class Dijkstras extends Graph {
 								if (String(pqIDs) !== String(newPqIDs.slice(0, -1))) {
 									// Check if newly enqueued element shifted things
 									for (let i = 0; i < this.pq.size(); i++) {
-										this.cmd(act.move, newPqIDs[i], PQ_X + i * PQ_SPACING, PQ_Y);
+										this.cmd(
+											act.move,
+											newPqIDs[i],
+											PQ_X + i % PQ_MAX_PER_LINE * PQ_SPACING,
+											PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+										);
 									}
 									this.cmd(act.step);
 								}
@@ -344,12 +353,12 @@ export default class Dijkstras extends Graph {
 									act.createLabel,
 									this.comparisonMessageID,
 									'New distance ('
-										+ newDist
+										+ curDist + ' + ' + edgDist + ' = ' + newDist
 										+ ') is greater than or equal to old distance ('
 										+ oldDistStr
 										+ '), skipping',
-									TABLE_START_X + 2.8 * TABLE_ENTRY_WIDTH,
-									TABLE_START_Y + neighbor * TABLE_ENTRY_HEIGHT - 5,
+									TABLE_START_X + 2 * TABLE_ENTRY_WIDTH - 15,
+									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
 									0
 								);
 								this.cmd(act.step);
@@ -364,7 +373,7 @@ export default class Dijkstras extends Graph {
 			} else {
 				this.cmd(
 					act.setText,
-					this.message1ID,
+					this.infoLabelID,
 					this.toStr(current) + ' has already been visited, skipping'
 				);
 				this.cmd(act.step);
@@ -374,9 +383,9 @@ export default class Dijkstras extends Graph {
 		}
 
 		if (this.pq.size() > 0) {
-			this.cmd(act.setText, this.message1ID, 'All vertices have been visited, done');
+			this.cmd(act.setText, this.infoLabelID, 'All vertices have been visited, done');
 		} else {
-			this.cmd(act.setText, this.message1ID, 'Priority queue is empty, done');
+			this.cmd(act.setText, this.infoLabelID, 'Priority queue is empty, done');
 		}
 
 		return this.commands;
@@ -385,26 +394,22 @@ export default class Dijkstras extends Graph {
 	clear() {
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
-			this.cmd(act.setText, this.visitedID[i], '');
 			this.cmd(act.setText, this.distanceID[i], 'INF');
 			this.visited[i] = false;
 			this.distance[i] = -1;
+		}
+		for (let i = 0; i < this.visitedID.length; i++) {
+			this.cmd(act.delete, this.visitedID[i]);
 		}
 		const pqIDs = this.pq.getIDs();
 		for (const id of pqIDs) {
 			this.cmd(act.delete, id);
 		}
-	}
-
-	enableUI() {
-		for (const control of this.controls) {
-			control.disabled = false;
+		if (this.messageID != null) {
+			for (let i = 0; i < this.messageID.length; i++) {
+				this.cmd(act.delete, this.messageID[i]);
+			}
 		}
-	}
-
-	disableUI() {
-		for (const control of this.controls) {
-			control.disabled = true;
-		}
+		this.messageID = [];
 	}
 }

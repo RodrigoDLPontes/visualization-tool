@@ -26,7 +26,7 @@ export const algoMap = {
 	InsertionSort: ['Insertion Sort', algos.InsertionSort],
 	SelectionSort: ['Selection Sort', algos.SelectionSort],
 	QuickSort: ['QuickSort', algos.QuickSort],
-	QuickSelect: ['QuickSelect', algos.QuickSelect],
+	QuickSelect: ['QuickSelect / kᵗʰ Select', algos.QuickSelect],
 	MergeSort: ['MergeSort', algos.MergeSort],
 	LSDRadix: ['LSD Radix Sort', algos.LSDRadix],
 	BruteForce: ['Brute Force', algos.BruteForce],

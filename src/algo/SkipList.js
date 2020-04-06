@@ -93,7 +93,7 @@ export default class SkipList extends Algorithm {
 		addLabelToAlgorithmBar('heads', topHorizontalGroup);
 
 		// Add randomly button
-		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add random amount', bottomHorizontalGroup);
+		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add randomly', bottomHorizontalGroup);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
 

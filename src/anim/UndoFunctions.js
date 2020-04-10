@@ -308,3 +308,27 @@ export class UndoSetPosition extends UndoBlock {
 		world.setNodePosition(this.objectID, this.x, this.y);
 	}
 }
+
+export class UndoSetAlwaysOnTop extends UndoBlock {
+	constructor(id, onTop) {
+		super();
+		this.objectID = id;
+		this.onTop = onTop;
+	}
+
+	undoInitialStep(world) {
+		world.setAlwaysOnTop(this.objectID, this.onTop);
+	}
+}
+
+export class UndoSetRectangleEdgeThickness extends UndoBlock {
+	constructor(id, thicknessArray) {
+		super();
+		this.objectID = id;
+		this.thicknessArray = thicknessArray;
+	}
+
+	undoInitialStep(world) {
+		world.setRectangleEdgeThickness(this.objectID, this.thicknessArray);
+	}
+}

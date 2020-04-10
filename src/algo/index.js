@@ -10,7 +10,7 @@ export { default as CircularlyLinkedList } from './CircularlyLinkedList';
 export { default as ClosedHash } from './ClosedHash';
 export { default as CocktailSort } from './CocktailSort';
 export { default as DFS } from './DFS';
-export { default as DPLCS } from './DPLCS';
+export { default as LCS } from './LCS';
 export { default as DequeArray } from './DequeArray';
 export { default as DequeLL } from './DequeLL';
 export { default as Dijkstras } from './Dijkstras';

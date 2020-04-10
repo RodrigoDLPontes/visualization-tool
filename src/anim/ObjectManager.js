@@ -447,7 +447,7 @@ export default class ObjectManager {
 
 	getTextWidth(text) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
-		this.ctx.font = '10px sans-serif';
+		this.ctx.font = '12px Arial';
 		const strList = text.split('\n');
 		let width = 0;
 		if (strList.length === 1) {
@@ -569,7 +569,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		this.nodes[id1].alignTop(this.nodes[id2]);
@@ -583,7 +583,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		this.nodes[id1].alignLeft(this.nodes[id2]);
@@ -597,7 +597,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		this.nodes[id1].alignRight(this.nodes[id2]);
@@ -611,7 +611,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		return this.nodes[id1].getAlignRightPos(this.nodes[id2]);
@@ -625,7 +625,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		return this.nodes[id1].getAlignLeftPos(this.nodes[id2]);
@@ -639,10 +639,20 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Tring to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
 			);
 		}
 		this.nodes[id1].alignBottom(this.nodes[id2]);
+	}
+
+	setAlwaysOnTop(nodeID, onTop) {
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			const oldTop = this.nodes[nodeID].alwaysOnTop;
+			this.nodes[nodeID].alwaysOnTop = onTop;
+			return oldTop;
+		} else {
+			throw new Error("Trying to bring node that doesn't exist to top");
+		}
 	}
 
 	setEdgeHighlight(fromID, toID, val) {
@@ -679,6 +689,16 @@ export default class ObjectManager {
 			}
 		}
 		return oldThickness;
+	}
+
+	setRectangleEdgeThickness(nodeID, thicknessArray) {
+		if (this.nodes[nodeID] != null && this.nodes[nodeID] !== undefined) {
+			const oldEdgeThickness = this.nodes[nodeID].getEdgeThickness();
+			this.nodes[nodeID].setEdgeThickness(thicknessArray);
+			return oldEdgeThickness;
+		} else {
+			throw new Error("Trying to bring node that doesn't exist to top");
+		}
 	}
 
 	addLabelObject(objectID, objectLabel, centering) {

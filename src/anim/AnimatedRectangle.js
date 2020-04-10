@@ -44,6 +44,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 		this.foregroundColor = foregroundColor;
 		this.textColor = foregroundColor;
 		this.highlighted = false;
+		this.thicknessArray = [false, false, false, false];
 
 		this.label = label;
 
@@ -211,6 +212,44 @@ export default class AnimatedRectangle extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
+		// Thick edges
+		// Top edge
+		if (this.thicknessArray[0]) {
+			context.lineWidth = 3;
+			context.beginPath();
+			context.moveTo(startX, startY);
+			context.lineTo(startX + this.w, startY);
+			context.stroke();
+			context.closePath();
+		}
+		// Right edge
+		if (this.thicknessArray[1]) {
+			context.lineWidth = 3;
+			context.beginPath();
+			context.moveTo(startX + this.w, startY);
+			context.lineTo(startX + this.w, startY + this.h);
+			context.stroke();
+			context.closePath();
+		}
+		// Bottom edge
+		if (this.thicknessArray[2]) {
+			context.lineWidth = 3;
+			context.beginPath();
+			context.moveTo(startX + this.w, startY + this.h);
+			context.lineTo(startX, startY + this.h);
+			context.stroke();
+			context.closePath();
+		}
+		// Left edge
+		if (this.thicknessArray[3]) {
+			context.lineWidth = 3;
+			context.beginPath();
+			context.moveTo(startX, startY + this.h);
+			context.lineTo(startX, startY);
+			context.stroke();
+			context.closePath();
+		}
+
 		context.lineWidth = 1.2;
 		if (this.nullPointer) {
 			context.beginPath();
@@ -242,6 +281,14 @@ export default class AnimatedRectangle extends AnimatedObject {
 
 	setHighlight(value) {
 		this.highlighted = value;
+	}
+
+	setEdgeThickness(thicknessArray) {
+		this.thicknessArray = thicknessArray;
+	}
+
+	getEdgeThickness() {
+		return this.thicknessArray;
 	}
 
 	createUndoDelete() {

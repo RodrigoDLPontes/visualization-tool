@@ -35,6 +35,7 @@ import {
 	UndoHighlightEdge,
 	UndoMove,
 	UndoSetAlpha,
+	UndoSetAlwaysOnTop,
 	UndoSetBackgroundColor,
 	UndoSetEdgeAlpha,
 	UndoSetEdgeColor,
@@ -47,6 +48,7 @@ import {
 	UndoSetNumElements,
 	UndoSetPosition,
 	UndoSetPrevNull,
+	UndoSetRectangleEdgeThickness,
 	UndoSetText,
 	UndoSetTextColor,
 	UndoSetWidth,
@@ -1109,6 +1111,10 @@ export const act = {
 		const oldThickness = this.animatedObjects.setEdgeThickness(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetEdgeThickness(params[0], params[1], oldThickness));
 	},
+	setRectangleEdgeThickness(params) { //id, thicknessArray
+		const oldThicknessArray = this.animatedObjects.setRectangleEdgeThickness(params[0], params[1]);
+		this.undoBlock.push(new UndoSetRectangleEdgeThickness(params[0], oldThicknessArray));
+	},
 	setHeight(params) { // id, height
 		const oldHeight = this.animatedObjects.getHeight(params[0]);
 		this.animatedObjects.setHeight(params[0], params[1]);
@@ -1193,6 +1199,10 @@ export const act = {
 		const oldY = this.animatedObjects.getNodeY(params[0]);
 		this.animatedObjects.alignBottom(params[0], params[1]);
 		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
+	},
+	bringToTop(params) {
+		const oldTop = this.animatedObjects.setAlwaysOnTop(params[0], params[1]);
+		this.undoBlock.push(new UndoSetAlwaysOnTop(params[0], oldTop));
 	},
 	moveToAlignRight(params) { // id, otherID
 		const newXY = this.animatedObjects.getAlignRightPos(params[0], params[1]);

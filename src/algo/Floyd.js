@@ -28,6 +28,46 @@ import Graph, { LARGE_SIZE, SMALL_SIZE } from './Graph.js';
 import { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const SMALL_COST_TABLE_WIDTH = 30;
+const SMALL_COST_TABLE_HEIGHT = 30;
+const SMALL_COST_TABLE_START_X = 40;
+const SMALL_COST_TABLE_START_Y = 70;
+
+const SMALL_PATH_TABLE_WIDTH = 30;
+const SMALL_PATH_TABLE_HEIGHT = 30;
+const SMALL_PATH_TABLE_START_X = 330;
+const SMALL_PATH_TABLE_START_Y = 70;
+
+const SMALL_NODE_1_X_POS = 50;
+const SMALL_NODE_1_Y_POS = 400;
+const SMALL_NODE_2_X_POS = 150;
+const SMALL_NODE_2_Y_POS = 350;
+const SMALL_NODE_3_X_POS = 250;
+const SMALL_NODE_3_Y_POS = 400;
+
+const SMALL_MESSAGE_X = 400;
+const SMALL_MESSAGE_Y = 350;
+
+const LARGE_COST_TABLE_WIDTH = 20;
+const LARGE_COST_TABLE_HEIGHT = 20;
+const LARGE_COST_TABLE_START_X = 40;
+const LARGE_COST_TABLE_START_Y = 50;
+
+const LARGE_PATH_TABLE_WIDTH = 20;
+const LARGE_PATH_TABLE_HEIGHT = 20;
+const LARGE_PATH_TABLE_START_X = 500;
+const LARGE_PATH_TABLE_START_Y = 50;
+
+const LARGE_NODE_1_X_POS = 50;
+const LARGE_NODE_1_Y_POS = 500;
+const LARGE_NODE_2_X_POS = 150;
+const LARGE_NODE_2_Y_POS = 450;
+const LARGE_NODE_3_X_POS = 250;
+const LARGE_NODE_3_Y_POS = 500;
+
+const LARGE_MESSAGE_X = 300;
+const LARGE_MESSAGE_Y = 450;
+
 export default class Floyd extends Graph {
 	constructor(am, w, h) {
 		super(am, w, h, [], false, false, true);
@@ -92,48 +132,48 @@ export default class Floyd extends Graph {
 	}
 
 	setup_small() {
-		this.cost_table_width = Floyd.SMALL_COST_TABLE_WIDTH;
-		this.cost_table_height = Floyd.SMALL_COST_TABLE_HEIGHT;
-		this.cost_table_start_x = Floyd.SMALL_COST_TABLE_START_X;
-		this.cost_table_start_y = Floyd.SMALL_COST_TABLE_START_Y;
+		this.cost_table_width = SMALL_COST_TABLE_WIDTH;
+		this.cost_table_height = SMALL_COST_TABLE_HEIGHT;
+		this.cost_table_start_x = SMALL_COST_TABLE_START_X;
+		this.cost_table_start_y = SMALL_COST_TABLE_START_Y;
 
-		this.path_table_width = Floyd.SMALL_PATH_TABLE_WIDTH;
-		this.path_table_height = Floyd.SMALL_PATH_TABLE_HEIGHT;
-		this.path_table_start_x = Floyd.SMALL_PATH_TABLE_START_X;
-		this.path_table_start_y = Floyd.SMALL_PATH_TABLE_START_Y;
+		this.path_table_width = SMALL_PATH_TABLE_WIDTH;
+		this.path_table_height = SMALL_PATH_TABLE_HEIGHT;
+		this.path_table_start_x = SMALL_PATH_TABLE_START_X;
+		this.path_table_start_y = SMALL_PATH_TABLE_START_Y;
 
-		this.node_1_x_pos = Floyd.SMALL_NODE_1_X_POS;
-		this.node_1_y_pos = Floyd.SMALL_NODE_1_Y_POS;
-		this.node_2_x_pos = Floyd.SMALL_NODE_2_X_POS;
-		this.node_2_y_pos = Floyd.SMALL_NODE_2_Y_POS;
-		this.node_3_x_pos = Floyd.SMALL_NODE_3_X_POS;
-		this.node_3_y_pos = Floyd.SMALL_NODE_3_Y_POS;
+		this.node_1_x_pos = SMALL_NODE_1_X_POS;
+		this.node_1_y_pos = SMALL_NODE_1_Y_POS;
+		this.node_2_x_pos = SMALL_NODE_2_X_POS;
+		this.node_2_y_pos = SMALL_NODE_2_Y_POS;
+		this.node_3_x_pos = SMALL_NODE_3_X_POS;
+		this.node_3_y_pos = SMALL_NODE_3_Y_POS;
 
-		this.message_x = Floyd.SMALL_MESSAGE_X;
-		this.message_y = Floyd.SMALL_MESSAGE_Y;
+		this.message_x = SMALL_MESSAGE_X;
+		this.message_y = SMALL_MESSAGE_Y;
 		super.setup_small();
 	}
 
 	setup_large() {
-		this.cost_table_width = Floyd.LARGE_COST_TABLE_WIDTH;
-		this.cost_table_height = Floyd.LARGE_COST_TABLE_HEIGHT;
-		this.cost_table_start_x = Floyd.LARGE_COST_TABLE_START_X;
-		this.cost_table_start_y = Floyd.LARGE_COST_TABLE_START_Y;
+		this.cost_table_width = LARGE_COST_TABLE_WIDTH;
+		this.cost_table_height = LARGE_COST_TABLE_HEIGHT;
+		this.cost_table_start_x = LARGE_COST_TABLE_START_X;
+		this.cost_table_start_y = LARGE_COST_TABLE_START_Y;
 
-		this.path_table_width = Floyd.LARGE_PATH_TABLE_WIDTH;
-		this.path_table_height = Floyd.LARGE_PATH_TABLE_HEIGHT;
-		this.path_table_start_x = Floyd.LARGE_PATH_TABLE_START_X;
-		this.path_table_start_y = Floyd.LARGE_PATH_TABLE_START_Y;
+		this.path_table_width = LARGE_PATH_TABLE_WIDTH;
+		this.path_table_height = LARGE_PATH_TABLE_HEIGHT;
+		this.path_table_start_x = LARGE_PATH_TABLE_START_X;
+		this.path_table_start_y = LARGE_PATH_TABLE_START_Y;
 
-		this.node_1_x_pos = Floyd.LARGE_NODE_1_X_POS;
-		this.node_1_y_pos = Floyd.LARGE_NODE_1_Y_POS;
-		this.node_2_x_pos = Floyd.LARGE_NODE_2_X_POS;
-		this.node_2_y_pos = Floyd.LARGE_NODE_2_Y_POS;
-		this.node_3_x_pos = Floyd.LARGE_NODE_3_X_POS;
-		this.node_3_y_pos = Floyd.LARGE_NODE_3_Y_POS;
+		this.node_1_x_pos = LARGE_NODE_1_X_POS;
+		this.node_1_y_pos = LARGE_NODE_1_Y_POS;
+		this.node_2_x_pos = LARGE_NODE_2_X_POS;
+		this.node_2_y_pos = LARGE_NODE_2_Y_POS;
+		this.node_3_x_pos = LARGE_NODE_3_X_POS;
+		this.node_3_y_pos = LARGE_NODE_3_Y_POS;
 
-		this.message_x = Floyd.LARGE_MESSAGE_X;
-		this.message_y = Floyd.LARGE_MESSAGE_Y;
+		this.message_x = LARGE_MESSAGE_X;
+		this.message_y = LARGE_MESSAGE_Y;
 
 		super.setup_large();
 	}
@@ -416,43 +456,3 @@ export default class Floyd extends Graph {
 		return this.commands;
 	}
 }
-
-Floyd.SMALL_COST_TABLE_WIDTH = 30;
-Floyd.SMALL_COST_TABLE_HEIGHT = 30;
-Floyd.SMALL_COST_TABLE_START_X = 40;
-Floyd.SMALL_COST_TABLE_START_Y = 70;
-
-Floyd.SMALL_PATH_TABLE_WIDTH = 30;
-Floyd.SMALL_PATH_TABLE_HEIGHT = 30;
-Floyd.SMALL_PATH_TABLE_START_X = 330;
-Floyd.SMALL_PATH_TABLE_START_Y = 70;
-
-Floyd.SMALL_NODE_1_X_POS = 50;
-Floyd.SMALL_NODE_1_Y_POS = 400;
-Floyd.SMALL_NODE_2_X_POS = 150;
-Floyd.SMALL_NODE_2_Y_POS = 350;
-Floyd.SMALL_NODE_3_X_POS = 250;
-Floyd.SMALL_NODE_3_Y_POS = 400;
-
-Floyd.SMALL_MESSAGE_X = 400;
-Floyd.SMALL_MESSAGE_Y = 350;
-
-Floyd.LARGE_COST_TABLE_WIDTH = 20;
-Floyd.LARGE_COST_TABLE_HEIGHT = 20;
-Floyd.LARGE_COST_TABLE_START_X = 40;
-Floyd.LARGE_COST_TABLE_START_Y = 50;
-
-Floyd.LARGE_PATH_TABLE_WIDTH = 20;
-Floyd.LARGE_PATH_TABLE_HEIGHT = 20;
-Floyd.LARGE_PATH_TABLE_START_X = 500;
-Floyd.LARGE_PATH_TABLE_START_Y = 50;
-
-Floyd.LARGE_NODE_1_X_POS = 50;
-Floyd.LARGE_NODE_1_Y_POS = 500;
-Floyd.LARGE_NODE_2_X_POS = 150;
-Floyd.LARGE_NODE_2_Y_POS = 450;
-Floyd.LARGE_NODE_3_X_POS = 250;
-Floyd.LARGE_NODE_3_Y_POS = 500;
-
-Floyd.LARGE_MESSAGE_X = 300;
-Floyd.LARGE_MESSAGE_Y = 450;

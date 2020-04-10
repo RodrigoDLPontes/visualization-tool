@@ -38,7 +38,7 @@ export const algoMap = {
 	Dijkstra: ["Dijkstra's", algos.Dijkstras],
 	Prim: ["Prim's", algos.Prims],
 	Kruskal: ["Kruskal's", algos.Kruskals],
-	DPLCS: ['LCS', algos.DPLCS, 'Longest Common Subsequence'],
+	LCS: ['LCS', algos.LCS, 'Longest Common Subsequence'],
 	Floyd: ['Floyd-Warshall', algos.Floyd],
 };
 
@@ -58,5 +58,5 @@ export const algoList = [
 	'Graph Algorithms',
 	'BFS', 'DFS', 'Dijkstra', 'Prim', 'Kruskal',
 	'Dynamic Programming',
-	'DPLCS', 'Floyd'
+	'LCS', 'Floyd'
 ]

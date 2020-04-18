@@ -457,17 +457,14 @@ export default class DFS extends Graph {
 			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
 			this.visited[i] = false;
 		}
-		console.log(this.listID);
 		for (let i = 0; i < this.listID.length; i++) {
 			this.cmd(act.delete, this.listID[i]);
 		}
 		this.listID = [];
-		console.log(this.visitedID);
 		for (let i = 0; i < this.visitedID.length; i++) {
 			this.cmd(act.delete, this.visitedID[i]);
 		}
 		this.visitedID = [];
-		console.log(this.messageID);
 		if (this.messageID != null) {
 			for (let i = 0; i < this.messageID.length; i++) {
 				this.cmd(act.delete, this.messageID[i]);

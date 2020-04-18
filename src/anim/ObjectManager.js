@@ -94,7 +94,23 @@ export default class ObjectManager {
 		}
 
 		for (i = 0; i < this.nodes.length; i++) {
-			if (this.nodes[i] != null && this.nodes[i].alwaysOnTop && this.nodes[i].addedToScene) {
+			if (
+				this.nodes[i] != null &&
+				!this.nodes[i].highlighted &&
+				this.nodes[i].alwaysOnTop &&
+				this.nodes[i].addedToScene
+			) {
+				this.nodes[i].draw(this.ctx);
+			}
+		}
+
+		for (i = 0; i < this.nodes.length; i++) {
+			if (
+				this.nodes[i] != null &&
+				this.nodes[i].highlighted &&
+				this.nodes[i].alwaysOnTop &&
+				this.nodes[i].addedToScene
+			) {
 				this.nodes[i].pulseHighlight(this.framenum);
 				this.nodes[i].draw(this.ctx);
 			}

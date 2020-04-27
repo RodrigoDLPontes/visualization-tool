@@ -421,7 +421,10 @@ export default class LCS extends Algorithm {
 			this.cmd(act.setHighlight, this.tableID[currX][currY], 1);
 			this.cmd(act.setBackgroundColor, this.tableID[currX][currY], LCS_CELL_COLOR);
 
-			if (str1.charAt(currX - 1) === str2.charAt(currY - 1)) {
+			if (
+				this.tableVals[currX - 1][currY] === this.tableVals[currX][currY - 1] &&
+				this.tableVals[currX - 1][currY] !== this.tableVals[currX][currY]
+			) {
 				this.cmd(act.setHighlight, this.S1TableID[currX - 1], 1);
 				this.cmd(act.setHighlight, this.S2TableID[currY - 1], 1);
 				this.cmd(
@@ -435,16 +438,19 @@ export default class LCS extends Algorithm {
 				this.cmd(act.setHighlight, this.S2TableID[currY - 1], 0);
 			} else {
 				if (this.tableVals[currX - 1][currY] > this.tableVals[currX][currY - 1]) {
-					this.cmd(act.setText, this.infoLabelID, 'Hit a wall above, move left');
+					this.cmd(act.setText, this.infoLabelID, 'Move left');
 				} else {
-					this.cmd(act.setText, this.infoLabelID, 'Hit a wall to the left, move up');
+					this.cmd(act.setText, this.infoLabelID, 'Move up');
 				}
 				this.cmd(act.step);
 			}
 
 			this.cmd(act.setHighlight, this.tableID[currX][currY], 0);
 
-			if (str1.charAt(currX - 1) === str2.charAt(currY - 1)) {
+			if (
+				this.tableVals[currX - 1][currY] === this.tableVals[currX][currY - 1] &&
+				this.tableVals[currX - 1][currY] !== this.tableVals[currX][currY]
+			) {
 				const nextSequenceID = this.nextIndex++;
 				this.oldIDs.push(nextSequenceID);
 				sequence.push(nextSequenceID);

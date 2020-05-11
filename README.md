@@ -1,5 +1,5 @@
 # Visualization Tool
-This is the source code for the Visualization Tool used for Georgia Tech's CS 1332 which covers all data structures & algorithms taught in class. It is hosted using GitHub Pages, and you can visit it at: https://rodrigodlpontes.github.io/visualization-tool/.
+This is the source code for the Visualization Tool used for Georgia Tech's CS 1332 which covers all data structures & algorithms taught in class. It is hosted using GitHub Pages, and you can visit it at: https://csvistool.com.
 
 ## About
 
@@ -11,7 +11,7 @@ The structure of the project is the same as a regular [create-react-app](https:/
 
 ## API
 
-The animation "API" is very well documented [here](https://www.cs.usfca.edu/~galles/visualization/source.html). Existing JavaScript files are also a good reference for learning how to do things.
+The animation API is very well documented [here](https://www.cs.usfca.edu/~galles/visualization/source.html). However, some changes have been made to it as part of the conversion to ES6, so existing JavaScript files are also a good reference for learning how to do things. All functions can be found in `AnimationMain.js`.
 
 ## Future Work
 

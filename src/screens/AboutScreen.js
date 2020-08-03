@@ -11,9 +11,12 @@ const AboutScreen = () => (
 			by David Gales.
 		</p>
 		<p>
-			The CS1332 Visualization Tool was adapted and expanded by Rodrigo Pontes, with the help of
-			Miguel de los Reyes and Alex McQuilkin and under the supervision of Prof. Mary Hudachek-Buswell,
-			to include data structures and algorithms covered in the course.
+			The CS1332 Visualization Tool was adapted and expanded by{' '}
+			<a href="https://rodrigodlpontes.github.io/website/">
+				Rodrigo Pontes
+			</a>,
+			with the help of Miguel de los Reyes and Alex McQuilkin and under the supervision of
+			Prof. Mary Hudachek-Buswell, to include data structures and algorithms covered in the course.
 		</p>
 		<p>
 			It also includes icons from{' '}

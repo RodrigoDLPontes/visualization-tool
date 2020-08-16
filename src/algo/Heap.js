@@ -436,12 +436,10 @@ export default class Heap extends Algorithm {
 			.split(',') // Split on commas
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
-			.slice(0, 31) // Get first 31 numbers
-			.map(String); // Map back to strings
+			.slice(0, 31); // Get first 31 numbers
 		this.arrayData.unshift(0); // Add a 0 to start of array
 		this.clear();
 		for (let i = 1; i < this.arrayData.length; i++) {
-			this.arrayData[i] = this.normalizeNumber(this.arrayData[i], 4);
 			this.cmd(
 				act.createCircle,
 				this.circleObjs[i],

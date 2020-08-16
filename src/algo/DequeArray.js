@@ -195,7 +195,7 @@ export default class DequeArray extends Algorithm {
 	}
 
 	addLastCallback() {
-		if ((this.size + 1) % SIZE !== this.front && this.addField.value !== '') {
+		if (this.size < SIZE && this.addField.value !== '') {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addLast.bind(this), pushVal);
@@ -215,7 +215,7 @@ export default class DequeArray extends Algorithm {
 	}
 
 	addFirstCallBack() {
-		if ((this.front - 1 + SIZE) % SIZE !== this.size && this.addField.value !== '') {
+		if (this.size < SIZE && this.addField.value !== '') {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addFirst.bind(this), pushVal);

@@ -124,7 +124,8 @@ export default {
 				for example 0 or 4.
 			</li>
 			<li>
-				Note that in a real SkipList, you would have an <span className="inline-eq">O(log n) </span>
+				Note that in a real SkipList, you would have an{' '}
+				<span className="inline-eq">O(log n) </span>
 				cap to the number of levels, so we wouldn't be able to add the first element with 4
 				heads, for example.
 			</li>

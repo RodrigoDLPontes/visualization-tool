@@ -429,7 +429,11 @@ export default class SplayTree extends Algorithm {
 		if (elem.data < tree.data) {
 			this.cmd(act.setText, 0, elem.data + ' < ' + tree.data + '.  Looking at left subtree');
 		} else if (elem.data > tree.data) {
-			this.cmd(act.setText, 0, elem.data + ' >= ' + tree.data + '.  Looking at right subtree');
+			this.cmd(
+				act.setText,
+				0,
+				elem.data + ' >= ' + tree.data + '.  Looking at right subtree'
+			);
 		} else {
 			this.cmd(act.setText, 0, elem.data + ' = ' + tree.data + '. Ignoring duplicate');
 			foundDuplicate = true;

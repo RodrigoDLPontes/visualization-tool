@@ -1,218 +1,218 @@
 .VisualizationMainPage body {
-    font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 .VisualizationMainPage #mainContent {
-    /* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-    background: #ffffff;
+	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+	background: #ffffff;
 }
 
 .VisualizationMainPage #container {
-    background: #ffffff;
-    /* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
-    text-align: left; /* this overrides the text-align: center on the body element. */
+	background: #ffffff;
+	/* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	text-align: left; /* this overrides the text-align: center on the body element. */
 }
 
 .VisualizationMainPage #algoControlSection {
-    background: #f7c245;
-    color: #000000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+	background: #f7c245;
+	color: #000000;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
-    vertical-align: middle;
-    padding: 2px 5px;
+	vertical-align: middle;
+	padding: 2px 5px;
 }
 
 .VisualizationMainPage #examplesButton {
-    background-image: url('../img/examples.png');
-    background-repeat: no-repeat;
-    background-size: 30px;
-    background-position: center;
-    background-color: transparent;
-    border: none;
-    width: 40px;
-    height: 40px;
-    outline: none;
+	background-image: url('../img/examples.png');
+	background-repeat: no-repeat;
+	background-size: 30px;
+	background-position: center;
+	background-color: transparent;
+	border: none;
+	width: 40px;
+	height: 40px;
+	outline: none;
 }
 
 .VisualizationMainPage #examplesButton.selected {
-    background-image: url('../img/examples-selected.png');
+	background-image: url('../img/examples-selected.png');
 }
 
 .VisualizationMainPage #examplesButton::-moz-focus-inner {
-    border: 0;
+	border: 0;
 }
 
 .VisualizationMainPage .viewport {
-    position: relative;
+	position: relative;
 }
 
 .VisualizationMainPage #generalAnimationControlSection {
-    background: #f7c245;
-    color: #006600;
+	background: #f7c245;
+	color: #006600;
 }
 
 .VisualizationMainPage #GeneralAnimationControls {
-    padding: 2px 5px;
+	padding: 2px 5px;
 }
 
 .VisualizationMainPage #header {
-    background: #4277bb;
-    color: #f7c245;
-    padding: 0 10px 0 5px;
+	background: #4277bb;
+	color: #f7c245;
+	padding: 0 10px 0 5px;
 }
 
 .VisualizationMainPage #header a:visited {
-    text-decoration: none;
-    color: #f7c245;
+	text-decoration: none;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #header a:focus {
-    outline: none;
+	outline: none;
 }
 
 .VisualizationMainPage #header h1 {
-    margin: 0;
-    padding: 10px 0;
+	margin: 0;
+	padding: 10px 0;
 }
 
 .VisualizationMainPage #header a:link {
-    text-decoration: none;
-    color: #f7c245;
+	text-decoration: none;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #container {
-    background: #ffffff;
-    margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
-    text-align: left; /* this overrides the text-align: center on the body element. */
+	background: #ffffff;
+	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	text-align: left; /* this overrides the text-align: center on the body element. */
 }
 
 .VisualizationMainPage #footer a:visited {
-    text-decoration: none;
-    color: #f7c245;
+	text-decoration: none;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #footer a:link {
-    text-decoration: none;
-    color: #f7c245;
+	text-decoration: none;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #mainContent h1 {
-    padding: 0 20px;
-    background: #ffffff;
-    color: #4277bb;
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h2 {
-    padding: 0 20px;
-    background: #ffffff;
-    color: #4277bb;
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h3 {
-    padding: 0 20px;
-    background: #ffffff;
-    color: #4277bb;
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #footer {
-    padding: 0 10px;
-    background: #4277bb;
-    color: #f7c245;
+	padding: 0 10px;
+	background: #4277bb;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #footer p {
-    margin: 0;
-    padding: 10px 0;
+	margin: 0;
+	padding: 10px 0;
 }
 
 em {
-    text-decoration: bold;
+	text-decoration: bold;
 }
 
 .VisualizationMainPage .modal {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    width: 350px;
-    height: 445px;
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	width: 350px;
+	height: 445px;
 }
 
 .VisualizationMainPage .modal-content {
-    background-color: #fefefe;
-    padding: 15px 30px 0px 0px;
-    height: 100%;
-    border-radius: 20px;
-    background-color: #f7c245;
+	background-color: #fefefe;
+	padding: 15px 30px 0px 0px;
+	height: 100%;
+	border-radius: 20px;
+	background-color: #f7c245;
 }
 
 .VisualizationMainPage .modal-content ul {
-    margin: 0;
+	margin: 0;
 }
 
 .VisualizationMainPage .modal-content li {
-    line-height: 1.4em;
-    margin: 0px 0px 15px 0px;
+	line-height: 1.4em;
+	margin: 0px 0px 15px 0px;
 }
 
 .VisualizationMainPage .equation {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    text-align: center;
-    margin: -5px 0px 5px 0px;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	text-align: center;
+	margin: -5px 0px 5px 0px;
 }
 
 .VisualizationMainPage .inline-eq {
-    font-family: Georgia, 'Times New Roman', Times, serif;
+	font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .VisualizationMainPage .vgroup {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .VisualizationMainPage .hgroup {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 .VisualizationMainPage .groupChild {
-    margin: 0 5px 5px 0;
+	margin: 0 5px 5px 0;
 }
 
 .VisualizationMainPage .divisorLeft {
-    width: 3px;
+	width: 3px;
 }
 .VisualizationMainPage .divisorRight {
-    border-left: 2px #a4812f solid;
-    padding-right: 5px
+	border-left: 2px #a4812f solid;
+	padding-right: 5px;
 }
 
-.VisualizationMainPage input[type=button] {
-    background: linear-gradient(#FFF, #DDD);
-    border: #999 1px solid;
-    border-radius: 5px;
-    padding: 5px 20px;
+.VisualizationMainPage input[type='button'] {
+	background: linear-gradient(#fff, #ddd);
+	border: #999 1px solid;
+	border-radius: 5px;
+	padding: 5px 20px;
 }
 
-.VisualizationMainPage input[type=button]::-moz-focus-inner {
-    border: 0;
+.VisualizationMainPage input[type='button']::-moz-focus-inner {
+	border: 0;
 }
 
-.VisualizationMainPage input[type=button]:focus {
-    outline: none;
+.VisualizationMainPage input[type='button']:focus {
+	outline: none;
 }
 
-.VisualizationMainPage input[type=button]:active:not([disabled]) {
-    background: linear-gradient(#CCC, #DDD);
+.VisualizationMainPage input[type='button']:active:not([disabled]) {
+	background: linear-gradient(#ccc, #ddd);
 }
 
-.VisualizationMainPage input[type=text] {
-    background: white;
-    border: #BBB 1px solid;
-    border-radius: 5px;
-    padding: 6px;
+.VisualizationMainPage input[type='text'] {
+	background: white;
+	border: #bbb 1px solid;
+	border-radius: 5px;
+	padding: 6px;
 }

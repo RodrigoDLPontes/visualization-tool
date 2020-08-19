@@ -255,7 +255,6 @@ export default class AnimatedDoublyLinkedListNode extends AnimatedObject {
 			this.highlightColor
 		);
 	}
-
 }
 
 class UndoDeleteDoublyLinkedList extends UndoBlock {

@@ -26,8 +26,8 @@
 
 // "Class" animatedCircle
 
-import AnimatedObject from "./AnimatedObject.js";
-import { UndoBlock } from "./UndoFunctions.js";
+import AnimatedObject from './AnimatedObject.js';
+import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedHighlightCircle extends AnimatedObject {
 	constructor(objectID, foregroundColor, radius) {
@@ -66,7 +66,17 @@ export default class AnimatedHighlightCircle extends AnimatedObject {
 }
 
 class UndoDeleteHighlightCircle extends UndoBlock {
-	constructor(objectID, x, y, foregroundColor, radius, layer, alpha, highlighted, highlightColor) {
+	constructor(
+		objectID,
+		x,
+		y,
+		foregroundColor,
+		radius,
+		layer,
+		alpha,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.x = x;

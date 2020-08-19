@@ -116,7 +116,11 @@ export default class Graph extends Algorithm {
 		this.newGraphButton = addControlToAlgorithmBar('Button', 'New Graph', verticalGroup);
 		this.newGraphButton.onclick = this.newGraphCallback.bind(this);
 		this.controls.push(this.newGraphButton);
-		this.defaultGraphButton = addControlToAlgorithmBar('Button', 'Default Graph', verticalGroup);
+		this.defaultGraphButton = addControlToAlgorithmBar(
+			'Button',
+			'Default Graph',
+			verticalGroup
+		);
 		this.defaultGraphButton.onclick = this.defaultGraphCallback.bind(this);
 		this.defaultGraphButton.disabled = true;
 		this.controls.push(this.defaultGraphButton);
@@ -642,7 +646,8 @@ export default class Graph extends Algorithm {
 					this.cmd(act.setTextColor, this.adj_list_edges[i][j], VERTEX_INDEX_COLOR, 0);
 					this.cmd(act.setLayer, this.adj_list_edges[i][j], 2);
 
-					nextXPos = nextXPos + this.adj_list_elem_width + this.adj_list_spacing_between_nodes;
+					nextXPos =
+						nextXPos + this.adj_list_elem_width + this.adj_list_spacing_between_nodes;
 					this.cmd(act.connect, lastElem, this.adj_list_edges[i][j]);
 					this.cmd(act.setNull, lastElem, 0);
 					lastElem = this.adj_list_edges[i][j];
@@ -665,8 +670,10 @@ export default class Graph extends Algorithm {
 
 	enableUI() {
 		for (const control of this.controls) {
-			if (control === this.defaultGraphButton
-					&& (this.directed || this.isLarge || this.adj_matrix === this.defaultEdges)) {
+			if (
+				control === this.defaultGraphButton &&
+				(this.directed || this.isLarge || this.adj_matrix === this.defaultEdges)
+			) {
 				control.disabled = true;
 			} else {
 				control.disabled = false;

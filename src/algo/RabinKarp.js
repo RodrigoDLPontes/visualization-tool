@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -137,12 +141,8 @@ export default class RabinKarp extends Algorithm {
 		this.commands = [];
 
 		// Filter non-letters from string and make lower case
-		text = text
-			.replace(/[^a-zA-Z]/g, '')
-			.toLowerCase();
-		pattern = pattern
-			.replace(/[^a-zA-Z]/g, '')
-			.toLowerCase();
+		text = text.replace(/[^a-zA-Z]/g, '').toLowerCase();
+		pattern = pattern.replace(/[^a-zA-Z]/g, '').toLowerCase();
 
 		const maxRows = text.length - pattern.length + 1;
 		if (maxRows <= 14) {
@@ -276,7 +276,11 @@ export default class RabinKarp extends Algorithm {
 				this.cmd(act.step);
 				let j = 0;
 				while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
-					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
+					this.cmd(
+						act.setBackgroundColor,
+						this.comparisonMatrixID[row][i + j],
+						'#2ECC71'
+					);
 					j++;
 					if (j !== pattern.length) {
 						xpos = (i + j) * this.cellSize + ARRAY_START_X;
@@ -287,7 +291,11 @@ export default class RabinKarp extends Algorithm {
 					}
 				}
 				if (j !== pattern.length) {
-					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
+					this.cmd(
+						act.setBackgroundColor,
+						this.comparisonMatrixID[row][i + j],
+						'#E74C3C'
+					);
 				}
 				this.cmd(act.delete, iPointerID);
 				this.cmd(act.delete, jPointerID);

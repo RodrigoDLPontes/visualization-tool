@@ -159,7 +159,18 @@ export default class AnimatedCircle extends AnimatedObject {
 }
 
 class UndoDeleteCircle extends UndoBlock {
-	constructor(objectID, label, x, y, foregroundColor, backgroundColor, layer, radius, highlighted, highlightColor) {
+	constructor(
+		objectID,
+		label,
+		x,
+		y,
+		foregroundColor,
+		backgroundColor,
+		layer,
+		radius,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.label = label;

@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import Graph from './Graph.js';
 import { PRIMS_KRUSKALS_ADJ_LIST } from './util/GraphValues';
 import PriorityQueue from './util/PriorityQueue';
@@ -44,7 +48,7 @@ const VISITED_SPACING = 20;
 
 const CURRENT_EDGE_LABEL_X = 25;
 const CURRENT_EDGE_LABEL_Y = 90;
-const CURRENT_VERTEX_X = 110; 
+const CURRENT_VERTEX_X = 110;
 const CURRENT_VERTEX_Y = 96;
 
 const PQ_LABEL_X = 25;
@@ -75,7 +79,7 @@ export default class Prims extends Graph {
 		this.startField.size = 2;
 		this.controls.push(this.startField);
 
-		this.startButton = addControlToAlgorithmBar('Button', "Run");
+		this.startButton = addControlToAlgorithmBar('Button', 'Run');
 		this.startButton.onclick = this.startCallback.bind(this);
 		this.controls.push(this.startButton);
 
@@ -94,14 +98,7 @@ export default class Prims extends Graph {
 		this.pq = new PriorityQueue();
 
 		this.infoLabelID = this.nextIndex++;
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'',
-			INFO_MSG_X,
-			INFO_MSG_Y,
-			0
-		);
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.cmd(
 			act.createLabel,
@@ -119,14 +116,7 @@ export default class Prims extends Graph {
 			CURRENT_EDGE_LABEL_Y,
 			0
 		);
-		this.cmd(
-			act.createLabel,
-			this.nextIndex++,
-			'Priority Queue:',
-			PQ_LABEL_X,
-			PQ_LABEL_Y,
-			0
-		);
+		this.cmd(act.createLabel, this.nextIndex++, 'Priority Queue:', PQ_LABEL_X, PQ_LABEL_Y, 0);
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);
@@ -183,19 +173,16 @@ export default class Prims extends Graph {
 
 		this.pq = new PriorityQueue();
 		let pqIDs = [];
-		this.cmd(
-			act.setText,
-			this.infoLabelID,
-			'Enqueuing edges of ' + this.toStr(startVertex)
-		);
+		this.cmd(act.setText, this.infoLabelID, 'Enqueuing edges of ' + this.toStr(startVertex));
 		for (let neighbor = 0; neighbor < this.size; neighbor++) {
 			const weight = this.adj_matrix[startVertex][neighbor];
 			if (weight > 0) {
 				this.highlightEdge(startVertex, neighbor, 1);
-				this.cmd(act.createLabel,
+				this.cmd(
+					act.createLabel,
 					this.nextIndex,
 					'(' + this.toStr(startVertex) + this.toStr(neighbor) + ', ' + weight + ')',
-					PQ_X + this.pq.size() % PQ_MAX_PER_LINE * PQ_SPACING,
+					PQ_X + (this.pq.size() % PQ_MAX_PER_LINE) * PQ_SPACING,
 					PQ_Y + Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
 				);
 				this.pq.enqueue([startVertex, neighbor], this.nextIndex++, weight);
@@ -207,7 +194,7 @@ export default class Prims extends Graph {
 						this.cmd(
 							act.move,
 							newPqIDs[i],
-							PQ_X + i % PQ_MAX_PER_LINE * PQ_SPACING,
+							PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
 							PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
 						);
 					}
@@ -236,7 +223,7 @@ export default class Prims extends Graph {
 				this.cmd(
 					act.move,
 					pqIDs[i],
-					PQ_X + i % PQ_MAX_PER_LINE * PQ_SPACING,
+					PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
 					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
 				);
 			}
@@ -248,11 +235,15 @@ export default class Prims extends Graph {
 				this.cmd(act.setText, this.infoLabelID, 'Adding ' + edgeStr + ' to MST');
 				this.highlightEdge(edge[0], edge[1], 0);
 				this.setEdgeColor(edge[0], edge[1], MST_EDGE_COLOR);
-				this.setEdgeThickness(edge[0], edge[1], MST_EDGE_THICKNESS)
+				this.setEdgeThickness(edge[0], edge[1], MST_EDGE_THICKNESS);
 				this.cmd(act.step);
 
 				this.visited[edge[1]] = true;
-				this.cmd(act.setText, this.infoLabelID, 'Adding ' + this.toStr(edge[1]) + ' to visited set');
+				this.cmd(
+					act.setText,
+					this.infoLabelID,
+					'Adding ' + this.toStr(edge[1]) + ' to visited set'
+				);
 				this.visitedID.push(this.nextIndex);
 				this.cmd(
 					act.createLabel,
@@ -277,7 +268,9 @@ export default class Prims extends Graph {
 							this.cmd(
 								act.setText,
 								this.infoLabelID,
-								'Vertex ' + this.toStr(neighbor) + ' has already been visited, skipping'
+								'Vertex ' +
+									this.toStr(neighbor) +
+									' has already been visited, skipping'
 							);
 							this.cmd(act.step);
 							this.cmd(act.setHighlight, this.circleID[neighbor], 0);
@@ -294,16 +287,24 @@ export default class Prims extends Graph {
 							this.cmd(
 								act.setText,
 								this.infoLabelID,
-								'Enqueueing edge ' + edgeStr + ' with weight ' + this.adj_matrix[edge[1]][neighbor]
+								'Enqueueing edge ' +
+									edgeStr +
+									' with weight ' +
+									this.adj_matrix[edge[1]][neighbor]
 							);
 							this.cmd(
 								act.createLabel,
 								this.nextIndex,
 								'(' + edgeStr + ', ' + this.adj_matrix[edge[1]][neighbor] + ')',
-								PQ_X + this.pq.size() % PQ_MAX_PER_LINE * PQ_SPACING,
-								PQ_Y + Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+								PQ_X + (this.pq.size() % PQ_MAX_PER_LINE) * PQ_SPACING,
+								PQ_Y +
+									Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
 							);
-							this.pq.enqueue([edge[1], neighbor], this.nextIndex++, this.adj_matrix[edge[1]][neighbor]);
+							this.pq.enqueue(
+								[edge[1], neighbor],
+								this.nextIndex++,
+								this.adj_matrix[edge[1]][neighbor]
+							);
 							this.cmd(act.step);
 
 							const newPqIDs = this.pq.getIDs();
@@ -313,7 +314,7 @@ export default class Prims extends Graph {
 									this.cmd(
 										act.move,
 										newPqIDs[i],
-										PQ_X + i % PQ_MAX_PER_LINE * PQ_SPACING,
+										PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
 										PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
 									);
 								}
@@ -353,7 +354,7 @@ export default class Prims extends Graph {
 	clear() {
 		this.recolorGraph();
 		for (let i = 0; i < this.size; i++) {
-			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
+			this.cmd(act.setBackgroundColor, this.circleID[i], '#FFFFFF');
 			this.visited[i] = false;
 		}
 		for (let i = 0; i < this.visitedID.length; i++) {

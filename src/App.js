@@ -7,7 +7,7 @@ import React from 'react';
 const App = () => (
 	<Router basename={process.env.PUBLIC_URL + '/'}>
 		<Switch>
-			<Route exact path={["/", "/about"]} component={HomeScreen} />
+			<Route exact path={['/', '/about']} component={HomeScreen} />
 			<Route component={AlgoScreen} />
 		</Switch>
 	</Router>

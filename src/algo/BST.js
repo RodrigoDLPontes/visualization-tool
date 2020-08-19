@@ -479,7 +479,7 @@ export default class BST extends Algorithm {
 			this.connectSmart(curr.graphicID, curr.left.graphicID);
 			this.resizeTree();
 		}
-		this.cmd(act.setHighlight, curr.graphicID, 0, "#0000ff");
+		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
 		return curr;
 	}
 
@@ -503,7 +503,7 @@ export default class BST extends Algorithm {
 			this.connectSmart(curr.graphicID, curr.right.graphicID);
 			this.resizeTree();
 		}
-		this.cmd(act.setHighlight, curr.graphicID, 0, "#0000ff");
+		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
 		return curr;
 	}
 

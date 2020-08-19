@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -320,7 +324,14 @@ export default class BoyerMoore extends Algorithm {
 	buildLastTable(textLength, pattern) {
 		// Display labels
 		const labelsX = ARRAY_START_X + textLength * this.cellSize + 10;
-		this.cmd(act.createLabel, this.patternTableLabelID, 'Pattern:', labelsX, PATTERN_START_Y - 5, 0);
+		this.cmd(
+			act.createLabel,
+			this.patternTableLabelID,
+			'Pattern:',
+			labelsX,
+			PATTERN_START_Y - 5,
+			0
+		);
 		this.cmd(
 			act.createLabel,
 			this.lastTableLabelID,
@@ -432,7 +443,7 @@ export default class BoyerMoore extends Algorithm {
 		);
 		this.cmd(act.step);
 
-		Object.keys(lastTable).map(char => lastTable[char] = lastTable[char][0]); // Return only indices
+		Object.keys(lastTable).map(char => (lastTable[char] = lastTable[char][0])); // Return only indices
 		return lastTable;
 	}
 

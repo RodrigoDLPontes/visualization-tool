@@ -28,7 +28,7 @@ import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
-	addLabelToAlgorithmBar
+	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
@@ -93,14 +93,22 @@ export default class SkipList extends Algorithm {
 		addLabelToAlgorithmBar('heads', topHorizontalGroup);
 
 		// Add randomly button
-		this.addRandomlyButton = addControlToAlgorithmBar('Button', 'Add randomly', bottomHorizontalGroup);
+		this.addRandomlyButton = addControlToAlgorithmBar(
+			'Button',
+			'Add randomly',
+			bottomHorizontalGroup
+		);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
 
 		addLabelToAlgorithmBar('or', bottomHorizontalGroup);
 
 		// Add with heads button
-		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add with heads', bottomHorizontalGroup);
+		this.addWithHeadsButton = addControlToAlgorithmBar(
+			'Button',
+			'Add with heads',
+			bottomHorizontalGroup
+		);
 		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
 		this.controls.push(this.addWithHeadsButton);
 
@@ -287,7 +295,12 @@ export default class SkipList extends Algorithm {
 				SKIP_LIST_START_X + SKIP_LIST_SPACING * rightPhantomsCol,
 				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
 			);
-			this.cmd(act.connectSkipList, this.nodeID[0][row], this.nodeID[rightPhantomsCol][row], 3);
+			this.cmd(
+				act.connectSkipList,
+				this.nodeID[0][row],
+				this.nodeID[rightPhantomsCol][row],
+				3
+			);
 			this.cmd(act.connectSkipList, this.nodeID[0][row - 1], this.nodeID[0][row], 0);
 			this.cmd(
 				act.connectSkipList,
@@ -383,8 +396,18 @@ export default class SkipList extends Algorithm {
 				const prevCol = this.getPrevCol(newCol, row);
 				const nextCol = this.getNextCol(newCol, row);
 				this.cmd(act.disconnect, this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
-				this.cmd(act.connectSkipList, this.nodeID[prevCol][row], this.nodeID[newCol][row], 3);
-				this.cmd(act.connectSkipList, this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
+				this.cmd(
+					act.connectSkipList,
+					this.nodeID[prevCol][row],
+					this.nodeID[newCol][row],
+					3
+				);
+				this.cmd(
+					act.connectSkipList,
+					this.nodeID[newCol][row],
+					this.nodeID[nextCol][row],
+					3
+				);
 				if (row !== 0) {
 					this.cmd(
 						act.connectSkipList,

@@ -24,8 +24,8 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import AnimatedObject from "./AnimatedObject.js";
-import { UndoBlock } from "./UndoFunctions.js";
+import AnimatedObject from './AnimatedObject.js';
+import { UndoBlock } from './UndoFunctions.js';
 
 const MIN_WIDTH = 10;
 const EDGE_POINTER_DISPLACEMENT = 5;
@@ -64,7 +64,7 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 	setNumElements(newNumElements) {
 		if (this.numLabels < newNumElements) {
 			for (let i = this.numLabels; i < newNumElements; i++) {
-				this.labels[i] = "";
+				this.labels[i] = '';
 				this.labelColors[i] = this.foregroundColor;
 			}
 			this.numLabels = newNumElements;
@@ -102,8 +102,8 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 		const startY = this.top();
 
 		if (this.highlighted) {
-			context.strokeStyle = "#FF0000";
-			context.fillStyle = "#FF0000";
+			context.strokeStyle = '#FF0000';
+			context.fillStyle = '#FF0000';
 
 			context.beginPath();
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -115,10 +115,7 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 				startX + this.getWidth() + this.highlightDiff,
 				startY + this.h + this.highlightDiff
 			);
-			context.lineTo(
-				startX - this.highlightDiff,
-				startY + this.h + this.highlightDiff
-			);
+			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
 			context.closePath();
 			context.stroke();
@@ -138,8 +135,8 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 		context.stroke();
 		context.fill();
 
-		context.textAlign = "center";
-		context.textBaseline = "middle";
+		context.textAlign = 'center';
+		context.textBaseline = 'middle';
 
 		for (let i = 0; i < this.numLabels; i++) {
 			const labelX =

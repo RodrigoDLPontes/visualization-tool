@@ -8,32 +8,36 @@ import React from 'react';
 
 const HomeScreen = () => (
 	<div className="container">
-		<Header/>
+		<Header />
 		<div className="content">
 			<Switch>
 				<Route exact path="/">
 					<div className="outer-flex">
 						<div className="inner-flex">
-						{
-							algoList.map((name, idx) => algoMap[name] ?
-								<Link to={`/${name}`} key={idx}>
-									<input className="button" type="button" value={algoMap[name][0]} />
-								</Link>
-								:
-								<div key={idx} className="divider">
-									<span>{name}</span>
-								</div>
-							)
-						}
+							{algoList.map((name, idx) =>
+								algoMap[name] ? (
+									<Link to={`/${name}`} key={idx}>
+										<input
+											className="button"
+											type="button"
+											value={algoMap[name][0]}
+										/>
+									</Link>
+								) : (
+									<div key={idx} className="divider">
+										<span>{name}</span>
+									</div>
+								)
+							)}
 						</div>
 					</div>
 				</Route>
 				<Route path="/about">
-					<AboutScreen/>
+					<AboutScreen />
 				</Route>
 			</Switch>
 		</div>
-		<Footer/>
+		<Footer />
 	</div>
 );
 

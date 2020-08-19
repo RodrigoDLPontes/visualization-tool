@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { BFS_DFS_ADJ_LIST } from './util/GraphValues';
 import Graph from './Graph.js';
 import { act } from '../anim/AnimationMain';
@@ -42,9 +46,9 @@ const LIST_SPACING = 20;
 const VISITED_START_X = 30;
 const VISITED_START_Y = 115;
 
-const CURRENT_VERTEX_LABEL_X = 25; 
+const CURRENT_VERTEX_LABEL_X = 25;
 const CURRENT_VERTEX_LABEL_Y = 140;
-const CURRENT_VERTEX_X = 115; 
+const CURRENT_VERTEX_X = 115;
 const CURRENT_VERTEX_Y = 146;
 
 const QUEUE_START_X = 30;
@@ -90,14 +94,7 @@ export default class BFS extends Graph {
 		this.visitedID = [];
 
 		this.infoLabelID = this.nextIndex++;
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'',
-			INFO_MSG_X,
-			INFO_MSG_Y,
-			0
-		);
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.cmd(
 			act.createLabel,
@@ -169,7 +166,11 @@ export default class BFS extends Graph {
 		this.rebuildEdges();
 
 		let vertex = startVetex;
-		this.cmd(act.setText, this.infoLabelID, 'Enqueueing ' + this.toStr(vertex) + ' and adding to visited set');
+		this.cmd(
+			act.setText,
+			this.infoLabelID,
+			'Enqueueing ' + this.toStr(vertex) + ' and adding to visited set'
+		);
 		this.visited[vertex] = true;
 		this.visitedID.push(this.nextIndex);
 		this.cmd(
@@ -194,7 +195,11 @@ export default class BFS extends Graph {
 		while (this.queue.length > 0 && this.listID.length < this.size) {
 			vertex = this.queue.shift();
 
-			this.cmd(act.setText, this.infoLabelID, 'Dequeueing ' + this.toStr(vertex) + ' and adding to list');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Dequeueing ' + this.toStr(vertex) + ' and adding to list'
+			);
 
 			this.cmd(act.setTextColor, this.queueID[0], BFS_QUEUE_HEAD_COLOR);
 			this.cmd(act.move, this.queueID[0], CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
@@ -228,7 +233,8 @@ export default class BFS extends Graph {
 						this.cmd(
 							act.setText,
 							this.infoLabelID,
-							this.toStr(neighbor) + ' has not yet been visited, enqueueing and adding to visited set'
+							this.toStr(neighbor) +
+								' has not yet been visited, enqueueing and adding to visited set'
 						);
 						this.cmd(
 							act.createLabel,
@@ -237,7 +243,7 @@ export default class BFS extends Graph {
 							VISITED_START_X + (this.visitedID.length - 1) * LIST_SPACING,
 							VISITED_START_Y
 						);
-						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR)
+						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR);
 						this.queue.push(neighbor);
 						this.queueID.push(this.nextIndex);
 						this.cmd(
@@ -275,7 +281,7 @@ export default class BFS extends Graph {
 
 	clear() {
 		for (let i = 0; i < this.size; i++) {
-			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
+			this.cmd(act.setBackgroundColor, this.circleID[i], '#FFFFFF');
 			this.visited[i] = false;
 		}
 		for (let i = 0; i < this.listID.length; i++) {

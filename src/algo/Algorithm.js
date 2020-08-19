@@ -271,7 +271,7 @@ export default class Algorithm {
 		if (maxsize !== undefined) {
 			field.size = maxsize;
 		}
-		return function(event) {
+		return function (event) {
 			let keyASCII = 0;
 			if (window.event) {
 				// IE
@@ -333,11 +333,11 @@ export function controlKey(keyASCII) {
 	);
 }
 
-Algorithm.prototype.returnSubmitFloat = function(field, funct, maxsize) {
+Algorithm.prototype.returnSubmitFloat = function (field, funct, maxsize) {
 	if (maxsize !== undefined) {
 		field.size = maxsize;
 	}
-	return function(event) {
+	return function (event) {
 		let keyASCII = 0;
 		if (window.event) {
 			// IE
@@ -384,6 +384,6 @@ Algorithm.prototype.returnSubmitFloat = function(field, funct, maxsize) {
 	};
 };
 
-Algorithm.prototype.addReturnSubmit = function(field, action) {
+Algorithm.prototype.addReturnSubmit = function (field, action) {
 	field.onkeydown = this.returnSubmit(field, action, 4, false);
 };

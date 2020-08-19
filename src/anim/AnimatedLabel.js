@@ -50,7 +50,7 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	draw(context) {
-		if(!this.addedToScene) return;
+		if (!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
 		context.font = '12px Arial';
@@ -61,7 +61,9 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlightIndex = -1;
 		}
 		if (this.highlightIndexDirty && this.highlightIndex !== -1) {
-			this.leftWidth = context.measureText(this.label.substring(0, this.highlightIndex)).width;
+			this.leftWidth = context.measureText(
+				this.label.substring(0, this.highlightIndex)
+			).width;
 			this.centerWidth = context.measureText(
 				this.label.substring(this.highlightIndex, this.highlightIndex + 1)
 			).width;
@@ -297,7 +299,18 @@ export default class AnimatedLabel extends AnimatedObject {
 }
 
 class UndoDeleteLabel extends UndoBlock {
-	constructor(objectID, label, x, y, centered, labelColor, layer, highlightIndex, highlighted, highlightColor) {
+	constructor(
+		objectID,
+		label,
+		x,
+		y,
+		centered,
+		labelColor,
+		layer,
+		highlightIndex,
+		highlighted,
+		highlightColor
+	) {
 		super();
 		this.objectID = objectID;
 		this.label = label;

@@ -24,11 +24,21 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import AnimatedObject from "./AnimatedObject.js";
-import { UndoBlock } from "./UndoFunctions.js";
+import AnimatedObject from './AnimatedObject.js';
+import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedLinkedListNode extends AnimatedObject {
-	constructor(objectID, labels, w, h, linkPercent, vertical, linkPosEnd, backgroundColor, foregroundColor) {
+	constructor(
+		objectID,
+		labels,
+		w,
+		h,
+		linkPercent,
+		vertical,
+		linkPosEnd,
+		backgroundColor,
+		foregroundColor
+	) {
 		super();
 
 		this.objectID = objectID;
@@ -108,7 +118,8 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			return [this.x, this.y - this.h / 2.0];
 		} else if (!this.vertical && this.linkPosEnd) {
 			return [this.x + this.w / 2.0, this.y];
-		} else { // !this.vertical && !this.linkPosEnd
+		} else {
+			// !this.vertical && !this.linkPosEnd
 			return [this.x - this.w / 2.0, this.y];
 		}
 	}
@@ -143,8 +154,8 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		startY = this.top();
 
 		if (this.highlighted) {
-			context.strokeStyle = "#ff0000";
-			context.fillStyle = "#ff0000";
+			context.strokeStyle = '#ff0000';
+			context.fillStyle = '#ff0000';
 
 			context.beginPath();
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -177,7 +188,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			for (let i = 1; i < this.labels.length; i++) {
 				startY = this.y + this.h * (1 - this.linkPercent) * (i / this.labels.length - 0.5);
 				context.beginPath();
-				context.moveTo(startX ,startY);
+				context.moveTo(startX, startY);
 				context.lineTo(startX + this.w, startY);
 				context.closePath();
 				context.stroke();
@@ -187,7 +198,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			for (let i = 1; i < this.labels.length; i++) {
 				startX = this.x + this.w * (1 - this.linkPercent) * (i / this.labels.length - 0.5);
 				context.beginPath();
-				context.moveTo(startX ,startY);
+				context.moveTo(startX, startY);
 				context.lineTo(startX, startY + this.h);
 				context.closePath();
 				context.stroke();
@@ -231,7 +242,8 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			}
 			context.closePath();
 			context.stroke();
-		} else { // !vertical && !linkPosEnd
+		} else {
+			// !vertical && !linkPosEnd
 			startX = this.left() + this.w * this.linkPercent;
 			startY = this.top();
 
@@ -245,30 +257,34 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			context.stroke();
 		}
 
-		context.textAlign = "center";
-		context.font = "12px Arial";
-		context.textBaseline = "middle";
+		context.textAlign = 'center';
+		context.font = '12px Arial';
+		context.textBaseline = 'middle';
 		context.lineWidth = 2;
 
 		if (this.vertical) {
 			this.labelPosX[0] = this.x;
-			this.labelPosY[0] = this.y + this.h * (1 - this.linkPercent) / 2 * (1 / this.labels.length - 1);
+			this.labelPosY[0] =
+				this.y + ((this.h * (1 - this.linkPercent)) / 2) * (1 / this.labels.length - 1);
 			for (let i = 1; i < this.labels.length; i++) {
 				this.labelPosX[i] = this.x;
-				this.labelPosY[i] = this.labelPosY[i-1] + this.h * (1 - this.linkPercent) / this.labels.length;
+				this.labelPosY[i] =
+					this.labelPosY[i - 1] + (this.h * (1 - this.linkPercent)) / this.labels.length;
 			}
 		} else {
 			this.labelPosY[0] = this.y;
-			this.labelPosX[0] = this.x + this.w * (1 - this.linkPercent) / 2 * (1 / this.labels.length - 1);
+			this.labelPosX[0] =
+				this.x + ((this.w * (1 - this.linkPercent)) / 2) * (1 / this.labels.length - 1);
 			for (let i = 1; i < this.labels.length; i++) {
 				this.labelPosY[i] = this.y;
-				this.labelPosX[i] = this.labelPosX[i-1] + this.w * (1 - this.linkPercent) / this.labels.length;
+				this.labelPosX[i] =
+					this.labelPosX[i - 1] + (this.w * (1 - this.linkPercent)) / this.labels.length;
 			}
 		}
 
 		for (let i = 0; i < this.labels.length; i++) {
 			context.fillStyle = this.labelColors[i];
-			context.fillText(this.labels[i], this.labelPosX[i], this.labelPosY[i]); 
+			context.fillText(this.labels[i], this.labelPosX[i], this.labelPosY[i]);
 		}
 	}
 

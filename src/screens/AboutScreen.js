@@ -12,21 +12,16 @@ const AboutScreen = () => (
 		</p>
 		<p>
 			The CS1332 Visualization Tool was adapted and expanded by{' '}
-			<a href="https://rodrigodlpontes.github.io/website/">
-				Rodrigo Pontes
-			</a>,
-			with the help of Miguel de los Reyes and Alex McQuilkin and under the supervision of
-			Prof. Mary Hudachek-Buswell, to include data structures and algorithms covered in the course.
+			<a href="https://rodrigodlpontes.github.io/website/">Rodrigo Pontes</a>, with the help
+			of Miguel de los Reyes and Alex McQuilkin and under the supervision of Prof. Mary
+			Hudachek-Buswell, to include data structures and algorithms covered in the course.
 		</p>
 		<p>
 			It also includes icons from{' '}
 			<a href="https://material.io/resources/icons/?style=baseline">
 				Google&#39;s Material Icons
-			</a>,
-			and components from{' '}
-			<a href="https://material-ui.com/">
-				Material UI
-			</a>.
+			</a>
+			, and components from <a href="https://material-ui.com/">Material UI</a>.
 		</p>
 	</div>
 );

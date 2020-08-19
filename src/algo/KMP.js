@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -245,7 +249,11 @@ export default class KMP extends Algorithm {
 				i++;
 			} else {
 				if (j !== pattern.length) {
-					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
+					this.cmd(
+						act.setBackgroundColor,
+						this.comparisonMatrixID[row][i + j],
+						'#E74C3C'
+					);
 				}
 				const nextAlignment = failureTable[j - 1];
 				i += j - nextAlignment;

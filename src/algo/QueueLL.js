@@ -217,7 +217,7 @@ export default class QueueLL extends Algorithm {
 			LINKED_LIST_INSERT_Y,
 			0.25,
 			0,
-			1,
+			1
 		);
 
 		this.cmd(act.setNull, this.linkedListElemID[0], 1);

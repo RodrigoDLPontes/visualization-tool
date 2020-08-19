@@ -64,7 +64,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x;
 		} else if (this.xJustify === 'center') {
 			return this.x - this.w / 2.0;
-		} else { // right
+		} else {
+			// right
 			return this.x - this.w;
 		}
 	}
@@ -74,7 +75,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x;
 		} else if (this.xJustify === 'left') {
 			return this.x + this.w / 2.0;
-		} else { // right
+		} else {
+			// right
 			return this.x - this.w / 2.0;
 		}
 	}
@@ -84,7 +86,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y;
 		} else if (this.yJustify === 'top') {
 			return this.y + this.h / 2.0;
-		} else { // bottom
+		} else {
+			// bottom
 			return this.y - this.w / 2.0;
 		}
 	}
@@ -94,7 +97,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y;
 		} else if (this.yJustify === 'center') {
 			return this.y - this.h / 2.0;
-		} else { // bottom
+		} else {
+			// bottom
 			return this.y - this.h;
 		}
 	}
@@ -104,7 +108,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.y + this.h;
 		} else if (this.yJustify === 'center') {
 			return this.y + this.h / 2.0;
-		} else { // bottom
+		} else {
+			// bottom
 			return this.y;
 		}
 	}
@@ -114,7 +119,8 @@ export default class AnimatedRectangle extends AnimatedObject {
 			return this.x + this.w;
 		} else if (this.xJustify === 'center') {
 			return this.x + this.w / 2.0;
-		} else { // right
+		} else {
+			// right
 			return this.x;
 		}
 	}
@@ -157,7 +163,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 	}
 
 	draw(context) {
-		if(!this.addedToScene) return;
+		if (!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
 		context.lineWidth = 2;

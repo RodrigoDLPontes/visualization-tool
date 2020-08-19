@@ -61,7 +61,6 @@ import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@material-ui/core';
 import { UndoConnect } from './AnimatedLine.js';
 
-
 // Utility function to read a cookie
 function getCookie(cookieName) {
 	let i, x, y;
@@ -103,7 +102,7 @@ function returnSubmit(field, func, maxSize, intOnly) {
 	if (maxSize !== undefined) {
 		field.size = maxSize;
 	}
-	return function(event) {
+	return function (event) {
 		let keyASCII = 0;
 		if (window.event) {
 			// IE
@@ -216,9 +215,15 @@ export default class AnimationManager extends EventListener {
 
 		this.canvas = canvasRef;
 
-		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () => this.skipBack());
-		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () => this.stepBack());
-		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () => this.doPlayPause());
+		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () =>
+			this.skipBack()
+		);
+		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () =>
+			this.stepBack()
+		);
+		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () =>
+			this.doPlayPause()
+		);
 		this.playPauseBackButton.setAttribute('style', 'width: 80px');
 		this.stepForwardButton = addControlToAnimationBar(
 			animBarRef,
@@ -405,7 +410,7 @@ export default class AnimationManager extends EventListener {
 		this.anyAnimations = false;
 
 		while (this.currentAnimation < this.animationSteps.length && !this.foundBreak) {
-			const [ act, params ] = this.animationSteps[this.currentAnimation];
+			const [act, params] = this.animationSteps[this.currentAnimation];
 			act.call(this, params);
 			this.currentAnimation++;
 		}
@@ -778,7 +783,8 @@ export const act = {
 	step() {
 		this.foundBreak = true;
 	},
-	move(params) { // id, x, y
+	move(params) {
+		// id, x, y
 		const nextAnim = new SingleAnimation(
 			params[0],
 			this.animatedObjects.getNodeX(params[0]),
@@ -798,7 +804,8 @@ export const act = {
 		);
 		this.anyAnimations = true;
 	},
-	delete(params) { // id
+	delete(params) {
+		// id
 		const removedEdges = this.animatedObjects.deleteIncident(params[0]);
 		if (removedEdges.length > 0) {
 			this.undoBlock = this.undoBlock.concat(removedEdges);
@@ -809,11 +816,12 @@ export const act = {
 			this.animatedObjects.removeObject(params[0]);
 		}
 	},
-	connect(params) { // fromID, toID | color, curve, directed, label, anchorPos, thickness
-		params[2] = params[2] || "#000000";
+	connect(params) {
+		// fromID, toID | color, curve, directed, label, anchorPos, thickness
+		params[2] = params[2] || '#000000';
 		params[3] = params[3] || 0.0;
 		params[4] = params[4] !== false && params[4] !== 0;
-		params[5] = params[5] === undefined ? "" : params[5];
+		params[5] = params[5] === undefined ? '' : params[5];
 		params[6] = params[6] || 0;
 		params[7] = params[7] === undefined ? 1 : params[7];
 		this.animatedObjects.connectEdge(
@@ -828,59 +836,41 @@ export const act = {
 		);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
-	connectNext(params) { // fromID, toID
-		this.animatedObjects.connectEdge(
-			params[0],
-			params[1],
-			"#000000",
-			0.0,
-			true,
-			"",
-			0
-		);
+	connectNext(params) {
+		// fromID, toID
+		this.animatedObjects.connectEdge(params[0], params[1], '#000000', 0.0, true, '', 0);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
-	connectPrev(params) { // fromID, toID
-		this.animatedObjects.connectEdge(
-			params[0],
-			params[1],
-			"#000000",
-			0.0,
-			true,
-			"",
-			1
-		);
+	connectPrev(params) {
+		// fromID, toID
+		this.animatedObjects.connectEdge(params[0], params[1], '#000000', 0.0, true, '', 1);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
-	connectCurve(params) { // fromID, toID, curve
-		this.animatedObjects.connectEdge(
-			params[0],
-			params[1],
-			"#000000",
-			params[2],
-			true,
-			"",
-			1
-		);
+	connectCurve(params) {
+		// fromID, toID, curve
+		this.animatedObjects.connectEdge(params[0], params[1], '#000000', params[2], true, '', 1);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
-	connectSkipList(params) { // fromID, toID, anchorPos
+	connectSkipList(params) {
+		// fromID, toID, anchorPos
 		this.animatedObjects.connectEdge(
 			params[0],
 			params[1],
-			"#000000",
+			'#000000',
 			0.0,
 			false,
-			"",
+			'',
 			params[2]
 		);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
-	disconnect(params) { // fromID, toID
+	disconnect(params) {
+		// fromID, toID
 		const undoConnect = this.animatedObjects.disconnect(params[0], params[1]);
 		if (undoConnect !== null) this.undoBlock.push(undoConnect);
 	},
-	createCircle(params) { // id, label | x, y
+	createCircle(params) {
+		// id, label | x, y
 		params[2] = params[2] || 0;
 		params[3] = params[3] || 0;
 		this.animatedObjects.addCircleObject(params[0], String(params[1]));
@@ -891,15 +881,12 @@ export const act = {
 		);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createHighlightCircle(params) { // id, color | x, y, radius
+	createHighlightCircle(params) {
+		// id, color | x, y, radius
 		params[2] = params[2] || 0;
 		params[3] = params[3] || 0;
 		params[4] = params[4] === undefined ? 20 : params[4];
-		this.animatedObjects.addHighlightCircleObject(
-			params[0],
-			params[1],
-			params[4]
-		);
+		this.animatedObjects.addHighlightCircleObject(params[0], params[1], params[4]);
 		this.animatedObjects.setNodePosition(
 			parseInt(params[0]),
 			parseInt(params[2]),
@@ -907,13 +894,14 @@ export const act = {
 		);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createRectangle(params) { // id, label, w, h | x, y, xJustify, yJustify, bgColor, fgColor
+	createRectangle(params) {
+		// id, label, w, h | x, y, xJustify, yJustify, bgColor, fgColor
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
-		params[6] = params[6] || "center";
-		params[7] = params[7] || "center";
-		params[8] = params[8] || "#FFFFFF";
-		params[9] = params[9] || "#000000";
+		params[6] = params[6] || 'center';
+		params[7] = params[7] || 'center';
+		params[8] = params[8] || '#FFFFFF';
+		params[9] = params[9] || '#000000';
 		this.animatedObjects.addRectangleObject(
 			params[0],
 			String(params[1]),
@@ -924,38 +912,28 @@ export const act = {
 			params[8],
 			params[9]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createLabel(params) { // id, label | x, y, centered
+	createLabel(params) {
+		// id, label | x, y, centered
 		params[2] = params[2] || 0;
 		params[3] = params[3] || 0;
 		params[4] = params[4] !== false && params[4] !== 0;
-		this.animatedObjects.addLabelObject(
-			params[0],
-			String(params[1]),
-			params[4]
-		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[2],
-			params[3]
-		);
+		this.animatedObjects.addLabelObject(params[0], String(params[1]), params[4]);
+		this.animatedObjects.setNodePosition(params[0], params[2], params[3]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, vertical, linkPosEnd, bgColor, fgColor
+	createLinkedListNode(params) {
+		// id, label, w, h | x, y, linkPercent, vertical, linkPosEnd, bgColor, fgColor
 		params[1] = Array.isArray(params[1]) ? params[1].map(x => String(x)) : [String(params[1])];
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
 		params[6] = params[6] === undefined ? 0.25 : params[6];
 		params[7] = params[7] !== false && params[7] !== 0;
 		params[8] = params[8] || false;
-		params[9] = params[9] || "#FFFFFF";
-		params[10] = params[10] || "#000000";
+		params[9] = params[9] || '#FFFFFF';
+		params[10] = params[10] || '#000000';
 		this.animatedObjects.addLinkedListObject(
 			params[0],
 			params[1],
@@ -967,19 +945,16 @@ export const act = {
 			params[9],
 			params[10]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createDoublyLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, bgColor, fgColor
+	createDoublyLinkedListNode(params) {
+		// id, label, w, h | x, y, linkPercent, bgColor, fgColor
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
 		params[6] = params[6] === undefined ? 0.25 : params[6];
-		params[7] = params[7] || "#FFFFFF";
-		params[8] = params[8] || "#000000";
+		params[7] = params[7] || '#FFFFFF';
+		params[8] = params[8] || '#000000';
 		this.animatedObjects.addDoublyLinkedListObject(
 			params[0],
 			String(params[1]),
@@ -989,19 +964,16 @@ export const act = {
 			params[7],
 			params[8]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createCircularlyLinkedListNode(params) { // id, label, w, h | x, y, linkPercent, bgColor, fgColor
+	createCircularlyLinkedListNode(params) {
+		// id, label, w, h | x, y, linkPercent, bgColor, fgColor
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
 		params[6] = params[6] === undefined ? 0.25 : params[6];
-		params[7] = params[7] || "#FFFFFF";
-		params[8] = params[8] || "#000000";
+		params[7] = params[7] || '#FFFFFF';
+		params[8] = params[8] || '#000000';
 		this.animatedObjects.addCircularlyLinkedListObject(
 			params[0],
 			String(params[1]),
@@ -1011,18 +983,15 @@ export const act = {
 			params[7],
 			params[8]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createSkipListNode(params) { // id, label, w, h | x, y, bgColor, fgColor
+	createSkipListNode(params) {
+		// id, label, w, h | x, y, bgColor, fgColor
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
-		params[6] = params[6] || "#FFFFFF";
-		params[7] = params[7] || "#000000";
+		params[6] = params[6] || '#FFFFFF';
+		params[7] = params[7] || '#000000';
 		this.animatedObjects.addSkipListObject(
 			params[0],
 			String(params[1]),
@@ -1031,18 +1000,15 @@ export const act = {
 			params[6],
 			params[7]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	createBTreeNode(params) { // id, widthPerElement, height, numLabels, x, y, bgColor, fgColor
+	createBTreeNode(params) {
+		// id, widthPerElement, height, numLabels, x, y, bgColor, fgColor
 		params[4] = params[4] || 0;
 		params[5] = params[5] || 0;
-		params[6] = params[6] || "#FFFFFF";
-		params[7] = params[7] || "#000000";
+		params[6] = params[6] || '#FFFFFF';
+		params[7] = params[7] || '#000000';
 		this.animatedObjects.addBTreeNode(
 			params[0],
 			params[1],
@@ -1051,14 +1017,11 @@ export const act = {
 			params[6],
 			params[7]
 		);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[4],
-			params[5]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
-	setText(params) { // id, text | textIndex
+	setText(params) {
+		// id, text | textIndex
 		params[2] = params[2] || 0;
 		const oldText = this.animatedObjects.getText(params[0], params[2]);
 		this.animatedObjects.setText(params[0], String(params[1]), params[2]);
@@ -1066,109 +1029,110 @@ export const act = {
 			this.undoBlock.push(new UndoSetText(params[0], oldText, params[2]));
 		}
 	},
-	setTextColor(params) { // id, color, textIndex
+	setTextColor(params) {
+		// id, color, textIndex
 		params[2] = params[2] || 0;
 		const oldColor = this.animatedObjects.getTextColor(params[0], params[2]);
-		this.animatedObjects.setTextColor(
-			params[0],
-			params[1],
-			params[2]
-		);
+		this.animatedObjects.setTextColor(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetTextColor(params[0], oldColor, params[2]));
 	},
-	setForegroundColor(params) { // id, color
+	setForegroundColor(params) {
+		// id, color
 		const oldColor = this.animatedObjects.foregroundColor(params[0]);
 		this.animatedObjects.setForegroundColor(params[0], params[1]);
 		this.undoBlock.push(new UndoSetForegroundColor(params[0], oldColor));
 	},
-	setBackgroundColor(params) { // id, color
+	setBackgroundColor(params) {
+		// id, color
 		const oldColor = this.animatedObjects.backgroundColor(params[0]);
 		this.animatedObjects.setBackgroundColor(params[0], params[1]);
 		this.undoBlock.push(new UndoSetBackgroundColor(params[0], oldColor));
 	},
-	setHighlight(params) { // id, highlight, color
+	setHighlight(params) {
+		// id, highlight, color
 		this.animatedObjects.setHighlight(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoHighlight(params[0], !params[1], params[2]));
 	},
-	setAlpha(params) { // id, alpha
+	setAlpha(params) {
+		// id, alpha
 		const oldAlpha = this.animatedObjects.getAlpha(params[0]);
 		this.animatedObjects.setAlpha(params[0], params[1]);
 		this.undoBlock.push(new UndoSetAlpha(params[0], oldAlpha));
 	},
-	setEdgeColor(params) { // fromID, toID, newColor
+	setEdgeColor(params) {
+		// fromID, toID, newColor
 		const oldColor = this.animatedObjects.setEdgeColor(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetEdgeColor(params[0], params[1], oldColor));
 	},
-	setEdgeAlpha(params) { // fromID, toID, alpha
+	setEdgeAlpha(params) {
+		// fromID, toID, alpha
 		const oldAlpha = this.animatedObjects.setEdgeAlpha(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetEdgeAlpha(params[0], params[1], oldAlpha));
 	},
-	setEdgeHighlight(params) { // fromID, toID, highlight
+	setEdgeHighlight(params) {
+		// fromID, toID, highlight
 		const oldHighlight = this.animatedObjects.setEdgeHighlight(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoHighlightEdge(params[0], params[1], oldHighlight));
 	},
-	setEdgeThickness(params) { // fromID, toID, thickness
+	setEdgeThickness(params) {
+		// fromID, toID, thickness
 		const oldThickness = this.animatedObjects.setEdgeThickness(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetEdgeThickness(params[0], params[1], oldThickness));
 	},
-	setRectangleEdgeThickness(params) { //id, thicknessArray
-		const oldThicknessArray = this.animatedObjects.setRectangleEdgeThickness(params[0], params[1]);
+	setRectangleEdgeThickness(params) {
+		//id, thicknessArray
+		const oldThicknessArray = this.animatedObjects.setRectangleEdgeThickness(
+			params[0],
+			params[1]
+		);
 		this.undoBlock.push(new UndoSetRectangleEdgeThickness(params[0], oldThicknessArray));
 	},
-	setHeight(params) { // id, height
+	setHeight(params) {
+		// id, height
 		const oldHeight = this.animatedObjects.getHeight(params[0]);
 		this.animatedObjects.setHeight(params[0], params[1]);
 		this.undoBlock.push(new UndoSetHeight(params[0], oldHeight));
 	},
-	setWidth(params) { // id, width
+	setWidth(params) {
+		// id, width
 		const oldWidth = this.animatedObjects.getWidth(params[0]);
 		this.animatedObjects.setWidth(params[0], params[1]);
 		this.undoBlock.push(new UndoSetWidth(params[0], oldWidth));
 	},
-	setLayer(params) { // id, height
+	setLayer(params) {
+		// id, height
 		this.animatedObjects.setLayer(params[0], params[1]);
 		//TODO: Add undo information here
 	},
-	setNull(params) { // id, null
+	setNull(params) {
+		// id, null
 		const oldNull = this.animatedObjects.getNull(params[0]);
-		this.animatedObjects.setNull(
-			params[0],
-			params[1]
-		);
+		this.animatedObjects.setNull(params[0], params[1]);
 		this.undoBlock.push(new UndoSetNull(params[0], oldNull));
 	},
-	setPrevNull(params) { // id, null
+	setPrevNull(params) {
+		// id, null
 		const oldNull = this.animatedObjects.getLeftNull(params[0]);
-		this.animatedObjects.setPrevNull(
-			params[0],
-			params[1]
-		);
+		this.animatedObjects.setPrevNull(params[0], params[1]);
 		this.undoBlock.push(new UndoSetPrevNull(params[0], oldNull));
 	},
-	setNextNull(params) { // id, null
+	setNextNull(params) {
+		// id, null
 		const oldNull = this.animatedObjects.getRightNull(params[0]);
-		this.animatedObjects.setNextNull(
-			params[0],
-			params[1]
-		);
+		this.animatedObjects.setNextNull(params[0], params[1]);
 		this.undoBlock.push(new UndoSetNextNull(params[0], oldNull));
 	},
-	setNumElements(params) { // id, numElements
+	setNumElements(params) {
+		// id, numElements
 		const oldElem = this.animatedObjects.getObject(params[0]);
 		this.undoBlock.push(new UndoSetNumElements(oldElem, params[1]));
-		this.animatedObjects.setNumElements(
-			params[0],
-			params[1]
-		);
+		this.animatedObjects.setNumElements(params[0], params[1]);
 	},
-	setPosition(params) { // id, x, y
+	setPosition(params) {
+		// id, x, y
 		const oldX = this.animatedObjects.getNodeX(params[0]);
 		const oldY = this.animatedObjects.getNodeY(params[0]);
-		this.animatedObjects.setNodePosition(
-			params[0],
-			params[1],
-			params[2]
-		);
+		this.animatedObjects.setNodePosition(params[0], params[1], params[2]);
 		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
 	},
 	setHighlightIndex(params) {
@@ -1176,25 +1140,29 @@ export const act = {
 		this.undoBlock.push(new UndoSetHighlightIndex(params[0], oldIndex));
 		this.animatedObjects.setHighlightIndex(params[0], params[1]);
 	},
-	alignRight(params) { // id, otherID
+	alignRight(params) {
+		// id, otherID
 		const oldX = this.animatedObjects.getNodeX(params[0]);
 		const oldY = this.animatedObjects.getNodeY(params[0]);
 		this.animatedObjects.alignRight(params[0], params[1]);
 		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
 	},
-	alignLeft(params) { // id, otherID
+	alignLeft(params) {
+		// id, otherID
 		const oldX = this.animatedObjects.getNodeX(params[0]);
 		const oldY = this.animatedObjects.getNodeY(params[0]);
 		this.animatedObjects.alignLeft(params[0], params[1]);
 		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
 	},
-	alignTop(params) { // id, otherID
+	alignTop(params) {
+		// id, otherID
 		const oldX = this.animatedObjects.getNodeX(params[0]);
 		const oldY = this.animatedObjects.getNodeY(params[0]);
 		this.animatedObjects.alignTop(params[0], params[1]);
 		this.undoBlock.push(new UndoSetPosition(params[0], oldX, oldY));
 	},
-	alignBottom(params) { // id, otherID
+	alignBottom(params) {
+		// id, otherID
 		const oldX = this.animatedObjects.getNodeX(params[0]);
 		const oldY = this.animatedObjects.getNodeY(params[0]);
 		this.animatedObjects.alignBottom(params[0], params[1]);
@@ -1204,7 +1172,8 @@ export const act = {
 		const oldTop = this.animatedObjects.setAlwaysOnTop(params[0], params[1]);
 		this.undoBlock.push(new UndoSetAlwaysOnTop(params[0], oldTop));
 	},
-	moveToAlignRight(params) { // id, otherID
+	moveToAlignRight(params) {
+		// id, otherID
 		const newXY = this.animatedObjects.getAlignRightPos(params[0], params[1]);
 		const nextAnim = new SingleAnimation(
 			params[0],
@@ -1225,4 +1194,4 @@ export const act = {
 		);
 		this.anyAnimations = true;
 	},
-}
+};

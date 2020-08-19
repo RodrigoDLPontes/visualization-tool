@@ -24,8 +24,8 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import AnimatedObject from "./AnimatedObject.js";
-import { UndoBlock } from "./UndoFunctions.js";
+import AnimatedObject from './AnimatedObject.js';
+import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 	constructor(objectID, label, w, h, linkPercent, backgroundColor, foregroundColor) {
@@ -120,8 +120,8 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 		startY = this.top();
 
 		if (this.highlighted) {
-			context.strokeStyle = "#FF0000";
-			context.fillStyle = "#FF0000";
+			context.strokeStyle = '#FF0000';
+			context.fillStyle = '#FF0000';
 
 			context.beginPath();
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -162,9 +162,9 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 		context.closePath();
 		context.stroke();
 
-		context.textAlign = "center";
-		context.font = "12px Arial";
-		context.textBaseline = "middle";
+		context.textAlign = 'center';
+		context.font = '12px Arial';
+		context.textBaseline = 'middle';
 		context.lineWidth = 2;
 
 		this.resetTextPosition();

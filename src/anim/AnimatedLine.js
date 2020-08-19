@@ -24,7 +24,6 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-
 // This class handles links between vertices in graphs, pointers in linked lists, and so on.
 
 const LINE_MAX_HEIGHT_DIFF = 5;
@@ -185,7 +184,18 @@ export default class AnimatedLine {
 }
 
 export class UndoConnect {
-	constructor(fromID, toID, createConnection, color, curve, directed, edgeLabel, anchorPoint, thickness, highlighted) {
+	constructor(
+		fromID,
+		toID,
+		createConnection,
+		color,
+		curve,
+		directed,
+		edgeLabel,
+		anchorPoint,
+		thickness,
+		highlighted
+	) {
 		this.fromID = fromID;
 		this.toID = toID;
 		this.createConnection = createConnection;

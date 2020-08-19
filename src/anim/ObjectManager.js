@@ -24,7 +24,6 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-
 // Object Manager
 //
 // Manage all of our animated objects.  Control any animated object should occur through
@@ -141,7 +140,9 @@ export default class ObjectManager {
 	addHighlightCircleObject(objectID, objectColor, radius) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
-				'addHighlightCircleObject: object with same ID (' + String(objectID) + ') already exists!'
+				'addHighlightCircleObject: object with same ID (' +
+					String(objectID) +
+					') already exists!'
 			);
 		}
 		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
@@ -504,7 +505,16 @@ export default class ObjectManager {
 		if (fromObj == null || toObj == null) {
 			throw new Error("Tried to connect two nodes, one didn't exist!");
 		}
-		const l = new AnimatedLine(fromObj, toObj, color, curve, directed, lab, connectionPoint, thickness);
+		const l = new AnimatedLine(
+			fromObj,
+			toObj,
+			color,
+			curve,
+			directed,
+			lab,
+			connectionPoint,
+			thickness
+		);
 		if (this.edges[objectIDfrom] == null) {
 			this.edges[objectIDfrom] = [];
 		}
@@ -807,14 +817,7 @@ export default class ObjectManager {
 		this.nodes[objectID] = newNode;
 	}
 
-	addSkipListObject(
-		objectID,
-		nodeLabel,
-		width,
-		height,
-		backgroundColor,
-		foregroundColor
-	) {
+	addSkipListObject(objectID, nodeLabel, width, height, backgroundColor, foregroundColor) {
 		if (this.nodes[objectID] != null) {
 			throw new Error('addSkipListObject: object with same ID already exists!');
 		}

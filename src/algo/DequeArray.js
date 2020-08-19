@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -69,7 +73,7 @@ export default class DequeArray extends Algorithm {
 
 		// Add's value text field
 		this.addField = addControlToAlgorithmBar('Text', '');
-		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4); 
+		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4);
 		this.controls.push(this.addField);
 
 		// Add first button
@@ -288,7 +292,13 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
 
 		this.cmd(act.step);
-		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlight1ID,
+			INDEX_COLOR,
+			FRONT_POS_X,
+			FRONT_POS_Y
+		);
 		this.cmd(act.step);
 		this.cmd(
 			act.setText,
@@ -350,7 +360,13 @@ export default class DequeArray extends Algorithm {
 			QUEUE_LABEL_Y
 		);
 
-		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlight1ID,
+			INDEX_COLOR,
+			FRONT_POS_X,
+			FRONT_POS_Y
+		);
 		this.cmd(act.step);
 
 		const xpos = (this.front % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -407,7 +423,13 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.createLabel, remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
-		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlight1ID,
+			INDEX_COLOR,
+			FRONT_POS_X,
+			FRONT_POS_Y
+		);
 		this.cmd(act.createHighlightCircle, this.highlight2ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 
 		this.cmd(act.step);

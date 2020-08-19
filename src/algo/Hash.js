@@ -297,7 +297,14 @@ export default class Hash extends Algorithm {
 					'left',
 					'bottom'
 				);
-				this.cmd(act.createLabel, operatorID, '+', HASH_NUMBER_START_X, HASH_ADD_START_Y, 0);
+				this.cmd(
+					act.createLabel,
+					operatorID,
+					'+',
+					HASH_NUMBER_START_X,
+					HASH_ADD_START_Y,
+					0
+				);
 				this.cmd(act.step);
 
 				let carry = 0;

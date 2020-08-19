@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
@@ -60,7 +64,7 @@ export default class DequeLL extends Algorithm {
 
 		// Add's value text field
 		this.addField = addControlToAlgorithmBar('Text', '');
-		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4); 
+		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4);
 		this.controls.push(this.addField);
 
 		// Add first button
@@ -191,7 +195,7 @@ export default class DequeLL extends Algorithm {
 			LINKED_LIST_ELEM_HEIGHT,
 			LINKED_LIST_INSERT_X,
 			LINKED_LIST_INSERT_Y,
-			0.25,
+			0.25
 		);
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
@@ -219,24 +223,24 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1],
+					this.linkedListElemID[index + 1]
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index],
+					this.linkedListElemID[index]
 				);
 			} else if (index === this.size) {
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index],
+					this.linkedListElemID[index]
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1],
+					this.linkedListElemID[index - 1]
 				);
 			} else {
 				this.cmd(
@@ -252,22 +256,22 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index],
+					this.linkedListElemID[index]
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1],
+					this.linkedListElemID[index - 1]
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1],
+					this.linkedListElemID[index + 1]
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index],
+					this.linkedListElemID[index]
 				);
 			}
 		}
@@ -332,12 +336,12 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1],
+					this.linkedListElemID[index + 1]
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1],
+					this.linkedListElemID[index - 1]
 				);
 			}
 		}

@@ -28,7 +28,7 @@ import {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addLabelToAlgorithmBar,
-	addRadioButtonGroupToAlgorithmBar
+	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { BFS_DFS_ADJ_LIST } from './util/GraphValues';
 import Graph from './Graph.js';
@@ -124,14 +124,7 @@ export default class DFS extends Graph {
 		this.visitedID = [];
 
 		this.infoLabelID = this.nextIndex++;
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'',
-			INFO_MSG_X,
-			INFO_MSG_Y,
-			0
-		);
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.cmd(
 			act.createLabel,
@@ -221,7 +214,11 @@ export default class DFS extends Graph {
 		this.rebuildEdges();
 
 		let vertex = startVertex;
-		this.cmd(act.setText, this.infoLabelID, 'Pushing ' + this.toStr(vertex) + ' and adding to visited set');
+		this.cmd(
+			act.setText,
+			this.infoLabelID,
+			'Pushing ' + this.toStr(vertex) + ' and adding to visited set'
+		);
 		let vertexID = this.nextIndex++;
 		this.visited[vertex] = true;
 		this.visitedID.push(this.nextIndex);
@@ -235,20 +232,18 @@ export default class DFS extends Graph {
 		this.cmd(act.setBackgroundColor, this.circleID[vertex], VISITED_COLOR);
 		this.stack.push(vertex);
 		this.stackID.push(vertexID);
-		this.cmd(
-			act.createLabel,
-			vertexID,
-			this.toStr(vertex),
-			STACK_START_X,
-			this.stackStartY
-		);
+		this.cmd(act.createLabel, vertexID, this.toStr(vertex), STACK_START_X, this.stackStartY);
 		this.cmd(act.step);
 
 		while (this.stack.length > 0 && this.listID.length < this.size) {
 			vertex = this.stack.pop();
 			vertexID = this.stackID.pop();
 
-			this.cmd(act.setText, this.infoLabelID, 'Popping ' + this.toStr(vertex) + ' and adding to list');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Popping ' + this.toStr(vertex) + ' and adding to list'
+			);
 
 			this.cmd(act.setTextColor, vertexID, DFS_STACK_TOP_COLOR);
 			this.cmd(act.move, vertexID, CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
@@ -275,7 +270,8 @@ export default class DFS extends Graph {
 						this.cmd(
 							act.setText,
 							this.infoLabelID,
-							this.toStr(neighbor) + ' has not yet been visited, pushing and adding to visited set'
+							this.toStr(neighbor) +
+								' has not yet been visited, pushing and adding to visited set'
 						);
 						this.cmd(
 							act.createLabel,
@@ -284,7 +280,7 @@ export default class DFS extends Graph {
 							VISITED_START_X + (this.visitedID.length - 1) * LIST_SPACING,
 							VISITED_START_Y
 						);
-						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR)
+						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR);
 						this.stack.push(neighbor);
 						this.stackID.push(this.nextIndex);
 						this.cmd(
@@ -330,8 +326,12 @@ export default class DFS extends Graph {
 		this.visitedID = [];
 		this.stackStartY = this.isLarge ? LARGE_STACK_START_Y : SMALL_STACK_START_Y;
 		this.stackSpacing = this.isLarge ? LARGE_STACK_SPACING : SMALL_STACK_SPACING;
-		this.recursionSpacingX = this.isLarge ? LARGE_RECURSION_SPACING_X : SMALL_RECURSION_SPACING_X;
-		this.recursionSpacingY = this.isLarge ? LARGE_RECURSION_SPACING_Y : SMALL_RECURSION_SPACING_Y;
+		this.recursionSpacingX = this.isLarge
+			? LARGE_RECURSION_SPACING_X
+			: SMALL_RECURSION_SPACING_X;
+		this.recursionSpacingY = this.isLarge
+			? LARGE_RECURSION_SPACING_Y
+			: SMALL_RECURSION_SPACING_Y;
 		this.currentID = this.nextIndex++;
 
 		this.rebuildEdges();
@@ -340,20 +340,10 @@ export default class DFS extends Graph {
 
 		const vertex = startVertex;
 
-		this.cmd(
-			act.createLabel,
-			this.currentID,
-			'',
-			CURRENT_VERTEX_X,
-			CURRENT_VERTEX_Y
-		);
+		this.cmd(act.createLabel, this.currentID, '', CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
 		this.cmd(act.setTextColor, this.currentID, DFS_STACK_TOP_COLOR);
 
-		this.cmd(
-			act.setText,
-			this.infoLabelID,
-			'About to recurse to ' + this.toStr(startVertex)
-		);
+		this.cmd(act.setText, this.infoLabelID, 'About to recurse to ' + this.toStr(startVertex));
 		this.cmd(act.step);
 
 		this.visitVertex(vertex);
@@ -368,7 +358,11 @@ export default class DFS extends Graph {
 	}
 
 	dfsVisit(currVertex, messageX) {
-		this.cmd(act.setText, this.infoLabelID, 'Visiting ' + this.toStr(currVertex) + ' and adding to list');
+		this.cmd(
+			act.setText,
+			this.infoLabelID,
+			'Visiting ' + this.toStr(currVertex) + ' and adding to list'
+		);
 		this.cmd(act.setText, this.currentID, this.toStr(currVertex));
 
 		this.stackID.push(this.nextIndex);
@@ -419,7 +413,7 @@ export default class DFS extends Graph {
 					this.cmd(
 						act.setText,
 						this.infoLabelID,
-						'Vertex ' + this.toStr(neighbor) + ' already visited, skipping',
+						'Vertex ' + this.toStr(neighbor) + ' already visited, skipping'
 					);
 					this.cmd(act.step);
 					this.highlightEdge(currVertex, neighbor, 0);
@@ -454,7 +448,7 @@ export default class DFS extends Graph {
 
 	clear() {
 		for (let i = 0; i < this.size; i++) {
-			this.cmd(act.setBackgroundColor, this.circleID[i], "#FFFFFF");
+			this.cmd(act.setBackgroundColor, this.circleID[i], '#FFFFFF');
 			this.visited[i] = false;
 		}
 		for (let i = 0; i < this.listID.length; i++) {

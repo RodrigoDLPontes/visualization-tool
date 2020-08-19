@@ -87,14 +87,7 @@ export default class LCS extends Algorithm {
 
 	setup() {
 		this.infoLabelID = this.nextIndex++;
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'',
-			INFO_MSG_X,
-			INFO_MSG_Y,
-			0
-		);
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.code = [
 			['def ', 'LCS(S1, S2, matrix)', ':'],
@@ -103,7 +96,13 @@ export default class LCS extends Algorithm {
 			['               if ', '(S1[x] == S2[y]):'],
 			['                    matrix[x][y] = 1 + ', 'matrix[x - 1][y-1]'],
 			['               else:'],
-			['                    matrix[x][y] = max(', 'matrix[x - 1][y]', ',', ' matrix[x][y - 1]', ')'],
+			[
+				'                    matrix[x][y] = max(',
+				'matrix[x - 1][y]',
+				',',
+				' matrix[x][y - 1]',
+				')',
+			],
 		];
 
 		this.codeID = Array(this.code.length);
@@ -172,7 +171,11 @@ export default class LCS extends Algorithm {
 				this.cmd(act.setHighlight, this.S1TableID[i], 1);
 				this.cmd(act.setHighlight, this.S2TableID[j], 1);
 				this.cmd(act.setForegroundColor, this.codeID[3][1], CODE_HIGHLIGHT_COLOR);
-				this.cmd(act.setText, this.infoLabelID, 'Comparing ' + str1.charAt(i) + ' and ' + str2.charAt(j));
+				this.cmd(
+					act.setText,
+					this.infoLabelID,
+					'Comparing ' + str1.charAt(i) + ' and ' + str2.charAt(j)
+				);
 				this.cmd(act.step);
 				this.cmd(act.setHighlight, this.S1TableID[i], 0);
 				this.cmd(act.setHighlight, this.S2TableID[j], 0);
@@ -212,7 +215,11 @@ export default class LCS extends Algorithm {
 					this.cmd(act.setForegroundColor, this.codeID[6][4], CODE_HIGHLIGHT_COLOR);
 					this.cmd(act.setHighlight, this.tableID[i][j + 1], 1);
 					this.cmd(act.setHighlight, this.tableID[i + 1][j], 1);
-					this.cmd(act.setText, this.infoLabelID, 'Mismatch, copy greatest value from left or above');
+					this.cmd(
+						act.setText,
+						this.infoLabelID,
+						'Mismatch, copy greatest value from left or above'
+					);
 					this.cmd(act.step);
 
 					this.cmd(act.setForegroundColor, this.codeID[6][0], CODE_STANDARD_COLOR);
@@ -221,11 +228,7 @@ export default class LCS extends Algorithm {
 
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
 						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
-						this.cmd(
-							act.setForegroundColor,
-							this.codeID[6][3],
-							CODE_STANDARD_COLOR
-						);
+						this.cmd(act.setForegroundColor, this.codeID[6][3], CODE_STANDARD_COLOR);
 
 						this.tableVals[i + 1][j + 1] = this.tableVals[i][j + 1];
 						this.cmd(
@@ -236,11 +239,7 @@ export default class LCS extends Algorithm {
 							this.tableYPos[i][j + 1]
 						);
 					} else {
-						this.cmd(
-							act.setForegroundColor,
-							this.codeID[6][1],
-							CODE_STANDARD_COLOR
-						);
+						this.cmd(act.setForegroundColor, this.codeID[6][1], CODE_STANDARD_COLOR);
 						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 						this.tableVals[i + 1][j + 1] = this.tableVals[i + 1][j];
 						this.cmd(
@@ -262,18 +261,10 @@ export default class LCS extends Algorithm {
 					this.cmd(act.setText, this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
 					this.cmd(act.delete, moveID);
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
-						this.cmd(
-							act.setForegroundColor,
-							this.codeID[6][1],
-							CODE_STANDARD_COLOR
-						);
+						this.cmd(act.setForegroundColor, this.codeID[6][1], CODE_STANDARD_COLOR);
 						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 					} else {
-						this.cmd(
-							act.setForegroundColor,
-							this.codeID[6][3],
-							CODE_STANDARD_COLOR
-						);
+						this.cmd(act.setForegroundColor, this.codeID[6][3], CODE_STANDARD_COLOR);
 						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
 					}
 				}
@@ -405,14 +396,15 @@ export default class LCS extends Algorithm {
 
 		for (let i = 1; i <= str1.length; i++) {
 			for (let j = 1; j <= str2.length; j++) {
-				const topThick = this.tableVals[i][j] !== this.tableVals[i][j-1];
-				const leftThick = this.tableVals[i][j] !== this.tableVals[i-1][j];
+				const topThick = this.tableVals[i][j] !== this.tableVals[i][j - 1];
+				const leftThick = this.tableVals[i][j] !== this.tableVals[i - 1][j];
 				if (topThick || leftThick) {
-					this.cmd(
-						act.setRectangleEdgeThickness,
-						this.tableID[i][j],
-						[topThick, false, false, leftThick]
-					);
+					this.cmd(act.setRectangleEdgeThickness, this.tableID[i][j], [
+						topThick,
+						false,
+						false,
+						leftThick,
+					]);
 				}
 			}
 		}

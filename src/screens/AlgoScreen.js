@@ -10,7 +10,6 @@ import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
 
 class AlgoScreen extends React.Component {
-
 	constructor(props) {
 		super(props);
 
@@ -41,29 +40,29 @@ class AlgoScreen extends React.Component {
 		if (!algoMap[algoName]) {
 			return (
 				<div className="container">
-					<Header/>
+					<Header />
 					<div className="content">
 						<div className="four-o-four">
 							<h1>404!</h1>
 							<h3>
-								Algorithm not found! Click <Link to="/">here</Link> to return to the home screen and choose
-								another algorithm.
+								Algorithm not found! Click <Link to="/">here</Link> to return to the
+								home screen and choose another algorithm.
 							</h3>
 						</div>
 					</div>
-					<Footer/>
+					<Footer />
 				</div>
 			);
 		}
 
-		const header = algoMap[algoName][2]
-			? algoMap[algoName][2]
-			: algoMap[algoName][0];
+		const header = algoMap[algoName][2] ? algoMap[algoName][2] : algoMap[algoName][0];
 		return (
 			<div className="VisualizationMainPage">
 				<div id="container">
 					<div id="header">
-						<h1><Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}</h1>
+						<h1>
+							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
+						</h1>
 					</div>
 
 					<div id="mainContent">
@@ -79,7 +78,12 @@ class AlgoScreen extends React.Component {
 						</div>
 
 						<div className="viewport">
-							<canvas id="canvas" width="1500" height="505" ref={this.canvasRef}></canvas>
+							<canvas
+								id="canvas"
+								width="1500"
+								height="505"
+								ref={this.canvasRef}
+							></canvas>
 							{this.state.examplesEnabled && (
 								<div className="modal">
 									<div className="modal-content">{modals[algoName]}</div>

@@ -8,7 +8,6 @@ There is a lot that still needs to be improved, ranging from implementing more d
 
 For more details on what needs to be done, check out the [Projects page](https://github.gatech.edu/rpontes3/visualization-tool/projects). What is outlined there is just to help guide development though, so feel free to contribute with whatever you think would be useful!
 
-
 ## Structure
 
 The site was created using [create-react-app](https://github.com/facebook/create-react-app) application. It also uses [Single Page Apps for GitHub Pages](https://github.com/rafrex/spa-github-pages) for compatibility with GitHub Pages.
@@ -43,5 +42,5 @@ This repository requires `node`/`npm`
 
 When you submit a pull request, please reference the issue or project task your change addresses. Additionally, to maintain a high level of code quality, please ensure it passes ESLint and Prettier using the following commands:
 
-- `npm run lint`
-- `npm run prettier`
+-   `npm run lint`
+-   `npm run prettier`

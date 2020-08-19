@@ -57,7 +57,7 @@ export default class KMP extends Algorithm {
 			this.textField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.textField);
 
@@ -69,7 +69,7 @@ export default class KMP extends Algorithm {
 			this.patternField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.patternField);
 
@@ -172,7 +172,7 @@ export default class KMP extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
@@ -189,7 +189,7 @@ export default class KMP extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 		}
@@ -204,7 +204,7 @@ export default class KMP extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X,
 			ARRAY_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(
 			act.createHighlightCircle,
@@ -212,7 +212,7 @@ export default class KMP extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X,
 			ARRAY_START_Y + this.cellSize,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 
 		let i = 0;
@@ -225,7 +225,7 @@ export default class KMP extends Algorithm {
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
-					ypos
+					ypos,
 				);
 				if (k - i < j) {
 					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][k], '#FFFF4D');
@@ -252,7 +252,7 @@ export default class KMP extends Algorithm {
 					this.cmd(
 						act.setBackgroundColor,
 						this.comparisonMatrixID[row][i + j],
-						'#E74C3C'
+						'#E74C3C',
 					);
 				}
 				const nextAlignment = failureTable[j - 1];
@@ -328,7 +328,7 @@ export default class KMP extends Algorithm {
 			'Failure table:',
 			labelX,
 			FAILURE_TABLE_START_Y + 10,
-			0
+			0,
 		);
 
 		// Display empty failure table
@@ -345,7 +345,7 @@ export default class KMP extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				FAILURE_TABLE_START_Y
+				FAILURE_TABLE_START_Y,
 			);
 			this.cmd(act.setBackgroundColor, this.failureTableCharacterID[i], '#D3D3D3');
 			this.failureTableValueID[i] = this.nextIndex++;
@@ -356,7 +356,7 @@ export default class KMP extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				FAILURE_TABLE_START_Y + this.cellSize
+				FAILURE_TABLE_START_Y + this.cellSize,
 			);
 		}
 		this.cmd(act.step);
@@ -370,7 +370,7 @@ export default class KMP extends Algorithm {
 			'#0000FF',
 			tableStartX,
 			FAILURE_TABLE_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(
 			act.createHighlightCircle,
@@ -378,7 +378,7 @@ export default class KMP extends Algorithm {
 			'#FF0000',
 			tableStartX + this.cellSize,
 			FAILURE_TABLE_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(act.setText, this.failureTableValueID[0], 0);
 		this.cmd(act.step);
@@ -398,13 +398,13 @@ export default class KMP extends Algorithm {
 						act.move,
 						iPointerID,
 						tableStartX + i * this.cellSize,
-						FAILURE_TABLE_START_Y
+						FAILURE_TABLE_START_Y,
 					);
 					this.cmd(
 						act.move,
 						jPointerID,
 						tableStartX + j * this.cellSize,
-						FAILURE_TABLE_START_Y
+						FAILURE_TABLE_START_Y,
 					);
 				}
 				this.cmd(act.step);
@@ -418,7 +418,7 @@ export default class KMP extends Algorithm {
 							act.move,
 							jPointerID,
 							tableStartX + j * this.cellSize,
-							FAILURE_TABLE_START_Y
+							FAILURE_TABLE_START_Y,
 						);
 					}
 					this.cmd(act.step);
@@ -428,7 +428,7 @@ export default class KMP extends Algorithm {
 						act.move,
 						iPointerID,
 						tableStartX + i * this.cellSize,
-						FAILURE_TABLE_START_Y
+						FAILURE_TABLE_START_Y,
 					);
 					this.cmd(act.step);
 				}

@@ -66,7 +66,7 @@ export default class LCS extends Algorithm {
 			this.S1Field,
 			this.runCallback.bind(this),
 			MAX_SEQUENCE_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.S1Field);
 
@@ -76,7 +76,7 @@ export default class LCS extends Algorithm {
 			this.S2Field,
 			this.runCallback.bind(this),
 			MAX_SEQUENCE_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.S2Field);
 
@@ -117,7 +117,7 @@ export default class LCS extends Algorithm {
 					this.code[i][j],
 					CODE_START_X,
 					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0
+					0,
 				);
 				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
 				if (j > 0) {
@@ -174,7 +174,7 @@ export default class LCS extends Algorithm {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Comparing ' + str1.charAt(i) + ' and ' + str2.charAt(j)
+					'Comparing ' + str1.charAt(i) + ' and ' + str2.charAt(j),
 				);
 				this.cmd(act.step);
 				this.cmd(act.setHighlight, this.S1TableID[i], 0);
@@ -191,14 +191,14 @@ export default class LCS extends Algorithm {
 						moveID,
 						this.tableVals[i][j] + 1,
 						this.tableXPos[i][j],
-						this.tableYPos[i][j]
+						this.tableYPos[i][j],
 					);
 					this.cmd(act.bringToTop, moveID, 1);
 					this.cmd(
 						act.move,
 						moveID,
 						this.tableXPos[i + 1][j + 1],
-						this.tableYPos[i + 1][j + 1]
+						this.tableYPos[i + 1][j + 1],
 					);
 					this.cmd(act.step);
 					this.cmd(act.delete, moveID);
@@ -218,7 +218,7 @@ export default class LCS extends Algorithm {
 					this.cmd(
 						act.setText,
 						this.infoLabelID,
-						'Mismatch, copy greatest value from left or above'
+						'Mismatch, copy greatest value from left or above',
 					);
 					this.cmd(act.step);
 
@@ -236,7 +236,7 @@ export default class LCS extends Algorithm {
 							moveID,
 							this.tableVals[i][j + 1],
 							this.tableXPos[i][j + 1],
-							this.tableYPos[i][j + 1]
+							this.tableYPos[i][j + 1],
 						);
 					} else {
 						this.cmd(act.setForegroundColor, this.codeID[6][1], CODE_STANDARD_COLOR);
@@ -247,7 +247,7 @@ export default class LCS extends Algorithm {
 							moveID,
 							this.tableVals[i + 1][j],
 							this.tableXPos[i + 1][j],
-							this.tableYPos[i + 1][j]
+							this.tableYPos[i + 1][j],
 						);
 					}
 					this.cmd(act.bringToTop, moveID, 1);
@@ -255,7 +255,7 @@ export default class LCS extends Algorithm {
 						act.move,
 						moveID,
 						this.tableXPos[i + 1][j + 1],
-						this.tableYPos[i + 1][j + 1]
+						this.tableYPos[i + 1][j + 1],
 					);
 					this.cmd(act.step);
 					this.cmd(act.setText, this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
@@ -300,7 +300,7 @@ export default class LCS extends Algorithm {
 					this.S1TableID[i - 1],
 					str1.charAt(i - 1),
 					TABLE_START_X + i * TABLE_ELEM_WIDTH,
-					TABLE_START_Y - 2 * TABLE_ELEM_HEIGHT
+					TABLE_START_Y - 2 * TABLE_ELEM_HEIGHT,
 				);
 				this.oldIDs.push(this.S1TableID[i - 1]);
 			}
@@ -311,7 +311,7 @@ export default class LCS extends Algorithm {
 				index,
 				i - 1 === -1 ? '\u2205' : i - 1,
 				TABLE_START_X + i * TABLE_ELEM_WIDTH,
-				TABLE_START_Y - 1 * TABLE_ELEM_HEIGHT
+				TABLE_START_Y - 1 * TABLE_ELEM_HEIGHT,
 			);
 			this.cmd(act.setForegroundColor, index, '#0000FF');
 		}
@@ -325,7 +325,7 @@ export default class LCS extends Algorithm {
 					this.S2TableID[i - 1],
 					str2.charAt(i - 1),
 					TABLE_START_X - 2 * TABLE_ELEM_WIDTH,
-					TABLE_START_Y + i * TABLE_ELEM_HEIGHT
+					TABLE_START_Y + i * TABLE_ELEM_HEIGHT,
 				);
 				this.oldIDs.push(this.S2TableID[i - 1]);
 			}
@@ -336,7 +336,7 @@ export default class LCS extends Algorithm {
 				index,
 				i - 1 === -1 ? '\u2205' : i - 1,
 				TABLE_START_X - 1 * TABLE_ELEM_WIDTH,
-				TABLE_START_Y + i * TABLE_ELEM_HEIGHT
+				TABLE_START_Y + i * TABLE_ELEM_HEIGHT,
 			);
 			this.cmd(act.setForegroundColor, index, '#0000FF');
 		}
@@ -362,7 +362,7 @@ export default class LCS extends Algorithm {
 					TABLE_ELEM_WIDTH,
 					TABLE_ELEM_HEIGHT,
 					this.tableXPos[i][j],
-					this.tableYPos[i][j]
+					this.tableYPos[i][j],
 				);
 			}
 		}
@@ -390,7 +390,7 @@ export default class LCS extends Algorithm {
 			'Longest Common Subsequence:',
 			SEQUENCE_START_X,
 			SEQUENCE_START_Y - 25,
-			0
+			0,
 		);
 		this.cmd(act.setForegroundColor, header, '#003300');
 
@@ -422,7 +422,7 @@ export default class LCS extends Algorithm {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Hit a corner, move diagonally and add current character to LCS'
+					'Hit a corner, move diagonally and add current character to LCS',
 				);
 				this.cmd(act.step);
 
@@ -451,7 +451,7 @@ export default class LCS extends Algorithm {
 					nextSequenceID,
 					str1.charAt(currX - 1),
 					SEQUENCE_START_X + (sequence.length - 1) * SEQUENCE_DELTA_X + 4,
-					SEQUENCE_START_Y
+					SEQUENCE_START_Y,
 				);
 				this.cmd(act.setForegroundColor, nextSequenceID, '#0000FF');
 
@@ -460,7 +460,7 @@ export default class LCS extends Algorithm {
 						act.move,
 						sequence[i],
 						SEQUENCE_START_X + (sequence.length - 1 - i) * SEQUENCE_DELTA_X + 4,
-						SEQUENCE_START_Y
+						SEQUENCE_START_Y,
 					);
 				}
 

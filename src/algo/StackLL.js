@@ -71,7 +71,7 @@ export default class StackLL extends Algorithm {
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),
-			4
+			4,
 		);
 
 		this.pushButton = addControlToAlgorithmBar('Button', 'Push');
@@ -124,7 +124,7 @@ export default class StackLL extends Algorithm {
 			TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT,
 			TOP_POS_X,
-			TOP_POS_Y
+			TOP_POS_Y,
 		);
 		this.cmd(act.setNull, this.topID, 1);
 
@@ -190,7 +190,7 @@ export default class StackLL extends Algorithm {
 			LINKED_LIST_INSERT_Y,
 			0.25,
 			0,
-			1
+			1,
 		);
 
 		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
@@ -211,7 +211,7 @@ export default class StackLL extends Algorithm {
 			this.cmd(
 				act.connect,
 				this.linkedListElemID[this.top],
-				this.linkedListElemID[this.top - 1]
+				this.linkedListElemID[this.top - 1],
 			);
 			this.cmd(act.step);
 			this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
@@ -241,7 +241,7 @@ export default class StackLL extends Algorithm {
 			labPopValID,
 			this.arrayData[this.top - 1],
 			LINKED_LIST_START_X,
-			LINKED_LIST_START_Y
+			LINKED_LIST_START_Y,
 		);
 
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);

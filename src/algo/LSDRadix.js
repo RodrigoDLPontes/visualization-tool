@@ -62,7 +62,7 @@ export default class LSDRadix extends Algorithm {
 			this.listField,
 			this.sortCallback.bind(this),
 			60,
-			false
+			false,
 		);
 		this.controls.push(this.listField);
 
@@ -179,7 +179,7 @@ export default class LSDRadix extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 		}
 
@@ -201,7 +201,7 @@ export default class LSDRadix extends Algorithm {
 				BUCKET_ELEM_WIDTH,
 				BUCKET_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
 		}
@@ -213,14 +213,14 @@ export default class LSDRadix extends Algorithm {
 			'Searching for number with greatest magnitude',
 			INFO_LABEL_X,
 			INFO_LABEL_Y,
-			0
+			0,
 		);
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
 			'#FF0000',
 			ARRAY_START_X,
-			ARRAY_START_Y
+			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
@@ -228,7 +228,7 @@ export default class LSDRadix extends Algorithm {
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
-			ARRAY_START_Y
+			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 
@@ -252,7 +252,7 @@ export default class LSDRadix extends Algorithm {
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
-			longData + ' has greatest magnitude, number of digits is ' + digits
+			longData + ' has greatest magnitude, number of digits is ' + digits,
 		);
 		this.cmd(act.step);
 		this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFFFF');
@@ -265,7 +265,7 @@ export default class LSDRadix extends Algorithm {
 				this.iPointerID,
 				'#0000FF',
 				ARRAY_START_X,
-				ARRAY_START_Y
+				ARRAY_START_Y,
 			);
 			this.cmd(act.setHighlight, this.iPointerID, 1);
 			for (let j = 0; j < this.arrayData.length; j++) {
@@ -273,7 +273,7 @@ export default class LSDRadix extends Algorithm {
 					act.move,
 					this.iPointerID,
 					ARRAY_START_X + j * ARRAY_ELEM_WIDTH,
-					ARRAY_START_Y
+					ARRAY_START_Y,
 				);
 				this.cmd(act.step);
 				const id = this.nextIndex++;
@@ -291,7 +291,7 @@ export default class LSDRadix extends Algorithm {
 					BUCKET_ELEM_WIDTH,
 					BUCKET_ELEM_HEIGHT,
 					BUCKETS_START_X + digit * BUCKET_ELEM_WIDTH,
-					BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING
+					BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING,
 				);
 				this.cmd(
 					act.connect,
@@ -301,7 +301,7 @@ export default class LSDRadix extends Algorithm {
 					0,
 					1,
 					'',
-					2
+					2,
 				);
 				this.cmd(act.step);
 			}
@@ -322,13 +322,13 @@ export default class LSDRadix extends Algorithm {
 						labelID,
 						display,
 						BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-						BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING
+						BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING,
 					);
 					this.cmd(
 						act.move,
 						labelID,
 						ARRAY_START_X + index * ARRAY_ELEM_WIDTH,
-						ARRAY_START_Y
+						ARRAY_START_Y,
 					);
 					this.cmd(act.step);
 					this.cmd(act.setText, this.arrayID[index], display);
@@ -341,7 +341,7 @@ export default class LSDRadix extends Algorithm {
 								act.move,
 								idBucket[k],
 								BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-								BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING
+								BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
 							);
 						}
 						this.cmd(act.step);

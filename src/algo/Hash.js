@@ -67,7 +67,7 @@ export default class Hash extends Algorithm {
 			this.insertField,
 			this.insertCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true
+			true,
 		);
 		this.controls.push(this.insertField);
 
@@ -83,7 +83,7 @@ export default class Hash extends Algorithm {
 			this.insertField,
 			this.deleteCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true
+			true,
 		);
 		this.controls.push(this.deleteField);
 
@@ -99,7 +99,7 @@ export default class Hash extends Algorithm {
 			this.insertField,
 			this.findCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true
+			true,
 		);
 		this.controls.push(this.findField);
 
@@ -111,7 +111,7 @@ export default class Hash extends Algorithm {
 
 		const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			['Hash Integer', 'Hash Strings'],
-			'HashType'
+			'HashType',
 		);
 		this.hashIntegerButton = radioButtonList[0];
 		this.hashIntegerButton.onclick = this.changeHashTypeCallback.bind(this, true);
@@ -139,19 +139,19 @@ export default class Hash extends Algorithm {
 				this.insertField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
-				true
+				true,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
 				this.insertField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
-				true
+				true,
 			);
 			this.findField.onkeydown = this.returnSubmit(
 				this.insertField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
-				true
+				true,
 			);
 		} else {
 			this.hashStringButton.checked = true;
@@ -159,19 +159,19 @@ export default class Hash extends Algorithm {
 				this.insertField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
-				false
+				false,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
 				this.insertField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
-				false
+				false,
 			);
 			this.findField.onkeydown = this.returnSubmit(
 				this.insertField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
-				false
+				false,
 			);
 		}
 		return this.resetAll();
@@ -190,14 +190,14 @@ export default class Hash extends Algorithm {
 				labelID1,
 				input + ' % ' + String(this.table_size) + ' = ',
 				HASH_LABEL_X,
-				HASH_LABEL_Y
+				HASH_LABEL_Y,
 			);
 			this.cmd(
 				act.createLabel,
 				labelID2,
 				index,
 				HASH_LABEL_X + HASH_LABEL_DELTA_X,
-				HASH_LABEL_Y
+				HASH_LABEL_Y,
 			);
 			this.cmd(act.step);
 			this.cmd(
@@ -205,7 +205,7 @@ export default class Hash extends Algorithm {
 				highlightID,
 				HIGHLIGHT_COLOR,
 				HASH_LABEL_X + HASH_LABEL_DELTA_X,
-				HASH_LABEL_Y
+				HASH_LABEL_Y,
 			);
 			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
 			this.cmd(act.step);
@@ -229,7 +229,7 @@ export default class Hash extends Algorithm {
 					wordToHash[i],
 					HASH_INPUT_START_X + i * HASH_INPUT_X_DIFF,
 					HASH_INPUT_START_Y,
-					0
+					0,
 				);
 			}
 			const digits = new Array(32);
@@ -262,7 +262,7 @@ export default class Hash extends Algorithm {
 						hashValue[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
 						HASH_NUMBER_START_Y,
-						0
+						0,
 					);
 				}
 				this.cmd(act.delete, wordToHashID[i]);
@@ -276,13 +276,13 @@ export default class Hash extends Algorithm {
 						nextByte[j],
 						HASH_INPUT_START_X + i * HASH_INPUT_X_DIFF,
 						HASH_INPUT_START_Y,
-						0
+						0,
 					);
 					this.cmd(
 						act.move,
 						nextByteID[j],
 						HASH_NUMBER_START_X + (j + 24) * HASH_X_DIFF,
-						HASH_ADD_START_Y
+						HASH_ADD_START_Y,
 					);
 				}
 				this.cmd(act.step);
@@ -295,7 +295,7 @@ export default class Hash extends Algorithm {
 					HASH_NUMBER_START_X,
 					HASH_ADD_LINE_Y,
 					'left',
-					'bottom'
+					'bottom',
 				);
 				this.cmd(
 					act.createLabel,
@@ -303,7 +303,7 @@ export default class Hash extends Algorithm {
 					'+',
 					HASH_NUMBER_START_X,
 					HASH_ADD_START_Y,
-					0
+					0,
 				);
 				this.cmd(act.step);
 
@@ -333,7 +333,7 @@ export default class Hash extends Algorithm {
 						hashValue[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
 						HASH_RESULT_Y,
-						0
+						0,
 					);
 				}
 
@@ -349,7 +349,7 @@ export default class Hash extends Algorithm {
 						act.move,
 						resultDigits[j],
 						HASH_NUMBER_START_X + j * HASH_X_DIFF,
-						HASH_NUMBER_START_Y
+						HASH_NUMBER_START_Y,
 					);
 				}
 				this.cmd(act.step);
@@ -359,7 +359,7 @@ export default class Hash extends Algorithm {
 							act.move,
 							resultDigits[j],
 							HASH_NUMBER_START_X + (j - 4) * HASH_X_DIFF,
-							HASH_NUMBER_START_Y
+							HASH_NUMBER_START_Y,
 						);
 					}
 					this.cmd(act.step);
@@ -373,7 +373,7 @@ export default class Hash extends Algorithm {
 							act.move,
 							resultDigits[j],
 							HASH_NUMBER_START_X + (j + ELF_HASH_SHIFT) * HASH_X_DIFF,
-							HASH_ADD_START_Y
+							HASH_ADD_START_Y,
 						);
 						hashValue[j + 28] = 0;
 						this.cmd(
@@ -382,7 +382,7 @@ export default class Hash extends Algorithm {
 							0,
 							HASH_NUMBER_START_X + (j + 28) * HASH_X_DIFF,
 							HASH_NUMBER_START_Y,
-							0
+							0,
 						);
 						if (floatingVals[j]) {
 							hashValue[j + ELF_HASH_SHIFT] = 1 - hashValue[j + ELF_HASH_SHIFT];
@@ -397,7 +397,7 @@ export default class Hash extends Algorithm {
 						HASH_NUMBER_START_X,
 						HASH_ADD_LINE_Y,
 						'left',
-						'bottom'
+						'bottom',
 					);
 					this.cmd(
 						act.createLabel,
@@ -405,7 +405,7 @@ export default class Hash extends Algorithm {
 						'XOR',
 						HASH_NUMBER_START_X,
 						HASH_ADD_START_Y,
-						0
+						0,
 					);
 					this.cmd(act.step);
 					for (let j = 0; j < 32; j++) {
@@ -415,7 +415,7 @@ export default class Hash extends Algorithm {
 							hashValue[j],
 							HASH_NUMBER_START_X + j * HASH_X_DIFF,
 							HASH_RESULT_Y,
-							0
+							0,
 						);
 					}
 					this.cmd(act.step);
@@ -428,7 +428,7 @@ export default class Hash extends Algorithm {
 							act.move,
 							digits[j],
 							HASH_NUMBER_START_X + j * HASH_X_DIFF,
-							HASH_NUMBER_START_Y
+							HASH_NUMBER_START_Y,
 						);
 					}
 					for (let j = 0; j < 4; j++) {
@@ -452,7 +452,7 @@ export default class Hash extends Algorithm {
 					hashValue[j],
 					HASH_NUMBER_START_X + j * HASH_X_DIFF,
 					HASH_NUMBER_START_Y,
-					0
+					0,
 				);
 			}
 			this.currHash = 0;
@@ -465,7 +465,7 @@ export default class Hash extends Algorithm {
 				' = ' + String(this.currHash),
 				HASH_NUMBER_START_X + 32 * HASH_X_DIFF,
 				HASH_NUMBER_START_Y,
-				0
+				0,
 			);
 			this.cmd(act.step);
 			for (let j = 0; j < 32; j++) {
@@ -476,7 +476,7 @@ export default class Hash extends Algorithm {
 			this.cmd(
 				act.setText,
 				label1,
-				String(this.currHash) + ' % ' + String(this.table_size) + ' = '
+				String(this.currHash) + ' % ' + String(this.table_size) + ' = ',
 			);
 			const index = this.currHash % this.table_size;
 			this.cmd(
@@ -485,7 +485,7 @@ export default class Hash extends Algorithm {
 				index,
 				HASH_NUMBER_START_X + 32 * HASH_X_DIFF + 105,
 				HASH_NUMBER_START_Y,
-				0
+				0,
 			);
 			this.cmd(act.step);
 			const highlightID = this.nextIndex++;
@@ -494,7 +494,7 @@ export default class Hash extends Algorithm {
 				highlightID,
 				HIGHLIGHT_COLOR,
 				HASH_NUMBER_START_X + 30 * HASH_X_DIFF + 120,
-				HASH_NUMBER_START_Y + 15
+				HASH_NUMBER_START_Y + 15,
 			);
 			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
 			this.cmd(act.step);

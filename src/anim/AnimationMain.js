@@ -216,26 +216,26 @@ export default class AnimationManager extends EventListener {
 		this.canvas = canvasRef;
 
 		this.skipBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Skip Back', () =>
-			this.skipBack()
+			this.skipBack(),
 		);
 		this.stepBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Step Back', () =>
-			this.stepBack()
+			this.stepBack(),
 		);
 		this.playPauseBackButton = addControlToAnimationBar(animBarRef, 'Button', 'Pause', () =>
-			this.doPlayPause()
+			this.doPlayPause(),
 		);
 		this.playPauseBackButton.setAttribute('style', 'width: 80px');
 		this.stepForwardButton = addControlToAnimationBar(
 			animBarRef,
 			'Button',
 			'Step Forward',
-			() => this.step()
+			() => this.step(),
 		);
 		this.skipForwardButton = addControlToAnimationBar(
 			animBarRef,
 			'Button',
 			'Skip Forward',
-			() => this.skipForward()
+			() => this.skipForward(),
 		);
 
 		addDivisorToAnimationBar(animBarRef);
@@ -307,7 +307,7 @@ export default class AnimationManager extends EventListener {
 		controlBar.appendChild(tableEntry);
 
 		this.widthEntry = addControlToAnimationBar(animBarRef, 'Text', canvas.width, () =>
-			returnSubmit(this.widthEntry, this.changeSize.bind(this), 4, true)
+			returnSubmit(this.widthEntry, this.changeSize.bind(this), 4, true),
 		);
 		this.widthEntry.size = 4;
 
@@ -317,12 +317,12 @@ export default class AnimationManager extends EventListener {
 		controlBar.appendChild(tableEntry);
 
 		this.heightEntry = addControlToAnimationBar(animBarRef, 'Text', canvas.height, () =>
-			returnSubmit(this.heightEntry, this.changeSize.bind(this), 4, true)
+			returnSubmit(this.heightEntry, this.changeSize.bind(this), 4, true),
 		);
 
 		this.heightEntry.size = 4;
 		this.sizeButton = addControlToAnimationBar(animBarRef, 'Button', 'Change Canvas Size', () =>
-			this.changeSize()
+			this.changeSize(),
 		);
 
 		this.addListener('AnimationStarted', this, this.animStarted);
@@ -515,7 +515,7 @@ export default class AnimationManager extends EventListener {
 				this.animatedObjects.setNodePosition(
 					objectID,
 					this.currentBlock[i].toX,
-					this.currentBlock[i].toY
+					this.currentBlock[i].toY,
 				);
 			}
 			if (this.doingUndo) {
@@ -528,7 +528,7 @@ export default class AnimationManager extends EventListener {
 					this.animatedObjects.setNodePosition(
 						objectID,
 						this.currentBlock[i].toX,
-						this.currentBlock[i].toY
+						this.currentBlock[i].toY,
 					);
 				}
 				keepUndoing = this.finishUndoBlock(this.undoStack.pop());
@@ -561,7 +561,7 @@ export default class AnimationManager extends EventListener {
 					this.animatedObjects.setNodePosition(
 						objectID,
 						this.currentBlock[i].toX,
-						this.currentBlock[i].toY
+						this.currentBlock[i].toY,
 					);
 				}
 				if (this.doingUndo) {
@@ -573,7 +573,7 @@ export default class AnimationManager extends EventListener {
 					this.animatedObjects.setNodePosition(
 						objectID,
 						this.currentBlock[i].toX,
-						this.currentBlock[i].toY
+						this.currentBlock[i].toY,
 					);
 				}
 			}
@@ -675,7 +675,7 @@ export default class AnimationManager extends EventListener {
 					this.animatedObjects.setNodePosition(
 						this.currentBlock[i].objectID,
 						this.currentBlock[i].toX,
-						this.currentBlock[i].toY
+						this.currentBlock[i].toY,
 					);
 				} else if (this.currFrame < this.animationBlockLength) {
 					const objectID = this.currentBlock[i].objectID;
@@ -683,12 +683,12 @@ export default class AnimationManager extends EventListener {
 					const newX = this.lerp(
 						this.animatedObjects.getNodeX(objectID),
 						this.currentBlock[i].toX,
-						percent
+						percent,
 					);
 					const newY = this.lerp(
 						this.animatedObjects.getNodeY(objectID),
 						this.currentBlock[i].toY,
-						percent
+						percent,
 					);
 					this.animatedObjects.setNodePosition(objectID, newX, newY);
 				}
@@ -790,7 +790,7 @@ export const act = {
 			this.animatedObjects.getNodeX(params[0]),
 			this.animatedObjects.getNodeY(params[0]),
 			params[1],
-			params[2]
+			params[2],
 		);
 		this.currentBlock.push(nextAnim);
 		this.undoBlock.push(
@@ -799,8 +799,8 @@ export const act = {
 				nextAnim.toX,
 				nextAnim.toY,
 				nextAnim.fromX,
-				nextAnim.fromY
-			)
+				nextAnim.fromY,
+			),
 		);
 		this.anyAnimations = true;
 	},
@@ -832,7 +832,7 @@ export const act = {
 			params[4],
 			String(params[5]),
 			params[6],
-			params[7]
+			params[7],
 		);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
@@ -860,7 +860,7 @@ export const act = {
 			0.0,
 			false,
 			'',
-			params[2]
+			params[2],
 		);
 		this.undoBlock.push(new UndoConnect(params[0], params[1], false));
 	},
@@ -877,7 +877,7 @@ export const act = {
 		this.animatedObjects.setNodePosition(
 			parseInt(params[0]),
 			parseInt(params[2]),
-			parseInt(params[3])
+			parseInt(params[3]),
 		);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
@@ -890,7 +890,7 @@ export const act = {
 		this.animatedObjects.setNodePosition(
 			parseInt(params[0]),
 			parseInt(params[2]),
-			parseInt(params[3])
+			parseInt(params[3]),
 		);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
@@ -910,7 +910,7 @@ export const act = {
 			params[6],
 			params[7],
 			params[8],
-			params[9]
+			params[9],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -943,7 +943,7 @@ export const act = {
 			params[7],
 			params[8],
 			params[9],
-			params[10]
+			params[10],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -962,7 +962,7 @@ export const act = {
 			params[3],
 			params[6],
 			params[7],
-			params[8]
+			params[8],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -981,7 +981,7 @@ export const act = {
 			params[3],
 			params[6],
 			params[7],
-			params[8]
+			params[8],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -998,7 +998,7 @@ export const act = {
 			params[2],
 			params[3],
 			params[6],
-			params[7]
+			params[7],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -1015,7 +1015,7 @@ export const act = {
 			params[2],
 			params[3],
 			params[6],
-			params[7]
+			params[7],
 		);
 		this.animatedObjects.setNodePosition(params[0], params[4], params[5]);
 		this.undoBlock.push(new UndoCreate(params[0]));
@@ -1083,7 +1083,7 @@ export const act = {
 		//id, thicknessArray
 		const oldThicknessArray = this.animatedObjects.setRectangleEdgeThickness(
 			params[0],
-			params[1]
+			params[1],
 		);
 		this.undoBlock.push(new UndoSetRectangleEdgeThickness(params[0], oldThicknessArray));
 	},
@@ -1180,7 +1180,7 @@ export const act = {
 			this.animatedObjects.getNodeX(params[0]),
 			this.animatedObjects.getNodeY(params[0]),
 			newXY[0],
-			newXY[1]
+			newXY[1],
 		);
 		this.currentBlock.push(nextAnim);
 		this.undoBlock.push(
@@ -1189,8 +1189,8 @@ export const act = {
 				nextAnim.toX,
 				nextAnim.toY,
 				nextAnim.fromX,
-				nextAnim.fromY
-			)
+				nextAnim.fromY,
+			),
 		);
 		this.anyAnimations = true;
 	},

@@ -62,7 +62,7 @@ export default class RabinKarp extends Algorithm {
 			this.textField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.textField);
 
@@ -74,7 +74,7 @@ export default class RabinKarp extends Algorithm {
 			this.patternField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.patternField);
 
@@ -172,7 +172,7 @@ export default class RabinKarp extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
@@ -189,7 +189,7 @@ export default class RabinKarp extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 		}
@@ -202,7 +202,7 @@ export default class RabinKarp extends Algorithm {
 			'Character values: a = 0, b = 1, ..., z = 25',
 			labelsX,
 			CHARACTER_VALUES_LABEL_Y,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -210,7 +210,7 @@ export default class RabinKarp extends Algorithm {
 			'Text hash:',
 			labelsX,
 			TEXT_HASH_LABEL_START_Y,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -218,7 +218,7 @@ export default class RabinKarp extends Algorithm {
 			'Pattern hash:',
 			labelsX,
 			PATTERN_HASH_LABEL_START_Y,
-			0
+			0,
 		);
 
 		let textCalculation = '';
@@ -242,7 +242,7 @@ export default class RabinKarp extends Algorithm {
 			textCalculation,
 			calculationsX,
 			TEXT_HASH_LABEL_START_Y,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -250,7 +250,7 @@ export default class RabinKarp extends Algorithm {
 			patternCalculation,
 			calculationsX,
 			PATTERN_HASH_LABEL_START_Y,
-			0
+			0,
 		);
 
 		const iPointerID = this.nextIndex++;
@@ -264,7 +264,7 @@ export default class RabinKarp extends Algorithm {
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 			this.cmd(act.step);
@@ -279,7 +279,7 @@ export default class RabinKarp extends Algorithm {
 					this.cmd(
 						act.setBackgroundColor,
 						this.comparisonMatrixID[row][i + j],
-						'#2ECC71'
+						'#2ECC71',
 					);
 					j++;
 					if (j !== pattern.length) {
@@ -294,7 +294,7 @@ export default class RabinKarp extends Algorithm {
 					this.cmd(
 						act.setBackgroundColor,
 						this.comparisonMatrixID[row][i + j],
-						'#E74C3C'
+						'#E74C3C',
 					);
 				}
 				this.cmd(act.delete, iPointerID);

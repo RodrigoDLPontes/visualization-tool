@@ -197,7 +197,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			context.lineTo(startX + this.w + this.highlightDiff, startY - this.highlightDiff);
 			context.lineTo(
 				startX + this.w + this.highlightDiff,
-				startY + this.h + this.highlightDiff
+				startY + this.h + this.highlightDiff,
 			);
 			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -311,7 +311,7 @@ export default class AnimatedRectangle extends AnimatedObject {
 			this.foregroundColor,
 			this.layer,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -330,7 +330,7 @@ class UndoDeleteRectangle extends UndoBlock {
 		foregroundColor,
 		layer,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;
@@ -357,7 +357,7 @@ class UndoDeleteRectangle extends UndoBlock {
 			this.xJustify,
 			this.yJustify,
 			this.backgroundColor,
-			this.foregroundColor
+			this.foregroundColor,
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);

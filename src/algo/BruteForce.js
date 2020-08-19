@@ -55,7 +55,7 @@ export default class BruteForce extends Algorithm {
 			this.textField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.textField);
 
@@ -67,7 +67,7 @@ export default class BruteForce extends Algorithm {
 			this.patternField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.patternField);
 
@@ -149,7 +149,7 @@ export default class BruteForce extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
@@ -166,7 +166,7 @@ export default class BruteForce extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 		}
@@ -179,7 +179,7 @@ export default class BruteForce extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X,
 			ARRAY_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(
 			act.createHighlightCircle,
@@ -187,7 +187,7 @@ export default class BruteForce extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X,
 			ARRAY_START_Y + this.cellSize,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 
 		let i = 0;
@@ -200,7 +200,7 @@ export default class BruteForce extends Algorithm {
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 			this.cmd(act.step);

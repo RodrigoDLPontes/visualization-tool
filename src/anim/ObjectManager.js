@@ -142,7 +142,7 @@ export default class ObjectManager {
 			throw new Error(
 				'addHighlightCircleObject: object with same ID (' +
 					String(objectID) +
-					') already exists!'
+					') already exists!',
 			);
 		}
 		const newNode = new AnimatedHighlightCircle(objectID, objectColor, radius);
@@ -448,7 +448,7 @@ export default class ObjectManager {
 	addCircleObject(objectID, objectLabel) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error(
-				'addCircleObject: object with same ID (' + String(objectID) + ') already exists!'
+				'addCircleObject: object with same ID (' + String(objectID) + ') already exists!',
 			);
 		}
 		const newNode = new AnimatedCircle(objectID, objectLabel);
@@ -513,7 +513,7 @@ export default class ObjectManager {
 			directed,
 			lab,
 			connectionPoint,
-			thickness
+			thickness,
 		);
 		if (this.edges[objectIDfrom] == null) {
 			this.edges[objectIDfrom] = [];
@@ -568,7 +568,7 @@ export default class ObjectManager {
 	setEdgeColor(
 		fromID,
 		toID,
-		color // returns old color
+		color, // returns old color
 	) {
 		let oldColor = '#000000';
 		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
@@ -595,7 +595,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		this.nodes[id1].alignTop(this.nodes[id2]);
@@ -609,7 +609,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		this.nodes[id1].alignLeft(this.nodes[id2]);
@@ -623,7 +623,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		this.nodes[id1].alignRight(this.nodes[id2]);
@@ -637,7 +637,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		return this.nodes[id1].getAlignRightPos(this.nodes[id2]);
@@ -651,7 +651,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		return this.nodes[id1].getAlignLeftPos(this.nodes[id2]);
@@ -665,7 +665,7 @@ export default class ObjectManager {
 			this.nodes[id2] === undefined
 		) {
 			throw new Error(
-				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2)
+				"Trying to align two nodes, one doesn't exist: " + String(id1) + ',' + String(id2),
 			);
 		}
 		this.nodes[id1].alignBottom(this.nodes[id2]);
@@ -736,7 +736,7 @@ export default class ObjectManager {
 			objectID,
 			objectLabel,
 			centering,
-			this.getTextWidth(objectLabel)
+			this.getTextWidth(objectLabel),
 		);
 		this.nodes[objectID] = newLabel;
 	}
@@ -750,7 +750,7 @@ export default class ObjectManager {
 		verticalOrientation,
 		linkPosEnd,
 		backgroundColor,
-		foregroundColor
+		foregroundColor,
 	) {
 		if (this.nodes[objectID] != null) {
 			throw new Error('addLinkedListObject: object with same ID already exists!');
@@ -764,7 +764,7 @@ export default class ObjectManager {
 			verticalOrientation,
 			linkPosEnd,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}
@@ -776,7 +776,7 @@ export default class ObjectManager {
 		height,
 		linkPer,
 		backgroundColor,
-		foregroundColor
+		foregroundColor,
 	) {
 		if (this.nodes[objectID] != null) {
 			throw new Error('addDoublyLinkedListObject: object with same ID already exists!');
@@ -788,7 +788,7 @@ export default class ObjectManager {
 			height,
 			linkPer,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}
@@ -800,7 +800,7 @@ export default class ObjectManager {
 		height,
 		linkPer,
 		backgroundColor,
-		foregroundColor
+		foregroundColor,
 	) {
 		if (this.nodes[objectID] != null) {
 			throw new Error('addCircularlyLinkedListObject: object with same ID already exists!');
@@ -812,7 +812,7 @@ export default class ObjectManager {
 			height,
 			linkPer,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}
@@ -827,7 +827,7 @@ export default class ObjectManager {
 			width,
 			height,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}
@@ -854,7 +854,7 @@ export default class ObjectManager {
 			height,
 			numElems,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}
@@ -867,7 +867,7 @@ export default class ObjectManager {
 		xJustify,
 		yJustify,
 		backgroundColor,
-		foregroundColor
+		foregroundColor,
 	) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addRectangleObject: object with same ID already exists!');
@@ -880,7 +880,7 @@ export default class ObjectManager {
 			xJustify,
 			yJustify,
 			backgroundColor,
-			foregroundColor
+			foregroundColor,
 		);
 		this.nodes[objectID] = newNode;
 	}

@@ -66,7 +66,7 @@ export default class SplayTree extends Algorithm {
 			this.insertField,
 			this.insertCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.insertField);
 
@@ -81,7 +81,7 @@ export default class SplayTree extends Algorithm {
 			this.deleteField,
 			this.deleteCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.deleteField);
 
@@ -96,7 +96,7 @@ export default class SplayTree extends Algorithm {
 			this.findField,
 			this.findCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.findField);
 
@@ -214,7 +214,7 @@ export default class SplayTree extends Algorithm {
 				this.highlightID,
 				HIGHLIGHT_CIRCLE_COLOR,
 				this.treeRoot.x,
-				this.treeRoot.y
+				this.treeRoot.y,
 			);
 			this.xPosOfNextLabel = FIRST_PRINT_POS_X;
 			this.yPosOfNextLabel = this.first_print_pos_y;
@@ -307,7 +307,7 @@ export default class SplayTree extends Algorithm {
 				this.cmd(
 					act.setText,
 					0,
-					'Searching for ' + value + ' : ' + value + ' = ' + value + ' (Element found!)'
+					'Searching for ' + value + ' : ' + value + ' = ' + value + ' (Element found!)',
 				);
 				this.cmd(act.step);
 				this.cmd(act.setText, 0, 'Splaying found node to root of tree');
@@ -326,7 +326,7 @@ export default class SplayTree extends Algorithm {
 							value +
 							' < ' +
 							tree.data +
-							' (look to left subtree)'
+							' (look to left subtree)',
 					);
 					this.cmd(act.step);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -336,7 +336,7 @@ export default class SplayTree extends Algorithm {
 							this.highlightID,
 							HIGHLIGHT_CIRCLE_COLOR,
 							tree.x,
-							tree.y
+							tree.y,
 						);
 						this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
 						this.cmd(act.step);
@@ -356,7 +356,7 @@ export default class SplayTree extends Algorithm {
 							value +
 							' > ' +
 							tree.data +
-							' (look to right subtree)'
+							' (look to right subtree)',
 					);
 					this.cmd(act.step);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -366,7 +366,7 @@ export default class SplayTree extends Algorithm {
 							this.highlightID,
 							HIGHLIGHT_CIRCLE_COLOR,
 							tree.x,
-							tree.y
+							tree.y,
 						);
 						this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
 						this.cmd(act.step);
@@ -382,7 +382,7 @@ export default class SplayTree extends Algorithm {
 			this.cmd(
 				act.setText,
 				0,
-				'Searching for ' + value + ' : < Empty Tree > (Element not found)'
+				'Searching for ' + value + ' : < Empty Tree > (Element not found)',
 			);
 			this.cmd(act.step);
 			this.cmd(act.setText, 0, 'Searching for ' + value + ' :  (Element not found)');
@@ -432,7 +432,7 @@ export default class SplayTree extends Algorithm {
 			this.cmd(
 				act.setText,
 				0,
-				elem.data + ' >= ' + tree.data + '.  Looking at right subtree'
+				elem.data + ' >= ' + tree.data + '.  Looking at right subtree',
 			);
 		} else {
 			this.cmd(act.setText, 0, elem.data + ' = ' + tree.data + '. Ignoring duplicate');
@@ -461,7 +461,7 @@ export default class SplayTree extends Algorithm {
 					this.highlightID,
 					HIGHLIGHT_CIRCLE_COLOR,
 					tree.x,
-					tree.y
+					tree.y,
 				);
 				this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
 				this.cmd(act.step);
@@ -484,7 +484,7 @@ export default class SplayTree extends Algorithm {
 					this.highlightID,
 					HIGHLIGHT_CIRCLE_COLOR,
 					tree.x,
-					tree.y
+					tree.y,
 				);
 				this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
 				this.cmd(act.step);
@@ -544,7 +544,7 @@ export default class SplayTree extends Algorithm {
 				this.cmd(
 					act.setText,
 					0,
-					'Left tree now has no right subtree, connect left and right trees'
+					'Left tree now has no right subtree, connect left and right trees',
 				);
 				this.cmd(act.step);
 				this.cmd(act.connect, largestLeft.graphicID, right.graphicID, LINK_COLOR);
@@ -770,7 +770,7 @@ export default class SplayTree extends Algorithm {
 				this.highlightID,
 				HIGHLIGHT_CIRCLE_COLOR,
 				tree.x,
-				tree.y
+				tree.y,
 			);
 			this.cmd(act.step);
 			while (tree.right != null) {
@@ -905,7 +905,7 @@ export default class SplayTree extends Algorithm {
 			} else if (this.treeRoot.rightWidth > startingPoint) {
 				startingPoint = Math.max(
 					this.treeRoot.leftWidth,
-					2 * startingPoint - this.treeRoot.rightWidth
+					2 * startingPoint - this.treeRoot.rightWidth,
 				);
 			}
 			this.setNewPositions(this.treeRoot, startingPoint, STARTING_Y, 0);

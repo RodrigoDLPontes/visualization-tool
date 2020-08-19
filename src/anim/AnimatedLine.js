@@ -97,7 +97,7 @@ export default class AnimatedLine {
 		const fromPos = this.fromID.getTailPointerAttachPos(
 			this.toID.x,
 			this.toID.y,
-			this.anchorPoint
+			this.anchorPoint,
 		);
 		const toPos = this.toID.getHeadPointerAttachPos(this.fromID.x, this.fromID.y);
 
@@ -146,11 +146,11 @@ export default class AnimatedLine {
 				context.moveTo(toPos[0], toPos[1]);
 				context.lineTo(
 					toPos[0] + xVec * this.arrowHeight - yVec * this.arrowWidth,
-					toPos[1] + yVec * this.arrowHeight + xVec * this.arrowWidth
+					toPos[1] + yVec * this.arrowHeight + xVec * this.arrowWidth,
 				);
 				context.lineTo(
 					toPos[0] + xVec * this.arrowHeight + yVec * this.arrowWidth,
-					toPos[1] + yVec * this.arrowHeight - xVec * this.arrowWidth
+					toPos[1] + yVec * this.arrowHeight - xVec * this.arrowWidth,
 				);
 				context.lineTo(toPos[0], toPos[1]);
 				context.closePath();
@@ -178,7 +178,7 @@ export default class AnimatedLine {
 			this.edgeLabel,
 			this.anchorPoint,
 			this.thickness,
-			this.highlighted
+			this.highlighted,
 		);
 	}
 }
@@ -194,7 +194,7 @@ export class UndoConnect {
 		edgeLabel,
 		anchorPoint,
 		thickness,
-		highlighted
+		highlighted,
 	) {
 		this.fromID = fromID;
 		this.toID = toID;
@@ -218,7 +218,7 @@ export class UndoConnect {
 				this.directed,
 				this.edgeLabel,
 				this.anchorPoint,
-				this.thickness
+				this.thickness,
 			);
 			world.setEdgeHighlight(this.fromID, this.toID, this.highlighted);
 		} else {

@@ -71,7 +71,7 @@ export default class ArrayList extends Algorithm {
 			this.addValueField,
 			() => this.addIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.addValueField);
 
@@ -83,7 +83,7 @@ export default class ArrayList extends Algorithm {
 			this.addIndexField,
 			() => this.addIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.addIndexField);
 
@@ -91,7 +91,7 @@ export default class ArrayList extends Algorithm {
 		this.addFrontButton = addControlToAlgorithmBar(
 			'Button',
 			'Add to Front',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addFrontButton.onclick = this.addFrontCallback.bind(this);
 		this.controls.push(this.addFrontButton);
@@ -100,7 +100,7 @@ export default class ArrayList extends Algorithm {
 		this.addBackButton = addControlToAlgorithmBar(
 			'Button',
 			'Add to Back',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addBackButton.onclick = () => this.addBackCallback();
 		this.controls.push(this.addBackButton);
@@ -111,7 +111,7 @@ export default class ArrayList extends Algorithm {
 		this.addIndexButton = addControlToAlgorithmBar(
 			'Button',
 			'Add at Index',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addIndexButton.onclick = this.addIndexCallback.bind(this);
 		this.controls.push(this.addIndexButton);
@@ -130,7 +130,7 @@ export default class ArrayList extends Algorithm {
 			this.removeField,
 			() => this.removeIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.removeField);
 
@@ -138,7 +138,7 @@ export default class ArrayList extends Algorithm {
 		this.removeIndexButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Index',
-			removeTopHorizontalGroup
+			removeTopHorizontalGroup,
 		);
 		this.removeIndexButton.onclick = () => this.removeIndexCallback();
 		this.controls.push(this.removeIndexButton);
@@ -149,7 +149,7 @@ export default class ArrayList extends Algorithm {
 		this.removeFrontButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Front',
-			removeBottomHorizontalGroup
+			removeBottomHorizontalGroup,
 		);
 		this.removeFrontButton.onclick = () => this.removeFrontCallback();
 		this.controls.push(this.removeFrontButton);
@@ -158,7 +158,7 @@ export default class ArrayList extends Algorithm {
 		this.removeBackButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Back',
-			removeBottomHorizontalGroup
+			removeBottomHorizontalGroup,
 		);
 		this.removeBackButton.onclick = () => this.removeBackCallback();
 		this.controls.push(this.removeBackButton);
@@ -204,7 +204,7 @@ export default class ArrayList extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
 			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
@@ -331,7 +331,7 @@ export default class ArrayList extends Algorithm {
 			this.highlight1ID,
 			'#0000FF',
 			PUSH_ELEMENT_X,
-			PUSH_ELEMENT_Y
+			PUSH_ELEMENT_Y,
 		);
 		this.cmd(act.step);
 

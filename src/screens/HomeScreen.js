@@ -27,7 +27,7 @@ const HomeScreen = () => (
 									<div key={idx} className="divider">
 										<span>{name}</span>
 									</div>
-								)
+								),
 							)}
 						</div>
 					</div>

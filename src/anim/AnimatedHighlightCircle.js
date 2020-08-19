@@ -60,7 +60,7 @@ export default class AnimatedHighlightCircle extends AnimatedObject {
 			this.layer,
 			this.alpha,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -75,7 +75,7 @@ class UndoDeleteHighlightCircle extends UndoBlock {
 		layer,
 		alpha,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;

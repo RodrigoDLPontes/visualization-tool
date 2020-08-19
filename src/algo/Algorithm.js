@@ -197,7 +197,7 @@ export default class Algorithm {
 					code[i][j],
 					start_x,
 					start_y + i * line_height,
-					0
+					0,
 				);
 				this.cmd(act.setForegroundColor, codeID[i][j], standard_color);
 				this.cmd(act.setLayer, codeID[i][j], layer);

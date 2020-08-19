@@ -74,7 +74,7 @@ export default class SkipList extends Algorithm {
 			this.addValueField,
 			this.addRandomlyCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.addValueField);
 
@@ -86,7 +86,7 @@ export default class SkipList extends Algorithm {
 			this.headsField,
 			this.addWithHeadsCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.headsField);
 
@@ -96,7 +96,7 @@ export default class SkipList extends Algorithm {
 		this.addRandomlyButton = addControlToAlgorithmBar(
 			'Button',
 			'Add randomly',
-			bottomHorizontalGroup
+			bottomHorizontalGroup,
 		);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
@@ -107,7 +107,7 @@ export default class SkipList extends Algorithm {
 		this.addWithHeadsButton = addControlToAlgorithmBar(
 			'Button',
 			'Add with heads',
-			bottomHorizontalGroup
+			bottomHorizontalGroup,
 		);
 		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
 		this.controls.push(this.addWithHeadsButton);
@@ -120,7 +120,7 @@ export default class SkipList extends Algorithm {
 			this.removeField,
 			this.removeCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.removeField);
 
@@ -137,7 +137,7 @@ export default class SkipList extends Algorithm {
 			this.getField,
 			this.getCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.getField);
 
@@ -180,7 +180,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_START_X,
-			SKIP_LIST_START_Y
+			SKIP_LIST_START_Y,
 		);
 		this.cmd(
 			act.createSkipListNode,
@@ -189,7 +189,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_START_X + SKIP_LIST_SPACING,
-			SKIP_LIST_START_Y
+			SKIP_LIST_START_Y,
 		);
 		this.cmd(act.connectSkipList, this.nodeID[0][0], this.nodeID[1][0], 3);
 
@@ -282,7 +282,7 @@ export default class SkipList extends Algorithm {
 				SKIP_LIST_ELEM_SIZE,
 				SKIP_LIST_ELEM_SIZE,
 				SKIP_LIST_START_X,
-				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 			);
 			this.data[rightPhantomsCol][row] = Number.POSITIVE_INFINITY;
 			this.nodeID[rightPhantomsCol][row] = this.nextIndex++;
@@ -293,20 +293,20 @@ export default class SkipList extends Algorithm {
 				SKIP_LIST_ELEM_SIZE,
 				SKIP_LIST_ELEM_SIZE,
 				SKIP_LIST_START_X + SKIP_LIST_SPACING * rightPhantomsCol,
-				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 			);
 			this.cmd(
 				act.connectSkipList,
 				this.nodeID[0][row],
 				this.nodeID[rightPhantomsCol][row],
-				3
+				3,
 			);
 			this.cmd(act.connectSkipList, this.nodeID[0][row - 1], this.nodeID[0][row], 0);
 			this.cmd(
 				act.connectSkipList,
 				this.nodeID[rightPhantomsCol][row - 1],
 				this.nodeID[rightPhantomsCol][row],
-				0
+				0,
 			);
 			this.cmd(act.step);
 		}
@@ -335,7 +335,7 @@ export default class SkipList extends Algorithm {
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
-			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 		);
 		this.cmd(act.setHighlight, highlightID, 1);
 		this.cmd(act.step);
@@ -353,7 +353,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 				col = nextCol;
@@ -367,7 +367,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 			}
@@ -391,7 +391,7 @@ export default class SkipList extends Algorithm {
 					SKIP_LIST_ELEM_SIZE,
 					SKIP_LIST_ELEM_SIZE,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				const prevCol = this.getPrevCol(newCol, row);
 				const nextCol = this.getNextCol(newCol, row);
@@ -400,20 +400,20 @@ export default class SkipList extends Algorithm {
 					act.connectSkipList,
 					this.nodeID[prevCol][row],
 					this.nodeID[newCol][row],
-					3
+					3,
 				);
 				this.cmd(
 					act.connectSkipList,
 					this.nodeID[newCol][row],
 					this.nodeID[nextCol][row],
-					3
+					3,
 				);
 				if (row !== 0) {
 					this.cmd(
 						act.connectSkipList,
 						this.nodeID[newCol][row - 1],
 						this.nodeID[newCol][row],
-						0
+						0,
 					);
 				}
 				this.cmd(act.step);
@@ -422,7 +422,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 				row++;
@@ -463,7 +463,7 @@ export default class SkipList extends Algorithm {
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
-			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 		);
 		this.cmd(act.step);
 
@@ -475,7 +475,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 				col = nextCol;
@@ -489,7 +489,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 
@@ -505,7 +505,7 @@ export default class SkipList extends Algorithm {
 						act.connectSkipList,
 						this.nodeID[prevCol][row],
 						this.nodeID[nextCol][row],
-						3
+						3,
 					);
 					this.cmd(act.delete, this.nodeID[col][row]);
 					this.cmd(act.step);
@@ -516,7 +516,7 @@ export default class SkipList extends Algorithm {
 							act.move,
 							highlightID,
 							SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-							SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+							SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 						);
 						this.cmd(act.step);
 					}
@@ -528,7 +528,7 @@ export default class SkipList extends Algorithm {
 						act.move,
 						highlightID,
 						SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 					);
 					this.cmd(act.step);
 				}
@@ -589,7 +589,7 @@ export default class SkipList extends Algorithm {
 			highlightID,
 			'#FF0000',
 			SKIP_LIST_START_X,
-			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+			SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 		);
 		this.cmd(act.setHighlight, highlightID, 1);
 		this.cmd(act.step);
@@ -602,7 +602,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * nextCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 				col = nextCol;
@@ -616,7 +616,7 @@ export default class SkipList extends Algorithm {
 					act.move,
 					highlightID,
 					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 				);
 				this.cmd(act.step);
 			}
@@ -636,7 +636,7 @@ export default class SkipList extends Algorithm {
 						act.move,
 						this.nodeID[col][row],
 						SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row
+						SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
 					);
 				}
 			}
@@ -682,7 +682,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_START_X,
-			SKIP_LIST_START_Y
+			SKIP_LIST_START_Y,
 		);
 		this.cmd(
 			act.createSkipListNode,
@@ -691,7 +691,7 @@ export default class SkipList extends Algorithm {
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_ELEM_SIZE,
 			SKIP_LIST_START_X + SKIP_LIST_SPACING,
-			SKIP_LIST_START_Y
+			SKIP_LIST_START_Y,
 		);
 		this.cmd(act.connectSkipList, this.nodeID[0][0], this.nodeID[1][0], 3);
 		this.cmd(act.step);

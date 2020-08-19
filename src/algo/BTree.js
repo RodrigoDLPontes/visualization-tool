@@ -88,7 +88,7 @@ export default class BTree extends Algorithm {
 			this.insertField,
 			this.insertCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.insertField);
 
@@ -103,7 +103,7 @@ export default class BTree extends Algorithm {
 			this.deleteField,
 			this.deleteCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.deleteField);
 
@@ -118,7 +118,7 @@ export default class BTree extends Algorithm {
 			this.findField,
 			this.findCallback.bind(this),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.findField);
 
@@ -197,7 +197,7 @@ export default class BTree extends Algorithm {
 		if (this.preemptiveSplit !== this.premptiveSplitBox.checked) {
 			this.implementAction(
 				this.changePreemtiveSplit.bind(this),
-				this.premptiveSplitBox.checked
+				this.premptiveSplitBox.checked,
 			);
 		}
 	}
@@ -245,7 +245,7 @@ export default class BTree extends Algorithm {
 					nextLabelID,
 					tree.keys[i],
 					this.getLabelX(tree, i),
-					tree.y
+					tree.y,
 				);
 				this.cmd(act.setForegroundColor, nextLabelID, PRINT_COLOR);
 				this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
@@ -271,7 +271,7 @@ export default class BTree extends Algorithm {
 					nextLabelID,
 					tree.keys[i],
 					this.getLabelX(tree, i),
-					tree.y
+					tree.y,
 				);
 				this.cmd(act.setForegroundColor, nextLabelID, PRINT_COLOR);
 				this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
@@ -364,7 +364,7 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						1
+						1,
 					);
 					this.cmd(act.step);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -372,7 +372,7 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						0
+						0,
 					);
 					this.findInTree(tree.children[tree.numKeys], val);
 				} else {
@@ -421,7 +421,7 @@ export default class BTree extends Algorithm {
 				this.starting_x,
 				STARTING_Y,
 				BACKGROUND_COLOR,
-				FOREGROUND_COLOR
+				FOREGROUND_COLOR,
 			);
 			this.treeRoot.keys[0] = insertedValue;
 			this.cmd(act.setText, this.treeRoot.graphicID, insertedValue, 0);
@@ -453,7 +453,7 @@ export default class BTree extends Algorithm {
 			this.cmd(
 				act.setText,
 				this.messageID,
-				'Inserting ' + insertValue + '.  Inserting into a leaf'
+				'Inserting ' + insertValue + '.  Inserting into a leaf',
 			);
 			tree.numKeys++;
 			this.cmd(act.setNumElements, tree.graphicID, tree.numKeys);
@@ -494,7 +494,7 @@ export default class BTree extends Algorithm {
 			this.cmd(
 				act.setText,
 				this.messageID,
-				'Inserting ' + insertValue + '.  Inserting into a leaf'
+				'Inserting ' + insertValue + '.  Inserting into a leaf',
 			);
 			tree.numKeys++;
 			this.cmd(act.setNumElements, tree.graphicID, tree.numKeys);
@@ -561,7 +561,7 @@ export default class BTree extends Algorithm {
 				this.cmd(
 					act.disconnect,
 					currentParent.graphicID,
-					currentParent.children[i].graphicID
+					currentParent.children[i].graphicID,
 				);
 				this.cmd(
 					act.connect,
@@ -571,7 +571,7 @@ export default class BTree extends Algorithm {
 					0, // Curve
 					0, // Directed
 					'', // Label
-					i + 1
+					i + 1,
 				);
 
 				currentParent.keys[i] = currentParent.keys[i - 1];
@@ -586,7 +586,7 @@ export default class BTree extends Algorithm {
 				this.moveLabel1ID,
 				risingNode,
 				this.getLabelX(tree, this.split_index),
-				tree.y
+				tree.y,
 			);
 			this.cmd(act.setForegroundColor, this.moveLabel1ID, FOREGROUND_COLOR);
 
@@ -594,7 +594,7 @@ export default class BTree extends Algorithm {
 				act.move,
 				this.moveLabel1ID,
 				this.getLabelX(currentParent, parentIndex),
-				currentParent.y
+				currentParent.y,
 			);
 
 			currentParent.children[parentIndex + 1] = rightNode;
@@ -610,7 +610,7 @@ export default class BTree extends Algorithm {
 			tree.x,
 			tree.y,
 			BACKGROUND_COLOR,
-			FOREGROUND_COLOR
+			FOREGROUND_COLOR,
 		);
 
 		for (let i = this.split_index + 1; i < tree.numKeys + 1; i++) {
@@ -627,7 +627,7 @@ export default class BTree extends Algorithm {
 					0, // Curve
 					0, // Directed
 					'', // Label
-					i - this.split_index - 1
+					i - this.split_index - 1,
 				);
 				if (tree.children[i] != null) {
 					tree.children[i].parent = rightNode;
@@ -641,7 +641,7 @@ export default class BTree extends Algorithm {
 				act.setText,
 				rightNode.graphicID,
 				rightNode.keys[i - this.split_index - 1],
-				i - this.split_index - 1
+				i - this.split_index - 1,
 			);
 		}
 		const leftNode = tree;
@@ -660,7 +660,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				parentIndex + 1
+				parentIndex + 1,
 			);
 			this.resizeTree();
 			this.cmd(act.step);
@@ -678,7 +678,7 @@ export default class BTree extends Algorithm {
 				this.starting_x,
 				STARTING_Y,
 				BACKGROUND_COLOR,
-				FOREGROUND_COLOR
+				FOREGROUND_COLOR,
 			);
 			this.treeRoot.keys[0] = risingNode;
 			this.cmd(act.setText, this.treeRoot.graphicID, risingNode, 0);
@@ -694,7 +694,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				0
+				0,
 			); // Connection Point
 			this.cmd(
 				act.connect,
@@ -704,7 +704,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				1
+				1,
 			); // Connection Point
 			this.treeRoot.isLeaf = false;
 			return this.treeRoot;
@@ -746,7 +746,7 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						1
+						1,
 					);
 					this.cmd(act.step);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -754,14 +754,14 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						0
+						0,
 					);
 
 					if (tree.children[tree.numKeys].numKeys === this.min_keys) {
 						if (tree.children[tree.numKeys - 1].numKeys > this.min_keys) {
 							nextNode = this.stealFromLeft(
 								tree.children[tree.numKeys],
-								tree.numKeys
+								tree.numKeys,
 							);
 							this.doDeleteNotEmpty(nextNode, val);
 						} else {
@@ -814,7 +814,7 @@ export default class BTree extends Algorithm {
 					this.cmd(
 						act.setText,
 						this.messageID,
-						'Checking to see if tree to left of element to delete \nhas an extra key'
+						'Checking to see if tree to left of element to delete \nhas an extra key',
 					);
 					this.cmd(act.setEdgeHighlight, tree.graphicID, tree.children[i].graphicID, 1);
 
@@ -826,20 +826,20 @@ export default class BTree extends Algorithm {
 						this.cmd(
 							act.setText,
 							this.messageID,
-							'Tree to left of element to delete does not have an extra key.  \nLooking to the right ...'
+							'Tree to left of element to delete does not have an extra key.  \nLooking to the right ...',
 						);
 						this.cmd(
 							act.setEdgeHighlight,
 							tree.graphicID,
 							tree.children[i + 1].graphicID,
-							1
+							1,
 						);
 						this.cmd(act.step);
 						this.cmd(
 							act.setEdgeHighlight,
 							tree.graphicID,
 							tree.children[i + 1].graphicID,
-							0
+							0,
 						);
 						// Trees to left and right of node to delete don't have enough keys
 						// Do a merge, and then recursively delete the element
@@ -847,7 +847,7 @@ export default class BTree extends Algorithm {
 							this.cmd(
 								act.setText,
 								this.messageID,
-								'Neither subtree has extra nodes.  Mergeing around the key to delete, \nand recursively deleting ...'
+								'Neither subtree has extra nodes.  Mergeing around the key to delete, \nand recursively deleting ...',
 							);
 							this.cmd(act.step);
 							this.cmd(act.setTextColor, tree.graphicID, FOREGROUND_COLOR, i);
@@ -858,7 +858,7 @@ export default class BTree extends Algorithm {
 							this.cmd(
 								act.setText,
 								this.messageID,
-								'Tree to right of element to delete does have an extra key. \nFinding the smallest key in that subtree ...'
+								'Tree to right of element to delete does have an extra key. \nFinding the smallest key in that subtree ...',
 							);
 							this.cmd(act.step);
 
@@ -889,7 +889,7 @@ export default class BTree extends Algorithm {
 								this.moveLabel1ID,
 								minNode.keys[0],
 								this.getLabelX(minNode, 0),
-								minNode.y
+								minNode.y,
 							);
 							this.cmd(act.move, this.moveLabel1ID, this.getLabelX(tree, i), tree.y);
 							this.cmd(act.step);
@@ -901,7 +901,7 @@ export default class BTree extends Algorithm {
 									act.setText,
 									minNode.graphicID,
 									minNode.keys[i - 1],
-									i - 1
+									i - 1,
 								);
 							}
 							this.cmd(act.setText, minNode.graphicID, '', minNode.numKeys - 1);
@@ -918,7 +918,7 @@ export default class BTree extends Algorithm {
 						this.cmd(
 							act.setText,
 							this.messageID,
-							'Tree to left of element to delete does have \nan extra key. Finding the largest key in that subtree ...'
+							'Tree to left of element to delete does have \nan extra key. Finding the largest key in that subtree ...',
 						);
 						this.cmd(act.step);
 						while (!maxNode.isLeaf) {
@@ -929,7 +929,7 @@ export default class BTree extends Algorithm {
 								if (maxNode.children[maxNode.numKeys - 1] > this.min_keys) {
 									maxNode = this.stealFromLeft(
 										maxNode.children[maxNode.numKeys],
-										maxNode.numKeys
+										maxNode.numKeys,
 									);
 								}
 								maxNode = this.mergeRight(maxNode.children[maxNode.numKeys - 1]);
@@ -947,7 +947,7 @@ export default class BTree extends Algorithm {
 							this.moveLabel1ID,
 							tree.keys[i],
 							this.getLabelX(maxNode, maxNode.numKeys - 1),
-							maxNode.y
+							maxNode.y,
 						);
 						this.cmd(act.move, this.moveLabel1ID, this.getLabelX(tree, i), tree.y);
 						this.cmd(act.step);
@@ -978,7 +978,7 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						1
+						1,
 					);
 					this.cmd(act.step);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -986,7 +986,7 @@ export default class BTree extends Algorithm {
 						act.setEdgeHighlight,
 						tree.graphicID,
 						tree.children[tree.numKeys].graphicID,
-						0
+						0,
 					);
 					this.doDelete(tree.children[tree.numKeys], val);
 				} else {
@@ -1034,7 +1034,7 @@ export default class BTree extends Algorithm {
 						this.moveLabel1ID,
 						tree.keys[i],
 						this.getLabelX(maxNode, maxNode.numKeys - 1),
-						maxNode.y
+						maxNode.y,
 					);
 					this.cmd(act.move, this.moveLabel1ID, this.getLabelX(tree, i), tree.y);
 					this.cmd(act.step);
@@ -1075,7 +1075,7 @@ export default class BTree extends Algorithm {
 			this.moveLabel1ID,
 			parentNode.keys[parentIndex],
 			this.getLabelX(parentNode, parentIndex),
-			parentNode.y
+			parentNode.y,
 		);
 
 		for (let i = 0; i < rightSib.numKeys; i++) {
@@ -1084,7 +1084,7 @@ export default class BTree extends Algorithm {
 				act.setText,
 				tree.graphicID,
 				tree.keys[tree.numKeys + 1 + i],
-				tree.numKeys + 1 + i
+				tree.numKeys + 1 + i,
 			);
 			this.cmd(act.setText, rightSib.graphicID, '', i);
 		}
@@ -1101,7 +1101,7 @@ export default class BTree extends Algorithm {
 					0, // Curve
 					0, // Directed
 					'', // Label
-					tree.numKeys + 1 + i
+					tree.numKeys + 1 + i,
 				);
 			}
 		}
@@ -1117,7 +1117,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				i
+				i,
 			);
 			parentNode.keys[i - 1] = parentNode.keys[i];
 			this.cmd(act.setText, parentNode.graphicID, parentNode.keys[i - 1], i - 1);
@@ -1165,14 +1165,14 @@ export default class BTree extends Algorithm {
 			tmpLabel1,
 			rightSib.keys[0],
 			this.getLabelX(rightSib, 0),
-			rightSib.y
+			rightSib.y,
 		);
 		this.cmd(
 			act.createLabel,
 			tmpLabel2,
 			parentNode.keys[parentIndex],
 			this.getLabelX(parentNode, parentIndex),
-			parentNode.y
+			parentNode.y,
 		);
 		this.cmd(act.setForegroundColor, tmpLabel1, FOREGROUND_COLOR);
 		this.cmd(act.setForegroundColor, tmpLabel2, FOREGROUND_COLOR);
@@ -1200,7 +1200,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				tree.numKeys
+				tree.numKeys,
 			);
 
 			for (let i = 1; i < rightSib.numKeys + 1; i++) {
@@ -1214,7 +1214,7 @@ export default class BTree extends Algorithm {
 					0, // Curve
 					0, // Directed
 					'', // Label
-					i - 1
+					i - 1,
 				);
 			}
 		}
@@ -1238,7 +1238,7 @@ export default class BTree extends Algorithm {
 		this.cmd(
 			act.setText,
 			this.messageID,
-			'Node has too few keys.  Stealing from left sibling.'
+			'Node has too few keys.  Stealing from left sibling.',
 		);
 
 		for (let i = tree.numKeys - 1; i > 0; i--) {
@@ -1259,14 +1259,14 @@ export default class BTree extends Algorithm {
 			tmpLabel1,
 			leftSib.keys[leftSib.numKeys - 1],
 			this.getLabelX(leftSib, leftSib.numKeys - 1),
-			leftSib.y
+			leftSib.y,
 		);
 		this.cmd(
 			act.createLabel,
 			tmpLabel2,
 			parentNode.keys[parentIndex - 1],
 			this.getLabelX(parentNode, parentIndex - 1),
-			parentNode.y
+			parentNode.y,
 		);
 		this.cmd(act.setForegroundColor, tmpLabel1, FOREGROUND_COLOR);
 		this.cmd(act.setForegroundColor, tmpLabel2, FOREGROUND_COLOR);
@@ -1290,14 +1290,14 @@ export default class BTree extends Algorithm {
 					0, // Curve
 					0, // Directed
 					'', // Label
-					i
+					i,
 				);
 			}
 			tree.children[0] = leftSib.children[leftSib.numKeys];
 			this.cmd(
 				act.disconnect,
 				leftSib.graphicID,
-				leftSib.children[leftSib.numKeys].graphicID
+				leftSib.children[leftSib.numKeys].graphicID,
 			);
 			this.cmd(
 				act.connect,
@@ -1307,7 +1307,7 @@ export default class BTree extends Algorithm {
 				0, // Curve
 				0, // Directed
 				'', // Label
-				0
+				0,
 			);
 			leftSib.children[leftSib.numKeys] = null;
 			tree.children[0].parent = tree;
@@ -1320,7 +1320,7 @@ export default class BTree extends Algorithm {
 			act.setText,
 			parentNode.graphicID,
 			parentNode.keys[parentIndex - 1],
-			parentIndex - 1
+			parentIndex - 1,
 		);
 		this.cmd(act.setText, leftSib.graphicID, '', leftSib.numKeys - 1);
 
@@ -1395,7 +1395,7 @@ export default class BTree extends Algorithm {
 					this.setNewPositions(
 						tree.children[i],
 						leftEdge + priorWidth + tree.widths[i] / 2,
-						yPosition + HEIGHT_DELTA
+						yPosition + HEIGHT_DELTA,
 					);
 					priorWidth += tree.widths[i];
 				}

@@ -94,10 +94,10 @@ export default class AnimatedCircle extends AnimatedObject {
 		if (strList.length === 1) {
 			if (this.highlightIndexDirty && this.highlightIndex !== -1) {
 				this.leftWidth = context.measureText(
-					this.label.substring(0, this.highlightIndex)
+					this.label.substring(0, this.highlightIndex),
 				).width;
 				this.centerWidth = context.measureText(
-					this.label.substring(this.highlightIndex, this.highlightIndex + 1)
+					this.label.substring(this.highlightIndex, this.highlightIndex + 1),
 				).width;
 				this.textWidth = context.measureText(this.label).width;
 				this.highlightIndexDirty = false;
@@ -108,7 +108,7 @@ export default class AnimatedCircle extends AnimatedObject {
 				const leftStr = this.label.substring(0, this.highlightIndex);
 				const highlightStr = this.label.substring(
 					this.highlightIndex,
-					this.highlightIndex + 1
+					this.highlightIndex + 1,
 				);
 				const rightStr = this.label.substring(this.highlightIndex + 1);
 				context.fillText(leftStr, startingXForHighlight, this.y);
@@ -121,7 +121,7 @@ export default class AnimatedCircle extends AnimatedObject {
 				context.fillText(
 					rightStr,
 					startingXForHighlight + this.leftWidth + this.centerWidth,
-					this.y
+					this.y,
 				);
 			} else {
 				context.fillText(this.label, this.x, this.y);
@@ -153,7 +153,7 @@ export default class AnimatedCircle extends AnimatedObject {
 			this.layer,
 			this.radius,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -169,7 +169,7 @@ class UndoDeleteCircle extends UndoBlock {
 		layer,
 		radius,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;

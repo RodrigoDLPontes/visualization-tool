@@ -195,7 +195,7 @@ export default class DequeLL extends Algorithm {
 			LINKED_LIST_ELEM_HEIGHT,
 			LINKED_LIST_INSERT_X,
 			LINKED_LIST_INSERT_Y,
-			0.25
+			0.25,
 		);
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
@@ -223,55 +223,55 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 			} else if (index === this.size) {
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			} else {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 			}
 		}
@@ -306,14 +306,14 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 1);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 1);
 			} else {
@@ -326,22 +326,22 @@ export default class DequeLL extends Algorithm {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			}
 		}

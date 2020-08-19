@@ -119,7 +119,7 @@ export default class Graph extends Algorithm {
 		this.defaultGraphButton = addControlToAlgorithmBar(
 			'Button',
 			'Default Graph',
-			verticalGroup
+			verticalGroup,
 		);
 		this.defaultGraphButton.onclick = this.defaultGraphCallback.bind(this);
 		this.defaultGraphButton.disabled = true;
@@ -130,7 +130,7 @@ export default class Graph extends Algorithm {
 		if (addDirection) {
 			const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 				['Undirected Graph', 'Directed Graph'],
-				'GraphType'
+				'GraphType',
 			);
 
 			this.undirectedGraphButton = radioButtonList[0];
@@ -148,7 +148,7 @@ export default class Graph extends Algorithm {
 
 		let radioButtonList = addRadioButtonGroupToAlgorithmBar(
 			['Small Graph', 'Large Graph'],
-			'GraphSize'
+			'GraphSize',
 		);
 
 		this.smallGraphButton = radioButtonList[0];
@@ -170,7 +170,7 @@ export default class Graph extends Algorithm {
 				'Adjacency List Representation',
 				'Adjacency Matrix Representation',
 			],
-			'GraphRepresentation'
+			'GraphRepresentation',
 		);
 
 		this.logicalButton = radioButtonList[0];
@@ -248,7 +248,7 @@ export default class Graph extends Algorithm {
 			this.highlightCircleL,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.x_pos_logical[i],
-			this.y_pos_logical[i]
+			this.y_pos_logical[i],
 		);
 		this.cmd(act.setLayer, this.highlightCircleL, 1);
 		this.cmd(
@@ -256,7 +256,7 @@ export default class Graph extends Algorithm {
 			this.highlightCircleAL,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.adj_list_x_start - this.adj_list_width,
-			this.adj_list_y_start + i * this.adj_list_height
+			this.adj_list_y_start + i * this.adj_list_height,
 		);
 		this.cmd(act.setLayer, this.highlightCircleAL, 2);
 		this.cmd(
@@ -264,7 +264,7 @@ export default class Graph extends Algorithm {
 			this.highlightCircleAM,
 			HIGHLIGHT_CIRCLE_COLOR,
 			this.adj_matrix_x_start - this.adj_matrix_width,
-			this.adj_matrix_y_start + i * this.adj_matrix_height
+			this.adj_matrix_y_start + i * this.adj_matrix_height,
 		);
 		this.cmd(act.setLayer, this.highlightCircleAM, 3);
 	}
@@ -319,10 +319,10 @@ export default class Graph extends Algorithm {
 							EDGE_COLOR,
 							this.adjustCurveForDirectedEdges(
 								this.curve[i][j],
-								this.adj_matrix[j][i] >= 0
+								this.adj_matrix[j][i] >= 0,
 							),
 							1,
-							edgeLabel
+							edgeLabel,
 						);
 					} else if (i < j) {
 						this.cmd(
@@ -332,7 +332,7 @@ export default class Graph extends Algorithm {
 							EDGE_COLOR,
 							this.curve[i][j],
 							0,
-							edgeLabel
+							edgeLabel,
 						);
 					}
 				}
@@ -408,7 +408,7 @@ export default class Graph extends Algorithm {
 				this.circleID[i],
 				this.toStr(i),
 				this.x_pos_logical[i],
-				this.y_pos_logical[i]
+				this.y_pos_logical[i],
 			);
 			this.cmd(act.setTextColor, this.circleID[i], VERTEX_INDEX_COLOR, 0);
 
@@ -497,7 +497,7 @@ export default class Graph extends Algorithm {
 								EDGE_COLOR,
 								this.curve[i][j],
 								0,
-								edgeLabel
+								edgeLabel,
 							);
 						} else {
 							this.adj_matrix[i][j] = -1;
@@ -542,7 +542,7 @@ export default class Graph extends Algorithm {
 				this.adj_matrix_index_x[i],
 				this.toStr(i),
 				this.adj_matrix_x_start + i * this.adj_matrix_width,
-				this.adj_matrix_y_start - this.adj_matrix_height
+				this.adj_matrix_y_start - this.adj_matrix_height,
 			);
 			this.cmd(act.setForegroundColor, this.adj_matrix_index_x[i], VERTEX_INDEX_COLOR);
 			this.cmd(
@@ -550,7 +550,7 @@ export default class Graph extends Algorithm {
 				this.adj_matrix_index_y[i],
 				this.toStr(i),
 				this.adj_matrix_x_start - this.adj_matrix_width,
-				this.adj_matrix_y_start + i * this.adj_matrix_height
+				this.adj_matrix_y_start + i * this.adj_matrix_height,
 			);
 			this.cmd(act.setForegroundColor, this.adj_matrix_index_y[i], VERTEX_INDEX_COLOR);
 			this.cmd(act.setLayer, this.adj_matrix_index_x[i], 3);
@@ -571,7 +571,7 @@ export default class Graph extends Algorithm {
 					this.adj_matrix_width,
 					this.adj_matrix_height,
 					this.adj_matrix_x_start + j * this.adj_matrix_width,
-					this.adj_matrix_y_start + i * this.adj_matrix_height
+					this.adj_matrix_y_start + i * this.adj_matrix_height,
 				);
 				this.cmd(act.setLayer, this.adj_matrixID[i][j], 3);
 			}
@@ -607,7 +607,7 @@ export default class Graph extends Algorithm {
 				this.adj_list_width,
 				this.adj_list_height,
 				this.adj_list_x_start,
-				this.adj_list_y_start + i * this.adj_list_height
+				this.adj_list_y_start + i * this.adj_list_height,
 			);
 			this.cmd(act.setLayer, this.adj_list_list[i], 2);
 			this.cmd(
@@ -615,7 +615,7 @@ export default class Graph extends Algorithm {
 				this.adj_list_index[i],
 				this.toStr(i),
 				this.adj_list_x_start - this.adj_list_width,
-				this.adj_list_y_start + i * this.adj_list_height
+				this.adj_list_y_start + i * this.adj_list_height,
 			);
 			this.cmd(act.setForegroundColor, this.adj_list_index[i], VERTEX_INDEX_COLOR);
 			this.cmd(act.setLayer, this.adj_list_index[i], 2);
@@ -640,7 +640,7 @@ export default class Graph extends Algorithm {
 						this.adj_list_y_start + i * this.adj_list_height,
 						0.25,
 						0,
-						1
+						1,
 					);
 					this.cmd(act.setNull, this.adj_list_edges[i][j], 1);
 					this.cmd(act.setTextColor, this.adj_list_edges[i][j], VERTEX_INDEX_COLOR, 0);

@@ -59,7 +59,7 @@ export default class BoyerMoore extends Algorithm {
 			this.textField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.textField);
 
@@ -71,7 +71,7 @@ export default class BoyerMoore extends Algorithm {
 			this.patternField,
 			this.findCallback.bind(this),
 			MAX_LENGTH,
-			false
+			false,
 		);
 		this.controls.push(this.patternField);
 
@@ -179,7 +179,7 @@ export default class BoyerMoore extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
@@ -198,7 +198,7 @@ export default class BoyerMoore extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 		}
@@ -213,7 +213,7 @@ export default class BoyerMoore extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X + (pattern.length - 1) * this.cellSize,
 			ARRAY_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(
 			act.createHighlightCircle,
@@ -221,7 +221,7 @@ export default class BoyerMoore extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X + (pattern.length - 1) * this.cellSize,
 			ARRAY_START_Y + this.cellSize,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 
 		let i = 0;
@@ -234,7 +234,7 @@ export default class BoyerMoore extends Algorithm {
 					this.comparisonMatrixID[row][k],
 					pattern.charAt(k - i),
 					xpos,
-					ypos
+					ypos,
 				);
 			}
 			this.cmd(act.step);
@@ -330,7 +330,7 @@ export default class BoyerMoore extends Algorithm {
 			'Pattern:',
 			labelsX,
 			PATTERN_START_Y - 5,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -338,7 +338,7 @@ export default class BoyerMoore extends Algorithm {
 			'Last occurence table:',
 			labelsX,
 			LAST_TABLE_START_Y + 10,
-			0
+			0,
 		);
 
 		// Display pattern table
@@ -355,7 +355,7 @@ export default class BoyerMoore extends Algorithm {
 				this.cellSize,
 				this.cellSize,
 				xpos,
-				PATTERN_START_Y
+				PATTERN_START_Y,
 			);
 			this.patternTableIndexID[i] = this.nextIndex;
 			this.cmd(act.createLabel, this.nextIndex++, i, xpos, PATTERN_START_Y + this.cellSize);
@@ -375,7 +375,7 @@ export default class BoyerMoore extends Algorithm {
 			'#0000FF',
 			patternTableStartX,
 			PATTERN_START_Y,
-			this.cellSize / 2
+			this.cellSize / 2,
 		);
 		this.cmd(act.setHighlight, lotPointerID, 1);
 
@@ -396,7 +396,7 @@ export default class BoyerMoore extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					LAST_TABLE_START_Y
+					LAST_TABLE_START_Y,
 				);
 				this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 				this.lastTableValueID.push(this.nextIndex);
@@ -407,7 +407,7 @@ export default class BoyerMoore extends Algorithm {
 					this.cellSize,
 					this.cellSize,
 					xpos,
-					LAST_TABLE_START_Y + this.cellSize
+					LAST_TABLE_START_Y + this.cellSize,
 				);
 				this.cmd(act.setHighlight, this.nextIndex, 1);
 				j++;
@@ -428,7 +428,7 @@ export default class BoyerMoore extends Algorithm {
 			this.cellSize,
 			this.cellSize,
 			xpos,
-			LAST_TABLE_START_Y
+			LAST_TABLE_START_Y,
 		);
 		this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		this.lastTableValueID.push(this.nextIndex);
@@ -439,7 +439,7 @@ export default class BoyerMoore extends Algorithm {
 			this.cellSize,
 			this.cellSize,
 			xpos,
-			LAST_TABLE_START_Y + this.cellSize
+			LAST_TABLE_START_Y + this.cellSize,
 		);
 		this.cmd(act.step);
 

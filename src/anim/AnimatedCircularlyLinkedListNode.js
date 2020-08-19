@@ -128,7 +128,7 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 			context.lineTo(startX + this.w + this.highlightDiff, startY - this.highlightDiff);
 			context.lineTo(
 				startX + this.w + this.highlightDiff,
-				startY + this.h + this.highlightDiff
+				startY + this.h + this.highlightDiff,
 			);
 			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -210,7 +210,7 @@ export default class AnimatedCircularlyLinkedListNode extends AnimatedObject {
 			this.layer,
 			this.nullPointer,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -230,7 +230,7 @@ class UndoDeleteCircularlyLinkedList extends UndoBlock {
 		layer,
 		nullPointer,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;
@@ -257,7 +257,7 @@ class UndoDeleteCircularlyLinkedList extends UndoBlock {
 			this.h,
 			this.linkPercent,
 			this.backgroundColor,
-			this.foregroundColor
+			this.foregroundColor,
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);

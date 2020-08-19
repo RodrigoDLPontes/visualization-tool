@@ -58,7 +58,7 @@ export default class ClosedHash extends Hash {
 				'Quadratic Probing: f(i) = i * i',
 				'Double Hashing: f(i) = i * hash2(elem)',
 			],
-			'CollisionStrategy'
+			'CollisionStrategy',
 		);
 		this.linearProblingButton = radioButtonList[0];
 		this.linearProblingButton.onclick = this.linearProbeCallback.bind(this);
@@ -127,7 +127,7 @@ export default class ClosedHash extends Hash {
 				act.move,
 				labID,
 				this.indexXPos[index],
-				this.indexYPos[index] - ARRAY_ELEM_HEIGHT
+				this.indexYPos[index] - ARRAY_ELEM_HEIGHT,
 			);
 			this.cmd(act.step);
 			this.cmd(act.delete, labID);
@@ -152,7 +152,7 @@ export default class ClosedHash extends Hash {
 				String(skipVal),
 			20,
 			45,
-			0
+			0,
 		);
 		this.skipDist[0] = 0;
 		for (let i = 1; i < this.table_size; i++) {
@@ -215,7 +215,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element deleted'
+				'Deleting element: ' + elem + '  Element deleted',
 			);
 			this.empty[index] = true;
 			this.deleted[index] = true;
@@ -224,7 +224,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element not in table'
+				'Deleting element: ' + elem + '  Element not in table',
 			);
 		}
 		return this.commands;
@@ -279,7 +279,7 @@ export default class ClosedHash extends Hash {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				nextXPos,
-				nextYPos
+				nextYPos,
 			);
 			this.hashTableVisual[i] = nextID;
 			nextID = this.nextIndex++;

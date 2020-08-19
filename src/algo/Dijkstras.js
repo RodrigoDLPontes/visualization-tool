@@ -78,7 +78,7 @@ export default class Dijkstras extends Graph {
 			this.startField,
 			this.startCallback.bind(this),
 			1,
-			false
+			false,
 		);
 		this.startField.size = 2;
 		this.controls.push(this.startField);
@@ -118,7 +118,7 @@ export default class Dijkstras extends Graph {
 				TABLE_ENTRY_WIDTH,
 				this.tableEntryHeight,
 				TABLE_START_X,
-				TABLE_START_Y + i * this.tableEntryHeight
+				TABLE_START_Y + i * this.tableEntryHeight,
 			);
 			this.cmd(
 				act.createRectangle,
@@ -127,7 +127,7 @@ export default class Dijkstras extends Graph {
 				TABLE_ENTRY_WIDTH,
 				this.tableEntryHeight,
 				TABLE_START_X + TABLE_ENTRY_WIDTH,
-				TABLE_START_Y + i * this.tableEntryHeight
+				TABLE_START_Y + i * this.tableEntryHeight,
 			);
 			this.cmd(act.setTextColor, this.vertexID[i], VERTEX_INDEX_COLOR);
 		}
@@ -141,7 +141,7 @@ export default class Dijkstras extends Graph {
 			'Visited Set:',
 			VISITED_START_X - 5,
 			VISITED_START_Y - 25,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -149,7 +149,7 @@ export default class Dijkstras extends Graph {
 			'Current vertex:',
 			CURRENT_VERTEX_LABEL_X,
 			CURRENT_VERTEX_LABEL_Y,
-			0
+			0,
 		);
 		this.cmd(act.createLabel, this.nextIndex++, 'Priority Queue:', PQ_LABEL_X, PQ_LABEL_Y, 0);
 		this.cmd(
@@ -157,7 +157,7 @@ export default class Dijkstras extends Graph {
 			this.nextIndex++,
 			'Distance Map:',
 			TABLE_START_X + 0.5 * TABLE_ENTRY_WIDTH,
-			TABLE_START_Y - SMALL_TABLE_ENTRY_HEIGHT
+			TABLE_START_Y - SMALL_TABLE_ENTRY_HEIGHT,
 		);
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
@@ -206,7 +206,7 @@ export default class Dijkstras extends Graph {
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
-			'Enqueueing ' + this.toStr(current) + ' with distance 0 and updating distance map'
+			'Enqueueing ' + this.toStr(current) + ' with distance 0 and updating distance map',
 		);
 		this.cmd(act.step);
 
@@ -222,7 +222,7 @@ export default class Dijkstras extends Graph {
 					act.move,
 					pqIDs[i],
 					PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
-					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 				);
 			}
 
@@ -234,7 +234,7 @@ export default class Dijkstras extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Adding ' + this.toStr(current) + ' to visited set'
+					'Adding ' + this.toStr(current) + ' to visited set',
 				);
 				this.visitedID.push(this.nextIndex);
 				this.cmd(
@@ -242,7 +242,7 @@ export default class Dijkstras extends Graph {
 					this.nextIndex++,
 					this.toStr(current),
 					VISITED_START_X + (this.visitedID.length - 1) * VISITED_SPACING,
-					VISITED_START_Y
+					VISITED_START_Y,
 				);
 				this.cmd(act.setBackgroundColor, this.circleID[current], VISITED_COLOR);
 				this.cmd(act.step);
@@ -250,7 +250,7 @@ export default class Dijkstras extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Updating neighbors of vertex ' + this.toStr(current)
+					'Updating neighbors of vertex ' + this.toStr(current),
 				);
 				for (let neighbor = 0; neighbor < this.size; neighbor++) {
 					if (this.adj_matrix[current][neighbor] >= 0) {
@@ -259,7 +259,7 @@ export default class Dijkstras extends Graph {
 							this.cmd(
 								act.setText,
 								this.infoLabelID,
-								this.toStr(neighbor) + ' has already been visited, skipping'
+								this.toStr(neighbor) + ' has already been visited, skipping',
 							);
 							this.cmd(act.step);
 						} else {
@@ -289,14 +289,14 @@ export default class Dijkstras extends Graph {
 										'), updating',
 									TABLE_START_X + 2 * TABLE_ENTRY_WIDTH - 15,
 									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
-									0
+									0,
 								);
 								this.cmd(act.step);
 								this.cmd(act.setText, this.infoLabelID, 'Updating distance');
 								this.cmd(
 									act.setText,
 									this.distanceID[neighbor],
-									this.distance[neighbor]
+									this.distance[neighbor],
 								);
 								this.cmd(act.setHighlight, this.distanceID[current], 0);
 								this.cmd(act.setHighlight, this.distanceID[neighbor], 0);
@@ -309,7 +309,7 @@ export default class Dijkstras extends Graph {
 									'Enqueueing ' +
 										this.toStr(neighbor) +
 										' with distance ' +
-										newDist
+										newDist,
 								);
 								this.cmd(
 									act.createLabel,
@@ -319,7 +319,7 @@ export default class Dijkstras extends Graph {
 									PQ_Y +
 										Math.floor((this.pq.size() - 1) / PQ_MAX_PER_LINE) *
 											PQ_LINE_SPACING,
-									0
+									0,
 								);
 								this.cmd(act.step);
 
@@ -331,7 +331,8 @@ export default class Dijkstras extends Graph {
 											act.move,
 											newPqIDs[i],
 											PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
-											PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+											PQ_Y +
+												Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 										);
 									}
 									this.cmd(act.step);
@@ -352,7 +353,7 @@ export default class Dijkstras extends Graph {
 										'), skipping',
 									TABLE_START_X + 2 * TABLE_ENTRY_WIDTH - 15,
 									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
-									0
+									0,
 								);
 								this.cmd(act.step);
 								this.cmd(act.delete, this.comparisonMessageID);
@@ -367,7 +368,7 @@ export default class Dijkstras extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					this.toStr(current) + ' has already been visited, skipping'
+					this.toStr(current) + ' has already been visited, skipping',
 				);
 				this.cmd(act.step);
 			}

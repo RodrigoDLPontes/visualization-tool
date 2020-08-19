@@ -30,7 +30,7 @@ class AlgoScreen extends React.Component {
 			this.currentAlg = new algoMap[this.state.algoName][1](
 				this.animManag,
 				this.canvasRef.current.width,
-				this.canvasRef.current.height
+				this.canvasRef.current.height,
 			);
 		}
 	}

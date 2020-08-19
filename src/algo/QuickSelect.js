@@ -60,7 +60,7 @@ export default class QuickSelect extends Algorithm {
 			this.listField,
 			this.runCallback.bind(this),
 			60,
-			false
+			false,
 		);
 		this.controls.push(this.listField);
 
@@ -72,7 +72,7 @@ export default class QuickSelect extends Algorithm {
 			this.kField,
 			this.runCallback.bind(this),
 			2,
-			true
+			true,
 		);
 		this.controls.push(this.kField);
 
@@ -93,14 +93,14 @@ export default class QuickSelect extends Algorithm {
 		this.worstPivotToggle = addCheckboxToAlgorithmBar(
 			'Pick min element as pivot',
 			false,
-			this.togglesGroup
+			this.togglesGroup,
 		);
 		this.worstPivotToggle.onclick = this.toggleWorstPivot.bind(this);
 		this.controls.push(this.worstPivotToggle);
 		this.firstPivotToggle = addCheckboxToAlgorithmBar(
 			'Pick first element as pivot',
 			false,
-			this.togglesGroup
+			this.togglesGroup,
 		);
 		this.firstPivotToggle.onclick = this.toggleFirstPivot.bind(this);
 		this.controls.push(this.firstPivotToggle);
@@ -206,7 +206,7 @@ export default class QuickSelect extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 		}
 

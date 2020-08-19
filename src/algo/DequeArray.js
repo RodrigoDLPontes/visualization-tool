@@ -151,7 +151,7 @@ export default class DequeArray extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
 			this.cmd(act.setForegroundColor, this.arrayLabelID[i], INDEX_COLOR);
@@ -164,7 +164,7 @@ export default class DequeArray extends Algorithm {
 			ARRAY_ELEM_WIDTH,
 			ARRAY_ELEM_HEIGHT,
 			FRONT_POS_X,
-			FRONT_POS_Y
+			FRONT_POS_Y,
 		);
 
 		this.cmd(act.createLabel, sizeLabelID, 'Size', SIZE_LABEL_X, SIZE_LABEL_Y);
@@ -175,7 +175,7 @@ export default class DequeArray extends Algorithm {
 			ARRAY_ELEM_WIDTH,
 			ARRAY_ELEM_HEIGHT,
 			SIZE_POS_X,
-			SIZE_POS_Y
+			SIZE_POS_Y,
 		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
@@ -297,13 +297,13 @@ export default class DequeArray extends Algorithm {
 			this.highlight1ID,
 			INDEX_COLOR,
 			FRONT_POS_X,
-			FRONT_POS_Y
+			FRONT_POS_Y,
 		);
 		this.cmd(act.step);
 		this.cmd(
 			act.setText,
 			this.leftoverLabelID,
-			`Adding ${elemToAdd} at index (${this.front} - 1) % ${SIZE}`
+			`Adding ${elemToAdd} at index (${this.front} - 1) % ${SIZE}`,
 		);
 
 		this.cmd(act.step);
@@ -311,7 +311,7 @@ export default class DequeArray extends Algorithm {
 			act.move,
 			this.highlight1ID,
 			this.front * ARRAY_ELEM_WIDTH + ARRAY_START_X,
-			ypos + ARRAY_ELEM_HEIGHT
+			ypos + ARRAY_ELEM_HEIGHT,
 		);
 		this.cmd(act.step);
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
@@ -357,7 +357,7 @@ export default class DequeArray extends Algorithm {
 			labremoveFirstID,
 			'removeFirstd Value: ',
 			QUEUE_LABEL_X,
-			QUEUE_LABEL_Y
+			QUEUE_LABEL_Y,
 		);
 
 		this.cmd(
@@ -365,7 +365,7 @@ export default class DequeArray extends Algorithm {
 			this.highlight1ID,
 			INDEX_COLOR,
 			FRONT_POS_X,
-			FRONT_POS_Y
+			FRONT_POS_Y,
 		);
 		this.cmd(act.step);
 
@@ -428,7 +428,7 @@ export default class DequeArray extends Algorithm {
 			this.highlight1ID,
 			INDEX_COLOR,
 			FRONT_POS_X,
-			FRONT_POS_Y
+			FRONT_POS_Y,
 		);
 		this.cmd(act.createHighlightCircle, this.highlight2ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 

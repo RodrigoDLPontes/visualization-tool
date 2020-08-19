@@ -109,11 +109,11 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 			context.moveTo(startX - this.highlightDiff, startY - this.highlightDiff);
 			context.lineTo(
 				startX + this.getWidth() + this.highlightDiff,
-				startY - this.highlightDiff
+				startY - this.highlightDiff,
 			);
 			context.lineTo(
 				startX + this.getWidth() + this.highlightDiff,
-				startY + this.h + this.highlightDiff
+				startY + this.h + this.highlightDiff,
 			);
 			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -218,7 +218,7 @@ export default class AnimatedBTreeNode extends AnimatedObject {
 			this.foregroundColor,
 			this.layer,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -237,7 +237,7 @@ class UndoDeleteBTreeNode extends UndoBlock {
 		foregroundColor,
 		layer,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;
@@ -262,7 +262,7 @@ class UndoDeleteBTreeNode extends UndoBlock {
 			this.h,
 			this.numLabels,
 			this.backgroundColor,
-			this.foregroundColor
+			this.foregroundColor,
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		for (let i = 0; i < this.numLabels; i++) {

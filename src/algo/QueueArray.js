@@ -71,7 +71,7 @@ export default class QueueArray extends Algorithm {
 		this.enqueueField.onkeydown = this.returnSubmit(
 			this.enqueueField,
 			this.enqueueCallback.bind(this),
-			4
+			4,
 		);
 
 		this.enqueueButton = addControlToAlgorithmBar('Button', 'Enqueue');
@@ -133,7 +133,7 @@ export default class QueueArray extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
 			this.cmd(act.setForegroundColor, this.arrayLabelID[i], INDEX_COLOR);
@@ -146,7 +146,7 @@ export default class QueueArray extends Algorithm {
 			ARRAY_ELEM_WIDTH,
 			ARRAY_ELEM_HEIGHT,
 			HEAD_POS_X,
-			HEAD_POS_Y
+			HEAD_POS_Y,
 		);
 
 		this.cmd(act.createLabel, tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_LABEL_Y);
@@ -157,7 +157,7 @@ export default class QueueArray extends Algorithm {
 			ARRAY_ELEM_WIDTH,
 			ARRAY_ELEM_HEIGHT,
 			TAIL_POS_X,
-			TAIL_POS_Y
+			TAIL_POS_Y,
 		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);

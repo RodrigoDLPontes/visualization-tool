@@ -52,7 +52,7 @@ export class UndoMove extends UndoBlock {
 			this.fromX,
 			this.fromY,
 			this.toX,
-			this.toY
+			this.toY,
 		);
 		animationList.push(nextAnim);
 		return true;

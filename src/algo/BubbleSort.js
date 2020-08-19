@@ -58,7 +58,7 @@ export default class BubbleSort extends Algorithm {
 			this.listField,
 			this.sortCallback.bind(this),
 			60,
-			false
+			false,
 		);
 		this.controls.push(this.listField);
 
@@ -169,7 +169,7 @@ export default class BubbleSort extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 		}
 		this.cmd(
@@ -177,7 +177,7 @@ export default class BubbleSort extends Algorithm {
 			this.iPointerID,
 			'#0000FF',
 			ARRAY_START_X,
-			ARRAY_START_Y
+			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
@@ -185,7 +185,7 @@ export default class BubbleSort extends Algorithm {
 			this.jPointerID,
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
-			ARRAY_START_Y
+			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.cmd(act.step);

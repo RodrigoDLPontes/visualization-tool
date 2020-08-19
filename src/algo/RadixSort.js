@@ -96,7 +96,7 @@ export default class RadixSort extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-				this.ARRAY_ELEM_Y
+				this.ARRAY_ELEM_Y,
 			);
 			this.arrayRects[i] = nextID;
 			nextID = this.nextIndex++;
@@ -106,7 +106,7 @@ export default class RadixSort extends Algorithm {
 				nextID,
 				i,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-				this.ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT
+				this.ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT,
 			);
 			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 
@@ -118,7 +118,7 @@ export default class RadixSort extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-				this.SWAP_ARRAY_ELEM_Y
+				this.SWAP_ARRAY_ELEM_Y,
 			);
 			this.swapRects[i] = nextID;
 			nextID = this.nextIndex++;
@@ -128,7 +128,7 @@ export default class RadixSort extends Algorithm {
 				nextID,
 				i,
 				ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-				this.SWAP_ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT
+				this.SWAP_ARRAY_ELEM_Y + ARRAY_ELEM_HEIGHT,
 			);
 			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 		}
@@ -141,7 +141,7 @@ export default class RadixSort extends Algorithm {
 				COUNTER_ARRAY_ELEM_WIDTH,
 				COUNTER_ARRAY_ELEM_HEIGHT,
 				COUNTER_ARRAY_ELEM_START_X + i * COUNTER_ARRAY_ELEM_WIDTH,
-				this.COUNTER_ARRAY_ELEM_Y
+				this.COUNTER_ARRAY_ELEM_Y,
 			);
 			this.counterRects[i] = nextID;
 			nextID = this.nextIndex++;
@@ -151,7 +151,7 @@ export default class RadixSort extends Algorithm {
 				nextID,
 				i,
 				COUNTER_ARRAY_ELEM_START_X + i * COUNTER_ARRAY_ELEM_WIDTH,
-				this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
+				this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT,
 			);
 			this.cmd(act.setForegroundColor, nextID, '#0000FF');
 		}
@@ -188,14 +188,14 @@ export default class RadixSort extends Algorithm {
 					animatedCircleID,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 				this.cmd(
 					act.createHighlightCircle,
 					animatedCircleID2,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 
 				this.cmd(act.setText, this.arrayRects[i], '');
@@ -212,7 +212,7 @@ export default class RadixSort extends Algorithm {
 						digits[k],
 						Math.floor(this.arrayData[i] / Math.pow(10, k)) % 10,
 						digitXPos,
-						digitYPos
+						digitYPos,
 					);
 					if (k !== radix) {
 						this.cmd(act.setAlpha, digits[k], 0.2);
@@ -228,7 +228,7 @@ export default class RadixSort extends Algorithm {
 					act.move,
 					animatedCircleID,
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
-					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
+					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT,
 				);
 				this.cmd(act.step);
 				this.counterData[index]++;
@@ -262,14 +262,14 @@ export default class RadixSort extends Algorithm {
 					animatedCircleID,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 				this.cmd(
 					act.createHighlightCircle,
 					animatedCircleID2,
 					'#0000FF',
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 
 				this.cmd(act.setText, this.arrayRects[i], '');
@@ -287,7 +287,7 @@ export default class RadixSort extends Algorithm {
 						digits[k],
 						Math.floor(this.arrayData[i] / Math.pow(10, k)) % 10,
 						digitXPos,
-						digitYPos
+						digitYPos,
 					);
 					if (k !== radix) {
 						this.cmd(act.setAlpha, digits[k], 0.2);
@@ -299,7 +299,7 @@ export default class RadixSort extends Algorithm {
 					act.move,
 					animatedCircleID2,
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
-					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
+					this.COUNTER_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT,
 				);
 				this.cmd(act.step);
 
@@ -312,21 +312,21 @@ export default class RadixSort extends Algorithm {
 					animatedCircleID3,
 					'#AAAAFF',
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
-					this.COUNTER_ARRAY_ELEM_Y
+					this.COUNTER_ARRAY_ELEM_Y,
 				);
 				this.cmd(
 					act.createHighlightCircle,
 					animatedCircleID4,
 					'#AAAAFF',
 					COUNTER_ARRAY_ELEM_START_X + index * COUNTER_ARRAY_ELEM_WIDTH,
-					this.COUNTER_ARRAY_ELEM_Y
+					this.COUNTER_ARRAY_ELEM_Y,
 				);
 
 				this.cmd(
 					act.move,
 					animatedCircleID4,
 					ARRAY_ELEM_START_X + insertIndex * ARRAY_ELEM_WIDTH,
-					this.SWAP_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT
+					this.SWAP_ARRAY_ELEM_Y + COUNTER_ARRAY_ELEM_HEIGHT,
 				);
 				this.cmd(act.step);
 
@@ -337,13 +337,13 @@ export default class RadixSort extends Algorithm {
 					moveLabel,
 					this.arrayData[i],
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 				this.cmd(
 					act.move,
 					moveLabel,
 					ARRAY_ELEM_START_X + insertIndex * ARRAY_ELEM_WIDTH,
-					this.SWAP_ARRAY_ELEM_Y
+					this.SWAP_ARRAY_ELEM_Y,
 				);
 				this.swapData[insertIndex] = this.arrayData[i];
 
@@ -376,13 +376,13 @@ export default class RadixSort extends Algorithm {
 					startLab + i,
 					this.swapData[i],
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.SWAP_ARRAY_ELEM_Y
+					this.SWAP_ARRAY_ELEM_Y,
 				);
 				this.cmd(
 					act.move,
 					startLab + i,
 					ARRAY_ELEM_START_X + i * ARRAY_ELEM_WIDTH,
-					this.ARRAY_ELEM_Y
+					this.ARRAY_ELEM_Y,
 				);
 				this.cmd(act.setText, this.swapRects[i], '');
 			}

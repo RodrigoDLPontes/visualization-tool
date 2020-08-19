@@ -75,7 +75,7 @@ export default class MergeSort extends Algorithm {
 			this.listField,
 			this.sortCallback.bind(this),
 			60,
-			false
+			false,
 		);
 		this.controls.push(this.listField);
 
@@ -172,7 +172,7 @@ export default class MergeSort extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xPos,
-				yPos
+				yPos,
 			);
 		}
 		this.cmd(act.step);
@@ -189,7 +189,7 @@ export default class MergeSort extends Algorithm {
 				0,
 				-LARGE_OFFSET,
 				LARGE_OFFSET,
-				this.arrayID
+				this.arrayID,
 			);
 		} else {
 			this.cmd(act.setBackgroundColor, this.arrayID[0], '#2ECC71');
@@ -249,7 +249,7 @@ export default class MergeSort extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xPos,
-				yPos
+				yPos,
 			);
 		}
 		this.cmd(act.step);
@@ -265,7 +265,7 @@ export default class MergeSort extends Algorithm {
 				row,
 				this.displayData[i],
 				tempArrayID[i],
-				-1
+				-1,
 			);
 		}
 
@@ -311,7 +311,7 @@ export default class MergeSort extends Algorithm {
 					row,
 					tempDisplay[i],
 					currArrayID[k],
-					iPointerID
+					iPointerID,
 				);
 				this.arrayData[k] = tempArray[i];
 				this.displayData[k] = tempDisplay[i];
@@ -331,7 +331,7 @@ export default class MergeSort extends Algorithm {
 					row,
 					tempDisplay[j],
 					currArrayID[k],
-					jPointerID
+					jPointerID,
 				);
 				this.arrayData[k] = tempArray[j];
 				this.displayData[k] = tempDisplay[j];
@@ -354,7 +354,7 @@ export default class MergeSort extends Algorithm {
 				row,
 				tempDisplay[i],
 				currArrayID[k],
-				iPointerID
+				iPointerID,
 			);
 			this.arrayData[k] = tempArray[i];
 			this.displayData[k] = tempDisplay[i];
@@ -375,7 +375,7 @@ export default class MergeSort extends Algorithm {
 				row,
 				tempDisplay[j],
 				currArrayID[k],
-				jPointerID
+				jPointerID,
 			);
 			this.arrayData[k] = tempArray[j];
 			this.displayData[k] = tempDisplay[j];

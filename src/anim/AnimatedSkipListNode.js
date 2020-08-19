@@ -120,7 +120,7 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 			context.lineTo(startX + this.w + this.highlightDiff, startY - this.highlightDiff);
 			context.lineTo(
 				startX + this.w + this.highlightDiff,
-				startY + this.h + this.highlightDiff
+				startY + this.h + this.highlightDiff,
 			);
 			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -190,7 +190,7 @@ export default class AnimatedSkipListNode extends AnimatedObject {
 			this.foregroundColor,
 			this.layer,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -208,7 +208,7 @@ class UndoDeleteSkipList extends UndoBlock {
 		foregroundColor,
 		layer,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;
@@ -232,7 +232,7 @@ class UndoDeleteSkipList extends UndoBlock {
 			this.w,
 			this.h,
 			this.backgroundColor,
-			this.foregroundColor
+			this.foregroundColor,
 		);
 		world.setTextColor(this.objectID, this.labelColor);
 		world.setNodePosition(this.objectID, this.x, this.y);

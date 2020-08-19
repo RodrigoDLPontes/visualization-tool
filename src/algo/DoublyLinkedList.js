@@ -75,7 +75,7 @@ export default class DoublyLinkedList extends Algorithm {
 			this.addValueField,
 			() => this.addIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.addValueField);
 
@@ -87,7 +87,7 @@ export default class DoublyLinkedList extends Algorithm {
 			this.addIndexField,
 			() => this.addIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.addIndexField);
 
@@ -95,7 +95,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addFrontButton = addControlToAlgorithmBar(
 			'Button',
 			'Add to Front',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addFrontButton.onclick = this.addFrontCallback.bind(this);
 		this.controls.push(this.addFrontButton);
@@ -104,7 +104,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addBackButton = addControlToAlgorithmBar(
 			'Button',
 			'Add to Back',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addBackButton.onclick = () => this.addBackCallback();
 		this.controls.push(this.addBackButton);
@@ -115,7 +115,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addIndexButton = addControlToAlgorithmBar(
 			'Button',
 			'Add at Index',
-			addBottomHorizontalGroup
+			addBottomHorizontalGroup,
 		);
 		this.addIndexButton.onclick = this.addIndexCallback.bind(this);
 		this.controls.push(this.addIndexButton);
@@ -134,7 +134,7 @@ export default class DoublyLinkedList extends Algorithm {
 			this.removeField,
 			() => this.removeIndexCallback(),
 			4,
-			true
+			true,
 		);
 		this.controls.push(this.removeField);
 
@@ -142,7 +142,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.removeIndexButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Index',
-			removeTopHorizontalGroup
+			removeTopHorizontalGroup,
 		);
 		this.removeIndexButton.onclick = () => this.removeIndexCallback();
 		this.controls.push(this.removeIndexButton);
@@ -153,7 +153,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.removeFrontButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Front',
-			removeBottomHorizontalGroup
+			removeBottomHorizontalGroup,
 		);
 		this.removeFrontButton.onclick = () => this.removeFrontCallback();
 		this.controls.push(this.removeFrontButton);
@@ -162,7 +162,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.removeBackButton = addControlToAlgorithmBar(
 			'Button',
 			'Remove from Back',
-			removeBottomHorizontalGroup
+			removeBottomHorizontalGroup,
 		);
 		this.removeBackButton.onclick = () => this.removeBackCallback();
 		this.controls.push(this.removeBackButton);
@@ -300,7 +300,7 @@ export default class DoublyLinkedList extends Algorithm {
 			LINKED_LIST_ELEM_WIDTH,
 			LINKED_LIST_ELEM_HEIGHT,
 			LINKED_LIST_INSERT_X,
-			LINKED_LIST_INSERT_Y
+			LINKED_LIST_INSERT_Y,
 		);
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
@@ -328,55 +328,55 @@ export default class DoublyLinkedList extends Algorithm {
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 			} else if (index === this.size) {
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			} else {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 			}
 		}
@@ -411,14 +411,14 @@ export default class DoublyLinkedList extends Algorithm {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 1);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 1);
 			} else {
@@ -431,22 +431,22 @@ export default class DoublyLinkedList extends Algorithm {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index]
+					this.linkedListElemID[index],
 				);
 				this.cmd(
 					act.connectNext,
 					this.linkedListElemID[index - 1],
-					this.linkedListElemID[index + 1]
+					this.linkedListElemID[index + 1],
 				);
 				this.cmd(
 					act.connectPrev,
 					this.linkedListElemID[index + 1],
-					this.linkedListElemID[index - 1]
+					this.linkedListElemID[index - 1],
 				);
 			}
 		}

@@ -65,7 +65,7 @@ export default class OpenHash extends Hash {
 			LINKED_ITEM_WIDTH,
 			LINKED_ITEM_HEIGHT,
 			100,
-			75
+			75,
 		);
 		let found = false;
 		if (this.hashTableValues[index] != null) {
@@ -108,7 +108,7 @@ export default class OpenHash extends Hash {
 				this.cmd(
 					act.disconnect,
 					this.hashTableVisual[index],
-					this.hashTableValues[index].graphicID
+					this.hashTableValues[index].graphicID,
 				);
 			}
 
@@ -144,7 +144,7 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element not in table'
+				'Deleting element: ' + elem + '  Element not in table',
 			);
 			return this.commands;
 		}
@@ -156,7 +156,7 @@ export default class OpenHash extends Hash {
 				this.cmd(
 					act.connect,
 					this.hashTableVisual[index],
-					this.hashTableValues[index].next.graphicID
+					this.hashTableValues[index].next.graphicID,
 				);
 			} else {
 				this.cmd(act.setNull, this.hashTableVisual[index], 1);
@@ -178,7 +178,7 @@ export default class OpenHash extends Hash {
 				this.cmd(
 					act.setText,
 					this.ExplainLabel,
-					'Deleting element: ' + elem + '  Element deleted'
+					'Deleting element: ' + elem + '  Element deleted',
 				);
 				if (tmp.next != null) {
 					this.cmd(act.connect, tmpPrev.graphicID, tmp.next.graphicID);
@@ -197,7 +197,7 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element not in table'
+				'Deleting element: ' + elem + '  Element not in table',
 			);
 		}
 		return this.commands;
@@ -257,7 +257,7 @@ export default class OpenHash extends Hash {
 				POINTER_ARRAY_ELEM_WIDTH,
 				POINTER_ARRAY_ELEM_HEIGHT,
 				POINTER_ARRAY_ELEM_START_X + i * POINTER_ARRAY_ELEM_WIDTH,
-				this.POINTER_ARRAY_ELEM_Y
+				this.POINTER_ARRAY_ELEM_Y,
 			);
 			this.hashTableVisual[i] = nextID;
 			this.cmd(act.setNull, this.hashTableVisual[i], 1);

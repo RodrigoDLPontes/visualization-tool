@@ -68,7 +68,7 @@ export default class BFS extends Graph {
 			this.startField,
 			this.startCallback.bind(this),
 			1,
-			false
+			false,
 		);
 		this.startField.size = 2;
 		this.controls.push(this.startField);
@@ -102,7 +102,7 @@ export default class BFS extends Graph {
 			'Visited Set:',
 			VISITED_START_X - 5,
 			VISITED_START_Y - 25,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -110,7 +110,7 @@ export default class BFS extends Graph {
 			'List:',
 			LIST_START_X - 5,
 			LIST_START_Y - 25,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -118,7 +118,7 @@ export default class BFS extends Graph {
 			'Current vertex:',
 			CURRENT_VERTEX_LABEL_X,
 			CURRENT_VERTEX_LABEL_Y,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -126,7 +126,7 @@ export default class BFS extends Graph {
 			'Queue:',
 			QUEUE_START_X - 5,
 			QUEUE_START_Y - 25,
-			0
+			0,
 		);
 		this.animationManager.setAllLayers([0, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);
@@ -169,7 +169,7 @@ export default class BFS extends Graph {
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
-			'Enqueueing ' + this.toStr(vertex) + ' and adding to visited set'
+			'Enqueueing ' + this.toStr(vertex) + ' and adding to visited set',
 		);
 		this.visited[vertex] = true;
 		this.visitedID.push(this.nextIndex);
@@ -178,7 +178,7 @@ export default class BFS extends Graph {
 			this.nextIndex++,
 			this.toStr(vertex),
 			VISITED_START_X,
-			VISITED_START_Y
+			VISITED_START_Y,
 		);
 		this.cmd(act.setBackgroundColor, this.circleID[vertex], VISITED_COLOR);
 		this.queue.push(vertex);
@@ -188,7 +188,7 @@ export default class BFS extends Graph {
 			this.nextIndex++,
 			this.toStr(vertex),
 			QUEUE_START_X,
-			QUEUE_START_Y
+			QUEUE_START_Y,
 		);
 		this.cmd(act.step);
 
@@ -198,7 +198,7 @@ export default class BFS extends Graph {
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'Dequeueing ' + this.toStr(vertex) + ' and adding to list'
+				'Dequeueing ' + this.toStr(vertex) + ' and adding to list',
 			);
 
 			this.cmd(act.setTextColor, this.queueID[0], BFS_QUEUE_HEAD_COLOR);
@@ -208,7 +208,7 @@ export default class BFS extends Graph {
 					act.move,
 					this.queueID[i],
 					QUEUE_START_X + (i - 1) * QUEUE_SPACING,
-					QUEUE_START_Y
+					QUEUE_START_Y,
 				);
 			}
 
@@ -218,7 +218,7 @@ export default class BFS extends Graph {
 				this.nextIndex++,
 				this.toStr(vertex),
 				LIST_START_X + (this.listID.length - 1) * LIST_SPACING,
-				LIST_START_Y
+				LIST_START_Y,
 			);
 
 			this.visitVertex(vertex);
@@ -234,14 +234,14 @@ export default class BFS extends Graph {
 							act.setText,
 							this.infoLabelID,
 							this.toStr(neighbor) +
-								' has not yet been visited, enqueueing and adding to visited set'
+								' has not yet been visited, enqueueing and adding to visited set',
 						);
 						this.cmd(
 							act.createLabel,
 							this.nextIndex++,
 							this.toStr(neighbor),
 							VISITED_START_X + (this.visitedID.length - 1) * LIST_SPACING,
-							VISITED_START_Y
+							VISITED_START_Y,
 						);
 						this.cmd(act.setBackgroundColor, this.circleID[neighbor], VISITED_COLOR);
 						this.queue.push(neighbor);
@@ -251,13 +251,13 @@ export default class BFS extends Graph {
 							this.nextIndex++,
 							this.toStr(neighbor),
 							QUEUE_START_X + (this.queue.length - 1) * QUEUE_SPACING,
-							QUEUE_START_Y
+							QUEUE_START_Y,
 						);
 					} else {
 						this.cmd(
 							act.setText,
 							this.infoLabelID,
-							this.toStr(neighbor) + ' has already been visited, skipping'
+							this.toStr(neighbor) + ' has already been visited, skipping',
 						);
 					}
 					this.cmd(act.step);

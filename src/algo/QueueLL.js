@@ -76,7 +76,7 @@ export default class QueueLL extends Algorithm {
 		this.enqueueField.onkeydown = this.returnSubmit(
 			this.enqueueField,
 			this.enqueueCallback.bind(this),
-			4
+			4,
 		);
 
 		this.enqueueButton = addControlToAlgorithmBar('Button', 'Enqueue');
@@ -132,7 +132,7 @@ export default class QueueLL extends Algorithm {
 			TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT,
 			TOP_POS_X,
-			TOP_POS_Y
+			TOP_POS_Y,
 		);
 		this.cmd(act.setNull, this.headID, 1);
 
@@ -144,7 +144,7 @@ export default class QueueLL extends Algorithm {
 			TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT,
 			TAIL_POS_X,
-			this.tail_pos_y
+			this.tail_pos_y,
 		);
 		this.cmd(act.setNull, this.tailID, 1);
 
@@ -217,7 +217,7 @@ export default class QueueLL extends Algorithm {
 			LINKED_LIST_INSERT_Y,
 			0.25,
 			0,
-			1
+			1,
 		);
 
 		this.cmd(act.setNull, this.linkedListElemID[0], 1);
@@ -268,7 +268,7 @@ export default class QueueLL extends Algorithm {
 			labPopValID,
 			this.arrayData[this.top - 1],
 			LINKED_LIST_START_X,
-			LINKED_LIST_START_Y
+			LINKED_LIST_START_Y,
 		);
 
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);

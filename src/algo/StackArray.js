@@ -63,7 +63,7 @@ export default class StackArray extends Algorithm {
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),
-			4
+			4,
 		);
 
 		this.pushButton = addControlToAlgorithmBar('Button', 'Push');
@@ -123,7 +123,7 @@ export default class StackArray extends Algorithm {
 				ARRAY_ELEM_WIDTH,
 				ARRAY_ELEM_HEIGHT,
 				xpos,
-				ypos
+				ypos,
 			);
 			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
 			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
@@ -136,7 +136,7 @@ export default class StackArray extends Algorithm {
 			ARRAY_ELEM_WIDTH,
 			ARRAY_ELEM_HEIGHT,
 			TOP_POS_X,
-			TOP_POS_Y
+			TOP_POS_Y,
 		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);

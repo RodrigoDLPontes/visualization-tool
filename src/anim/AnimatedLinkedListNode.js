@@ -37,7 +37,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 		vertical,
 		linkPosEnd,
 		backgroundColor,
-		foregroundColor
+		foregroundColor,
 	) {
 		super();
 
@@ -162,7 +162,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			context.lineTo(startX + this.w + this.highlightDiff, startY - this.highlightDiff);
 			context.lineTo(
 				startX + this.w + this.highlightDiff,
-				startY + this.h + this.highlightDiff
+				startY + this.h + this.highlightDiff,
 			);
 			context.lineTo(startX - this.highlightDiff, startY + this.h + this.highlightDiff);
 			context.lineTo(startX - this.highlightDiff, startY - this.highlightDiff);
@@ -327,7 +327,7 @@ export default class AnimatedLinkedListNode extends AnimatedObject {
 			this.layer,
 			this.nullPointer,
 			this.highlighted,
-			this.highlightColor
+			this.highlightColor,
 		);
 	}
 }
@@ -349,7 +349,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 		layer,
 		nullPointer,
 		highlighted,
-		highlightColor
+		highlightColor,
 	) {
 		super();
 		this.objectID = objectID;
@@ -380,7 +380,7 @@ class UndoDeleteLinkedList extends UndoBlock {
 			this.vertical,
 			this.linkPosEnd,
 			this.backgroundColor,
-			this.foregroundColor
+			this.foregroundColor,
 		);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setLayer(this.objectID, this.layer);

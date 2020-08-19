@@ -74,7 +74,7 @@ export default class Prims extends Graph {
 			this.startField,
 			this.startCallback.bind(this),
 			1,
-			false
+			false,
 		);
 		this.startField.size = 2;
 		this.controls.push(this.startField);
@@ -106,7 +106,7 @@ export default class Prims extends Graph {
 			'Visited Set:',
 			VISITED_START_X - 5,
 			VISITED_START_Y - 25,
-			0
+			0,
 		);
 		this.cmd(
 			act.createLabel,
@@ -114,7 +114,7 @@ export default class Prims extends Graph {
 			'Current edge:',
 			CURRENT_EDGE_LABEL_X,
 			CURRENT_EDGE_LABEL_Y,
-			0
+			0,
 		);
 		this.cmd(act.createLabel, this.nextIndex++, 'Priority Queue:', PQ_LABEL_X, PQ_LABEL_Y, 0);
 
@@ -161,13 +161,13 @@ export default class Prims extends Graph {
 			this.nextIndex++,
 			this.toStr(startVertex),
 			VISITED_START_X,
-			VISITED_START_Y
+			VISITED_START_Y,
 		);
 		this.cmd(act.setBackgroundColor, this.circleID[startVertex], VISITED_COLOR);
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
-			'Adding ' + this.toStr(startVertex) + ' to visited set'
+			'Adding ' + this.toStr(startVertex) + ' to visited set',
 		);
 		this.cmd(act.step);
 
@@ -183,7 +183,7 @@ export default class Prims extends Graph {
 					this.nextIndex,
 					'(' + this.toStr(startVertex) + this.toStr(neighbor) + ', ' + weight + ')',
 					PQ_X + (this.pq.size() % PQ_MAX_PER_LINE) * PQ_SPACING,
-					PQ_Y + Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+					PQ_Y + Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 				);
 				this.pq.enqueue([startVertex, neighbor], this.nextIndex++, weight);
 				this.cmd(act.step);
@@ -195,7 +195,7 @@ export default class Prims extends Graph {
 							act.move,
 							newPqIDs[i],
 							PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
-							PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+							PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 						);
 					}
 					this.cmd(act.step);
@@ -213,7 +213,7 @@ export default class Prims extends Graph {
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'Dequeued ' + edgeStr + ', with destination ' + this.toStr(edge[1])
+				'Dequeued ' + edgeStr + ', with destination ' + this.toStr(edge[1]),
 			);
 			this.cmd(act.move, edgeID, CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
 			this.cmd(act.setText, edgeID, this.toStr(edge[0]) + this.toStr(edge[1]));
@@ -224,7 +224,7 @@ export default class Prims extends Graph {
 					act.move,
 					pqIDs[i],
 					PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
-					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+					PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 				);
 			}
 			this.highlightEdge(edge[0], edge[1], 1);
@@ -242,7 +242,7 @@ export default class Prims extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Adding ' + this.toStr(edge[1]) + ' to visited set'
+					'Adding ' + this.toStr(edge[1]) + ' to visited set',
 				);
 				this.visitedID.push(this.nextIndex);
 				this.cmd(
@@ -250,7 +250,7 @@ export default class Prims extends Graph {
 					this.nextIndex++,
 					this.toStr(edge[1]),
 					VISITED_START_X + (this.visitedID.length - 1) * VISITED_SPACING,
-					VISITED_START_Y
+					VISITED_START_Y,
 				);
 				this.cmd(act.setBackgroundColor, this.circleID[edge[1]], VISITED_COLOR);
 				this.cmd(act.step);
@@ -258,7 +258,7 @@ export default class Prims extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					'Enqueuing edges of ' + this.toStr(edge[1])
+					'Enqueuing edges of ' + this.toStr(edge[1]),
 				);
 				for (let neighbor = 0; neighbor < this.size; neighbor++) {
 					if (this.adj_matrix[edge[1]][neighbor] >= 0) {
@@ -270,7 +270,7 @@ export default class Prims extends Graph {
 								this.infoLabelID,
 								'Vertex ' +
 									this.toStr(neighbor) +
-									' has already been visited, skipping'
+									' has already been visited, skipping',
 							);
 							this.cmd(act.step);
 							this.cmd(act.setHighlight, this.circleID[neighbor], 0);
@@ -278,7 +278,7 @@ export default class Prims extends Graph {
 							this.cmd(
 								act.setText,
 								this.infoLabelID,
-								'Vertex ' + this.toStr(neighbor) + ' has not yet been visited'
+								'Vertex ' + this.toStr(neighbor) + ' has not yet been visited',
 							);
 							this.cmd(act.step);
 
@@ -290,7 +290,7 @@ export default class Prims extends Graph {
 								'Enqueueing edge ' +
 									edgeStr +
 									' with weight ' +
-									this.adj_matrix[edge[1]][neighbor]
+									this.adj_matrix[edge[1]][neighbor],
 							);
 							this.cmd(
 								act.createLabel,
@@ -298,12 +298,12 @@ export default class Prims extends Graph {
 								'(' + edgeStr + ', ' + this.adj_matrix[edge[1]][neighbor] + ')',
 								PQ_X + (this.pq.size() % PQ_MAX_PER_LINE) * PQ_SPACING,
 								PQ_Y +
-									Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+									Math.floor(this.pq.size() / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 							);
 							this.pq.enqueue(
 								[edge[1], neighbor],
 								this.nextIndex++,
-								this.adj_matrix[edge[1]][neighbor]
+								this.adj_matrix[edge[1]][neighbor],
 							);
 							this.cmd(act.step);
 
@@ -315,7 +315,7 @@ export default class Prims extends Graph {
 										act.move,
 										newPqIDs[i],
 										PQ_X + (i % PQ_MAX_PER_LINE) * PQ_SPACING,
-										PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING
+										PQ_Y + Math.floor(i / PQ_MAX_PER_LINE) * PQ_LINE_SPACING,
 									);
 								}
 								this.cmd(act.step);
@@ -330,7 +330,7 @@ export default class Prims extends Graph {
 				this.cmd(
 					act.setText,
 					this.infoLabelID,
-					this.toStr(edge[1]) + ' has already been visited, skipping'
+					this.toStr(edge[1]) + ' has already been visited, skipping',
 				);
 				this.cmd(act.step);
 			}
@@ -342,7 +342,7 @@ export default class Prims extends Graph {
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'MST has correct amount of edges / all vertices have been visited, done'
+				'MST has correct amount of edges / all vertices have been visited, done',
 			);
 		} else {
 			this.cmd(act.setText, this.infoLabelID, 'Priority queue is empty, done');

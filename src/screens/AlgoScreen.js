@@ -20,6 +20,7 @@ class AlgoScreen extends React.Component {
 		this.state = {
 			algoName: algoName,
 			examplesEnabled: false,
+			width: 0,
 		};
 	}
 
@@ -32,8 +33,18 @@ class AlgoScreen extends React.Component {
 				this.canvasRef.current.width,
 				this.canvasRef.current.height,
 			);
+			window.addEventListener('resize', this.updateDimensions);
 		}
 	}
+
+	componentWillUnmount() {
+		window.removeEventListener('resize', this.updateDimensions);
+	}
+
+	updateDimensions = () => {
+		console.log(this.state.width);
+		this.animManag.changeSize(window.innerWidth);
+	};
 
 	render() {
 		const algoName = this.state.algoName;
@@ -80,7 +91,7 @@ class AlgoScreen extends React.Component {
 						<div className="viewport">
 							<canvas
 								id="canvas"
-								width="1500"
+								width={this.state.width}
 								height="505"
 								ref={this.canvasRef}
 							></canvas>

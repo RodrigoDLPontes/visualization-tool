@@ -302,22 +302,17 @@ export default class AnimationManager extends EventListener {
 		canvas.height = height;
 
 		tableEntry = document.createElement('td');
-		txtNode = document.createTextNode('w:');
-		tableEntry.appendChild(txtNode);
-		controlBar.appendChild(tableEntry);
-
-		this.widthEntry = addControlToAnimationBar(animBarRef, 'Text', canvas.width, () =>
-			returnSubmit(this.widthEntry, this.changeSize.bind(this), 4, true),
-		);
-		this.widthEntry.size = 4;
-
-		tableEntry = document.createElement('td');
 		txtNode = document.createTextNode('h:');
 		tableEntry.appendChild(txtNode);
 		controlBar.appendChild(tableEntry);
 
 		this.heightEntry = addControlToAnimationBar(animBarRef, 'Text', canvas.height, () =>
-			returnSubmit(this.heightEntry, this.changeSize.bind(this), 4, true),
+			returnSubmit(
+				this.heightEntry,
+				() => this.changeSize(window.innerWidth, parseInt(this.heightEntry.value)),
+				4,
+				true,
+			),
 		);
 
 		this.heightEntry.size = 4;
@@ -370,10 +365,7 @@ export default class AnimationManager extends EventListener {
 		this.animationBlockLength = Math.floor((100 - newSpeed) / 2);
 	}
 
-	changeSize() {
-		const width = parseInt(this.widthEntry.value);
-		const height = parseInt(this.heightEntry.value);
-
+	changeSize(width = window.innerWidth, height = parseInt(this.heightEntry.value)) {
 		if (width > 100) {
 			canvas.width = width;
 			this.animatedObjects.width = width;
@@ -384,7 +376,6 @@ export default class AnimationManager extends EventListener {
 			this.animatedObjects.height = height;
 			setCookie('VisualizationHeight', String(height), 30);
 		}
-		this.widthEntry.value = canvas.width;
 		this.heightEntry.value = canvas.height;
 
 		this.animatedObjects.draw();

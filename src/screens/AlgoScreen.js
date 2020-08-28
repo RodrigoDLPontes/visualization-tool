@@ -42,7 +42,7 @@ class AlgoScreen extends React.Component {
 	}
 
 	updateDimensions = () => {
-		this.animManag.changeSize(document.documentElement.clientWidth);
+		this.animManag.changeSize(document.body.clientWidth);
 	};
 
 	render() {

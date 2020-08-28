@@ -10,3 +10,7 @@ The CS1332 Visualization Tool was adapted and expanded by [Rodrigo Pontes](https
 ## Contributing
 
 If you want to contribute to this wonderful tool, take a look at the [contributing doc](CONTRIBUTING.md)
+
+## License
+
+The tool is licensed under the [FreeBSD License](https://en.wikipedia.org/wiki/BSD_licenses#2-clause_license_(%22Simplified_BSD_License%22_or_%22FreeBSD_License%22)). You can read the fine print [here](https://github.com/RodrigoDLPontes/visualization-tool/blob/master/LICENSE.md).

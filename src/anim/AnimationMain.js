@@ -309,7 +309,11 @@ export default class AnimationManager extends EventListener {
 		this.heightEntry = addControlToAnimationBar(animBarRef, 'Text', canvas.height, () =>
 			returnSubmit(
 				this.heightEntry,
-				() => this.changeSize(window.innerWidth, parseInt(this.heightEntry.value)),
+				() =>
+					this.changeSize(
+						document.documentElement.clientWidth,
+						parseInt(this.heightEntry.value),
+					),
 				4,
 				true,
 			),
@@ -365,7 +369,10 @@ export default class AnimationManager extends EventListener {
 		this.animationBlockLength = Math.floor((100 - newSpeed) / 2);
 	}
 
-	changeSize(width = window.innerWidth, height = parseInt(this.heightEntry.value)) {
+	changeSize(
+		width = document.documentElement.clientWidth,
+		height = parseInt(this.heightEntry.value),
+	) {
 		if (width > 100) {
 			canvas.width = width;
 			this.animatedObjects.width = width;

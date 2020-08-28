@@ -6,7 +6,7 @@ Hi there! This document outlines some rules for contributing to the site.
 
 There is a lot that still needs to be improved, ranging from implementing more data structures and algorithms, making slight modifications to existing ones, bug fixing, updating the UI and making general improvements. Whatever your interest in web development is, you can probably improve your skills by contributing in that regard!
 
-For more details on what needs to be done, check out the [Projects page](https://github.gatech.edu/rpontes3/visualization-tool/projects). What is outlined there is just to help guide development though, so feel free to contribute with whatever you think would be useful!
+For more details on what needs to be done, check out the [Issues tab](https://github.com/RodrigoDLPontes/visualization-tool/issues).
 
 ## Structure
 

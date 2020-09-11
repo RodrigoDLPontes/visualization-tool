@@ -45,10 +45,15 @@ const SIZE_POS_Y = 100;
 const SIZE_LABEL_X = 230;
 const SIZE_LABEL_Y = 100;
 
-const QUEUE_LABEL_X = 50;
+const QUEUE_LABEL_X = 60;
 const QUEUE_LABEL_Y = 30;
-const QUEUE_ELEMENT_X = 120;
+const QUEUE_ELEMENT_X = 130;
 const QUEUE_ELEMENT_Y = 30;
+
+const QUEUE_INDEX_X = 129;
+const QUEUE_INDEX_Y = 50;
+const QUEUE_INDEXVAL_X = 260;
+const QUEUE_INDEXVAL_Y = 50;
 
 const INDEX_COLOR = '#0000FF';
 
@@ -178,7 +183,8 @@ export default class QueueArray extends Algorithm {
 	}
 
 	enqueueCallback() {
-		if ((this.size + 1) % SIZE !== this.front && this.enqueueField.value !== '') {
+		// if ((this.size + 1) % SIZE !== this.front && this.enqueueField.value !== '') {
+		if (this.size < SIZE) {
 			const pushVal = this.enqueueField.value;
 			this.enqueueField.value = '';
 			this.implementAction(this.enqueue.bind(this), pushVal);
@@ -186,7 +192,7 @@ export default class QueueArray extends Algorithm {
 	}
 
 	dequeueCallback() {
-		if (this.size !== this.front) {
+		if (this.size !== 0) {
 			this.implementAction(this.dequeue.bind(this));
 		}
 	}
@@ -200,38 +206,56 @@ export default class QueueArray extends Algorithm {
 
 		const labEnqueueID = this.nextIndex++;
 		const labEnqueueValID = this.nextIndex++;
-		this.arrayData[this.size] = elemToEnqueue;
+		const labIndexID = this.nextIndex++;
+		const labIndexValID = this.nextIndex++;
+
+		const newTail = (this.front + this.size) % SIZE;
+		this.arrayData[newTail] = elemToEnqueue;
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(
+			act.createLabel,
+			labIndexID,
+			'Enqueueing at (front + size) % array.length: ',
+			QUEUE_INDEX_X,
+			QUEUE_INDEX_Y,
+		);
+		this.cmd(act.createLabel, labIndexValID, newTail, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
 
 		this.cmd(act.step);
 		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 		this.cmd(act.step);
 
-		const xpos = (this.size % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (newTail % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(this.size / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			Math.floor(newTail / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+		this.cmd(act.move, this.highlight1ID, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
+		this.cmd(act.step);
 
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, labIndexValID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.step);
 
 		this.cmd(act.move, labEnqueueValID, xpos, ypos);
 		this.cmd(act.step);
 
-		this.cmd(act.setText, this.arrayID[this.size], elemToEnqueue);
+		this.cmd(act.setText, this.arrayID[newTail], elemToEnqueue);
 		this.cmd(act.delete, labEnqueueValID);
+		this.cmd(act.step);
 
 		this.cmd(act.delete, this.highlight1ID);
 
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
-		this.size = (this.size + 1) % SIZE;
+		this.size = this.size + 1;
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labEnqueueID);
+		this.cmd(act.delete, labIndexID);
 
 		return this.commands;
 	}
@@ -246,7 +270,13 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.createLabel, labDequeueID, 'Dequeued Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
-		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlight1ID,
+			INDEX_COLOR,
+			FRONT_POS_X,
+			FRONT_POS_Y,
+		);
 		this.cmd(act.step);
 
 		const xpos = (this.front % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -275,6 +305,19 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.delete, labDequeueID);
 		this.cmd(act.delete, labDequeueValID);
+
+		// TODO: size is decremented, but add animation change
+		// also you can't dequeue from 1-size array?
+
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 1);
+
+		this.cmd(act.step);
+		this.size = this.size - 1;
+		this.cmd(act.setText, this.sizeID, this.size);
+
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
 
 		return this.commands;
 	}

@@ -183,7 +183,6 @@ export default class QueueArray extends Algorithm {
 	}
 
 	enqueueCallback() {
-		// if ((this.size + 1) % SIZE !== this.front && this.enqueueField.value !== '') {
 		if (this.size < SIZE) {
 			const pushVal = this.enqueueField.value;
 			this.enqueueField.value = '';
@@ -305,9 +304,6 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.delete, labDequeueID);
 		this.cmd(act.delete, labDequeueValID);
-
-		// TODO: size is decremented, but add animation change
-		// also you can't dequeue from 1-size array?
 
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 1);

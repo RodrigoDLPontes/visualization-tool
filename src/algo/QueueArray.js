@@ -243,6 +243,7 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.setText, this.arrayID[newTail], elemToEnqueue);
 		this.cmd(act.delete, labEnqueueValID);
+		this.cmd(act.delete, labIndexValID);
 		this.cmd(act.step);
 
 		this.cmd(act.delete, this.highlight1ID);

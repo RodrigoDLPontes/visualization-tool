@@ -179,7 +179,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
-			//Check for duplicates
+			//Check for duplicates when adding
 			if (this.hashTableValues[candidateIndex] === elem) {
 				return -1;
 			}

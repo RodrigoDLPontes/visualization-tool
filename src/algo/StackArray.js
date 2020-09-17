@@ -128,7 +128,7 @@ export default class StackArray extends Algorithm {
 			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
 			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
 		}
-		this.cmd(act.createLabel, this.topLabelID, 'top', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'Size', TOP_LABEL_X, TOP_LABEL_Y);
 		this.cmd(
 			act.createRectangle,
 			this.topID,

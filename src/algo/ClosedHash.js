@@ -120,10 +120,14 @@ export default class ClosedHash extends Hash {
 
 		index = this.getEmptyIndex(index, elem);
 		if (index === -1) {
-			this.cmd(act.setText, this.ExplainLabel, 'Element ' + String(elem) + ' is already in HashMap.');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Element ' + String(elem) + ' is already in HashMap.',
+			);
 			return this.commands;
 		}
-		
+
 		this.cmd(act.setText, this.ExplainLabel, '');
 		if (index !== -1) {
 			const labID = this.nextIndex++;

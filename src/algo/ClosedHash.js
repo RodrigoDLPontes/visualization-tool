@@ -115,10 +115,15 @@ export default class ClosedHash extends Hash {
 
 	insertElement(elem) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
 		let index = this.doHash(elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
 
 		index = this.getEmptyIndex(index, elem);
+		if (index === -1) {
+			this.cmd(act.setText, this.ExplainLabel, 'Element ' + String(elem) + ' is already in HashMap.');
+			return this.commands;
+		}
+		
 		this.cmd(act.setText, this.ExplainLabel, '');
 		if (index !== -1) {
 			const labID = this.nextIndex++;
@@ -170,6 +175,10 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
+			//Check for duplicates
+			if (this.hashTableValues[candidateIndex] === elem) {
+				return -1;
+			}
 			if (this.empty[candidateIndex]) {
 				foundIndex = candidateIndex;
 				break;

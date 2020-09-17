@@ -116,7 +116,7 @@ export default class StackLL extends Algorithm {
 		this.top = 0;
 		this.leftoverLabelID = this.nextIndex++;
 
-		this.cmd(act.createLabel, this.topLabelID, 'Top', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'Head', TOP_LABEL_X, TOP_LABEL_Y);
 		this.cmd(
 			act.createRectangle,
 			this.topID,

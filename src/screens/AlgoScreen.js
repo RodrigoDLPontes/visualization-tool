@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactGA from 'react-ga';
 import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
 
@@ -22,6 +23,7 @@ class AlgoScreen extends React.Component {
 			examplesEnabled: false,
 			width: 0,
 		};
+		ReactGA.pageview(algoName);
 	}
 
 	componentDidMount() {

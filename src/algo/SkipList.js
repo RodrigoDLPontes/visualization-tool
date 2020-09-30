@@ -70,6 +70,7 @@ export default class SkipList extends Algorithm {
 
 		// Add's value text field
 		this.addValueField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.addValueField.setAttribute('placeholder', 'Value');
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
 			this.addRandomlyCallback.bind(this),
@@ -82,6 +83,7 @@ export default class SkipList extends Algorithm {
 
 		// Heads' text field
 		this.headsField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.headsField.setAttribute('placeholder', '#');
 		this.headsField.onkeydown = this.returnSubmit(
 			this.headsField,
 			this.addWithHeadsCallback.bind(this),
@@ -95,7 +97,7 @@ export default class SkipList extends Algorithm {
 		// Add randomly button
 		this.addRandomlyButton = addControlToAlgorithmBar(
 			'Button',
-			'Add randomly',
+			'Add w/ random coin flip',
 			bottomHorizontalGroup,
 		);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
@@ -106,7 +108,7 @@ export default class SkipList extends Algorithm {
 		// Add with heads button
 		this.addWithHeadsButton = addControlToAlgorithmBar(
 			'Button',
-			'Add with heads',
+			'Add w/ number of heads',
 			bottomHorizontalGroup,
 		);
 		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);

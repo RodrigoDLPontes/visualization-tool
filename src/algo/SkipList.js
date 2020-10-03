@@ -62,17 +62,27 @@ export default class SkipList extends Algorithm {
 	addControls() {
 		this.controls = [];
 
+		// add w/ heads groups
 		const verticalGroup = addGroupToAlgorithmBar(false);
 		const topHorizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 		const bottomHorizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
+		addDivisorToAlgorithmBar();
+
+		// add w/ random heads groups
+		const verticalGroupRandom = addGroupToAlgorithmBar(false);
+		const topHorizontalGroupRandom = addGroupToAlgorithmBar(true, verticalGroupRandom);
+		const bottomHorizontalGroupRandom = addGroupToAlgorithmBar(true, verticalGroupRandom);
+
+		// Add w/ heads section
 		addLabelToAlgorithmBar('Add', topHorizontalGroup);
 
 		// Add's value text field
 		this.addValueField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.addValueField.setAttribute('placeholder', 'Value');
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
-			this.addRandomlyCallback.bind(this),
+			this.addWithHeadsCallback.bind(this),
 			4,
 			true,
 		);
@@ -82,6 +92,7 @@ export default class SkipList extends Algorithm {
 
 		// Heads' text field
 		this.headsField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.headsField.setAttribute('placeholder', '#');
 		this.headsField.onkeydown = this.returnSubmit(
 			this.headsField,
 			this.addWithHeadsCallback.bind(this),
@@ -92,25 +103,35 @@ export default class SkipList extends Algorithm {
 
 		addLabelToAlgorithmBar('heads', topHorizontalGroup);
 
+		// Add with heads button
+		this.addWithHeadsButton = addControlToAlgorithmBar('Button', 'Add', bottomHorizontalGroup);
+		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
+		this.controls.push(this.addWithHeadsButton);
+
+		// Add w/ random heads section
+		addLabelToAlgorithmBar('Add', topHorizontalGroupRandom);
+
+		// Add's value text field
+		this.addValueFieldRandom = addControlToAlgorithmBar('Text', '', topHorizontalGroupRandom);
+		this.addValueFieldRandom.setAttribute('placeholder', 'Value');
+		this.addValueFieldRandom.onkeydown = this.returnSubmit(
+			this.addValueFieldRandom,
+			this.addRandomlyCallback.bind(this),
+			4,
+			true,
+		);
+		this.controls.push(this.addValueFieldRandom);
+
+		addLabelToAlgorithmBar('with random coin flip', topHorizontalGroupRandom);
+
 		// Add randomly button
 		this.addRandomlyButton = addControlToAlgorithmBar(
 			'Button',
-			'Add randomly',
-			bottomHorizontalGroup,
+			'Add',
+			bottomHorizontalGroupRandom,
 		);
 		this.addRandomlyButton.onclick = this.addRandomlyCallback.bind(this);
 		this.controls.push(this.addRandomlyButton);
-
-		addLabelToAlgorithmBar('or', bottomHorizontalGroup);
-
-		// Add with heads button
-		this.addWithHeadsButton = addControlToAlgorithmBar(
-			'Button',
-			'Add with heads',
-			bottomHorizontalGroup,
-		);
-		this.addWithHeadsButton.onclick = this.addWithHeadsCallback.bind(this);
-		this.controls.push(this.addWithHeadsButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -206,9 +227,9 @@ export default class SkipList extends Algorithm {
 	}
 
 	addRandomlyCallback() {
-		if (this.addValueField.value !== '') {
-			const addVal = parseInt(this.addValueField.value);
-			this.addValueField.value = '';
+		if (this.addValueFieldRandom.value !== '') {
+			const addVal = parseInt(this.addValueFieldRandom.value);
+			this.addValueFieldRandom.value = '';
 			this.headsField.value = '';
 			this.implementAction(this.add.bind(this), addVal);
 		}

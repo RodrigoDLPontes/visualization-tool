@@ -131,6 +131,8 @@ export default class ClosedHash extends Hash {
 		this.cmd(act.setText, this.ExplainLabel, '');
 		if (index !== -1) {
 			const labID = this.nextIndex++;
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 1)
+			this.cmd(act.step)
 			this.cmd(act.createLabel, labID, elem, 20, 25);
 			this.cmd(
 				act.move,
@@ -141,9 +143,11 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.step);
 			this.cmd(act.delete, labID);
 			this.cmd(act.setText, this.hashTableVisual[index], elem);
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0)
 			this.hashTableValues[index] = elem;
 			this.empty[index] = false;
 			this.deleted[index] = false;
+			this.size++;
 		}
 		return this.commands;
 	}
@@ -173,25 +177,32 @@ export default class ClosedHash extends Hash {
 		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
 			this.resetSkipDist(elem, this.nextIndex++);
 		}
-		let foundIndex = -1;
-		for (let i = 0; i < this.table_size; i++) {
-			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
-			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
+		let probes = 0;
+		let removedIndex = -1;
+		while ((probes < this.size) && (!this.empty[index]) && (!(this.hashTableValues[index] === elem))) {
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
 			this.cmd(act.step);
-			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
-			//Check for duplicates when adding
-			if (this.hashTableValues[candidateIndex] === elem) {
-				return -1;
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+            if (removedIndex === -1 && this.deleted[index]) {
+                removedIndex = index;
+            } else if (!this.deleted[index]) {
+                probes++;
+            }
+            index = (index + 1) % this.table_size; 
+        }
+		this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+		if (!this.empty[index] && this.hashTableValues[index] === elem
+                && !this.deleted[index]) {
+			return -1;
+        } else {
+            if (removedIndex !== -1) {
+                index = removedIndex;
 			}
-			if (this.empty[candidateIndex]) {
-				foundIndex = candidateIndex;
-				break;
-			}
+
+			return (removedIndex !== -1 ? removedIndex : index)
 		}
-		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
-			this.cmd(act.delete, --this.nextIndex);
-		}
-		return foundIndex;
 	}
 
 	getElemIndex(index, elem) {
@@ -204,10 +215,10 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
-			if (!this.empty[candidateIndex] && this.hashTableValues[candidateIndex] === elem) {
+			if (!this.empty[candidateIndex] && !this.deleted[candidateIndex] && this.hashTableValues[candidateIndex] === elem) {
 				foundIndex = candidateIndex;
 				break;
-			} else if (this.empty[candidateIndex] && !this.deleted[candidateIndex]) {
+			} else if (this.empty[candidateIndex] || this.deleted[candidateIndex]) {
 				break;
 			}
 		}
@@ -230,7 +241,7 @@ export default class ClosedHash extends Hash {
 				this.ExplainLabel,
 				'Deleting element: ' + elem + '  Element deleted',
 			);
-			this.empty[index] = true;
+			// this.empty[index] = true;
 			this.deleted[index] = true;
 			this.cmd(act.setText, this.hashTableVisual[index], '<deleted>');
 		} else {
@@ -264,6 +275,7 @@ export default class ClosedHash extends Hash {
 		this.hashTableVisual = new Array(this.table_size);
 		this.hashTableIndices = new Array(this.table_size);
 		this.hashTableValues = new Array(this.table_size);
+		this.size = 0;
 
 		this.indexXPos = new Array(this.table_size);
 		this.indexYPos = new Array(this.table_size);

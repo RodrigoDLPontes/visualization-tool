@@ -30,11 +30,14 @@ import { act } from '../anim/AnimationMain';
 
 const ARRAY_ELEM_WIDTH = 90;
 const ARRAY_ELEM_HEIGHT = 30;
-const ARRAY_ELEM_START_X = 50;
-const ARRAY_ELEM_START_Y = 100;
+const ARRAY_ELEM_START_Y = 130;
 const ARRAY_VERTICAL_SEPARATION = 100;
 
-const CLOSED_HASH_TABLE_SIZE = 29;
+const CLOSED_HASH_TABLE_SIZE = 13;
+
+// to center the array
+const ARRAY_ELEM_START_X =
+	(window.screen.width - CLOSED_HASH_TABLE_SIZE * ARRAY_ELEM_WIDTH + ARRAY_ELEM_WIDTH) / 2;
 
 const INDEX_COLOR = '#0000FF';
 
@@ -128,11 +131,8 @@ export default class ClosedHash extends Hash {
 			return this.commands;
 		}
 
-		this.cmd(act.setText, this.ExplainLabel, '');
 		if (index !== -1) {
 			const labID = this.nextIndex++;
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
-			this.cmd(act.step);
 			this.cmd(act.createLabel, labID, elem, 20, 25);
 			this.cmd(
 				act.move,
@@ -149,6 +149,8 @@ export default class ClosedHash extends Hash {
 			this.deleted[index] = false;
 			this.size++;
 		}
+		this.cmd(act.setText, this.ExplainLabel, '');
+		this.cmd(act.setText, this.DelIndexLabel, '');
 		return this.commands;
 	}
 
@@ -184,26 +186,47 @@ export default class ClosedHash extends Hash {
 			!this.empty[index] &&
 			!(this.hashTableValues[index] === elem)
 		) {
+			this.cmd(act.setText, this.ExplainLabel, 'Entry occupied, so move forward');
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
 			this.cmd(act.step);
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+			// storing removed index
 			if (removedIndex === -1 && this.deleted[index]) {
+				this.cmd(act.setText, this.ExplainLabel, 'Storing index of first deleted element');
+				this.cmd(act.setText, this.DelIndexLabel, 'First Deleted Index: ' + index);
 				removedIndex = index;
+				this.cmd(act.step);
 			} else if (!this.deleted[index]) {
 				probes++;
 			}
+			// increment index and clear labels
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+			this.cmd(act.setText, this.ExplainLabel, '');
+
 			index = (index + 1) % this.table_size;
+
+			if (this.empty[index]) {
+				this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
+				this.cmd(
+					act.setText,
+					this.ExplainLabel,
+					'Encountered null spot, so terminate loop',
+				);
+				this.cmd(act.step);
+			}
 		}
-		this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
-		this.cmd(act.step);
-		this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+
 		if (!this.empty[index] && this.hashTableValues[index] === elem && !this.deleted[index]) {
 			return -1;
 		} else {
 			if (removedIndex !== -1) {
+				this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earlier DEL spot');
 				index = removedIndex;
+			} else {
+				this.cmd(act.setText, this.ExplainLabel, 'Inserting at null spot');
 			}
-
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
+			this.cmd(act.step);
 			return removedIndex !== -1 ? removedIndex : index;
 		}
 	}
@@ -292,6 +315,9 @@ export default class ClosedHash extends Hash {
 
 		this.ExplainLabel = this.nextIndex++;
 
+		// stores deleted index
+		this.DelIndexLabel = this.nextIndex++;
+
 		this.commands = [];
 
 		for (let i = 0; i < this.table_size; i++) {
@@ -323,6 +349,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
 		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
+		this.cmd(act.createLabel, this.DelIndexLabel, '', 10, 60, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();

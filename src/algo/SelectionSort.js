@@ -24,7 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { 
+	addControlToAlgorithmBar, 
+	addDivisorToAlgorithmBar, 
+	addLabelToAlgorithmBar, 
+	addRadioButtonGroupToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
@@ -71,14 +76,29 @@ export default class SelectionSort extends Algorithm {
 		this.controls.push(this.listField);
 
 		// Sort button
-		this.findButton = addControlToAlgorithmBar('Button', 'Sort');
-		this.findButton.onclick = this.sortCallback.bind(this);
-		this.controls.push(this.findButton);
+		this.sortButton = addControlToAlgorithmBar('Button', 'Sort');
+		this.sortButton.onclick = this.sortCallback.bind(this);
+		this.controls.push(this.sortButton);
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
+
+		//Min & Max selection button
+		addDivisorToAlgorithmBar();
+
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
+			['Min', 'Max'],
+			'Min/Max',
+		);
+
+		this.minButton = minMaxButtonList[0];
+		this.minButton.onclick = this.minCallback.bind(this);
+		this.minButton.checked = true;
+		this.maxButton = minMaxButtonList[1];
+		this.maxButton.onclick = this.maxCallback.bind(this);
+		this.isMin = true;
 	}
 
 	setup() {
@@ -100,6 +120,20 @@ export default class SelectionSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+	}
+
+	minCallback() {
+		if (!this.isMin) {
+			this.implementAction(this.clear.bind(this));
+			this.isMin = true;
+		}
+	}
+
+	maxCallback() {
+		if (this.isMin) {
+			this.implementAction(this.clear.bind(this));
+			this.isMin = false;
+		}
 	}
 
 	sortCallback() {
@@ -171,43 +205,65 @@ export default class SelectionSort extends Algorithm {
 				ypos,
 			);
 		}
-
+		let circleShift = 0;
+		if (!this.isMin) {
+			circleShift = ARRAY_ELEM_WIDTH * (this.arrayData.length - 1);
+		}
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
 			'#FF0000',
-			ARRAY_START_X,
+			ARRAY_START_X + circleShift,
 			ARRAY_START_Y,
 		);
+
+		circleShift = ARRAY_ELEM_WIDTH;
+		if (!this.isMin) {
+			circleShift = ARRAY_ELEM_WIDTH * (this.arrayData.length - 2);
+		}
+
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,
 			this.jPointerID,
 			'#0000FF',
-			ARRAY_START_X + ARRAY_ELEM_WIDTH,
+			ARRAY_START_X + circleShift,
 			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.cmd(act.step);
 
 		for (let i = 0; i < this.arrayData.length - 1; i++) {
-			let smallest = i;
-			this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFF00');
+
+			let k = i;
+			if (!this.isMin) {
+				k = this.arrayData.length - 1 - i;
+			}
+
+			let toSwap = k;
+			this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFF00');
+			
 			for (let j = i + 1; j < this.arrayData.length; j++) {
-				this.movePointers(smallest, j);
-				if (this.arrayData[j] < this.arrayData[smallest]) {
-					this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFFFF');
+
+				let w = j;
+				if (!this.isMin) {
+					w = this.arrayData.length - 1 - j;
+				}
+
+				this.movePointers(toSwap, w);
+				if (this.compare(this.arrayData[w], this.arrayData[toSwap])) {
+					this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFFFF');
 					this.cmd(act.step);
-					smallest = j;
-					this.movePointers(smallest, j);
-					this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFF00');
+					toSwap = w;
+					this.movePointers(toSwap, w);
+					this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFF00');
 					this.cmd(act.step);
 				}
 			}
-			this.swap(i, smallest);
-			this.cmd(act.setBackgroundColor, this.arrayID[smallest], '#FFFFFF');
+			this.swap(k, toSwap);
+			this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFFFF');
 			this.cmd(act.step);
-			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
+			this.cmd(act.setBackgroundColor, this.arrayID[k], '#2ECC71');
 			this.cmd(act.step);
 		}
 
@@ -215,9 +271,21 @@ export default class SelectionSort extends Algorithm {
 		this.cmd(act.delete, this.jPointerID);
 		this.cmd(act.step);
 
-		this.cmd(act.setBackgroundColor, this.arrayID[this.arrayID.length - 1], '#2ECC71');
+		let lastIndex = this.arrayID.length - 1;
+		if (!this.isMin) {
+			lastIndex = 0;
+		}
+		this.cmd(act.setBackgroundColor, this.arrayID[lastIndex], '#2ECC71');
 
 		return this.commands;
+	}
+
+	compare(i, j) {
+		if (this.isMin) {
+			return i < j;
+		} else {
+			return i > j;
+		}
 	}
 
 	movePointers(i, j) {

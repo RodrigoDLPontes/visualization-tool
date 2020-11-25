@@ -465,6 +465,7 @@ export default class ArrayList extends Algorithm {
 		}
 		this.cmd(act.step);
 
+		//Create new array to track moving objects. Similar function to presentID in add() and remove()
 		this.arrayMoveID = new Array(this.size);
 
 		//Move elements before index from old array

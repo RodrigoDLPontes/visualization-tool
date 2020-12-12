@@ -29,10 +29,12 @@ import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
+const RESIZE_ARRAY_START_X = 100;
+const RESIZE_ARRAY_START_Y = 330;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const ARRRAY_ELEMS_PER_LINE = 15;
+const ARRAY_ELEMS_PER_LINE = 15;
 const ARRAY_LINE_SPACING = 130;
 
 const TOP_POS_X = 180;
@@ -44,8 +46,11 @@ const PUSH_LABEL_X = 50;
 const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
+const PUSH_RESIZE_LABEL_X = 60;
+const PUSH_RESIZE_LABEL_Y = 60;
 
-const SIZE = 30;
+const SIZE = 7;
+const MAX_SIZE = 30;
 
 export default class StackArray extends Algorithm {
 	constructor(am, w, h) {
@@ -114,8 +119,8 @@ export default class StackArray extends Algorithm {
 		this.commands = [];
 
 		for (let i = 0; i < SIZE; i++) {
-			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.cmd(
 				act.createRectangle,
 				this.arrayID[i],
@@ -155,10 +160,16 @@ export default class StackArray extends Algorithm {
 	}
 
 	pushCallback() {
-		if (this.top < SIZE && this.pushField.value !== '') {
+		if (this.top < MAX_SIZE 
+			&& this.top < this.arrayData.length
+			&& this.pushField.value !== '') {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.push.bind(this), pushVal);
+		} else if (this.top === this.arrayData.length) {
+			const pushVal = this.pushField.value;
+			this.pushField.value = '';
+			this.implementAction(this.resize.bind(this), pushVal);
 		}
 	}
 
@@ -196,9 +207,9 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
 		this.cmd(act.step);
 
-		const xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (this.top % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			Math.floor(this.top / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
@@ -244,9 +255,9 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', TOP_POS_X, TOP_POS_Y);
 		this.cmd(act.step);
 
-		const xpos = (this.top % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (this.top % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(this.top / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			Math.floor(this.top / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
@@ -261,6 +272,136 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.delete, labPopID);
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
+
+		return this.commands;
+	}
+
+	resize(elemToPush) {
+		this.commands = [];
+
+		const labPushID = this.nextIndex++;
+		const labPushValID = this.nextIndex++;
+		const labPushResizeID = this.nextIndex++;
+
+		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushResizeID, '(Resize Required)', PUSH_RESIZE_LABEL_X, PUSH_RESIZE_LABEL_Y);
+		this.cmd(act.step);
+
+		this.arrayDataNew = new Array(this.top * 2);
+		this.arrayIDNew = new Array(this.top * 2);
+		this.arrayLabelIDNew = new Array(this.top * 2);
+
+		for (let i = 0; i < this.top * 2; i++) {
+			this.arrayDataNew[i] = this.nextIndex++;
+			this.arrayIDNew[i] = this.nextIndex++;
+			this.arrayLabelIDNew[i] = this.nextIndex++;
+		}
+
+		for (let i = 0; i < this.arrayData.length; i++) {
+			this.arrayDataNew[i] = this.arrayData[i];
+		}
+		this.arrayDataNew[this.top] = elemToPush;
+
+		this.highlight1ID = this.nextIndex++;
+		
+		//Create new array
+		for (let i = 0; i < this.top * 2; i++) {
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ (RESIZE_ARRAY_START_Y);
+			this.cmd(
+				act.createRectangle,
+				this.arrayIDNew[i],
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xpos,
+				ypos,
+			);
+			this.cmd(act.createLabel, this.arrayLabelIDNew[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelIDNew[i], '#0000FF');
+		}
+		this.cmd(act.step);
+
+		//Create new array to track moving objects. Similar function to presentID in add() and remove()
+		this.arrayMoveID = new Array(this.top);
+
+		//Move old array elements to the new array
+		for (let i = 0; i < this.top; i++) {
+			const xposinit = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ (RESIZE_ARRAY_START_Y);
+
+			this.arrayMoveID[i] = this.nextIndex++;
+
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
+			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
+		}
+		this.cmd(act.step);
+
+		//delete movement id objects and set text
+		for (let i = 0; i < this.top; i++) {
+			this.cmd(act.delete, this.arrayMoveID[i]);
+			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
+		}
+		this.cmd(act.step);
+
+		//Add elemToPush at the index
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlight1ID,
+			'#0000FF',
+			PUSH_ELEMENT_X,
+			PUSH_ELEMENT_Y,
+		);
+		this.cmd(act.step);
+
+		const xpos = (parseInt(this.top) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+		const ypos =
+			Math.floor(parseInt(this.top) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
+			RESIZE_ARRAY_START_Y;
+
+		this.cmd(act.move, this.highlight1ID, xpos, ypos);
+		this.cmd(act.move, labPushValID, xpos, ypos);
+		this.cmd(act.step);
+
+		this.cmd(act.setText, this.arrayIDNew[this.top], elemToPush);
+		this.cmd(act.delete, labPushValID);
+		this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.step);
+
+		for (let i = 0; i < this.top; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+
+		for (let i = 0; i < this.top * 2; i++) {
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+			this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
+			this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
+		}
+		this.cmd(act.step);
+
+		this.cmd(act.setHighlight, this.topID, 1);
+		this.cmd(act.step);
+
+		this.top = this.top + 1;
+		this.cmd(act.setText, this.topID, this.top);
+		this.cmd(act.delete, labPushID);
+		this.cmd(act.delete, labPushResizeID);
+		this.cmd(act.step);
+
+		this.cmd(act.setHighlight, this.topID, 0);
+
+		this.arrayData = this.arrayDataNew;
+		this.arrayID = this.arrayIDNew;
+		this.arrayLabelID = this.arrayLabelIDNew;
 
 		return this.commands;
 	}

@@ -34,7 +34,7 @@ const RESIZE_ARRAY_START_Y = 330;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const ARRAY_ELEMS_PER_LINE = 15;
+const ARRAY_ELEMS_PER_LINE = 14;
 const ARRAY_LINE_SPACING = 130;
 
 const TOP_POS_X = 180;
@@ -160,13 +160,13 @@ export default class StackArray extends Algorithm {
 	}
 
 	pushCallback() {
-		if (this.top < MAX_SIZE 
-			&& this.top < this.arrayData.length
+		if (this.top < this.arrayData.length
 			&& this.pushField.value !== '') {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.push.bind(this), pushVal);
-		} else if (this.top === this.arrayData.length) {
+		} else if (this.top === this.arrayData.length
+			&& this.top * 2 < MAX_SIZE) {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal);

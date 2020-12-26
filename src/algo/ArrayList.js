@@ -31,16 +31,17 @@ import Algorithm, {
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm';
+import ObjectManager from '../anim/ObjectManager';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 200;
+const ARRAY_START_Y = 150;
 const RESIZE_ARRAY_START_X = 100;
-const RESIZE_ARRAY_START_Y = 330;
+const RESIZE_ARRAY_START_Y = 280;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const ARRAY_ELEMS_PER_LINE = 15;
+const ARRAY_ELEMS_PER_LINE = 14;
 const ARRAY_LINE_SPACING = 130;
 
 const PUSH_LABEL_X = 50;
@@ -51,6 +52,7 @@ const PUSH_RESIZE_LABEL_X = 60;
 const PUSH_RESIZE_LABEL_Y = 60;
 
 const SIZE = 7;
+const MAX_SIZE = 30;
 
 export default class ArrayList extends Algorithm {
 	constructor(am, w, h) {
@@ -186,17 +188,24 @@ export default class ArrayList extends Algorithm {
 	}
 
 	setup() {
-		this.arrayData = new Array(SIZE);
+		// this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
 		for (let i = 0; i < SIZE; i++) {
-			this.arrayData[i] = 0;
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
 		this.size = 0;
+		//this.length is a necessary replacement for this.arrayData.length for resize calculations
+		//because the 'skip back' button in the gui does not reset the arrays themselves, but rather
+		//keeps the same arrays but resets the old values at the indices they would've been in the new array
+		this.length = SIZE;
 		this.commands = [];
+
+		// this.dataStack_top = 0;
+		// this.dataStack = new Array(MAX_SIZE);
+		// this.dataStack[this.dataStack_top++] = new Array(SIZE);
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -224,54 +233,65 @@ export default class ArrayList extends Algorithm {
 	reset() {
 		this.nextIndex = 0;
 		this.size = 0;
+		this.length = SIZE;
 		for (let i = 0; i < SIZE; i++) {
-			this.arrayData[i] = 0;
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 		this.highlight1ID = this.nextIndex++;
+		// this.pop_dataStack.bind(this).call();
 	}
 
 	addIndexCallback() {
 		if (
 			this.addValueField.value !== '' &&
-			this.addIndexField.value !== ''
+			this.addIndexField.value !== '' &&
+			!(this.length === this.size && this.length * 2 > MAX_SIZE)
 		) {
 			const addVal = parseInt(this.addValueField.value);
 			const index = parseInt(this.addIndexField.value);
 			if (index >= 0 && index <= this.size) {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
-				if (this.size === this.arrayData.length) {
+				if (this.size === this.length) {
 					this.implementAction(this.resize.bind(this), addVal, index);
 				} else {
 					this.implementAction(this.add.bind(this), addVal, index);
 				}
 			}
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	addFrontCallback() {
-		if (this.addValueField.value !== '') {
+		if (
+			this.addValueField.value !== '' &&
+			!(this.length === this.size && this.length * 2 > MAX_SIZE)
+		) {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			if (this.size === this.arrayData.length) {
+			if (this.size === this.length) {
 				this.implementAction(this.resize.bind(this), addVal, 0);
 			} else {
 				this.implementAction(this.add.bind(this), addVal, 0);
 			}
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	addBackCallback() {
-		if (this.addValueField.value !== '') {
+		if (
+			this.addValueField.value !== '' &&
+			!(this.length === this.size && this.length * 2 > MAX_SIZE)
+		) {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			if (this.size === this.arrayData.length) {
+			if (this.size === this.length) {
 				this.implementAction(this.resize.bind(this), addVal, this.size);
 			} else {
 				this.implementAction(this.add.bind(this), addVal, this.size);
 			}
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -282,18 +302,21 @@ export default class ArrayList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index);
 			}
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	removeFrontCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0);
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	removeBackCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
+			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -310,36 +333,37 @@ export default class ArrayList extends Algorithm {
 	add(elemToAdd, index) {
 		this.commands = [];
 
+		// this.set_dataStack.bind(this).call();
+
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 
-		for (let i = this.size - 1; i >= index; i--) {
-			this.arrayData[i + 1] = this.arrayData[i];
-		}
-		this.arrayData[index] = elemToAdd;
+		// for (let i = this.size - 1; i >= index; i--) {
+		// 	this.arrayData[i + 1] = this.arrayData[i];
+		// }
+		// this.arrayData[index] = elemToAdd;
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 
+		this.arrayMoveID = new Array(this.size);
+
 		for (let i = this.size - 1; i >= index; i--) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-			const presentID = this.nextIndex + i;
-			this.cmd(act.createLabel, presentID, this.arrayData[i + 1], xpos, ypos);
+			this.arrayMoveID[i] = this.nextIndex++;
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i + 1]), xpos, ypos);
 			this.cmd(act.setText, this.arrayID[i], '');
-			this.cmd(act.move, presentID, xpos + ARRAY_ELEM_WIDTH, ypos);
+			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
 
 		for (let i = this.size - 1; i >= index; i--) {
-			const presentID = this.nextIndex + i;
-			this.cmd(act.setText, this.arrayID[i + 1], this.arrayData[i + 1]);
-			this.cmd(act.delete, presentID);
+			this.cmd(act.setText, this.arrayID[i + 1], this.animationManager.objectManager.getText(this.arrayID[i + 1]));
+			this.cmd(act.delete, this.arrayMoveID[i]);
 		}
 		this.cmd(act.step);
-
-		this.nextIndex += this.size - index;
 
 		this.cmd(
 			act.createHighlightCircle,
@@ -374,6 +398,8 @@ export default class ArrayList extends Algorithm {
 	remove(index) {
 		this.commands = [];
 
+		// this.set_dataStack.bind(this).call();
+
 		index = parseInt(index);
 		const labPopValID = this.nextIndex++;
 
@@ -381,7 +407,7 @@ export default class ArrayList extends Algorithm {
 		const ypos = Math.floor(index / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', xpos, ypos);
-		this.cmd(act.createLabel, labPopValID, this.arrayData[index], xpos, ypos);
+		this.cmd(act.createLabel, labPopValID, this.animationManager.objectManager.getText(this.arrayID[index]), xpos, ypos);
 		this.cmd(act.setText, this.arrayID[index], '');
 		this.cmd(act.move, this.highlight1ID, xpos, ypos - 100);
 		this.cmd(act.move, labPopValID, xpos, ypos - 100);
@@ -391,26 +417,27 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.step);
 
+		this.arrayMoveID = new Array(this.size);
+
 		for (let i = index + 1; i < this.size; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-			const presentID = this.nextIndex + i;
-			this.cmd(act.createLabel, presentID, this.arrayData[i], xpos, ypos);
+			this.arrayMoveID[i] = this.nextIndex++;
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i]), xpos, ypos);
 			this.cmd(act.setText, this.arrayID[i], '');
-			this.cmd(act.move, presentID, xpos - ARRAY_ELEM_WIDTH, ypos);
+			this.cmd(act.move, this.arrayMoveID[i], xpos - ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
 
 		for (let i = index + 1; i < this.size; i++) {
-			const presentID = this.nextIndex + i;
-			this.cmd(act.setText, this.arrayID[i - 1], this.arrayData[i]);
-			this.cmd(act.delete, presentID);
+			this.cmd(act.setText, this.arrayID[i - 1], this.animationManager.objectManager.getText(this.arrayID[i]));
+			this.cmd(act.delete, this.arrayMoveID[i]);
 		}
 		this.cmd(act.step);
 
-		for (let i = index; i < this.size; i++) {
-			this.arrayData[i] = this.arrayData[i + 1];
-		}
+		// for (let i = index; i < this.size; i++) {
+		// 	this.arrayData[i] = this.arrayData[i + 1];
+		// }
 
 		this.size = this.size - 1;
 		return this.commands;
@@ -428,20 +455,22 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.createLabel, labPushResizeID, '(Resize Required)', PUSH_RESIZE_LABEL_X, PUSH_RESIZE_LABEL_Y);
 		this.cmd(act.step);
 
-		this.arrayDataNew = new Array(this.size * 2);
+		// this.arrayDataNew = new Array(this.size * 2);
 		this.arrayIDNew = new Array(this.size * 2);
 		this.arrayLabelIDNew = new Array(this.size * 2);
 
-		let arrayIndex = 0;
+		this.length = this.length * 2;
+
+		// let arrayIndex = 0;
 
 		for (let i = 0; i < this.size * 2; i++) {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
-			if (i !== index && arrayIndex < this.size) {
-				this.arrayDataNew[i] = this.arrayData[arrayIndex++];
-			} else if (i === index) {
-				this.arrayDataNew[i] = elemToAdd;
-			}
+			// if (i !== index && arrayIndex < this.arrayData.length) {
+			// 	this.arrayDataNew[i] = this.arrayData[arrayIndex++];
+			// } else if (i === index) {
+			// 	this.arrayDataNew[i] = elemToAdd;
+			// }
 		}
 
 		this.highlight1ID = this.nextIndex++;
@@ -465,7 +494,6 @@ export default class ArrayList extends Algorithm {
 		}
 		this.cmd(act.step);
 
-		//Create new array to track moving objects. Similar function to presentID in add() and remove()
 		this.arrayMoveID = new Array(this.size);
 
 		//Move elements before index from old array
@@ -479,7 +507,9 @@ export default class ArrayList extends Algorithm {
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
+			const display = this.animationManager.objectManager.getText(this.arrayID[i]);
+
+			this.cmd(act.createLabel, this.arrayMoveID[i], display, xposinit, yposinit);
 			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
 		}
 		this.cmd(act.step);
@@ -487,7 +517,7 @@ export default class ArrayList extends Algorithm {
 		//delete movement id objects and set text
 		for (let i = 0; i < index; i++) {
 			this.cmd(act.delete, this.arrayMoveID[i]);
-			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
+			this.cmd(act.setText, this.arrayIDNew[i], this.animationManager.objectManager.getText(this.arrayID[i]));
 		}
 
 		//Add elemToAdd at the index
@@ -519,13 +549,15 @@ export default class ArrayList extends Algorithm {
 			const xposinit = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			const xpos = (i % (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+			const ypos = Math.floor((i + 1) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
 			+ (RESIZE_ARRAY_START_Y);
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
+			const display = this.animationManager.objectManager.getText(this.arrayID[i]);
+
+			this.cmd(act.createLabel, this.arrayMoveID[i], display, xposinit, yposinit);
 			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
@@ -534,9 +566,11 @@ export default class ArrayList extends Algorithm {
 		for (let i = index; i <= this.size; i++) {
 			if (i < this.size) {
 				this.cmd(act.delete, this.arrayMoveID[i]);
+				this.cmd(act.setText, this.arrayIDNew[i + 1], this.animationManager.objectManager.getText(this.arrayID[i]));
 			}
-			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
 		}
+
+		this.cmd(act.setText, this.arrayIDNew[index], elemToAdd);
 
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.delete, labPushResizeID);
@@ -554,7 +588,6 @@ export default class ArrayList extends Algorithm {
 			this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
 			this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
 		}
-		this.cmd(act.step);
 
 		this.arrayData = this.arrayDataNew;
 		this.arrayID = this.arrayIDNew;
@@ -564,6 +597,52 @@ export default class ArrayList extends Algorithm {
 
 		return this.commands;
 	}
+
+	/*
+	* This data stack is necessary for tracking the 'arrayData' after each addition or deletion.
+	* This is necessary because after stepping the animation forward or backwards,
+	* the arrayData array is not updated.
+	* During resizes the data from arrayData is displayed, and without tracking the arrayData
+	* at each step the wrong data could be displayed
+	*/
+	// push_dataStack() {
+	// 	if (this.dataStack_top === this.dataStack.length) {
+	// 		this.resize_dataStack.bind(this).call();
+	// 	}
+	// 	this.dataStack[this.dataStack_top] = new Array(this.arrayData.length);
+	// 	for (let i = 0; i < this.arrayData.length; i++) {
+	// 		this.dataStack[this.dataStack_top][i] = this.arrayData[i];
+	// 	}
+
+	// 	this.dataStack_top++;
+	// 	return;
+	// }
+
+	// pop_dataStack() {
+	// 	this.dataStack_top = this.dataStack_top - 1;
+	// 	this.set_dataStack.bind(this).call();
+
+	// 	return;
+	// }
+
+	// set_dataStack() {
+	// 	this.arrayData = new Array(this.dataStack[this.dataStack_top - 1].length);
+	// 	for (let i = 0; i < this.arrayData.length; i++) {
+	// 		this.arrayData[i] = this.dataStack[this.dataStack_top - 1][i];
+	// 	}
+
+	// 	return;
+	// }
+
+	// resize_dataStack() {
+	// 	this.newDataStack = new Array(this.dataStack.length * 2);
+	// 	for (let i = 0; i < this.dataStack.length; i++) {
+	// 		this.newDataStack[i] = this.dataStack[i];
+	// 	}
+
+	// 	this.dataStack = this.newDataStack;
+	// 	return;
+	// }
 
 	clearAll() {
 		this.commands = [];

@@ -188,7 +188,6 @@ export default class ArrayList extends Algorithm {
 	}
 
 	setup() {
-		// this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
 		for (let i = 0; i < SIZE; i++) {
@@ -197,15 +196,9 @@ export default class ArrayList extends Algorithm {
 		}
 
 		this.size = 0;
-		//this.length is a necessary replacement for this.arrayData.length for resize calculations
-		//because the 'skip back' button in the gui does not reset the arrays themselves, but rather
-		//keeps the same arrays but resets the old values at the indices they would've been in the new array
 		this.length = SIZE;
 		this.commands = [];
 
-		// this.dataStack_top = 0;
-		// this.dataStack = new Array(MAX_SIZE);
-		// this.dataStack[this.dataStack_top++] = new Array(SIZE);
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -239,7 +232,6 @@ export default class ArrayList extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 		this.highlight1ID = this.nextIndex++;
-		// this.pop_dataStack.bind(this).call();
 	}
 
 	addIndexCallback() {
@@ -259,7 +251,6 @@ export default class ArrayList extends Algorithm {
 					this.implementAction(this.add.bind(this), addVal, index);
 				}
 			}
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -275,7 +266,6 @@ export default class ArrayList extends Algorithm {
 			} else {
 				this.implementAction(this.add.bind(this), addVal, 0);
 			}
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -291,7 +281,6 @@ export default class ArrayList extends Algorithm {
 			} else {
 				this.implementAction(this.add.bind(this), addVal, this.size);
 			}
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -302,21 +291,18 @@ export default class ArrayList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index);
 			}
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	removeFrontCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0);
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
 	removeBackCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
-			// this.push_dataStack.bind(this).call();
 		}
 	}
 
@@ -333,15 +319,11 @@ export default class ArrayList extends Algorithm {
 	add(elemToAdd, index) {
 		this.commands = [];
 
-		// this.set_dataStack.bind(this).call();
+		console.log('nextIndex: ' + this.nextIndex);
+		console.log('highlight1ID: ' + this.highlight1ID);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
-
-		// for (let i = this.size - 1; i >= index; i--) {
-		// 	this.arrayData[i + 1] = this.arrayData[i];
-		// }
-		// this.arrayData[index] = elemToAdd;
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
@@ -353,14 +335,14 @@ export default class ArrayList extends Algorithm {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.arrayMoveID[i] = this.nextIndex++;
-			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i + 1]), xpos, ypos);
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i]), xpos, ypos);
 			this.cmd(act.setText, this.arrayID[i], '');
 			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
 
 		for (let i = this.size - 1; i >= index; i--) {
-			this.cmd(act.setText, this.arrayID[i + 1], this.animationManager.objectManager.getText(this.arrayID[i + 1]));
+			this.cmd(act.setText, this.arrayID[i + 1], this.animationManager.objectManager.getText(this.arrayID[i]));
 			this.cmd(act.delete, this.arrayMoveID[i]);
 		}
 		this.cmd(act.step);
@@ -391,6 +373,12 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
 
+		if (index != null) {
+			this.nextIndex = this.nextIndex - (this.size - index) - 2;
+		} else {
+			this.nextIndex = this.nextIndex - 2;
+		}
+
 		this.size = this.size + 1;
 		return this.commands;
 	}
@@ -398,7 +386,9 @@ export default class ArrayList extends Algorithm {
 	remove(index) {
 		this.commands = [];
 
-		// this.set_dataStack.bind(this).call();
+		console.log('nextIndex: ' + this.nextIndex);
+		console.log('highlight1ID: ' + this.highlight1ID);
+		console.log('arrayID: ' + this.arrayID);
 
 		index = parseInt(index);
 		const labPopValID = this.nextIndex++;
@@ -435,9 +425,11 @@ export default class ArrayList extends Algorithm {
 		}
 		this.cmd(act.step);
 
-		// for (let i = index; i < this.size; i++) {
-		// 	this.arrayData[i] = this.arrayData[i + 1];
-		// }
+		if (index != null) {
+			this.nextIndex = this.nextIndex - (this.size - index);
+		} else {
+			this.nextIndex = this.nextIndex - 2;
+		}
 
 		this.size = this.size - 1;
 		return this.commands;
@@ -445,6 +437,9 @@ export default class ArrayList extends Algorithm {
 
 	resize(elemToAdd, index) {
 		this.commands = [];
+
+		console.log('nextIndex: ' + this.nextIndex);
+		console.log('highlight1ID: ' + this.highlight1ID);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -455,22 +450,15 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.createLabel, labPushResizeID, '(Resize Required)', PUSH_RESIZE_LABEL_X, PUSH_RESIZE_LABEL_Y);
 		this.cmd(act.step);
 
-		// this.arrayDataNew = new Array(this.size * 2);
 		this.arrayIDNew = new Array(this.size * 2);
 		this.arrayLabelIDNew = new Array(this.size * 2);
 
 		this.length = this.length * 2;
 
-		// let arrayIndex = 0;
 
 		for (let i = 0; i < this.size * 2; i++) {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
-			// if (i !== index && arrayIndex < this.arrayData.length) {
-			// 	this.arrayDataNew[i] = this.arrayData[arrayIndex++];
-			// } else if (i === index) {
-			// 	this.arrayDataNew[i] = elemToAdd;
-			// }
 		}
 
 		this.highlight1ID = this.nextIndex++;
@@ -592,6 +580,10 @@ export default class ArrayList extends Algorithm {
 		this.arrayData = this.arrayDataNew;
 		this.arrayID = this.arrayIDNew;
 		this.arrayLabelID = this.arrayLabelIDNew;
+
+		if (index != null) {
+			this.nextIndex = this.nextIndex - this.size;
+		}
 
 		this.size = this.size + 1;
 

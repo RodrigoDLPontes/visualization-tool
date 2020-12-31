@@ -227,6 +227,8 @@ export default class ArrayList extends Algorithm {
 		this.nextIndex = 0;
 		this.size = 0;
 		this.length = SIZE;
+		this.arrayID = new Array(SIZE);
+		this.arrayLabelID = new Array(SIZE);
 		for (let i = 0; i < SIZE; i++) {
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
@@ -319,9 +321,6 @@ export default class ArrayList extends Algorithm {
 	add(elemToAdd, index) {
 		this.commands = [];
 
-		console.log('nextIndex: ' + this.nextIndex);
-		console.log('highlight1ID: ' + this.highlight1ID);
-
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 
@@ -386,10 +385,6 @@ export default class ArrayList extends Algorithm {
 	remove(index) {
 		this.commands = [];
 
-		console.log('nextIndex: ' + this.nextIndex);
-		console.log('highlight1ID: ' + this.highlight1ID);
-		console.log('arrayID: ' + this.arrayID);
-
 		index = parseInt(index);
 		const labPopValID = this.nextIndex++;
 
@@ -437,9 +432,6 @@ export default class ArrayList extends Algorithm {
 
 	resize(elemToAdd, index) {
 		this.commands = [];
-
-		console.log('nextIndex: ' + this.nextIndex);
-		console.log('highlight1ID: ' + this.highlight1ID);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -577,7 +569,6 @@ export default class ArrayList extends Algorithm {
 			this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
 		}
 
-		this.arrayData = this.arrayDataNew;
 		this.arrayID = this.arrayIDNew;
 		this.arrayLabelID = this.arrayLabelIDNew;
 
@@ -589,52 +580,6 @@ export default class ArrayList extends Algorithm {
 
 		return this.commands;
 	}
-
-	/*
-	* This data stack is necessary for tracking the 'arrayData' after each addition or deletion.
-	* This is necessary because after stepping the animation forward or backwards,
-	* the arrayData array is not updated.
-	* During resizes the data from arrayData is displayed, and without tracking the arrayData
-	* at each step the wrong data could be displayed
-	*/
-	// push_dataStack() {
-	// 	if (this.dataStack_top === this.dataStack.length) {
-	// 		this.resize_dataStack.bind(this).call();
-	// 	}
-	// 	this.dataStack[this.dataStack_top] = new Array(this.arrayData.length);
-	// 	for (let i = 0; i < this.arrayData.length; i++) {
-	// 		this.dataStack[this.dataStack_top][i] = this.arrayData[i];
-	// 	}
-
-	// 	this.dataStack_top++;
-	// 	return;
-	// }
-
-	// pop_dataStack() {
-	// 	this.dataStack_top = this.dataStack_top - 1;
-	// 	this.set_dataStack.bind(this).call();
-
-	// 	return;
-	// }
-
-	// set_dataStack() {
-	// 	this.arrayData = new Array(this.dataStack[this.dataStack_top - 1].length);
-	// 	for (let i = 0; i < this.arrayData.length; i++) {
-	// 		this.arrayData[i] = this.dataStack[this.dataStack_top - 1][i];
-	// 	}
-
-	// 	return;
-	// }
-
-	// resize_dataStack() {
-	// 	this.newDataStack = new Array(this.dataStack.length * 2);
-	// 	for (let i = 0; i < this.dataStack.length; i++) {
-	// 		this.newDataStack[i] = this.dataStack[i];
-	// 	}
-
-	// 	this.dataStack = this.newDataStack;
-	// 	return;
-	// }
 
 	clearAll() {
 		this.commands = [];

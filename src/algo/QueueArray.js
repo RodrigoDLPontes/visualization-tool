@@ -32,7 +32,7 @@ const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const ARRRAY_ELEMS_PER_LINE = 15;
+const ARRAY_ELEMS_PER_LINE = 14;
 const ARRAY_LINE_SPACING = 130;
 
 const FRONT_POS_X = 180;
@@ -55,9 +55,15 @@ const QUEUE_INDEX_Y = 50;
 const QUEUE_INDEXVAL_X = 260;
 const QUEUE_INDEXVAL_Y = 50;
 
+const RESIZE_ARRAY_START_X = 100;
+const RESIZE_ARRAY_START_Y = 300;
+const QUEUE_RESIZE_LABEL_X = 60;
+const QUEUE_RESIZE_LABEL_Y = 60;
+
 const INDEX_COLOR = '#0000FF';
 
-const SIZE = 15;
+const SIZE = 7;
+const MAX_SIZE = 30;
 
 export default class QueueArray extends Algorithm {
 	constructor(am, w, h) {
@@ -77,6 +83,7 @@ export default class QueueArray extends Algorithm {
 			this.enqueueField,
 			this.enqueueCallback.bind(this),
 			4,
+			true
 		);
 
 		this.enqueueButton = addControlToAlgorithmBar('Button', 'Enqueue');
@@ -129,8 +136,8 @@ export default class QueueArray extends Algorithm {
 		this.leftoverLabelID = this.nextIndex++;
 
 		for (let i = 0; i < SIZE; i++) {
-			const xpos = (i % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const ypos = Math.floor(i / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.cmd(
 				act.createRectangle,
 				this.arrayID[i],
@@ -167,10 +174,7 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
-		this.initialIndex = this.nextIndex;
-
 		this.highlight1ID = this.nextIndex++;
-		this.highlight2ID = this.nextIndex++;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -178,15 +182,35 @@ export default class QueueArray extends Algorithm {
 	}
 
 	reset() {
+		this.nextIndex = 0;
 		this.top = 0;
-		this.nextIndex = this.initialIndex;
+		this.front = 0;
+		this.size = 0;
+
+		this.arrayID = new Array(SIZE);
+		this.arrayLabelID = new Array(SIZE);
+		this.arrayData = new Array(SIZE);
+
+		for (let i = 0; i < SIZE; i++) {
+			this.arrayID[i] = this.nextIndex++;
+			this.arrayLabelID[i] = this.nextIndex++;
+		}
+
+		this.nextIndex = this.nextIndex + 6;
 	}
 
 	enqueueCallback() {
-		if (this.size < SIZE) {
+		if (this.size < this.arrayData.length 
+			&& this.enqueueField.value !== '') {
 			const pushVal = this.enqueueField.value;
 			this.enqueueField.value = '';
 			this.implementAction(this.enqueue.bind(this), pushVal);
+		} else if (this.size === this.arrayData.length
+			&& this.enqueueField !== ''
+			&& this.size * 2 < MAX_SIZE) {
+				const pushVal = this.enqueueField.value;
+				this.enqueueField.value = '';
+				this.implementAction(this.resize.bind(this), pushVal);
 		}
 	}
 
@@ -208,7 +232,7 @@ export default class QueueArray extends Algorithm {
 		const labIndexID = this.nextIndex++;
 		const labIndexValID = this.nextIndex++;
 
-		const newTail = (this.front + this.size) % SIZE;
+		const newTail = (this.front + this.size) % this.arrayData.length;
 		this.arrayData[newTail] = elemToEnqueue;
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
@@ -227,9 +251,9 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 		this.cmd(act.step);
 
-		const xpos = (newTail % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (newTail % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(newTail / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			Math.floor(newTail / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.move, this.highlight1ID, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
 		this.cmd(act.step);
@@ -257,6 +281,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.delete, labEnqueueID);
 		this.cmd(act.delete, labIndexID);
 
+		this.nextIndex = this.nextIndex - 4;
+
 		return this.commands;
 	}
 
@@ -279,9 +305,9 @@ export default class QueueArray extends Algorithm {
 		);
 		this.cmd(act.step);
 
-		const xpos = (this.front % ARRRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(this.front / ARRRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.step);
@@ -296,7 +322,7 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.setHighlight, this.frontID, 1);
 		this.cmd(act.step);
-		this.front = (this.front + 1) % SIZE;
+		this.front = (this.front + 1) % this.arrayData.length;
 		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.frontID, 0);
@@ -316,6 +342,166 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 
+		this.nextIndex = this.nextIndex - 2;
+
+		return this.commands;
+	}
+
+	resize(elemToEnqueue) {
+		this.commands = [];
+
+		const labEnqueueID = this.nextIndex++;
+		const labEnqueueValID = this.nextIndex++;
+		const labEnqueueResizeID = this.nextIndex++;
+
+		this.arrayIDNew = new Array(this.size * 2);
+		this.arrayLabelIDNew = new Array(this.size * 2);
+		this.arrayDataNew = new Array(this.size * 2);
+
+		for (let i = 0; i < this.size * 2; i++) {
+			this.arrayIDNew[i] = this.nextIndex++;
+			this.arrayLabelIDNew[i] = this.nextIndex++;
+			if (i < this.size) {
+				this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arrayData.length];
+			}
+		}
+
+		this.arrayDataNew[this.size] = elemToEnqueue;
+
+		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.createLabel, labEnqueueResizeID, '(Resize Required)', QUEUE_RESIZE_LABEL_X, QUEUE_RESIZE_LABEL_Y);
+		this.cmd(act.step);
+
+		//Create new array
+		for (let i = 0; i < this.size * 2; i++) {
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ (RESIZE_ARRAY_START_Y);
+			this.cmd(
+				act.createRectangle,
+				this.arrayIDNew[i],
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xpos,
+				ypos,
+			);
+			this.cmd(act.createLabel, this.arrayLabelIDNew[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelIDNew[i], '#0000FF');
+		}
+		this.cmd(act.step);
+
+		this.highlight1ID = this.nextIndex++;
+		this.arrayMoveID = new Array(this.size);
+
+		//Move old elements to new array
+		for (let i = 0; i < this.size; i++) {
+			const xposinit = (((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) 
+			* ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const yposinit = Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) 
+			* ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
+
+			this.arrayMoveID[i] = this.nextIndex++;
+
+			this.cmd(act.createLabel, this.arrayMoveID[i],
+				this.arrayData[(this.front + i) % this.arrayData.length],
+				xposinit,
+				yposinit
+			);
+			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
+			this.cmd(act.step);
+		}
+		this.cmd(act.step);
+
+		//Delete movement objects and set text
+		for (let i = 0; i < this.size; i++) {
+			this.cmd(act.delete, this.arrayMoveID[i]);
+			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
+		}
+		this.cmd(act.step);
+
+		//Delete old array
+		for (let i = 0; i < this.size; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+
+		//Move new array
+		for (let i = 0; i < this.size * 2; i++) {
+			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X);
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+			this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
+			this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
+		}
+		this.cmd(act.step);
+
+		this.front = 0;
+		this.arrayID = this.arrayIDNew;
+		this.arrayLabelID = this.arrayLabelIDNew;
+		this.arrayData = this.arrayDataNew;
+
+		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
+
+		const newTail = (this.front + this.size) % this.arrayData.length;
+		const labIndexID = this.nextIndex++;
+		const labIndexValID = this.nextIndex++;
+
+		this.cmd(act.delete, labEnqueueResizeID);
+
+		//Just so the element travels over the array instead of underneath it
+		this.cmd(act.delete, labEnqueueValID);
+		const labEnqueueValIDNew = this.nextIndex++;
+		this.cmd(act.createLabel, labEnqueueValIDNew, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+
+		this.cmd(act.createLabel,
+			labIndexID,
+			'Enqueueing at (front + size) % array.length: ',
+			QUEUE_INDEX_X,
+			QUEUE_INDEX_Y,
+		);
+		this.cmd(act.createLabel, labIndexValID, newTail, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
+		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
+		this.cmd(act.step);
+
+
+		//Enqueue 'elemToEnqueue'
+		const xpos = (newTail % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const ypos =
+			Math.floor(newTail / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+
+		this.cmd(act.move, this.highlight1ID, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
+		this.cmd(act.step);
+
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.move, labIndexValID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
+
+		this.cmd(act.move, labEnqueueValIDNew, xpos, ypos);
+		this.cmd(act.step);
+
+		this.cmd(act.setText, this.arrayID[newTail], elemToEnqueue);
+		this.cmd(act.delete, labEnqueueValIDNew);
+		this.cmd(act.delete, labIndexValID);
+		this.cmd(act.step);
+
+		this.cmd(act.delete, this.highlight1ID);
+
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
+		this.size = this.size + 1;
+		this.cmd(act.setText, this.sizeID, this.size);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
+		this.cmd(act.delete, labEnqueueID);
+		this.cmd(act.delete, labIndexID);
+
+		this.nextIndex = this.nextIndex - this.size;
+
 		return this.commands;
 	}
 
@@ -323,7 +509,7 @@ export default class QueueArray extends Algorithm {
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		for (let i = 0; i < SIZE; i++) {
+		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.front = 0;

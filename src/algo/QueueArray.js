@@ -62,6 +62,8 @@ const QUEUE_RESIZE_LABEL_Y = 60;
 
 const INDEX_COLOR = '#0000FF';
 
+const FRONT_LABEL_OFFSET = -40;
+
 const SIZE = 7;
 const MAX_SIZE = 30;
 
@@ -129,6 +131,7 @@ export default class QueueArray extends Algorithm {
 		const frontLabelID = this.nextIndex++;
 		this.sizeID = this.nextIndex++;
 		const sizeLabelID = this.nextIndex++;
+		this.frontPointerID = this.nextIndex++;
 
 		this.arrayData = new Array(SIZE);
 		this.front = 0;
@@ -172,6 +175,12 @@ export default class QueueArray extends Algorithm {
 			SIZE_POS_Y,
 		);
 
+		this.cmd(act.createLabel,
+			this.frontPointerID,
+			'Front',
+			ARRAY_START_X,
+			ARRAY_START_Y + FRONT_LABEL_OFFSET);
+
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
 		this.highlight1ID = this.nextIndex++;
@@ -196,7 +205,7 @@ export default class QueueArray extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
-		this.nextIndex = this.nextIndex + 6;
+		this.nextIndex = this.nextIndex + 7;
 	}
 
 	enqueueCallback() {
@@ -321,11 +330,20 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.step);
 
 		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
+
 		this.front = (this.front + 1) % this.arrayData.length;
+		const frontxpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const frontypos =
+			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
+		this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
 		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.step);
+
 		this.cmd(act.setHighlight, this.frontID, 0);
+		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
 		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ' + dequeuedVal);
 
@@ -444,6 +462,17 @@ export default class QueueArray extends Algorithm {
 		this.arrayID = this.arrayIDNew;
 		this.arrayLabelID = this.arrayLabelIDNew;
 		this.arrayData = this.arrayDataNew;
+
+		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.setHighlight, this.frontPointerID, 1);
+		this.cmd(act.step);
+
+		this.cmd(act.setText, this.frontID, this.front);
+		this.cmd(act.move, this.frontPointerID, ARRAY_START_X, ARRAY_START_Y + FRONT_LABEL_OFFSET);
+		this.cmd(act.step);
+
+		this.cmd(act.setHighlight, this.frontID, 0);
+		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
 		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
 

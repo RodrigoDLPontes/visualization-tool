@@ -199,6 +199,7 @@ export default class ArrayList extends Algorithm {
 		this.length = SIZE;
 		this.commands = [];
 
+		//Who needs this.arrayData? <- added comment so I can make a new commit for vercel
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;

@@ -97,16 +97,18 @@ export default class BST extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		const traversalButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Pre-order', 'In-order', 'Post-order'],
+			['Pre-order', 'In-order', 'Post-order', 'Level order'],
 			'Traversals',
 		);
 
 		this.preOrderSelect = traversalButtonList[0];
 		this.inOrderSelect = traversalButtonList[1];
 		this.postOrderSelect = traversalButtonList[2];
+		this.levelOrderSelect = traversalButtonList[3];
 		this.preOrderSelect.onclick = () => (this.traversal = 'pre');
 		this.inOrderSelect.onclick = () => (this.traversal = 'in');
 		this.postOrderSelect.onclick = () => (this.traversal = 'post');
+		this.levelOrderSelect.onclick = () => (this.traversal = 'level');
 		this.preOrderSelect.checked = true;
 		this.traversal = 'pre';
 
@@ -234,11 +236,62 @@ export default class BST extends Algorithm {
 		return;
 	}
 
+	levelOrder(tree) {
+		this.highlightID = this.nextIndex++;
+		const firstLabel = this.nextIndex;
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightID,
+			BST.HIGHLIGHT_COLOR,
+			this.treeRoot.x,
+			this.treeRoot.y,
+		);
+		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+		this.yPosOfNextLabel = this.first_print_pos_y;
+
+		const queue = [tree];
+
+		while (queue.length !== 0) {
+			const curr = queue.shift();
+
+			const nextLabelID = this.nextIndex++;
+			this.cmd(act.move, this.highlightID, curr.x, curr.y);
+			this.cmd(act.step);
+			this.cmd(act.createLabel, nextLabelID, curr.data, curr.x, curr.y);
+			this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
+			this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
+			this.cmd(act.step);
+
+			this.xPosOfNextLabel += BST.PRINT_HORIZONTAL_GAP;
+			if (this.xPosOfNextLabel > this.print_max) {
+				this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+				this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
+			}
+
+			if (curr.left != null) {
+				queue.push(curr.left);
+			}
+
+			if (curr.right != null) {
+				queue.push(curr.right);
+			}
+		}
+
+		this.cmd(act.delete, this.highlightID);
+		this.cmd(act.step);
+		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
+		this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
+	}
+
 	traverse() {
 		this.commands = [];
 
 		if (this.treeRoot == null) {
 			return this.commands;
+		}
+
+		if (this.traversal === 'level') {
+			this.levelOrder(this.treeRoot);
 		}
 
 		this.highlightID = this.nextIndex++;
@@ -252,13 +305,15 @@ export default class BST extends Algorithm {
 		);
 		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
 		this.yPosOfNextLabel = this.first_print_pos_y;
+
 		if (this.traversal === 'pre') {
 			this.preOrderRec(this.treeRoot);
 		} else if (this.traversal === 'in') {
 			this.printTreeRec(this.treeRoot);
-		} else {
+		} else if (this.traversal === 'post') {
 			this.postOrderRec(this.treeRoot);
 		}
+
 		this.cmd(act.delete, this.highlightID);
 		this.cmd(act.step);
 		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);

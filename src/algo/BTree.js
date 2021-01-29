@@ -24,7 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+	addRadioButtonGroupToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const FIRST_PRINT_POS_X = 50;
@@ -137,6 +142,20 @@ export default class BTree extends Algorithm {
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
+
+		addDivisorToAlgorithmBar();
+		addLabelToAlgorithmBar('Promote with');
+		const splitIndexButtonList = addRadioButtonGroupToAlgorithmBar(
+			['second data', 'third data'],
+			'Split Index',
+		);
+
+		this.splitSecondSelect = splitIndexButtonList[0];
+		this.splitThirdSelect = splitIndexButtonList[1];
+		this.splitSecondSelect.onclick = () => (this.split_index = 1);
+		this.splitThirdSelect.onclick = () => (this.split_index = 2);
+		this.splitSecondSelect.checked = true;
+		this.split_index = 1;
 	}
 
 	reset() {

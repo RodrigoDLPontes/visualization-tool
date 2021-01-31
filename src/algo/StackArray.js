@@ -67,8 +67,7 @@ export default class StackArray extends Algorithm {
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),
-			4,
-			true
+			4
 		);
 
 		this.pushButton = addControlToAlgorithmBar('Button', 'Push');

@@ -443,10 +443,6 @@ export default class ArrayList extends Algorithm {
 
 		this.size = this.size - 1;
 
-		console.log('resize----------------------');
-		console.log(this.arrayData);
-		console.log('----------------------------');
-
 		return this.commands;
 	}
 
@@ -560,10 +556,6 @@ export default class ArrayList extends Algorithm {
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			console.log('i: ' + i);
-			console.log('ypos: ' + ypos);
-			console.log('calculation of ypos: ' + (i + 1));
-
 			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
 			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
@@ -605,11 +597,6 @@ export default class ArrayList extends Algorithm {
 		}
 
 		this.size = this.size + 1;
-
-		console.log('resize----------------------');
-		console.log(this.arrayData);
-		console.log(this.arrayDataNew);
-		console.log('----------------------------');
 
 		return this.commands;
 	}

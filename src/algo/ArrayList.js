@@ -76,8 +76,7 @@ export default class ArrayList extends Algorithm {
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
 			() => this.addIndexCallback(),
-			4,
-			true,
+			4
 		);
 		this.controls.push(this.addValueField);
 
@@ -195,11 +194,11 @@ export default class ArrayList extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
+		this.arrayData = new Array(SIZE);
+
 		this.size = 0;
 		this.length = SIZE;
 		this.commands = [];
-
-		//Who needs this.arrayData? <- added comment so I can make a new commit for vercel
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -230,6 +229,8 @@ export default class ArrayList extends Algorithm {
 		this.length = SIZE;
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
+		this.arrayData = new Array(SIZE);
+
 		for (let i = 0; i < SIZE; i++) {
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
@@ -243,8 +244,8 @@ export default class ArrayList extends Algorithm {
 			this.addIndexField.value !== '' &&
 			!(this.length === this.size && this.length * 2 > MAX_SIZE)
 		) {
-			const addVal = parseInt(this.addValueField.value);
-			const index = parseInt(this.addIndexField.value);
+			const addVal = this.addValueField.value;
+			const index = this.addIndexField.value;
 			if (index >= 0 && index <= this.size) {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
@@ -262,7 +263,7 @@ export default class ArrayList extends Algorithm {
 			this.addValueField.value !== '' &&
 			!(this.length === this.size && this.length * 2 > MAX_SIZE)
 		) {
-			const addVal = parseInt(this.addValueField.value);
+			const addVal = this.addValueField.value;
 			this.addValueField.value = '';
 			if (this.size === this.length) {
 				this.implementAction(this.resize.bind(this), addVal, 0);
@@ -277,7 +278,7 @@ export default class ArrayList extends Algorithm {
 			this.addValueField.value !== '' &&
 			!(this.length === this.size && this.length * 2 > MAX_SIZE)
 		) {
-			const addVal = parseInt(this.addValueField.value);
+			const addVal = this.addValueField.value;
 			this.addValueField.value = '';
 			if (this.size === this.length) {
 				this.implementAction(this.resize.bind(this), addVal, this.size);
@@ -329,23 +330,30 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 
+		for (let i = this.size; i >= index; i--) {
+			this.arrayData[i + 1] = this.arrayData[i];
+		}
+		this.arrayData[index] = elemToAdd;
+
 		this.arrayMoveID = new Array(this.size);
 
-		for (let i = this.size - 1; i >= index; i--) {
-			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-			this.arrayMoveID[i] = this.nextIndex++;
-			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i]), xpos, ypos);
-			this.cmd(act.setText, this.arrayID[i], '');
-			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
+		if (index !== this.size) {
+			for (let i = this.size - 1; i >= index; i--) {
+				const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+				const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+				this.arrayMoveID[i] = this.nextIndex++;
+				this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i + 1], xpos, ypos);
+				this.cmd(act.setText, this.arrayID[i], '');
+				this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
+			}
+			this.cmd(act.step);
+	
+			for (let i = this.size - 1; i >= index; i--) {
+				this.cmd(act.setText, this.arrayID[i + 1], this.arrayData[i + 1]);
+				this.cmd(act.delete, this.arrayMoveID[i]);
+			}
+			this.cmd(act.step);
 		}
-		this.cmd(act.step);
-
-		for (let i = this.size - 1; i >= index; i--) {
-			this.cmd(act.setText, this.arrayID[i + 1], this.animationManager.objectManager.getText(this.arrayID[i]));
-			this.cmd(act.delete, this.arrayMoveID[i]);
-		}
-		this.cmd(act.step);
 
 		this.cmd(
 			act.createHighlightCircle,
@@ -380,6 +388,7 @@ export default class ArrayList extends Algorithm {
 		}
 
 		this.size = this.size + 1;
+
 		return this.commands;
 	}
 
@@ -393,7 +402,7 @@ export default class ArrayList extends Algorithm {
 		const ypos = Math.floor(index / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.createHighlightCircle, this.highlight1ID, '#0000FF', xpos, ypos);
-		this.cmd(act.createLabel, labPopValID, this.animationManager.objectManager.getText(this.arrayID[index]), xpos, ypos);
+		this.cmd(act.createLabel, labPopValID, this.arrayData[index], xpos, ypos);
 		this.cmd(act.setText, this.arrayID[index], '');
 		this.cmd(act.move, this.highlight1ID, xpos, ypos - 100);
 		this.cmd(act.move, labPopValID, xpos, ypos - 100);
@@ -403,20 +412,25 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.step);
 
+		for (let i = index; i < this.size; i++) {
+			this.arrayData[i] = this.arrayData[i + 1];
+		}
+		this.arrayData[this.size] = null;
+
 		this.arrayMoveID = new Array(this.size);
 
 		for (let i = index + 1; i < this.size; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 			this.arrayMoveID[i] = this.nextIndex++;
-			this.cmd(act.createLabel, this.arrayMoveID[i], this.animationManager.objectManager.getText(this.arrayID[i]), xpos, ypos);
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i - 1], xpos, ypos);
 			this.cmd(act.setText, this.arrayID[i], '');
 			this.cmd(act.move, this.arrayMoveID[i], xpos - ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
 
 		for (let i = index + 1; i < this.size; i++) {
-			this.cmd(act.setText, this.arrayID[i - 1], this.animationManager.objectManager.getText(this.arrayID[i]));
+			this.cmd(act.setText, this.arrayID[i - 1], this.arrayData[i - 1]);
 			this.cmd(act.delete, this.arrayMoveID[i]);
 		}
 		this.cmd(act.step);
@@ -428,6 +442,11 @@ export default class ArrayList extends Algorithm {
 		}
 
 		this.size = this.size - 1;
+
+		console.log('resize----------------------');
+		console.log(this.arrayData);
+		console.log('----------------------------');
+
 		return this.commands;
 	}
 
@@ -445,14 +464,21 @@ export default class ArrayList extends Algorithm {
 
 		this.arrayIDNew = new Array(this.size * 2);
 		this.arrayLabelIDNew = new Array(this.size * 2);
+		this.arrayDataNew = new Array(this.size * 2);
 
 		this.length = this.length * 2;
-
 
 		for (let i = 0; i < this.size * 2; i++) {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
+			if (i < index) {
+				this.arrayDataNew[i] = this.arrayData[i];
+			} else if (i > index && i <= this.size) {
+				this.arrayDataNew[i] = this.arrayData[i - 1];
+			}
 		}
+
+		this.arrayDataNew[index] = elemToAdd;
 
 		this.highlight1ID = this.nextIndex++;
 		
@@ -488,9 +514,7 @@ export default class ArrayList extends Algorithm {
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			const display = this.animationManager.objectManager.getText(this.arrayID[i]);
-
-			this.cmd(act.createLabel, this.arrayMoveID[i], display, xposinit, yposinit);
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
 			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
 		}
 		this.cmd(act.step);
@@ -498,7 +522,7 @@ export default class ArrayList extends Algorithm {
 		//delete movement id objects and set text
 		for (let i = 0; i < index; i++) {
 			this.cmd(act.delete, this.arrayMoveID[i]);
-			this.cmd(act.setText, this.arrayIDNew[i], this.animationManager.objectManager.getText(this.arrayID[i]));
+			this.cmd(act.setText, this.arrayIDNew[i], this.arrayData[i]);
 		}
 
 		//Add elemToAdd at the index
@@ -531,14 +555,16 @@ export default class ArrayList extends Algorithm {
 			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 			const xpos = (i % (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor((i + 1) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			const ypos = Math.floor(i / (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_LINE_SPACING 
 			+ (RESIZE_ARRAY_START_Y);
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			const display = this.animationManager.objectManager.getText(this.arrayID[i]);
+			console.log('i: ' + i);
+			console.log('ypos: ' + ypos);
+			console.log('calculation of ypos: ' + (i + 1));
 
-			this.cmd(act.createLabel, this.arrayMoveID[i], display, xposinit, yposinit);
+			this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i], xposinit, yposinit);
 			this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 		}
 		this.cmd(act.step);
@@ -547,8 +573,8 @@ export default class ArrayList extends Algorithm {
 		for (let i = index; i <= this.size; i++) {
 			if (i < this.size) {
 				this.cmd(act.delete, this.arrayMoveID[i]);
-				this.cmd(act.setText, this.arrayIDNew[i + 1], this.animationManager.objectManager.getText(this.arrayID[i]));
 			}
+			this.cmd(act.setText, this.arrayIDNew[i], this.arrayData[i - 1]);
 		}
 
 		this.cmd(act.setText, this.arrayIDNew[index], elemToAdd);
@@ -572,12 +598,18 @@ export default class ArrayList extends Algorithm {
 
 		this.arrayID = this.arrayIDNew;
 		this.arrayLabelID = this.arrayLabelIDNew;
+		this.arrayData = this.arrayDataNew;
 
 		if (index != null) {
 			this.nextIndex = this.nextIndex - this.size;
 		}
 
 		this.size = this.size + 1;
+
+		console.log('resize----------------------');
+		console.log(this.arrayData);
+		console.log(this.arrayDataNew);
+		console.log('----------------------------');
 
 		return this.commands;
 	}
@@ -586,6 +618,7 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
+			this.arrayData[i] = null;
 		}
 		this.size = 0;
 		return this.commands;

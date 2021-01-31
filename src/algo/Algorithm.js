@@ -247,7 +247,7 @@ export default class Algorithm {
 		const len = this.actionHistory.length;
 		this.recordAnimation = false;
 		for (let i = 0; i < len; i++) {
-			this.actionHistory[i][0](this.actionHistory[i][1]);
+			this.actionHistory[i][0](...this.actionHistory[i][1]);
 		}
 		this.recordAnimation = true;
 	}

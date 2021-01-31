@@ -31,7 +31,6 @@ import Algorithm, {
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm';
-import ObjectManager from '../anim/ObjectManager';
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;

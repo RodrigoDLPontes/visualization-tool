@@ -75,7 +75,7 @@ export default class ArrayList extends Algorithm {
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
 			() => this.addIndexCallback(),
-			4
+			4,
 		);
 		this.controls.push(this.addValueField);
 
@@ -339,14 +339,15 @@ export default class ArrayList extends Algorithm {
 		if (index !== this.size) {
 			for (let i = this.size - 1; i >= index; i--) {
 				const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-				const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+				const ypos =
+					Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 				this.arrayMoveID[i] = this.nextIndex++;
 				this.cmd(act.createLabel, this.arrayMoveID[i], this.arrayData[i + 1], xpos, ypos);
 				this.cmd(act.setText, this.arrayID[i], '');
 				this.cmd(act.move, this.arrayMoveID[i], xpos + ARRAY_ELEM_WIDTH, ypos);
 			}
 			this.cmd(act.step);
-	
+
 			for (let i = this.size - 1; i >= index; i--) {
 				this.cmd(act.setText, this.arrayID[i + 1], this.arrayData[i + 1]);
 				this.cmd(act.delete, this.arrayMoveID[i]);
@@ -365,8 +366,7 @@ export default class ArrayList extends Algorithm {
 
 		const xpos = (parseInt(index) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
-			Math.floor(parseInt(index) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
-			ARRAY_START_Y;
+			Math.floor(parseInt(index) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.cmd(act.move, this.highlight1ID, xpos, ypos);
 		this.cmd(act.move, labPushValID, xpos, ypos);
@@ -454,7 +454,13 @@ export default class ArrayList extends Algorithm {
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd(act.createLabel, labPushResizeID, '(Resize Required)', PUSH_RESIZE_LABEL_X, PUSH_RESIZE_LABEL_Y);
+		this.cmd(
+			act.createLabel,
+			labPushResizeID,
+			'(Resize Required)',
+			PUSH_RESIZE_LABEL_X,
+			PUSH_RESIZE_LABEL_Y,
+		);
 		this.cmd(act.step);
 
 		this.arrayIDNew = new Array(this.size * 2);
@@ -476,12 +482,12 @@ export default class ArrayList extends Algorithm {
 		this.arrayDataNew[index] = elemToAdd;
 
 		this.highlight1ID = this.nextIndex++;
-		
+
 		//Create new array
 		for (let i = 0; i < this.size * 2; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 			this.cmd(
 				act.createRectangle,
 				this.arrayIDNew[i],
@@ -501,11 +507,12 @@ export default class ArrayList extends Algorithm {
 		//Move elements before index from old array
 		for (let i = 0; i < index; i++) {
 			const xposinit = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const yposinit =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
@@ -530,7 +537,8 @@ export default class ArrayList extends Algorithm {
 		);
 		this.cmd(act.step);
 
-		const xpos = (parseInt(index) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+		const xpos =
+			(parseInt(index) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
 		const ypos =
 			Math.floor(parseInt(index) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
 			RESIZE_ARRAY_START_Y;
@@ -547,11 +555,13 @@ export default class ArrayList extends Algorithm {
 		//Move elements after index from old array
 		for (let i = index; i < this.size; i++) {
 			const xposinit = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const yposinit =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 			const xpos = (i % (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / (ARRAY_ELEMS_PER_LINE - 1)) * ARRAY_LINE_SPACING +
+				RESIZE_ARRAY_START_Y;
 
 			this.arrayMoveID[i] = this.nextIndex++;
 

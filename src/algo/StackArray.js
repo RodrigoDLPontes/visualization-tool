@@ -67,7 +67,7 @@ export default class StackArray extends Algorithm {
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),
-			4
+			4,
 		);
 
 		this.pushButton = addControlToAlgorithmBar('Button', 'Push');
@@ -164,7 +164,7 @@ export default class StackArray extends Algorithm {
 		this.arrayLabelID = new Array(SIZE);
 		this.arrayData = new Array(SIZE);
 
-		for(let i = 0; i < SIZE; i++) {
+		for (let i = 0; i < SIZE; i++) {
 			this.arrayID[i] = this.nextIndex++;
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
@@ -176,13 +176,11 @@ export default class StackArray extends Algorithm {
 	}
 
 	pushCallback() {
-		if (this.top < this.arrayData.length
-			&& this.pushField.value !== '') {
+		if (this.top < this.arrayData.length && this.pushField.value !== '') {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.push.bind(this), pushVal);
-		} else if (this.top === this.arrayData.length
-			&& this.top * 2 < MAX_SIZE) {
+		} else if (this.top === this.arrayData.length && this.top * 2 < MAX_SIZE) {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal);
@@ -306,7 +304,13 @@ export default class StackArray extends Algorithm {
 
 		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd(act.createLabel, labPushResizeID, '(Resize Required)', PUSH_RESIZE_LABEL_X, PUSH_RESIZE_LABEL_Y);
+		this.cmd(
+			act.createLabel,
+			labPushResizeID,
+			'(Resize Required)',
+			PUSH_RESIZE_LABEL_X,
+			PUSH_RESIZE_LABEL_Y,
+		);
 		this.cmd(act.step);
 
 		this.arrayIDNew = new Array(this.top * 2);
@@ -327,8 +331,8 @@ export default class StackArray extends Algorithm {
 		//Create new array
 		for (let i = 0; i < this.top * 2; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 			this.cmd(
 				act.createRectangle,
 				this.arrayIDNew[i],
@@ -348,11 +352,12 @@ export default class StackArray extends Algorithm {
 		//Move old array elements to the new array
 		for (let i = 0; i < this.top; i++) {
 			const xposinit = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const yposinit = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const yposinit =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
@@ -384,7 +389,8 @@ export default class StackArray extends Algorithm {
 		);
 		this.cmd(act.step);
 
-		const xpos = (parseInt(this.top) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+		const xpos =
+			(parseInt(this.top) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
 		const ypos =
 			Math.floor(parseInt(this.top) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
 			RESIZE_ARRAY_START_Y;

@@ -301,6 +301,7 @@ export default class QueueLL extends Algorithm {
 		}
 		this.top = 0;
 		this.cmd(act.setNull, this.headID, 1);
+		this.cmd(act.setNull, this.tailID, 1);
 		return this.commands;
 	}
 }

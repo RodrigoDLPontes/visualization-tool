@@ -24,10 +24,10 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { 
-	addControlToAlgorithmBar, 
-	addDivisorToAlgorithmBar, 
-	addLabelToAlgorithmBar, 
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
@@ -88,10 +88,7 @@ export default class SelectionSort extends Algorithm {
 		//Min & Max selection button
 		addDivisorToAlgorithmBar();
 
-		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Min', 'Max'],
-			'Min/Max',
-		);
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(['Min', 'Max'], 'Min/Max');
 
 		this.minButton = minMaxButtonList[0];
 		this.minButton.onclick = this.minCallback.bind(this);
@@ -234,7 +231,6 @@ export default class SelectionSort extends Algorithm {
 		this.cmd(act.step);
 
 		for (let i = 0; i < this.arrayData.length - 1; i++) {
-
 			let k = i;
 			if (!this.isMin) {
 				k = this.arrayData.length - 1 - i;
@@ -242,9 +238,8 @@ export default class SelectionSort extends Algorithm {
 
 			let toSwap = k;
 			this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFF00');
-			
-			for (let j = i + 1; j < this.arrayData.length; j++) {
 
+			for (let j = i + 1; j < this.arrayData.length; j++) {
 				let w = j;
 				if (!this.isMin) {
 					w = this.arrayData.length - 1 - j;

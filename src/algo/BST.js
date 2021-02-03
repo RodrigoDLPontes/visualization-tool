@@ -96,9 +96,25 @@ export default class BST extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.printButton = addControlToAlgorithmBar('Button', 'Print');
-		this.printButton.onclick = this.printCallback.bind(this);
-		this.controls.push(this.printButton);
+		const traversalButtonList = addRadioButtonGroupToAlgorithmBar(
+			['Pre-order', 'In-order', 'Post-order', 'Level order'],
+			'Traversals',
+		);
+
+		this.preOrderSelect = traversalButtonList[0];
+		this.inOrderSelect = traversalButtonList[1];
+		this.postOrderSelect = traversalButtonList[2];
+		this.levelOrderSelect = traversalButtonList[3];
+		this.preOrderSelect.onclick = () => (this.traversal = 'pre');
+		this.inOrderSelect.onclick = () => (this.traversal = 'in');
+		this.postOrderSelect.onclick = () => (this.traversal = 'post');
+		this.levelOrderSelect.onclick = () => (this.traversal = 'level');
+		this.preOrderSelect.checked = true;
+		this.traversal = 'pre';
+
+		this.traverseButton = addControlToAlgorithmBar('Button', 'Traverse');
+		this.traverseButton.onclick = this.traverseCallback.bind(this);
+		this.controls.push(this.traverseButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -153,8 +169,8 @@ export default class BST extends Algorithm {
 		}
 	}
 
-	printCallback() {
-		this.implementAction(this.printTree.bind(this));
+	traverseCallback() {
+		this.implementAction(this.traverse.bind(this));
 	}
 
 	clearCallback() {
@@ -187,6 +203,153 @@ export default class BST extends Algorithm {
 			this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
 		}
 		return this.commands;
+	}
+
+	preOrderRec(tree) {
+		this.cmd(act.step);
+
+		const nextLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
+		this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
+		this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
+		this.cmd(act.step);
+
+		this.xPosOfNextLabel += BST.PRINT_HORIZONTAL_GAP;
+		if (this.xPosOfNextLabel > this.print_max) {
+			this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+			this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
+		}
+
+		if (tree.left != null) {
+			this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
+			this.preOrderRec(tree.left);
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
+		}
+
+		if (tree.right != null) {
+			this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
+			this.preOrderRec(tree.right);
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
+		}
+		return;
+	}
+
+	levelOrder(tree) {
+		this.highlightID = this.nextIndex++;
+		const firstLabel = this.nextIndex;
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightID,
+			BST.HIGHLIGHT_COLOR,
+			this.treeRoot.x,
+			this.treeRoot.y,
+		);
+		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+		this.yPosOfNextLabel = this.first_print_pos_y;
+
+		const queue = [tree];
+
+		while (queue.length !== 0) {
+			const curr = queue.shift();
+
+			const nextLabelID = this.nextIndex++;
+			this.cmd(act.move, this.highlightID, curr.x, curr.y);
+			this.cmd(act.step);
+			this.cmd(act.createLabel, nextLabelID, curr.data, curr.x, curr.y);
+			this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
+			this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
+			this.cmd(act.step);
+
+			this.xPosOfNextLabel += BST.PRINT_HORIZONTAL_GAP;
+			if (this.xPosOfNextLabel > this.print_max) {
+				this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+				this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
+			}
+
+			if (curr.left != null) {
+				queue.push(curr.left);
+			}
+
+			if (curr.right != null) {
+				queue.push(curr.right);
+			}
+		}
+
+		this.cmd(act.delete, this.highlightID);
+		this.cmd(act.step);
+		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
+		this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
+	}
+
+	traverse() {
+		this.commands = [];
+
+		if (this.treeRoot == null) {
+			return this.commands;
+		}
+
+		if (this.traversal === 'level') {
+			this.levelOrder(this.treeRoot);
+		}
+
+		this.highlightID = this.nextIndex++;
+		const firstLabel = this.nextIndex;
+		this.cmd(
+			act.createHighlightCircle,
+			this.highlightID,
+			BST.HIGHLIGHT_COLOR,
+			this.treeRoot.x,
+			this.treeRoot.y,
+		);
+		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+		this.yPosOfNextLabel = this.first_print_pos_y;
+
+		if (this.traversal === 'pre') {
+			this.preOrderRec(this.treeRoot);
+		} else if (this.traversal === 'in') {
+			this.printTreeRec(this.treeRoot);
+		} else if (this.traversal === 'post') {
+			this.postOrderRec(this.treeRoot);
+		}
+
+		this.cmd(act.delete, this.highlightID);
+		this.cmd(act.step);
+		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
+		this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
+
+		return this.commands;
+	}
+
+	postOrderRec(tree) {
+		this.cmd(act.step);
+		if (tree.left != null) {
+			this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
+			this.postOrderRec(tree.left);
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
+		}
+
+		if (tree.right != null) {
+			this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
+			this.postOrderRec(tree.right);
+			this.cmd(act.move, this.highlightID, tree.x, tree.y);
+			this.cmd(act.step);
+		}
+
+		const nextLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
+		this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
+		this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
+		this.cmd(act.step);
+
+		this.xPosOfNextLabel += BST.PRINT_HORIZONTAL_GAP;
+		if (this.xPosOfNextLabel > this.print_max) {
+			this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
+			this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
+		}
+		return;
 	}
 
 	printTreeRec(tree) {

@@ -42,6 +42,7 @@ export default class BST extends Algorithm {
 		this.nextIndex = 1;
 		this.commands = [];
 		this.edges = [];
+		this.toClear = [];
 		this.cmd(act.createLabel, 0, '', BST.EXPLANITORY_TEXT_X, BST.EXPLANITORY_TEXT_Y, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -285,6 +286,7 @@ export default class BST extends Algorithm {
 
 	traverse() {
 		this.commands = [];
+		this.clearOldObjects();
 
 		if (this.treeRoot == null) {
 			return this.commands;
@@ -316,8 +318,9 @@ export default class BST extends Algorithm {
 
 		this.cmd(act.delete, this.highlightID);
 		this.cmd(act.step);
-		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
-		this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
+
+		for (let i = firstLabel; i < this.nextIndex; i++) this.toClear.push(i);
+		// this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
 
 		return this.commands;
 	}
@@ -382,6 +385,7 @@ export default class BST extends Algorithm {
 
 	findElement(findValue) {
 		this.commands = [];
+		this.clearOldObjects();
 
 		this.highlightID = this.nextIndex++;
 
@@ -483,8 +487,14 @@ export default class BST extends Algorithm {
 		}
 	}
 
+	clearOldObjects() {
+		this.toClear.forEach(i => this.cmd(act.delete, i));
+		this.toClear = [];
+	}
+
 	add(data) {
 		this.commands = [];
+		this.clearOldObjects();
 		this.cmd(act.setText, 0, 'Inserting ' + data);
 		this.treeRoot = this.addH(data, this.treeRoot);
 		this.resizeTree();
@@ -545,6 +555,7 @@ export default class BST extends Algorithm {
 
 	remove(data) {
 		this.commands = [];
+		this.clearOldObjects();
 
 		this.cmd(act.setText, 0, `Deleting ${data}`);
 		this.cmd(act.step);
@@ -724,6 +735,8 @@ export default class BST extends Algorithm {
 
 	clear() {
 		this.commands = [];
+		this.clearOldObjects();
+
 		this.recClear(this.treeRoot);
 		this.treeRoot = null;
 		return this.commands;

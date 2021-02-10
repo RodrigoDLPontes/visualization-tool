@@ -59,6 +59,8 @@ const RESIZE_ARRAY_START_Y = 300;
 const QUEUE_RESIZE_LABEL_X = 60;
 const QUEUE_RESIZE_LABEL_Y = 60;
 
+const FRONT_LABEL_OFFSET = -40;
+
 
 const INDEX_COLOR = '#0000FF';
 
@@ -80,7 +82,7 @@ export default class DequeArray extends Algorithm {
 
 		// Add's value text field
 		this.addField = addControlToAlgorithmBar('Text', '');
-		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4, true);
+		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4);
 		this.controls.push(this.addField);
 
 		// Add first button
@@ -140,6 +142,7 @@ export default class DequeArray extends Algorithm {
 		}
 		this.frontID = this.nextIndex++;
 		const frontLabelID = this.nextIndex++;
+		this.frontPointerID = this.nextIndex++;
 		this.sizeID = this.nextIndex++;
 		const sizeLabelID = this.nextIndex++;
 
@@ -185,10 +188,15 @@ export default class DequeArray extends Algorithm {
 			SIZE_POS_Y,
 		);
 
+		this.cmd(act.createLabel,
+			this.frontPointerID,
+			'Front',
+			ARRAY_START_X,
+			ARRAY_START_Y + FRONT_LABEL_OFFSET);
+
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
 
 		this.highlight1ID = this.nextIndex++;
-		this.highlight2ID = this.nextIndex++;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -199,6 +207,7 @@ export default class DequeArray extends Algorithm {
 		this.top = 0;
 		this.front = 0;
 		this.size = 0;
+		this.nextIndex = 0;
 
 		this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE); 
@@ -222,7 +231,7 @@ export default class DequeArray extends Algorithm {
 			&& this.size * 2 < MAX_SIZE) {
 				const pushVal = this.addField.value;
 				this.addField.value = '';
-				this.implementAction(this.resize.bind(this), pushVal, this.size);
+				this.implementAction(this.resize.bind(this), pushVal, false);
 			}
 	}
 
@@ -248,7 +257,7 @@ export default class DequeArray extends Algorithm {
 			&& this.size * 2 < MAX_SIZE) {
 				const pushVal = this.addField.value;
 				this.addField.value = '';
-				this.implementAction(this.resize.bind(this), pushVal, 0);
+				this.implementAction(this.resize.bind(this), pushVal, true);
 			}
 	}
 
@@ -315,7 +324,7 @@ export default class DequeArray extends Algorithm {
 		const labelAddID = this.nextIndex++;
 		const labelAddIDVal = this.nextIndex++;
 
-		const addIndex = (this.front - 1 + SIZE) % SIZE;
+		const addIndex = (this.front - 1 + this.arrayData.length) % this.arrayData.length;
 
 		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
@@ -357,13 +366,24 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.delete, labelAddIDVal);
 
+		this.front = addIndex;
+
+		const frontxpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const frontypos =
+			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
+		
+
 		this.cmd(act.setText, this.arrayID[addIndex], elemToAdd);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
-		this.cmd(act.setText, this.frontID, addIndex);
+		this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
+		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.frontID, 0);
+		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 1);
@@ -378,7 +398,6 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, labelAddID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
-		this.front = addIndex;
 		this.size++;
 
 		this.nextIndex = this.nextIndex - 2;
@@ -393,6 +412,7 @@ export default class DequeArray extends Algorithm {
 		const labremoveFirstValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
 		this.cmd(
 			act.createLabel,
@@ -464,6 +484,7 @@ export default class DequeArray extends Algorithm {
 		const remIndex = (this.front + this.size - 1 + SIZE) % SIZE;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
 		this.cmd(act.createLabel, remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
@@ -520,171 +541,209 @@ export default class DequeArray extends Algorithm {
 		return this.commands;
 	}
 
-	resize(elemToEnqueue, index) {
+	resize(elemToEnqueue, isFront) {
 		this.commands = [];
 
-		// const labEnqueueID = this.nextIndex++;
-		// const labEnqueueValID = this.nextIndex++;
-		// const labEnqueueResizeID = this.nextIndex++;
+		const labEnqueueID = this.nextIndex++;
+		const labEnqueueValID = this.nextIndex++;
+		const labEnqueueResizeID = this.nextIndex++;
 
-		// this.arrayIDNew = new Array(this.size * 2);
-		// this.arrayLabelIDNew = new Array(this.size * 2);
-		// this.arrayDataNew = new Array(this.size * 2);
+		this.arrayIDNew = new Array(this.size * 2);
+		this.arrayLabelIDNew = new Array(this.size * 2);
+		this.arrayDataNew = new Array(this.size * 2);
 
-		// for (let i = 0; i < this.size * 2; i++) {
-		// 	this.arrayIDNew[i] = this.nextIndex++;
-		// 	this.arrayLabelIDNew[i] = this.nextIndex++;
-		// 	if (i < this.size) {
-		// 		this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arrayData.length];
-		// 	}
-		// }
+		for (let i = 0; i < this.size * 2; i++) {
+			this.arrayIDNew[i] = this.nextIndex++;
+			this.arrayLabelIDNew[i] = this.nextIndex++;
+			if (i < this.size) {
+				this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arrayData.length];
+			}
+		}
 
-		// this.arrayDataNew[this.size] = elemToEnqueue;
+		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.createLabel, labEnqueueResizeID, '(Resize Required)', QUEUE_RESIZE_LABEL_X, QUEUE_RESIZE_LABEL_Y);
+		this.cmd(act.step);
 
-		// this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
-		// this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-		// this.cmd(act.createLabel, labEnqueueResizeID, '(Resize Required)', QUEUE_RESIZE_LABEL_X, QUEUE_RESIZE_LABEL_Y);
-		// this.cmd(act.step);
+		//Create new array
+		for (let i = 0; i < this.size * 2; i++) {
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ (RESIZE_ARRAY_START_Y);
+			this.cmd(
+				act.createRectangle,
+				this.arrayIDNew[i],
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xpos,
+				ypos,
+			);
+			this.cmd(act.createLabel, this.arrayLabelIDNew[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelIDNew[i], '#0000FF');
+		}
+		this.cmd(act.step);
 
-		// //Create new array
-		// for (let i = 0; i < this.size * 2; i++) {
-		// 	const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-		// 	const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-		// 	+ (RESIZE_ARRAY_START_Y);
-		// 	this.cmd(
-		// 		act.createRectangle,
-		// 		this.arrayIDNew[i],
-		// 		'',
-		// 		ARRAY_ELEM_WIDTH,
-		// 		ARRAY_ELEM_HEIGHT,
-		// 		xpos,
-		// 		ypos,
-		// 	);
-		// 	this.cmd(act.createLabel, this.arrayLabelIDNew[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		// 	this.cmd(act.setForegroundColor, this.arrayLabelIDNew[i], '#0000FF');
-		// }
-		// this.cmd(act.step);
+		this.highlight1ID = this.nextIndex++;
+		this.arrayMoveID = new Array(this.size);
 
-		// this.highlight1ID = this.nextIndex++;
-		// this.arrayMoveID = new Array(this.size);
+		//Move old elements to new array
+		for (let i = 0; i < this.size; i++) {
+			const xposinit = (((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) 
+			* ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const yposinit = Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) 
+			* ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		// //Move old elements to new array
-		// for (let i = 0; i < this.size; i++) {
-		// 	const xposinit = (((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) 
-		// 	* ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		// 	const yposinit = Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) 
-		// 	* ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 
-		// 	const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
-		// 	const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
+			this.arrayMoveID[i] = this.nextIndex++;
 
-		// 	this.arrayMoveID[i] = this.nextIndex++;
+			this.cmd(act.createLabel, this.arrayMoveID[i],
+				this.arrayData[(this.front + i) % this.arrayData.length],
+				xposinit,
+				yposinit
+			);
+			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
+			this.cmd(act.step);
+		}
 
-		// 	this.cmd(act.createLabel, this.arrayMoveID[i],
-		// 		this.arrayData[(this.front + i) % this.arrayData.length],
-		// 		xposinit,
-		// 		yposinit
-		// 	);
-		// 	this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
-		// 	this.cmd(act.step);
-		// }
-		// this.cmd(act.step);
+		//Delete movement objects and set text
+		for (let i = 0; i < this.size; i++) {
+			this.cmd(act.delete, this.arrayMoveID[i]);
+			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
+		}
+		this.cmd(act.step);
 
-		// //Delete movement objects and set text
-		// for (let i = 0; i < this.size; i++) {
-		// 	this.cmd(act.delete, this.arrayMoveID[i]);
-		// 	this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
-		// }
-		// this.cmd(act.step);
+		//Delete old array
+		for (let i = 0; i < this.size; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
 
-		// //Delete old array
-		// for (let i = 0; i < this.size; i++) {
-		// 	this.cmd(act.delete, this.arrayID[i]);
-		// 	this.cmd(act.delete, this.arrayLabelID[i]);
-		// }
+		//Move new array
+		for (let i = 0; i < this.size * 2; i++) {
+			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X);
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-		// //Move new array
-		// for (let i = 0; i < this.size * 2; i++) {
-		// 	const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X);
-		// 	const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
+			this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
+		}
+		this.cmd(act.step);
 
-		// 	this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
-		// 	this.cmd(act.move, this.arrayLabelIDNew[i], xpos, ypos + ARRAY_ELEM_HEIGHT);
-		// }
-		// this.cmd(act.step);
+		this.front = 0;
+		this.arrayID = this.arrayIDNew;
+		this.arrayLabelID = this.arrayLabelIDNew;
+		this.arrayData = this.arrayDataNew;
 
-		// this.front = 0;
-		// this.arrayID = this.arrayIDNew;
-		// this.arrayLabelID = this.arrayLabelIDNew;
-		// this.arrayData = this.arrayDataNew;
+		this.cmd(act.setHighlight, this.frontID, 1);
+		this.cmd(act.setHighlight, this.frontPointerID, 1);
+		this.cmd(act.step);
 
-		// this.cmd(act.setHighlight, this.frontID, 1);
-		// this.cmd(act.setHighlight, this.frontPointerID, 1);
-		// this.cmd(act.step);
+		this.cmd(act.setText, this.frontID, this.front);
+		this.cmd(act.move, this.frontPointerID, ARRAY_START_X, ARRAY_START_Y + FRONT_LABEL_OFFSET);
+		this.cmd(act.step);
 
-		// this.cmd(act.setText, this.frontID, this.front);
-		// this.cmd(act.move, this.frontPointerID, ARRAY_START_X, ARRAY_START_Y + FRONT_LABEL_OFFSET);
-		// this.cmd(act.step);
+		this.cmd(act.setHighlight, this.frontID, 0);
+		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
-		// this.cmd(act.setHighlight, this.frontID, 0);
-		// this.cmd(act.setHighlight, this.frontPointerID, 0);
+		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
+		
+		let addIndex = (this.front + this.size) % this.arrayDataNew.length;
+		let addText = 'back'
+		let indexText = '+ size'
+		if (isFront) {
+			addIndex = (this.front - 1 + this.arrayDataNew.length) % this.arrayDataNew.length;
+			addText = 'front'
+			indexText = '- 1'
+		}
 
-		// //Delete '(resize required)' text, create circle at the "size" object, add enqueue text
+		this.cmd(act.delete, labEnqueueResizeID);
 
-		// const newTail = (this.front + this.size) % this.arrayData.length;
-		// const labIndexID = this.nextIndex++;
-		// const labIndexValID = this.nextIndex++;
+		//Just so the element travels over the array instead of underneath it
+		this.cmd(act.delete, labEnqueueValID);
+		const labEnqueueValIDNew = this.nextIndex++;
+		this.cmd(act.createLabel, labEnqueueValIDNew, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
-		// this.cmd(act.delete, labEnqueueResizeID);
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
+		this.cmd(
+			act.setText,
+			this.leftoverLabelID,
+			`Adding ${elemToEnqueue} to ${addText} at index (${this.front} ${indexText}) % ${this.arrayDataNew.length}`,
+		);
+		this.cmd(act.step);
 
-		// //Just so the element travels over the array instead of underneath it
-		// this.cmd(act.delete, labEnqueueValID);
-		// const labEnqueueValIDNew = this.nextIndex++;
-		// this.cmd(act.createLabel, labEnqueueValIDNew, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
-		// this.cmd(act.createLabel,
-		// 	labIndexID,
-		// 	'Enqueueing at (front + size) % array.length: ',
-		// 	QUEUE_INDEX_X,
-		// 	QUEUE_INDEX_Y,
-		// );
-		// this.cmd(act.createLabel, labIndexValID, newTail, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
-		// this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
-		// this.cmd(act.step);
+		if (isFront) {
+			this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+		} else {
+			this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
+		}
+		this.cmd(act.step);
 
+		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const ypos =
+			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+		
 
-		// //Enqueue 'elemToEnqueue'
-		// const xpos = (newTail % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		// const ypos =
-		// 	Math.floor(newTail / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+		this.cmd(
+			act.move,
+			this.highlight1ID,
+			this.front * ARRAY_ELEM_WIDTH + ARRAY_START_X,
+			ypos + ARRAY_ELEM_HEIGHT,
+		);
+		this.cmd(act.step);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
+		this.cmd(act.step);
+		this.cmd(act.move, labEnqueueValIDNew, xpos, ypos);
+		this.cmd(act.step);
+		this.cmd(act.delete, labEnqueueValIDNew);
+		this.cmd(act.delete, this.highlight1ID);
 
-		// this.cmd(act.move, this.highlight1ID, QUEUE_INDEXVAL_X, QUEUE_INDEXVAL_Y);
-		// this.cmd(act.step);
+		this.front = 0;
+		if (isFront) {
+			this.front = addIndex;
+		}
 
-		// this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		// this.cmd(act.move, labIndexValID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		// this.cmd(act.step);
+		const frontxpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const frontypos =
+			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
+			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
+		
 
-		// this.cmd(act.move, labEnqueueValIDNew, xpos, ypos);
-		// this.cmd(act.step);
+		this.cmd(act.setText, this.arrayIDNew[addIndex], elemToEnqueue);
+		this.cmd(act.step);
+		if (isFront) {
+			this.cmd(act.setHighlight, this.frontID, 1);
+			this.cmd(act.setHighlight, this.frontPointerID, 1);
+			this.cmd(act.step);
+			this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
+			this.cmd(act.setText, this.frontID, this.front);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.frontID, 0);
+			this.cmd(act.setHighlight, this.frontPointerID, 0);
 
-		// this.cmd(act.setText, this.arrayID[newTail], elemToEnqueue);
-		// this.cmd(act.delete, labEnqueueValIDNew);
-		// this.cmd(act.delete, labIndexValID);
-		// this.cmd(act.step);
+			this.cmd(act.step);
+		}
+		
+		this.cmd(act.setHighlight, this.sizeID, 1);
+		this.cmd(act.step);
+		this.cmd(act.setText, this.sizeID, this.size + 1);
+		this.cmd(act.step);
+		this.cmd(act.setHighlight, this.sizeID, 0);
 
-		// this.cmd(act.delete, this.highlight1ID);
+		this.cmd(act.delete, labEnqueueID);
+		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.size++;
 
-		// this.cmd(act.setHighlight, this.sizeID, 1);
-		// this.cmd(act.step);
-		// this.size = this.size + 1;
-		// this.cmd(act.setText, this.sizeID, this.size);
-		// this.cmd(act.step);
-		// this.cmd(act.setHighlight, this.sizeID, 0);
-		// this.cmd(act.delete, labEnqueueID);
-		// this.cmd(act.delete, labIndexID);
+		this.arrayData = this.arrayDataNew;
+		this.arrayID = this.arrayIDNew;
+		this.arrayLabelID = this.arrayLabelIDNew;
 
-		// this.nextIndex = this.nextIndex - this.size;
+		this.nextIndex = this.nextIndex - this.size;
 
 		return this.commands;
 	}

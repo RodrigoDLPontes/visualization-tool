@@ -1,0 +1,122 @@
+{
+	"projectName": "visualization-tool",
+	"projectOwner": "RodrigoDLPontes",
+	"repoType": "github",
+	"repoHost": "https://github.com",
+	"files": [
+		"README.md"
+	],
+	"imageSize": 100,
+	"commit": true,
+	"commitConvention": "eslint",
+	"contributors": [
+		{
+			"login": "migueldlr",
+			"name": "Miguel de los Reyes",
+			"avatar_url": "https://avatars.githubusercontent.com/u/8410924?v=4",
+			"profile": "https://github.com/migueldlr",
+			"contributions": [
+				"bug",
+				"code",
+				"ideas",
+				"maintenance",
+				"review"
+			]
+		},
+		{
+			"login": "RodrigoDLPontes",
+			"name": "Rodrigo Deleu Lopes Pontes",
+			"avatar_url": "https://avatars.githubusercontent.com/u/11012066?v=4",
+			"profile": "https://github.com/RodrigoDLPontes",
+			"contributions": [
+				"bug",
+				"code",
+				"design",
+				"ideas",
+				"maintenance",
+				"question",
+				"review"
+			]
+		},
+		{
+			"login": "grant-hollosi",
+			"name": "Grant Hollosi",
+			"avatar_url": "https://avatars.githubusercontent.com/u/64664063?v=4",
+			"profile": "https://github.com/grant-hollosi",
+			"contributions": [
+				"bug",
+				"code",
+				"maintenance"
+			]
+		},
+		{
+			"login": "mhb6",
+			"name": "Mary Hudachek-Buswell",
+			"avatar_url": "https://avatars.githubusercontent.com/u/24942852?v=4",
+			"profile": "https://github.com/mhb6",
+			"contributions": [
+				"content",
+				"design",
+				"ideas"
+			]
+		},
+		{
+			"login": "hzhu359",
+			"name": "Harrison Zhu",
+			"avatar_url": "https://avatars.githubusercontent.com/u/54654449?v=4",
+			"profile": "https://github.com/hzhu359",
+			"contributions": [
+				"bug",
+				"code"
+			]
+		},
+		{
+			"login": "alexmcq99",
+			"name": "Alexander McQuilkin",
+			"avatar_url": "https://avatars.githubusercontent.com/u/32752657?v=4",
+			"profile": "https://github.com/alexmcq99",
+			"contributions": [
+				"code"
+			]
+		},
+		{
+			"login": "tylrshot",
+			"name": "Tyler Schott",
+			"avatar_url": "https://avatars.githubusercontent.com/u/38059576?v=4",
+			"profile": "https://github.com/tylrshot",
+			"contributions": [
+				"bug",
+				"code"
+			]
+		},
+		{
+			"login": "zminot",
+			"name": "Zachary Minot",
+			"avatar_url": "https://avatars.githubusercontent.com/u/43081846?v=4",
+			"profile": "https://github.com/zminot",
+			"contributions": [
+				"code"
+			]
+		},
+		{
+			"login": "1ntEgr8",
+			"name": "Elton Leander Pinto",
+			"avatar_url": "https://avatars.githubusercontent.com/u/40111357?v=4",
+			"profile": "https://github.com/1ntEgr8",
+			"contributions": [
+				"code"
+			]
+		},
+		{
+			"login": "yotam-k",
+			"name": "Yotam Kanny",
+			"avatar_url": "https://avatars.githubusercontent.com/u/31946987?v=4",
+			"profile": "https://github.com/yotam-k",
+			"contributions": [
+				"bug",
+				"code"
+			]
+		}
+	],
+	"contributorsPerLine": 7
+}

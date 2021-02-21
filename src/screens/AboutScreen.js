@@ -12,9 +12,13 @@ const AboutScreen = () => (
 		</p>
 		<p>
 			The CS1332 Visualization Tool was adapted and expanded by{' '}
-			<a href="https://rodrigodlpontes.github.io/website/">Rodrigo Pontes</a>, with the help
-			of Miguel de los Reyes and Alex McQuilkin and under the supervision of Prof. Mary
-			Hudachek-Buswell, to include data structures and algorithms covered in the course.
+			<a href="https://rodrigodlpontes.github.io/website/">Rodrigo Pontes</a>, under the
+			supervision of Prof. Mary Hudachek-Buswell, to include data structures and algorithms
+			covered in the course. It has since received many additions and revisions from{' '}
+			<a href="https://github.com/RodrigoDLPontes/visualization-tool#contributors-">
+				many other wonderful contributors
+			</a>
+			.
 		</p>
 		<p>
 			It also includes icons from{' '}

@@ -552,17 +552,27 @@ export default class DequeArray extends Algorithm {
 		this.arrayLabelIDNew = new Array(this.size * 2);
 		this.arrayDataNew = new Array(this.size * 2);
 
+		const frontOffset = (isFront) ? 1 : 0;
+
 		for (let i = 0; i < this.size * 2; i++) {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
 			if (i < this.size) {
-				this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arrayData.length];
+				this.arrayDataNew[i + frontOffset] = this.arrayData[(this.front + i) % this.arrayData.length];
 			}
 		}
 
-		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		const extra = (isFront) ? ": elements shifted by 1" : '';
+
+		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value:', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-		this.cmd(act.createLabel, labEnqueueResizeID, '(Resize Required)', QUEUE_RESIZE_LABEL_X, QUEUE_RESIZE_LABEL_Y);
+		this.cmd(
+			act.createLabel, 
+			labEnqueueResizeID, 
+			`(Resize Required${extra})`, 
+			(isFront) ? QUEUE_RESIZE_LABEL_X + 100 : QUEUE_RESIZE_LABEL_X, 
+			QUEUE_RESIZE_LABEL_Y
+		);
 		this.cmd(act.step);
 
 		//Create new array
@@ -594,8 +604,8 @@ export default class DequeArray extends Algorithm {
 			const yposinit = Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) 
 			* ARRAY_LINE_SPACING + ARRAY_START_Y;
 
-			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
+			const xpos = (((i + frontOffset) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
+			const ypos = Math.floor((i + frontOffset) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
@@ -611,7 +621,7 @@ export default class DequeArray extends Algorithm {
 		//Delete movement objects and set text
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.arrayMoveID[i]);
-			this.cmd(act.setText, this.arrayIDNew[i], this.arrayDataNew[i]);
+			this.cmd(act.setText, this.arrayIDNew[i + frontOffset], this.arrayDataNew[i + frontOffset]);
 		}
 		this.cmd(act.step);
 
@@ -649,14 +659,7 @@ export default class DequeArray extends Algorithm {
 
 		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
 		
-		let addIndex = (this.front + this.size) % this.arrayDataNew.length;
-		let addText = 'back'
-		let indexText = '+ size'
-		if (isFront) {
-			addIndex = (this.front - 1 + this.arrayDataNew.length) % this.arrayDataNew.length;
-			addText = 'front'
-			indexText = '- 1'
-		}
+		const addIndex = (!isFront) ? (this.front + this.size) % this.arrayDataNew.length : this.front;
 
 		this.cmd(act.delete, labEnqueueResizeID);
 
@@ -664,17 +667,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, labEnqueueValID);
 		const labEnqueueValIDNew = this.nextIndex++;
 		this.cmd(act.createLabel, labEnqueueValIDNew, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
-		this.cmd(
-			act.setText,
-			this.leftoverLabelID,
-			`Adding ${elemToEnqueue} to ${addText} at index (${this.front} ${indexText}) % ${this.arrayDataNew.length}`,
-		);
 		this.cmd(act.step);
-
-		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
 		if (isFront) {
 			this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
@@ -703,30 +696,10 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, this.highlight1ID);
 
 		this.front = 0;
-		if (isFront) {
-			this.front = addIndex;
-		}
-
-		const frontxpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		const frontypos =
-			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
-		
 
 		this.cmd(act.setText, this.arrayIDNew[addIndex], elemToEnqueue);
 		this.cmd(act.step);
-		if (isFront) {
-			this.cmd(act.setHighlight, this.frontID, 1);
-			this.cmd(act.setHighlight, this.frontPointerID, 1);
-			this.cmd(act.step);
-			this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
-			this.cmd(act.setText, this.frontID, this.front);
-			this.cmd(act.step);
-			this.cmd(act.setHighlight, this.frontID, 0);
-			this.cmd(act.setHighlight, this.frontPointerID, 0);
 
-			this.cmd(act.step);
-		}
 		
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);

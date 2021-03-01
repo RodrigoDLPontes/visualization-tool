@@ -239,7 +239,7 @@ export default class BST extends Algorithm {
 
 	levelOrder(tree) {
 		this.highlightID = this.nextIndex++;
-		const firstLabel = this.nextIndex;
+		// const firstLabel = this.nextIndex;
 		this.cmd(
 			act.createHighlightCircle,
 			this.highlightID,
@@ -280,8 +280,8 @@ export default class BST extends Algorithm {
 
 		this.cmd(act.delete, this.highlightID);
 		this.cmd(act.step);
-		for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
-		this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
+		// for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
+		// this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
 	}
 
 	traverse() {

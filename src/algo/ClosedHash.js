@@ -181,12 +181,13 @@ export default class ClosedHash extends Hash {
 		}
 		let probes = 0;
 		let removedIndex = -1;
+		const start = index;
 		while (
 			probes < this.size &&
 			!this.empty[index] &&
 			!(this.hashTableValues[index] === elem)
 		) {
-			this.cmd(act.setText, this.ExplainLabel, 'Entry occupied, so move forward');
+			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
 			this.cmd(act.step);
 			// storing removed index
@@ -202,7 +203,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 			this.cmd(act.setText, this.ExplainLabel, '');
 
-			index = (index + 1) % this.table_size;
+			index = (start + this.skipDist[probes]) % this.table_size;
 
 			if (this.empty[index]) {
 				this.cmd(act.setHighlight, this.hashTableVisual[index], 1);

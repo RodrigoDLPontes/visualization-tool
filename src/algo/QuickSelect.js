@@ -25,11 +25,10 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
-	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
-	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
+	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
@@ -37,9 +36,6 @@ const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
-
-let worstPivotEnabled = false;
-let firstPivotEnabled = false;
 
 export default class QuickSelect extends Algorithm {
 	constructor(am, w, h) {
@@ -89,21 +85,23 @@ export default class QuickSelect extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		// Toggles
-		this.togglesGroup = addGroupToAlgorithmBar();
-		this.worstPivotToggle = addCheckboxToAlgorithmBar(
-			'Pick min element as pivot',
-			false,
-			this.togglesGroup,
+		const pivotButtonList = addRadioButtonGroupToAlgorithmBar(
+			['Random pivot', 'Min element', 'First element', 'Perfect pivot'],
+			'Traversals',
 		);
-		this.worstPivotToggle.onclick = this.toggleWorstPivot.bind(this);
-		this.controls.push(this.worstPivotToggle);
-		this.firstPivotToggle = addCheckboxToAlgorithmBar(
-			'Pick first element as pivot',
-			false,
-			this.togglesGroup,
-		);
-		this.firstPivotToggle.onclick = this.toggleFirstPivot.bind(this);
-		this.controls.push(this.firstPivotToggle);
+
+		this.randomPivotSelect = pivotButtonList[0];
+		this.minPivotSelect = pivotButtonList[1];
+		this.firstPivotSelect = pivotButtonList[2];
+		this.perfectPivotSelect = pivotButtonList[3];
+		this.randomPivotSelect.onclick = () => (this.pivotType = 'random');
+		this.minPivotSelect.onclick = () => (this.pivotType = 'min');
+		this.firstPivotSelect.onclick = () => (this.pivotType = 'first');
+		this.perfectPivotSelect.onclick = () => (this.pivotType = 'perfect');
+		this.randomPivotSelect.checked = true;
+		this.pivotType = 'random';
+
+		addDivisorToAlgorithmBar();
 	}
 
 	setup() {
@@ -236,7 +234,7 @@ export default class QuickSelect extends Algorithm {
 		// Create pivot pointer and swap with left-most element
 		// To make things more interesting (and clearer), we don't pick the left-most element as pivot
 		let pivot;
-		if (worstPivotEnabled) {
+		if (this.pivotType === 'min') {
 			let min = left;
 			for (let i = left + 1; i <= right; i++) {
 				if (this.arrayData[i] < this.arrayData[min]) {
@@ -244,9 +242,14 @@ export default class QuickSelect extends Algorithm {
 				}
 			}
 			pivot = min;
-		} else if (firstPivotEnabled) {
+		} else if (this.pivotType === 'first') {
 			pivot = left;
-		} else {
+		} else if (this.pivotType === 'perfect') {
+			const sorted = this.arrayData.slice(left, right + 1);
+			sorted.sort((a, b) => a - b);
+			const midIndex = Math.floor(sorted.length / 2);
+			pivot = this.arrayData.indexOf(sorted[midIndex]);
+		} else if (this.pivotType === 'random') {
 			pivot = Math.floor(Math.random() * (right - left)) + left + 1;
 		}
 		const pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -386,22 +389,6 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.setForegroundColor, this.iPointerID, '#0000FF');
 		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
 		this.cmd(act.step);
-	}
-
-	toggleWorstPivot() {
-		worstPivotEnabled = !worstPivotEnabled;
-		if (firstPivotEnabled) {
-			firstPivotEnabled = false;
-			this.firstPivotToggle.checked = false;
-		}
-	}
-
-	toggleFirstPivot() {
-		firstPivotEnabled = !firstPivotEnabled;
-		if (worstPivotEnabled) {
-			worstPivotEnabled = false;
-			this.worstPivotToggle.checked = false;
-		}
 	}
 
 	disableUI() {

@@ -380,6 +380,7 @@ export default class AVL extends Algorithm {
 	connectSmart(id1, id2) {
 		if (!this.edges.some(e => e[0] === id1 && e[1] === id2)) {
 			this.cmd(act.connect, id1, id2, AVL.LINK_COLOR);
+			this.cmd(act.setEdgeAlpha, id1, id2, AVL.LINK_OPACITY);
 			this.edges.push([id1, id2]);
 			return true;
 		}
@@ -464,16 +465,20 @@ export default class AVL extends Algorithm {
 		if (t2 != null) {
 			this.cmd(act.disconnect, A.graphicID, t2.graphicID);
 			this.cmd(act.connect, B.graphicID, t2.graphicID, AVL.LINK_COLOR);
+			this.cmd(act.setEdgeAlpha, B.graphicID, t2.graphicID, AVL.LINK_OPACITY);
 			t2.parent = B;
 		}
 		this.cmd(act.disconnect, B.graphicID, A.graphicID);
 		this.cmd(act.connect, A.graphicID, B.graphicID, AVL.LINK_COLOR);
+		this.cmd(act.setEdgeAlpha, A.graphicID, B.graphicID, AVL.LINK_OPACITY);
 		A.parent = B.parent;
 		if (this.treeRoot === B) {
 			this.treeRoot = A;
 		} else {
 			this.cmd(act.disconnect, B.parent.graphicID, B.graphicID, AVL.LINK_COLOR);
 			this.cmd(act.connect, B.parent.graphicID, A.graphicID, AVL.LINK_COLOR);
+			this.cmd(act.setEdgeAlpha, B.parent.graphicID, A.graphicID, AVL.LINK_OPACITY);
+
 			if (B.isLeftChild()) {
 				B.parent.left = A;
 			} else {
@@ -507,16 +512,21 @@ export default class AVL extends Algorithm {
 		if (t2 != null) {
 			this.cmd(act.disconnect, B.graphicID, t2.graphicID);
 			this.cmd(act.connect, A.graphicID, t2.graphicID, AVL.LINK_COLOR);
+			this.cmd(act.setEdgeAlpha, A.graphicID, t2.graphicID, AVL.LINK_OPACITY);
+
 			t2.parent = A;
 		}
 		this.cmd(act.disconnect, A.graphicID, B.graphicID);
 		this.cmd(act.connect, B.graphicID, A.graphicID, AVL.LINK_COLOR);
+		this.cmd(act.setEdgeAlpha, B.graphicID, A.graphicID, AVL.LINK_OPACITY);
+
 		B.parent = A.parent;
 		if (this.treeRoot === A) {
 			this.treeRoot = B;
 		} else {
 			this.cmd(act.disconnect, A.parent.graphicID, A.graphicID, AVL.LINK_COLOR);
 			this.cmd(act.connect, A.parent.graphicID, B.graphicID, AVL.LINK_COLOR);
+			this.cmd(act.setEdgeAlpha, A.parent.graphicID, B.graphicID, AVL.LINK_OPACITY);
 
 			if (A.isLeftChild()) {
 				A.parent.left = B;
@@ -825,9 +835,10 @@ AVL.HIGHLIGHT_LABEL_COLOR = '#FF0000';
 AVL.HIGHLIGHT_LINK_COLOR = '#FF0000';
 
 AVL.HIGHLIGHT_COLOR = '#007700';
-AVL.HEIGHT_LABEL_COLOR = '#007700';
+AVL.HEIGHT_LABEL_COLOR = '#065e9d';
 
 AVL.LINK_COLOR = '#00B000';
+AVL.LINK_OPACITY = 0.25;
 AVL.HIGHLIGHT_CIRCLE_COLOR = '#007700';
 AVL.FOREGROUND_COLOR = '#007700';
 AVL.BACKGROUND_COLOR = '#DDFFDD';

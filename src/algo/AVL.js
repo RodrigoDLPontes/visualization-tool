@@ -442,7 +442,7 @@ export default class AVL extends Algorithm {
 					this.cmd(act.setText, 0, 'No left child');
 					this.cmd(act.step);
 				}
-				this.cmd(act.setText, 0, 'Left rotation');
+				this.cmd(act.setText, 0, 'Right rotation');
 				this.cmd(act.step);
 				this.cmd(act.setTextColor, curr.bfLabelID, AVL.HEIGHT_LABEL_COLOR);
 			}

@@ -32,6 +32,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 10;
+const MAX_LOAD_LENGTH = 3;
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -45,8 +46,10 @@ const HASH_RESULT_Y = 50;
 const ELF_HASH_SHIFT = 10;
 
 const HASH_LABEL_X = 300;
-const HASH_LABEL_Y = 30;
+const HASH_LABEL_Y = 50;
 const HASH_LABEL_DELTA_X = 50;
+
+const DEFAULT_LOAD_FACTOR = 0.67;
 
 const HIGHLIGHT_COLOR = '#0000FF';
 
@@ -56,6 +59,7 @@ export default class Hash extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.hashingIntegers = true;
+		this.load_factor = DEFAULT_LOAD_FACTOR;
 	}
 
 	addControls() {
@@ -106,6 +110,23 @@ export default class Hash extends Algorithm {
 		this.findButton = addControlToAlgorithmBar('Button', 'Find');
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
+
+		addDivisorToAlgorithmBar();
+
+		this.loadField = addControlToAlgorithmBar('Text', '');
+		this.loadField.size = MAX_LOAD_LENGTH;
+		this.loadField.onkeydown = this.returnSubmit(
+			this.loadField,
+			this.changeLoadFactor.bind(this),
+			MAX_LOAD_LENGTH,
+			true
+		)
+
+		this.controls.push(this.loadField);
+
+		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor');
+		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
+		this.controls.push(this.loadButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -534,6 +555,14 @@ export default class Hash extends Algorithm {
 		if (findValue !== '') {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), findValue);
+		}
+	}
+
+	loadFactorCallBack() {
+		if (this.loadField.value !== '') {
+			const newLF = this.loadField.value / 100;
+			this.loadField.value = '';
+			this.implementAction(this.changeLoadFactor.bind(this), newLF);
 		}
 	}
 

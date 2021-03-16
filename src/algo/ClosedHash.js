@@ -193,17 +193,18 @@ export default class ClosedHash extends Hash {
 			} else if (this.deleted[candidateIndex]) {
 				if (firstDeletedIndex === -1) {
 					firstDeletedIndex = candidateIndex;
-					this.cmd(act.setText, this.DelIndexLabel,
-						 'Storing index ' + firstDeletedIndex + ' of first deleted element');
+					this.cmd(
+						act.setText,
+						this.DelIndexLabel,
+						'Storing index ' + firstDeletedIndex + ' of first deleted element',
+					);
 				}
-				this.cmd(act.setText, this.ExplainLabel,
-					 'Entry deleted, continue probing');
+				this.cmd(act.setText, this.ExplainLabel, 'Entry deleted, continue probing');
 			} else if (this.empty[candidateIndex]) {
 				index = candidateIndex;
 				this.cmd(act.setText, this.ExplainLabel, 'Entry empty, stop probing');
 				i = this.table_size; // break after animation
-			}
-			else {
+			} else {
 				this.cmd(act.setText, this.ExplainLabel, 'Entry occupied, continue probing');
 			}
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
@@ -215,8 +216,7 @@ export default class ClosedHash extends Hash {
 		}
 		this.cmd(act.setText, this.ExplainLabel, '');
 		this.cmd(act.setText, this.DelIndexLabel, '');
-		return (foundIndex !== -1) ? -1 :
-			((firstDeletedIndex !== -1) ? firstDeletedIndex : index);
+		return foundIndex !== -1 ? -1 : firstDeletedIndex !== -1 ? firstDeletedIndex : index;
 	}
 
 	getElemIndex(index, elem) {

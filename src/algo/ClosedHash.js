@@ -179,57 +179,44 @@ export default class ClosedHash extends Hash {
 		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
 			this.resetSkipDist(elem, this.nextIndex++);
 		}
-		let probes = 0;
-		let removedIndex = -1;
-		const start = index;
-		while (
-			probes < this.size &&
-			!this.empty[index] &&
-			!(this.hashTableValues[index] === elem)
-		) {
-			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
+		let foundIndex = -1;
+		let firstDeletedIndex = -1;
+		for (let i = 0; i < this.table_size; i++) {
+			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
+			if (
+				!this.empty[candidateIndex] &&
+				!this.deleted[candidateIndex] &&
+				this.hashTableValues[candidateIndex] === elem
+			) {
+				foundIndex = candidateIndex;
+				i = this.table_size; // break after animation
+			} else if (this.deleted[candidateIndex]) {
+				if (firstDeletedIndex === -1) {
+					firstDeletedIndex = candidateIndex;
+					this.cmd(act.setText, this.DelIndexLabel,
+						 'Storing index ' + firstDeletedIndex + ' of first deleted element');
+				}
+				this.cmd(act.setText, this.ExplainLabel,
+					 'Entry deleted, continue probing');
+			} else if (this.empty[candidateIndex]) {
+				index = candidateIndex;
+				this.cmd(act.setText, this.ExplainLabel, 'Entry empty, stop probing');
+				i = this.table_size; // break after animation
+			}
+			else {
+				this.cmd(act.setText, this.ExplainLabel, 'Entry occupied, continue probing');
+			}
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
-			// storing removed index
-			if (removedIndex === -1 && this.deleted[index]) {
-				this.cmd(act.setText, this.ExplainLabel, 'Storing index of first deleted element');
-				this.cmd(act.setText, this.DelIndexLabel, 'First Deleted Index: ' + index);
-				removedIndex = index;
-				this.cmd(act.step);
-			} else if (!this.deleted[index]) {
-				probes++;
-			}
-			// increment index and clear labels
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
-			this.cmd(act.setText, this.ExplainLabel, '');
-
-			index = (start + this.skipDist[probes]) % this.table_size;
-
-			if (this.empty[index]) {
-				this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
-				this.cmd(
-					act.setText,
-					this.ExplainLabel,
-					'Encountered null spot, so terminate loop',
-				);
-				this.cmd(act.step);
-			}
+			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
 		}
-
-		if (!this.empty[index] && this.hashTableValues[index] === elem && !this.deleted[index]) {
-			return -1;
-		} else {
-			if (removedIndex !== -1) {
-				this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
-				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earlier DEL spot');
-				index = removedIndex;
-			} else {
-				this.cmd(act.setText, this.ExplainLabel, 'Inserting at null spot');
-			}
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
-			this.cmd(act.step);
-			return removedIndex !== -1 ? removedIndex : index;
+		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
+			this.cmd(act.delete, --this.nextIndex);
 		}
+		this.cmd(act.setText, this.ExplainLabel, '');
+		this.cmd(act.setText, this.DelIndexLabel, '');
+		return (foundIndex !== -1) ? -1 :
+			((firstDeletedIndex !== -1) ? firstDeletedIndex : index);
 	}
 
 	getElemIndex(index, elem) {

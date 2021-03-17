@@ -220,12 +220,30 @@ export default class ClosedHash extends Hash {
 		let probes = 0;
 		let removedIndex = -1;
 		const start = index;
+		this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
 		while (
 			probes < this.table_size &&
 			!this.empty[index] &&
 			!(this.hashTableValues[index] === elem)
 		) {
+
+			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
+			this.cmd(act.step);
+			// storing removed index
+			if (removedIndex === -1 && this.deleted[index]) {
+				this.cmd(act.setText, this.ExplainLabel, 'Storing index of first deleted element');
+				this.cmd(act.setText, this.DelIndexLabel, 'First Deleted Index: ' + index);
+				removedIndex = index;
+				this.cmd(act.step);
+			}
 			probes++;
+		
+			// increment index and clear labels
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
+			this.cmd(act.setText, this.ExplainLabel, '');
+
+			index = (start + this.skipDist[probes]) % this.table_size;
+
 			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
 				skipVal = probes;
 			}
@@ -237,25 +255,8 @@ export default class ClosedHash extends Hash {
 				+ ` ${(start + this.skipDist[probes]) % this.table_size}`
 			);
 
-			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
-			this.cmd(act.step);
-			// storing removed index
-			if (removedIndex === -1 && this.deleted[index]) {
-				this.cmd(act.setText, this.ExplainLabel, 'Storing index of first deleted element');
-				this.cmd(act.setText, this.DelIndexLabel, 'First Deleted Index: ' + index);
-				removedIndex = index;
-				this.cmd(act.step);
-			}
-
-			// increment index and clear labels
-			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
-			this.cmd(act.setText, this.ExplainLabel, '');
-
-			index = (start + this.skipDist[probes]) % this.table_size;
-
 			if (this.empty[index]) {
-				this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
 				this.cmd(
 					act.setText,
 					this.ExplainLabel,
@@ -281,6 +282,8 @@ export default class ClosedHash extends Hash {
 				this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earlier DEL spot');
 				index = removedIndex;
+			} else if (this.hashTableVisual[index] === elem) {
+				this.cmd(act.setText, this.ExplainLabel, 'Inserting at DEL spot with same key')
 			} else {
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at null spot');
 			}
@@ -301,17 +304,6 @@ export default class ClosedHash extends Hash {
 		const start = index;
 		let foundIndex = -1;
 		for (let i = 0; i < this.table_size; i++) {
-			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
-				skipVal = i + 1;
-			}
-
-			this.cmd(
-				act.setText,
-				this.HashIndexID,
-				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` 
-				+ ` ${(start + this.skipDist[i + 1]) % this.table_size}`
-			);
-
 			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
@@ -326,6 +318,17 @@ export default class ClosedHash extends Hash {
 			} else if (this.empty[candidateIndex]) {
 				break;
 			}
+			
+			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
+				skipVal = i + 1;
+			}
+
+			this.cmd(
+				act.setText,
+				this.HashIndexID,
+				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` 
+				+ ` ${(start + this.skipDist[i + 1]) % this.table_size}`
+			);
 		}
 
 		this.cmd(act.setText, this.HashIndexID, '');
@@ -333,7 +336,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.delete, HashID);
 			this.nextIndex--;
 		}
-		
+
 		return foundIndex;
 	}
 
@@ -353,6 +356,7 @@ export default class ClosedHash extends Hash {
 			// this.empty[index] = true;
 			this.deleted[index] = true;
 			this.cmd(act.setText, this.hashTableVisual[index], '<deleted>');
+			this.size--;
 		} else {
 			this.cmd(
 				act.setText,

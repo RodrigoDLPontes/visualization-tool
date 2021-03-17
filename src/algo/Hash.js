@@ -32,7 +32,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 10;
-const MAX_LOAD_LENGTH = 3;
+const MAX_LOAD_LENGTH = 2;
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -45,11 +45,9 @@ const HASH_ADD_LINE_Y = 42;
 const HASH_RESULT_Y = 50;
 const ELF_HASH_SHIFT = 10;
 
-const HASH_LABEL_X = 300;
-const HASH_LABEL_Y = 50;
+const HASH_LABEL_X = 200;
+const HASH_LABEL_Y = 45;
 const HASH_LABEL_DELTA_X = 50;
-
-const DEFAULT_LOAD_FACTOR = 0.67;
 
 const HIGHLIGHT_COLOR = '#0000FF';
 
@@ -59,7 +57,6 @@ export default class Hash extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.hashingIntegers = true;
-		this.load_factor = DEFAULT_LOAD_FACTOR;
 	}
 
 	addControls() {
@@ -114,6 +111,7 @@ export default class Hash extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.loadField = addControlToAlgorithmBar('Text', '');
+		this.loadField.setAttribute('placeholder', 'LF/100');
 		this.loadField.size = MAX_LOAD_LENGTH;
 		this.loadField.onkeydown = this.returnSubmit(
 			this.loadField,

@@ -134,15 +134,15 @@ export default class ClosedHash extends Hash {
 	insertElement(elem) {
 		this.commands = [];
 
-		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
-		this.cmd(act.step);
-
 		if (
 			(this.size + 1) / this.table_size > this.load_factor
 			&& this.table_size * 2 < MAX_SIZE
 		) {
 			this.resize(false);
 		}
+
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
+		this.cmd(act.step);
 
 		let index = this.doHash(elem);
 
@@ -274,15 +274,17 @@ export default class ClosedHash extends Hash {
 		}
 
 		if (!this.empty[index] && this.hashTableValues[index] === elem && !this.deleted[index]) {
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 			return -1;
 		} else if (probes === this.table_size && removedIndex === -1) {
+			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 			return -2;
 		} else {
 			if (removedIndex !== -1) {
 				this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earlier DEL spot');
 				index = removedIndex;
-			} else if (this.hashTableVisual[index] === elem) {
+			} else if (this.hashTableValues[index] === elem) {
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at DEL spot with same key')
 			} else {
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at null spot');
@@ -384,6 +386,9 @@ export default class ClosedHash extends Hash {
 
 	resize(fromCycle) {
 		this.commands = []; 
+
+		this.cmd(act.setText, this.ExplainLabel, '');
+		this.cmd(act.setText, this.DelIndexLabel, '');
 
 		const resizeLabel = this.nextIndex++;
 		if (!fromCycle) {

@@ -422,18 +422,6 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
 		}
 
-		this.nextLowestPrime = this.primes[this.table_size % 2];
-		let primeLabel = -1;
-		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
-			primeLabel = this.nextIndex++;
-			this.cmd(
-				act.createLabel,
-				primeLabel,
-				`New Hashing Prime: ${this.nextLowestPrime}`,
-				RESIZE_LABEL_X + 350,
-				RESIZE_LABEL_Y);
-		}
-
 		this.cmd(act.step);
 		
 
@@ -531,9 +519,6 @@ export default class ClosedHash extends Hash {
 		}
 
 		this.cmd(act.delete, resizeLabel);
-		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
-			this.cmd(act.delete, primeLabel);
-		}
 
 		for (let i = 0; i < this.table_size; i++) {
 			const nextXPos = ARRAY_ELEM_START_X + (i % this.elements_per_row) * ARRAY_ELEM_WIDTH;
@@ -574,14 +559,12 @@ export default class ClosedHash extends Hash {
 	setup() {
 		this.resetIndex = this.nextIndex;
 		this.table_size = CLOSED_HASH_TABLE_SIZE;
-		this.nextLowestPrime = 7;
+		this.nextLowestPrime = 11;
 		this.load_factor = DEFAULT_LOAD_FACTOR;
 		this.skipDist = new Array(this.table_size);
 		this.hashTableVisual = new Array(this.table_size);
 		this.hashTableValues = new Array(this.table_size);
 		this.size = 0;
-
-		this.primes = [7, 23, 53];
 
 		this.indexLabelID = new Array(this.table_size);
 		this.indexXPos = new Array(this.table_size);
@@ -663,7 +646,6 @@ export default class ClosedHash extends Hash {
 	reset() {
 		this.nextIndex = this.resetIndex;
 		this.table_size = CLOSED_HASH_TABLE_SIZE;
-		this.nextLowestPrime = 7;
 		this.load_factor = DEFAULT_LOAD_FACTOR;
 		this.size = 0;
 

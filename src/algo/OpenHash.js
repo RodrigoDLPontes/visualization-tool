@@ -38,6 +38,11 @@ const LINKED_ITEM_Y_DELTA = 50;
 
 const HASH_TABLE_SIZE = 13;
 
+const DEFAULT_LOAD_FACTOR = 0.67;
+
+const LOAD_LABEL_X = 60;
+const LOAD_LABEL_Y = 20;
+
 const INDEX_COLOR = '#0000FF';
 
 export default class OpenHash extends Hash {
@@ -234,6 +239,16 @@ export default class OpenHash extends Hash {
 		return this.commands;
 	}
 
+	changeLoadFactor(LF) {
+		this.commands = [];
+
+		this.load_factor = LF;
+		this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+		this.cmd(act.step);
+
+		return this.commands;
+	}
+
 	setup() {
 		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
 		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
@@ -244,7 +259,11 @@ export default class OpenHash extends Hash {
 
 		this.ExplainLabel = this.nextIndex++;
 
+		this.loadFactorID = this.nextIndex++;
+
 		this.table_size = HASH_TABLE_SIZE;
+
+		this.load_factor = DEFAULT_LOAD_FACTOR;
 
 		this.commands = [];
 		for (let i = 0; i < HASH_TABLE_SIZE; i++) {
@@ -271,6 +290,7 @@ export default class OpenHash extends Hash {
 			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
+		this.cmd(act.createLabel, this.loadFactorID, `Load Factor: ${this.load_factor}`, LOAD_LABEL_X, LOAD_LABEL_Y);
 		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

@@ -262,8 +262,14 @@ export default class ClosedHash extends Hash {
 					this.ExplainLabel,
 					'Encountered null spot, so terminate loop',
 				);
-				this.cmd(act.step);
+			} else if (this.hashTableValues[index] === elem) {
+				this.cmd(
+					act.setText,
+					this.ExplainLabel,
+					`Encountered matching key, so terminate loop`,
+				);
 			}
+			this.cmd(act.step);
 		}
 
 		this.cmd(act.setText, this.HashIndexID, '');

@@ -188,7 +188,7 @@ export default class QuickSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.pPointerID = this.nextIndex++;
-		this.helper(0, this.arrayData.length - 1);
+		this.helperLomuto(0, this.arrayData.length - 1);
 
 		return this.commands;
 	}
@@ -285,6 +285,67 @@ export default class QuickSort extends Algorithm {
 
 		this.helper(left, j - 1);
 		this.helper(j + 1, right);
+	}
+
+	helperLomuto(left, right) {
+		if (left > right) return;
+
+		// Hightlight cells in the current sub-array
+		for (let i = left; i <= right; i++) {
+			this.cmd(act.setBackgroundColor, this.arrayID[i], '#99CCFF');
+		}
+		this.cmd(act.step);
+
+		if (left === right) {
+			this.cmd(act.setBackgroundColor, this.arrayID[left], '#2ECC71');
+			this.cmd(act.step);
+			return;
+		}
+
+		let pivot = right;
+		const pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		this.cmd(act.createHighlightCircle, this.pPointerID, '#FFFF00', pXPos, ARRAY_START_Y);
+		this.cmd(act.step);
+
+		// Partition
+		let i = left;
+		let j = left;
+		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
+		this.cmd(act.createHighlightCircle, this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
+		this.cmd(act.step);
+		while (j <= right) {
+			if (this.arrayData[j] < this.arrayData[pivot]) {
+				this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
+				this.cmd(act.step);
+				this.swap(i, j);
+				this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
+				i++;
+				this.movePointers(i, j);
+			}
+			j++;
+			this.movePointers(i, j);
+		}
+
+		// Move pivot back and delete pivot pointer
+		this.swapPivot(pivot, i, true);
+
+		// Delete i and j pointers
+		this.cmd(act.delete, this.iPointerID);
+		this.cmd(act.delete, this.jPointerID);
+		this.cmd(act.delete, this.pPointerID);
+		this.cmd(act.step);
+
+		// Un-hightlight cells in sub-array and set pivot cell to green
+		for (let j = left; j <= right; j++) {
+			this.cmd(act.setBackgroundColor, this.arrayID[j], '#FFFFFF');
+		}
+		this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
+		this.cmd(act.step);
+
+		this.helperLomuto(left, i - 1);
+		this.helperLomuto(i + 1, right);
 	}
 
 	movePointers(i, j) {

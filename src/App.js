@@ -10,6 +10,7 @@ const App = () => {
 	ReactGA.pageview('home');
 
 	return (
+
 		<Router basename={process.env.PUBLIC_URL + '/'}>
 			<Switch>
 				<Route exact path={['/', '/about']} component={HomeScreen} />

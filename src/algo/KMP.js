@@ -195,9 +195,13 @@ export default class KMP extends Algorithm {
 		}
 
 		const failureTable = this.buildFailureTable(text.length, pattern);
+		const tableStartX = ARRAY_START_X + text.length * this.cellSize + 110;
 
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
+		const fjPointerID = this.nextIndex++;
+		const f0PointerID = this.nextIndex++;
+		const f1PointerID = this.nextIndex++;
 		this.cmd(
 			act.createHighlightCircle,
 			iPointerID,
@@ -214,6 +218,33 @@ export default class KMP extends Algorithm {
 			ARRAY_START_Y + this.cellSize,
 			this.cellSize / 2,
 		);
+		this.cmd(
+			act.createHighlightCircle,
+			fjPointerID,
+			'#FF0000',
+			ARRAY_START_X,
+			ARRAY_START_Y + this.cellSize,
+			this.cellSize / 2,
+		);
+		this.cmd(
+			act.createHighlightCircle,
+			f0PointerID,
+			'#FF0000',
+			tableStartX,
+			FAILURE_TABLE_START_Y,
+			this.cellSize / 2,
+		);
+		this.cmd(
+			act.createHighlightCircle,
+			f1PointerID,
+			'#FF0000',
+			tableStartX,
+			FAILURE_TABLE_START_Y + this.cellSize,
+			this.cellSize / 2,
+		);
+		this.cmd(act.setAlpha, fjPointerID, 0);
+		this.cmd(act.setAlpha, f0PointerID, 0);
+		this.cmd(act.setAlpha, f1PointerID, 0);
 
 		let i = 0;
 		let j = 0;
@@ -232,6 +263,9 @@ export default class KMP extends Algorithm {
 				}
 			}
 			this.cmd(act.step);
+			this.cmd(act.setAlpha, fjPointerID, 0);
+			this.cmd(act.setAlpha, f0PointerID, 0);
+			this.cmd(act.setAlpha, f1PointerID, 0);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
@@ -256,6 +290,27 @@ export default class KMP extends Algorithm {
 					);
 				}
 				const nextAlignment = failureTable[j - 1];
+				this.cmd(
+					act.setPosition,
+					fjPointerID,
+					(i + j - 1) * this.cellSize + ARRAY_START_X,
+					(row + 1) * this.cellSize + ARRAY_START_Y,
+				);
+				this.cmd(
+					act.setPosition,
+					f0PointerID,
+					tableStartX + (j - 1) * this.cellSize,
+					FAILURE_TABLE_START_Y,
+				);
+				this.cmd(
+					act.setPosition,
+					f1PointerID,
+					tableStartX + (j - 1) * this.cellSize,
+					FAILURE_TABLE_START_Y + this.cellSize,
+				);
+				this.cmd(act.setAlpha, fjPointerID, 1);
+				this.cmd(act.setAlpha, f0PointerID, 1);
+				this.cmd(act.setAlpha, f1PointerID, 1);
 				i += j - nextAlignment;
 				j = nextAlignment;
 			}
@@ -271,6 +326,9 @@ export default class KMP extends Algorithm {
 
 		this.cmd(act.delete, iPointerID);
 		this.cmd(act.delete, jPointerID);
+		this.cmd(act.delete, fjPointerID);
+		this.cmd(act.delete, f0PointerID);
+		this.cmd(act.delete, f1PointerID);
 		return this.commands;
 	}
 

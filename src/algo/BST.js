@@ -151,6 +151,7 @@ export default class BST extends Algorithm {
 			// set text value
 			this.insertField.value = '';
 			this.implementAction(this.add.bind(this), parseInt(insertedValue));
+
 		}
 	}
 
@@ -497,11 +498,13 @@ export default class BST extends Algorithm {
 		this.clearOldObjects();
 		this.cmd(act.setText, 0, 'Inserting ' + data);
 		this.treeRoot = this.addH(data, this.treeRoot);
+		//this.addsentinel(null, this.treeRoot);
 		this.resizeTree();
 		return this.commands;
 	}
 
 	addH(data, curr) {
+		this.cmd(act.setText,0,curr);
 		if (curr == null) {
 			this.cmd(act.setText, 0, 'Null found, inserting new node');
 			const treeNodeID = this.nextIndex++;
@@ -510,9 +513,40 @@ export default class BST extends Algorithm {
 			this.cmd(act.setForegroundColor, treeNodeID, BST.FOREGROUND_COLOR);
 			this.cmd(act.setBackgroundColor, treeNodeID, BST.BACKGROUND_COLOR);
 
+			this.cmd(act.setText, 0, '');
+			const treeNodeIDL = this.nextIndex++;
+			this.cmd(act.createRectangle, treeNodeIDL, "", 15, 15);
+
+			this.cmd(act.setForegroundColor, treeNodeIDL, BST.SENTINEL_NODE_COLOR);
+			this.cmd(act.setBackgroundColor, treeNodeIDL, BST.SENTINEL_NODE_COLOR);
+
+
+			const treeNodeIDR = this.nextIndex++;
+			this.cmd(act.createRectangle, treeNodeIDR, "", 15, 15);
+
+			this.cmd(act.setForegroundColor, treeNodeIDR, BST.SENTINEL_NODE_COLOR);
+			this.cmd(act.setBackgroundColor, treeNodeIDR, BST.SENTINEL_NODE_COLOR);
+
 			this.cmd(act.step);
 			this.cmd(act.setText, 0, '');
-			return new BSTNode(data, treeNodeID, 0, 0);
+
+			curr = new BSTNode(data, treeNodeID, 0, 0);
+			curr.left = new BSTNode(null, treeNodeIDL, 0, 0);
+			curr.right =  new BSTNode(null, treeNodeIDR, 0, 0);
+			curr.left.parent = curr;
+			curr.right.parent = curr;
+			this.connectSmart(curr.graphicID, curr.right.graphicID);
+			this.connectSmart(curr.graphicID, curr.left.graphicID);
+			//connected && this.cmd(act.step);
+			return curr;
+		}
+		if(curr.data == null){
+			this.deleteNode(curr);
+
+			curr = null;
+			//window.alert(`${curr.graphicID}`);
+			curr = this.addH(data,curr);
+
 		}
 		this.cmd(act.setHighlight, curr.graphicID, 1);
 		if (data < curr.data) {
@@ -593,6 +627,7 @@ export default class BST extends Algorithm {
 				this.resizeTree();
 			}
 		} else {
+
 			if (curr.left == null && curr.right == null) {
 				this.cmd(act.setText, 0, 'Element to delete is a leaf node');
 				this.cmd(act.step);
@@ -609,6 +644,20 @@ export default class BST extends Algorithm {
 				this.cmd(act.setText, 0, `One-child case, replace with left child`);
 				this.cmd(act.step);
 				this.deleteNode(curr);
+				this.cmd(act.step);
+				return curr.left;
+			} else if (curr.left.data == null) {
+				this.cmd(act.setText, 0, `One-child case, replace with right child`);
+				this.cmd(act.step);
+				this.deleteNode(curr);
+				this.deleteNode(curr.left);
+				this.cmd(act.step);
+				return curr.right;
+			} else if (curr.right.data	 == null) {
+				this.cmd(act.setText, 0, `One-child case, replace with left child`);
+				this.cmd(act.step);
+				this.deleteNode(curr);
+				this.deleteNode(curr.right);
 				this.cmd(act.step);
 				return curr.left;
 			} else {
@@ -637,19 +686,25 @@ export default class BST extends Algorithm {
 	removeSucc(curr, dummy) {
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
-		if (curr.left == null) {
+		if (curr.left.data == null) {
+			//window.alert("left data null");
 			this.cmd(act.setText, 0, 'No left child, replace with right child');
 			this.cmd(act.step);
 			dummy.push(curr.data);
 			this.deleteNode(curr);
+			this.deleteNode(curr.left);
+			curr.parent.left = curr.right;
+			this.connectSmart(curr.parent.graphicID, curr.right.graphicID);
 			this.cmd(act.step);
 			this.cmd(act.setText, 0, '');
 			return curr.right;
 		}
 		this.cmd(act.setText, 0, 'Left child exists, look left');
 		curr.left = this.removeSucc(curr.left, dummy);
-		if (curr.left != null) {
+		if (curr.left.data != null) {
+			window.alert("left data nicht null");
 			curr.left.parent = curr;
+
 			this.connectSmart(curr.graphicID, curr.left.graphicID);
 			this.resizeTree();
 		}
@@ -787,6 +842,8 @@ BST.HEIGHT_LABEL_COLOR = '#007700';
 BST.LINK_COLOR = '#00B000';
 BST.HIGHLIGHT_CIRCLE_COLOR = '#007700';
 BST.FOREGROUND_COLOR = '#007700';
+BST.BACKGROUND_COLOR = '#DDFFDD';
+BST.SENTINEL_NODE_COLOR = "#000000";
 BST.BACKGROUND_COLOR = '#DDFFDD';
 BST.PRINT_COLOR = BST.FOREGROUND_COLOR;
 

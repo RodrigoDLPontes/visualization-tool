@@ -338,7 +338,7 @@ export default class RedBlackTree extends Algorithm {
             const heightLabelID = this.nextIndex++;
             const bfLabelID = this.nextIndex++;
             this.cmd(act.createCircle, treeNodeID, data, 30, RedBlackTree.STARTING_Y);
-
+           // this.cmd(act.createRectangle, treeNodeID, data, 30, RedBlackTree.STARTING_Y);
             this.cmd(act.setForegroundColor, treeNodeID, RedBlackTree.FOREGROUND_COLOR);
             this.cmd(act.setBackgroundColor, treeNodeID, RedBlackTree.BACKGROUND_COLOR);
             this.cmd(act.createLabel, heightLabelID, 0, 30 - 20, RedBlackTree.STARTING_Y - 20);

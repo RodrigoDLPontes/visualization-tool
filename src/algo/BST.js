@@ -498,7 +498,6 @@ export default class BST extends Algorithm {
 		this.clearOldObjects();
 		this.cmd(act.setText, 0, 'Inserting ' + data);
 		this.treeRoot = this.addH(data, this.treeRoot);
-		//this.addsentinel(null, this.treeRoot);
 		this.resizeTree();
 		return this.commands;
 	}
@@ -537,14 +536,12 @@ export default class BST extends Algorithm {
 			curr.right.parent = curr;
 			this.connectSmart(curr.graphicID, curr.right.graphicID);
 			this.connectSmart(curr.graphicID, curr.left.graphicID);
-			//connected && this.cmd(act.step);
 			return curr;
 		}
 		if(curr.data == null){
 			this.deleteNode(curr);
 
 			curr = null;
-			//window.alert(`${curr.graphicID}`);
 			curr = this.addH(data,curr);
 
 		}
@@ -687,7 +684,6 @@ export default class BST extends Algorithm {
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
 		if (curr.left.data == null) {
-			//window.alert("left data null");
 			this.cmd(act.setText, 0, 'No left child, replace with right child');
 			this.cmd(act.step);
 			dummy.push(curr.data);

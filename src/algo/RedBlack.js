@@ -54,30 +54,37 @@ export default class RedBlack extends Algorithm {
         this.insertField = addControlToAlgorithmBar("Text", "");
         this.insertField.onkeydown = this.returnSubmit(this.insertField, this.insertCallback.bind(this), 4, true);
         this.controls.push(this.insertField);
+
         this.insertButton = addControlToAlgorithmBar("Button", "Insert");
         this.insertButton.onclick = this.insertCallback.bind(this);
         this.controls.push(this.insertButton);
+
         this.deleteField = addControlToAlgorithmBar("Text", "");
         this.deleteField.onkeydown = this.returnSubmit(this.deleteField, this.deleteCallback.bind(this), 4, true);
         this.controls.push(this.deleteField);
+
         this.deleteButton = addControlToAlgorithmBar("Button", "Delete");
         this.deleteButton.onclick = this.deleteCallback.bind(this);
         this.controls.push(this.deleteButton);
+
         this.findField = addControlToAlgorithmBar("Text", "");
         this.findField.onkeydown = this.returnSubmit(this.findField, this.findCallback.bind(this), 4, true);
         this.controls.push(this.findField);
+
         this.findButton = addControlToAlgorithmBar("Button", "Find");
         this.findButton.onclick = this.findCallback.bind(this);
         this.controls.push(this.findButton);
+
         this.printButton = addControlToAlgorithmBar("Button", "Print");
         this.printButton.onclick = this.printCallback.bind(this);
         this.controls.push(this.printButton);
+
         this.showNullLeaves = addCheckboxToAlgorithmBar("Show Null Leaves");
         this.showNullLeaves.onclick = this.showNullLeavesCallback.bind(this);
         this.showNullLeaves.checked = false;
         this.controls.push(this.showNullLeaves)
-
     }
+
 
     reset() {
         this.nextIndex = 1;
@@ -87,14 +94,13 @@ export default class RedBlack extends Algorithm {
 
     insertCallback() {
         let insertedValue = this.insertField.value;
-        // Get text value
         insertedValue = this.normalizeNumber(insertedValue, 4);
         if (insertedValue !== "") {
-            // set text value
             this.insertField.value = "";
             this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
         }
     }
+
 
     deleteCallback() {
         let deletedValue = this.deleteField.value;
@@ -119,6 +125,7 @@ export default class RedBlack extends Algorithm {
     printCallback() {
         this.implementAction(this.printTree.bind(this));
     }
+
 
     showNullLeavesCallback() {
         if (this.showNullLeaves.checked) {
@@ -173,6 +180,7 @@ export default class RedBlack extends Algorithm {
         }
 
     }
+
 
     printSubtree(tree, subtree) {
         this.cmd(act.move, this.highlightID, subtree.left.x, subtree.left.y);
@@ -249,27 +257,6 @@ export default class RedBlack extends Algorithm {
         }
     }
 
-    attachNullLeaf(node, side) {
-        const treeNodeID = this.nextIndex++;
-        this.cmd(act.createCircle, treeNodeID, "NULL", node.x, node.y);
-        this.colorBlack(treeNodeID);
-        if (side === RedBlack.LEFT) {
-            node.left = new RedBlackNode("", treeNodeID, this.startingX, RedBlack.startingY);
-            node.left.phantomLeaf = true;
-            node.left.blackLevel = 1;
-        } else {
-            node.right = new RedBlackNode("", treeNodeID, this.startingX, RedBlack.startingY);
-            node.right.phantomLeaf = true;
-            node.right.blackLevel = 1;
-        }
-        this.cmd(act.setLayer, treeNodeID, 1);
-        this.cmd(act.connect, node.graphicID, treeNodeID, RedBlack.LINK_COLOR);
-    }
-
-    attachNullLeaves(node) {
-        this.attachNullLeaf(node, RedBlack.LEFT);
-        this.attachNullLeaf(node, RedBlack.RIGHT);
-    }
 
     insertElement(insertedValue) {
         this.commands = [];
@@ -278,9 +265,9 @@ export default class RedBlack extends Algorithm {
         let treeNodeID;
         if (this.treeRoot == null) {
             treeNodeID = this.nextIndex++;
-            this.cmd(act.createCircle, treeNodeID, insertedValue, this.startingX, RedBlack.startingY);
+            this.cmd(act.createCircle, treeNodeID, insertedValue, this.startingX, RedBlack.STARTING_Y);
             this.colorBlack(treeNodeID);
-            this.treeRoot = new RedBlackNode(insertedValue, treeNodeID, this.startingX, RedBlack.startingY);
+            this.treeRoot = new RedBlackNode(insertedValue, treeNodeID, this.startingX, RedBlack.STARTING_Y);
             this.treeRoot.blackLevel = 1;
 
             this.attachNullLeaves(this.treeRoot);
@@ -289,7 +276,7 @@ export default class RedBlack extends Algorithm {
         } else {
             treeNodeID = this.nextIndex++;
 
-            this.cmd(act.createCircle, treeNodeID, insertedValue, 30, RedBlack.startingY);
+            this.cmd(act.createCircle, treeNodeID, insertedValue, 30, RedBlack.STARTING_Y);
             this.colorRed(treeNodeID);
             this.cmd(act.step);
             const insertElem = new RedBlackNode(insertedValue, treeNodeID, 100, 100)
@@ -399,6 +386,7 @@ export default class RedBlack extends Algorithm {
         }
     }
 
+
     insert(elem, tree) {
         this.cmd(act.setHighlight, tree.graphicID, 1);
         this.cmd(act.setHighlight, elem.graphicID, 1);
@@ -444,8 +432,8 @@ export default class RedBlack extends Algorithm {
                 tree.right = elem;
                 elem.parent = tree;
                 this.cmd(act.connect, tree.graphicID, elem.graphicID, RedBlack.LINK_COLOR);
-                elem.x = tree.x + RedBlack.widthDelta / 2;
-                elem.y = tree.y + RedBlack.heightDelta
+                elem.x = tree.x + RedBlack.WIDTH_DELTA / 2;
+                elem.y = tree.y + RedBlack.HEIGHT_DELTA
                 this.cmd(act.move, elem.graphicID, elem.x, elem.y);
 
 
@@ -552,6 +540,30 @@ export default class RedBlack extends Algorithm {
         this.treeDelete(this.treeRoot, deletedValue);
         this.cmd(act.setText, 0, " ");
         return this.commands;
+    }
+
+
+    attachNullLeaf(node, side) {
+        const treeNodeID = this.nextIndex++;
+        this.cmd(act.createCircle, treeNodeID, "NULL", node.x, node.y);
+        this.colorBlack(treeNodeID);
+        if (side === RedBlack.LEFT) {
+            node.left = new RedBlackNode("", treeNodeID, this.startingX, RedBlack.STARTING_Y);
+            node.left.phantomLeaf = true;
+            node.left.blackLevel = 1;
+        } else {
+            node.right = new RedBlackNode("", treeNodeID, this.startingX, RedBlack.STARTING_Y);
+            node.right.phantomLeaf = true;
+            node.right.blackLevel = 1;
+        }
+        this.cmd(act.setLayer, treeNodeID, 1);
+        this.cmd(act.connect, node.graphicID, treeNodeID, RedBlack.LINK_COLOR);
+    }
+
+
+    attachNullLeaves(node) {
+        this.attachNullLeaf(node, RedBlack.LEFT);
+        this.attachNullLeaf(node, RedBlack.RIGHT);
     }
 
 
@@ -675,6 +687,7 @@ export default class RedBlack extends Algorithm {
         }
     }
 
+
     fixParentNodeColor(oldParBlackLevel, newPar, newParSub, newParSubSub) {
         if (oldParBlackLevel === 0) {
             newPar.blackLevel = 0;
@@ -689,6 +702,7 @@ export default class RedBlack extends Algorithm {
             this.fixNodeColor(newParSubSub);
         }
     }
+
 
     fixExtraBlack(tree) {
         if (tree.blackLevel > 1) {
@@ -938,6 +952,7 @@ export default class RedBlack extends Algorithm {
         }
     }
 
+
     deleteRotationHelper(needFix, tmp) {
         if (needFix) {
             this.cmd(act.setText, 0, "Coloring child of deleted node black");
@@ -972,15 +987,18 @@ export default class RedBlack extends Algorithm {
         }
     }
 
+
     colorBlack(graphicID) {
         this.cmd(act.setForegroundColor, graphicID, RedBlack.FOREGROUND_BLACK);
         this.cmd(act.setBackgroundColor, graphicID, RedBlack.BACKGROUND_BLACK);
     }
 
+
     colorRed(graphicID) {
         this.cmd(act.setForegroundColor, graphicID, RedBlack.FOREGROUND_RED);
         this.cmd(act.setBackgroundColor, graphicID, RedBlack.BACKGROUND_RED);
     }
+
 
     highlightHelper(tree, subtree) {
         if (subtree != null) {
@@ -991,6 +1009,7 @@ export default class RedBlack extends Algorithm {
         }
     }
 
+
     resizeTree() {
         let startingPoint = this.startingX;
         this.resizeWidths(this.treeRoot);
@@ -1000,7 +1019,7 @@ export default class RedBlack extends Algorithm {
             } else if (this.treeRoot.rightWidth > startingPoint) {
                 startingPoint = Math.max(this.treeRoot.leftWidth, 2 * startingPoint - this.treeRoot.rightWidth);
             }
-            this.setNewPositions(this.treeRoot, startingPoint, RedBlack.startingY, 0);
+            this.setNewPositions(this.treeRoot, startingPoint, RedBlack.STARTING_Y, 0);
             this.animateNewPositions(this.treeRoot);
             this.cmd(act.step);
         }
@@ -1022,11 +1041,12 @@ export default class RedBlack extends Algorithm {
             }
             tree.x = xPosition;
             tree.heightLabelY = tree.y - 20;
-            this.setNewPositions(tree.left, xPosition, yPosition + RedBlack.heightDelta, -1)
-            this.setNewPositions(tree.right, xPosition, yPosition + RedBlack.heightDelta, 1)
+            this.setNewPositions(tree.left, xPosition, yPosition + RedBlack.HEIGHT_DELTA, -1)
+            this.setNewPositions(tree.right, xPosition, yPosition + RedBlack.HEIGHT_DELTA, 1)
         }
 
     }
+
 
     animateNewPositions(tree) {
         if (tree != null) {
@@ -1041,8 +1061,8 @@ export default class RedBlack extends Algorithm {
         if (tree == null) {
             return 0;
         }
-        tree.leftWidth = Math.max(this.resizeWidths(tree.left), RedBlack.widthDelta / 2);
-        tree.rightWidth = Math.max(this.resizeWidths(tree.right), RedBlack.widthDelta / 2);
+        tree.leftWidth = Math.max(this.resizeWidths(tree.left), RedBlack.WIDTH_DELTA / 2);
+        tree.rightWidth = Math.max(this.resizeWidths(tree.right), RedBlack.WIDTH_DELTA / 2);
         return tree.leftWidth + tree.rightWidth;
     }
 
@@ -1103,9 +1123,9 @@ RedBlack.BACKGROUND_COLOR = RedBlack.BACKGROUND_BLACK;
 RedBlack.HIGHLIGHT_COLOR = "#007700";
 RedBlack.FOREGROUND_COLOR = RedBlack.FOREGROUND_BLACK;
 RedBlack.PRINT_COLOR = RedBlack.FOREGROUND_COLOR
-RedBlack.widthDelta = 50;
-RedBlack.heightDelta = 50;
-RedBlack.startingY = 50;
+RedBlack.WIDTH_DELTA = 50;
+RedBlack.HEIGHT_DELTA = 50;
+RedBlack.STARTING_Y = 50;
 RedBlack.RIGHT = 'right';
 RedBlack.LEFT = 'left';
 

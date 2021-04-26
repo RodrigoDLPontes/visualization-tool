@@ -30,6 +30,7 @@ export { default as QueueLL } from './QueueLL';
 export { default as QuickSelect } from './QuickSelect';
 export { default as QuickSort } from './QuickSort';
 export { default as RabinKarp } from './RabinKarp';
+export { default as RedBlack } from './RedBlack';
 export { default as SelectionSort } from './SelectionSort';
 export { default as SkipList } from './SkipList';
 export { default as SplayTree } from './SplayTree';

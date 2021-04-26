@@ -21,6 +21,7 @@ export const algoMap = {
 	SplayTree: ['SplayTree', algos.SplayTree],
 	AVL: ['AVL', algos.AVL],
 	BTree: ['2-4 Tree', algos.BTree],
+	RedBlack: ['Red Black Tree', algos.RedBlack],
 	BubbleSort: ['Bubble Sort', algos.BubbleSort],
 	CocktailSort: ['Cocktail Shaker Sort', algos.CocktailSort],
 	InsertionSort: ['Insertion Sort', algos.InsertionSort],

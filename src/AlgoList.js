@@ -61,6 +61,7 @@ export const algoList = [
 	'Heap',
 	'AVL',
 	'BTree',
+	'RedBlack',
 	'SplayTree',
 	'SkipList',
 	'HashMaps',

@@ -738,7 +738,7 @@ export default class RedBlack extends Algorithm {
             this.cmd(act.setHighlight, tree.graphicID, 0);
 
             if (valueToDelete === tree.data) {
-                let needFix = tree.blackLevel > 0;
+                let needsFix = tree.blackLevel > 0;
                 if (((tree.left == null) || tree.left.phantomLeaf) && ((tree.right == null) || tree.right.phantomLeaf)) {
                     this.cmd(act.setText, 0, "Node to delete is a leaf.  Delete it.");
                     this.cmd(act.delete, tree.graphicID);
@@ -755,7 +755,7 @@ export default class RedBlack extends Algorithm {
                         tree.parent.left = null;
                         this.resizeTree();
 
-                        if (needFix) {
+                        if (needsFix) {
                             this.fixNullLeaf(tree.parent, RedBlack.LEFT);
                         } else {
 
@@ -765,7 +765,7 @@ export default class RedBlack extends Algorithm {
                     } else if (tree.parent != null) {
                         tree.parent.right = null;
                         this.resizeTree();
-                        if (needFix) {
+                        if (needsFix) {
                             this.fixNullLeaf(tree.parent, RedBlack.RIGHT);
                         } else {
                             this.attachNullLeaf(tree.parent, RedBlack.RIGHT);
@@ -789,7 +789,7 @@ export default class RedBlack extends Algorithm {
                         this.cmd(act.delete, tree.graphicID);
                         if (left_child) {
                             tree.parent.left = tree.right;
-                            if (needFix) {
+                            if (needsFix) {
                                 this.cmd(act.setText, 0, "Back node removed.  Increasing child's blackness level");
                                 tree.parent.left.blackLevel++;
                                 this.fixNodeColor(tree.parent.left);
@@ -797,7 +797,7 @@ export default class RedBlack extends Algorithm {
                             }
                         } else {
                             tree.parent.right = tree.right;
-                            if (needFix) {
+                            if (needsFix) {
                                 tree.parent.right.blackLevel++;
                                 this.cmd(act.setText, 0, "Back node removed.  Increasing child's blackness level");
                                 this.fixNodeColor(tree.parent.right);
@@ -827,28 +827,22 @@ export default class RedBlack extends Algorithm {
                         this.cmd(act.connect, tree.parent.graphicID, tree.left.graphicID, RedBlack.LINK_COLOR);
                         this.cmd(act.step);
                         this.cmd(act.delete, tree.graphicID);
-                        if (left_child) {
+
+                        if (left_child && needsFix) {
                             tree.parent.left = tree.left;
-                            if (needFix) {
-                                tree.parent.left.blackLevel++;
-                                this.fixNodeColor(tree.parent.left);
-                                this.fixExtraBlack(tree.parent.left);
-                                this.resizeTree();
-                            } else {
-                                this.cmd(act.setText, 0, "Deleted node was red.  No tree rotations required.");
-                                this.resizeTree();
-                            }
-                        } else {
+                            tree.parent.left.blackLevel++;
+                            this.fixNodeColor(tree.parent.left);
+                            this.fixExtraBlack(tree.parent.left);
+                            this.resizeTree();
+                        } else if (!left_child && needsFix) {
                             tree.parent.right = tree.left;
-                            if (needFix) {
-                                tree.parent.right.blackLevel++;
-                                this.fixNodeColor(tree.parent.right);
-                                this.fixExtraBlack(tree.parent.left);
-                                this.resizeTree();
-                            } else {
-                                this.cmd(act.setText, 0, "Deleted node was red.  No tree rotations required.");
-                                this.resizeTree();
-                            }
+                            tree.parent.right.blackLevel++;
+                            this.fixNodeColor(tree.parent.right);
+                            this.fixExtraBlack(tree.parent.left);
+                            this.resizeTree();
+                        } else {
+                            this.cmd(act.setText, 0, "Deleted node was red.  No tree rotations required.");
+                            this.resizeTree();
                         }
                         tree.left.parent = tree.parent;
                     } else {
@@ -894,7 +888,7 @@ export default class RedBlack extends Algorithm {
                     this.cmd(act.delete, this.highlightID);
                     this.cmd(act.setText, 0, "Remove node whose value we copied.");
 
-                    needFix = tmp.blackLevel > 0;
+                    needsFix = tmp.blackLevel > 0;
 
 
                     if (tmp.left == null) {
@@ -902,7 +896,7 @@ export default class RedBlack extends Algorithm {
                         if (tmp.parent !== tree) {
                             tmp.parent.right = null;
                             this.resizeTree();
-                            if (needFix) {
+                            if (needsFix) {
                                 this.fixNullLeaf(tmp.parent, RedBlack.RIGHT);
                             } else {
                                 this.cmd(act.setText, 0, "Deleted node was red.  No tree rotations required.");
@@ -911,7 +905,7 @@ export default class RedBlack extends Algorithm {
                         } else {
                             tree.left = null;
                             this.resizeTree();
-                            if (needFix) {
+                            if (needsFix) {
                                 this.fixNullLeaf(tmp.parent, RedBlack.LEFT);
                             } else {
                                 this.cmd(act.setText, 0, "Deleted node was red.  No tree rotations required.");
@@ -929,12 +923,12 @@ export default class RedBlack extends Algorithm {
                             tmp.left.parent = tmp.parent;
                             this.resizeTree();
 
-                            this.deleteRotationHelper(needFix, tmp);
+                            this.deleteRotationHelper(needsFix, tmp);
                         } else {
                             tree.left = tmp.left;
                             tmp.left.parent = tree;
                             this.resizeTree();
-                            this.deleteRotationHelper(needFix, tmp);
+                            this.deleteRotationHelper(needsFix, tmp);
                         }
                     }
 

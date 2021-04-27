@@ -178,7 +178,6 @@ export default class RedBlack extends Algorithm {
         if (tree.right != null && !tree.right.phantomLeaf) {
             this.printSubtree(tree, tree.right)
         }
-
     }
 
 

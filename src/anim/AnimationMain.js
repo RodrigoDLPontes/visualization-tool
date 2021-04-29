@@ -1069,7 +1069,12 @@ export const act = {
 	},
 	setEdgeHighlight(params) {
 		// fromID, toID, highlight
-		const oldHighlight = this.animatedObjects.setEdgeHighlight(params[0], params[1], params[2]);
+		const oldHighlight = this.animatedObjects.setEdgeHighlight(
+			params[0],
+			params[1],
+			params[2],
+			params[3],
+		);
 		this.undoBlock.push(new UndoHighlightEdge(params[0], params[1], oldHighlight));
 	},
 	setEdgeThickness(params) {

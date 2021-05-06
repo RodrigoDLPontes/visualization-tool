@@ -578,7 +578,7 @@ export default class RedBlack extends Algorithm {
         nullLeaf.phantomLeaf = true;
         nullLeaf.blackLevel = 2;
 
-        if (side === 'left') {
+        if (side === RedBlack.LEFT) {
             tree.left = nullLeaf;
         } else {
             tree.right = nullLeaf;

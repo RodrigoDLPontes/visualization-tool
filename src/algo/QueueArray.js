@@ -560,13 +560,15 @@ export default class QueueArray extends Algorithm {
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		for (let i = 0; i < this.size; i++) {
+		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.front = 0;
 		this.size = 0;
 		this.cmd(act.setText, this.frontID, '0');
 		this.cmd(act.setText, this.sizeID, '0');
+		this.cmd(act.setPosition, this.frontPointerID, ARRAY_START_X,
+			ARRAY_START_Y + FRONT_LABEL_OFFSET);
 		return this.commands;
 	}
 }

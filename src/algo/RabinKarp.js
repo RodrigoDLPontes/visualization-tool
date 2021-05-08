@@ -83,6 +83,21 @@ export default class RabinKarp extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
+		//Base value text field
+		this.baseField = addControlToAlgorithmBar('Base', '');
+		this.baseField.onkeydown = this.returnSubmit(
+			this.baseField,
+			this.findCallback.bind(this),
+			4,
+			true,
+		);
+		this.controls.push(this.baseField);
+
+		// Base button
+		this.baseButton = addControlToAlgorithmBar('Button', 'Change Base');
+		this.baseButton.onclick = this.baseCallback.bind(this);
+		this.controls.push(this.baseButton);
+
 		addDivisorToAlgorithmBar();
 
 		// Clear button
@@ -100,6 +115,8 @@ export default class RabinKarp extends Algorithm {
 		this.textHashCalculationID = this.nextIndex++;
 		this.patternHashLabelID = this.nextIndex++;
 		this.patternHashCalculationID = this.nextIndex++;
+
+		this.baseValue = 1;
 
 		this.animationManager.startNewAnimation();
 		this.animationManager.skipForward();
@@ -130,6 +147,17 @@ export default class RabinKarp extends Algorithm {
 			this.textField.value = '';
 			this.patternField.value = '';
 			this.implementAction(this.find.bind(this), text, pattern);
+		}
+	}
+
+	baseCallback() {
+		const val = parseInt(this.baseField.value);
+		if (
+			this.baseField.value !== '' && 
+			val !== 0
+		) {
+			this.baseField.value = '';
+			this.baseValue = val;
 		}
 	}
 
@@ -195,7 +223,7 @@ export default class RabinKarp extends Algorithm {
 		}
 
 		const labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
-		this.cmd(act.createLabel, this.baseLabelID, 'Base constant = 1', labelsX, BASE_LABEL_Y, 0);
+		this.cmd(act.createLabel, this.baseLabelID, `Base constant = ${this.baseValue}`, labelsX, BASE_LABEL_Y, 0);
 		this.cmd(
 			act.createLabel,
 			this.characterValuesLabelID,
@@ -225,11 +253,14 @@ export default class RabinKarp extends Algorithm {
 		let textHash = 0;
 		let patternCalculation = '';
 		let patternHash = 0;
+		const base = Math.pow(this.baseValue, pattern.length - 1);
+		let runningBase = base;
 		for (let i = 0; i < pattern.length; i++) {
-			textHash += text.charCodeAt(i) - 97;
-			textCalculation += text.charAt(i) + ' + ';
-			patternHash += pattern.charCodeAt(i) - 97;
-			patternCalculation += pattern.charAt(i) + ' + ';
+			textHash += text.charCodeAt(i) * runningBase - 97;
+			textCalculation += `(${text.charAt(i)} * ${runningBase}) + `;
+			patternHash += pattern.charCodeAt(i) * runningBase - 97;
+			patternCalculation += `(${pattern.charAt(i)} * ${runningBase}) + `;
+			runningBase /= this.baseValue;
 		}
 		textCalculation =
 			textCalculation.substring(0, textCalculation.length - 2) + ' = ' + textHash;
@@ -309,11 +340,13 @@ export default class RabinKarp extends Algorithm {
 			if (i < text.length - pattern.length) {
 				textHash =
 					textHash -
-					(text.charCodeAt(i) - 97) +
+					(base * (text.charCodeAt(i) - 97)) +
 					(text.charCodeAt(i + pattern.length) - 97);
 				textCalculation = '';
+				runningBase = base;
 				for (let k = 0; k < pattern.length; k++) {
-					textCalculation += text.charAt(k + i + 1) + ' + ';
+					textCalculation += `(${text.charAt(k + i + 1)} * ${runningBase}) + `; //text.charAt(k + i + 1) + ' + ';
+					runningBase /= this.baseValue;
 				}
 				textCalculation =
 					textCalculation.substring(0, textCalculation.length - 2) + ' = ' + textHash;

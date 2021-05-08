@@ -60,8 +60,9 @@ export default class AnimatedLine {
 		this.dirty = true;
 	}
 
-	setHighlight(highlightVal) {
+	setHighlight(highlightVal, color) {
 		this.highlighted = highlightVal;
+		this.highlightColor = color || '#FF0000';
 	}
 
 	setThickness(thickness) {
@@ -162,8 +163,9 @@ export default class AnimatedLine {
 
 	draw(context) {
 		context.globalAlpha = this.alpha;
+		console.log(this.highlightColor);
 
-		if (this.highlighted) this.drawArrow(this.highlightDiff, '#FF0000', context);
+		if (this.highlighted) this.drawArrow(this.highlightDiff, this.highlightColor, context);
 		this.drawArrow(this.thickness, this.foregroundColor, context);
 	}
 

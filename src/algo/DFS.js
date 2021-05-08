@@ -298,7 +298,7 @@ export default class DFS extends Graph {
 						);
 					}
 					this.cmd(act.step);
-					this.highlightEdge(vertex, neighbor, 0);
+					// this.highlightEdge(vertex, neighbor, 0);
 				}
 			}
 
@@ -408,16 +408,17 @@ export default class DFS extends Graph {
 
 		for (let neighbor = 0; neighbor < this.size; neighbor++) {
 			if (this.adj_matrix[currVertex][neighbor] > 0) {
-				this.highlightEdge(currVertex, neighbor, 1);
 				if (this.visited[neighbor]) {
+					// this.highlightEdge(currVertex, neighbor, 1, 'blue');
 					this.cmd(
 						act.setText,
 						this.infoLabelID,
 						'Vertex ' + this.toStr(neighbor) + ' already visited, skipping',
 					);
 					this.cmd(act.step);
-					this.highlightEdge(currVertex, neighbor, 0);
+					// this.highlightEdge(currVertex, neighbor, 0);
 				} else {
+					this.highlightEdge(currVertex, neighbor, 1, 'red');
 					this.cmd(
 						act.setText,
 						this.infoLabelID,
@@ -427,7 +428,7 @@ export default class DFS extends Graph {
 
 					this.leaveVertex();
 					this.visitVertex(neighbor);
-					this.highlightEdge(currVertex, neighbor, 0);
+					// this.highlightEdge(currVertex, neighbor, 0);
 
 					this.dfsVisit(neighbor, messageX + this.recursionSpacingX);
 

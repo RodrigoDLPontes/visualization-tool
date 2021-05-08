@@ -681,7 +681,7 @@ export default class ObjectManager {
 		}
 	}
 
-	setEdgeHighlight(fromID, toID, val) {
+	setEdgeHighlight(fromID, toID, val, color) {
 		let oldHighlight = false;
 		if (this.edges[fromID] != null && this.edges[fromID] !== undefined) {
 			const len = this.edges[fromID].length;
@@ -692,7 +692,7 @@ export default class ObjectManager {
 					this.edges[fromID][i].toID === this.nodes[toID]
 				) {
 					oldHighlight = this.edges[fromID][i].highlighted;
-					this.edges[fromID][i].setHighlight(val);
+					this.edges[fromID][i].setHighlight(val, color);
 				}
 			}
 		}

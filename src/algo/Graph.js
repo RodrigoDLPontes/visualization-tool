@@ -233,12 +233,12 @@ export default class Graph extends Algorithm {
 		}
 	}
 
-	highlightEdge(i, j, highlightVal) {
-		this.cmd(act.setHighlight, this.adj_list_edges[i][j], highlightVal);
-		this.cmd(act.setHighlight, this.adj_matrixID[i][j], highlightVal);
-		this.cmd(act.setEdgeHighlight, this.circleID[i], this.circleID[j], highlightVal);
+	highlightEdge(i, j, highlightVal, color) {
+		this.cmd(act.setHighlight, this.adj_list_edges[i][j], highlightVal, color);
+		this.cmd(act.setHighlight, this.adj_matrixID[i][j], highlightVal, color);
+		this.cmd(act.setEdgeHighlight, this.circleID[i], this.circleID[j], highlightVal, color);
 		if (!this.directed) {
-			this.cmd(act.setEdgeHighlight, this.circleID[j], this.circleID[i], highlightVal);
+			this.cmd(act.setEdgeHighlight, this.circleID[j], this.circleID[i], highlightVal, color);
 		}
 	}
 

@@ -163,7 +163,6 @@ export default class AnimatedLine {
 
 	draw(context) {
 		context.globalAlpha = this.alpha;
-		console.log(this.highlightColor);
 
 		if (this.highlighted) this.drawArrow(this.highlightDiff, this.highlightColor, context);
 		this.drawArrow(this.thickness, this.foregroundColor, context);

@@ -733,6 +733,11 @@ export default class DequeArray extends Algorithm {
 		this.size = 0;
 		this.cmd(act.setText, this.frontID, '0');
 		this.cmd(act.setText, this.sizeID, '0');
+		this.cmd(
+			act.setPosition, 
+			this.frontPointerID, 
+			ARRAY_START_X,
+			ARRAY_START_Y + FRONT_LABEL_OFFSET);
 		return this.commands;
 	}
 }

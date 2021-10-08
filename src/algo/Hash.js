@@ -27,12 +27,13 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 10;
-const MAX_LOAD_LENGTH = 2;
+const MAX_LOAD_LENGTH = 5;
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -62,15 +63,27 @@ export default class Hash extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		this.insertField = addControlToAlgorithmBar('Text', '');
-		this.insertField.size = MAX_HASH_LENGTH;
-		this.insertField.onkeydown = this.returnSubmit(
-			this.insertField,
+		addLabelToAlgorithmBar('Key: ');
+		this.keyField = addControlToAlgorithmBar('Text', '');
+		this.keyField.size = MAX_HASH_LENGTH;
+		this.keyField.onkeydown = this.returnSubmit(
+			this.keyField,
 			this.insertCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
 		);
-		this.controls.push(this.insertField);
+		this.controls.push(this.keyField);
+
+		addLabelToAlgorithmBar('Value: ');
+		this.valueField = addControlToAlgorithmBar('Text', '');
+		this.valueField.size = MAX_HASH_LENGTH;
+		this.valueField.onkeydown = this.returnSubmit(
+			this.valueField,
+			this.insertCallback.bind(this),
+			MAX_HASH_LENGTH,
+			true,
+		);
+		this.controls.push(this.valueField);
 
 		this.insertButton = addControlToAlgorithmBar('Button', 'Insert');
 		this.insertButton.onclick = this.insertCallback.bind(this);
@@ -81,7 +94,7 @@ export default class Hash extends Algorithm {
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.size = MAX_HASH_LENGTH;
 		this.deleteField.onkeydown = this.returnSubmit(
-			this.insertField,
+			this.keyField,
 			this.deleteCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
@@ -97,7 +110,7 @@ export default class Hash extends Algorithm {
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.size = MAX_HASH_LENGTH;
 		this.findField.onkeydown = this.returnSubmit(
-			this.insertField,
+			this.keyField,
 			this.findCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
@@ -154,40 +167,40 @@ export default class Hash extends Algorithm {
 		this.hashingIntegers = newHashingIntegerValue;
 		if (this.hashingIntegers) {
 			this.hashIntegerButton.checked = true;
-			this.insertField.onkeydown = this.returnSubmit(
-				this.insertField,
+			this.keyField.onkeydown = this.returnSubmit(
+				this.keyField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 			this.findField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 		} else {
 			this.hashStringButton.checked = true;
-			this.insertField.onkeydown = this.returnSubmit(
-				this.insertField,
+			this.keyField.onkeydown = this.returnSubmit(
+				this.keyField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
 			);
 			this.findField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
@@ -526,17 +539,20 @@ export default class Hash extends Algorithm {
 	}
 
 	resetAll() {
-		this.insertField.value = '';
+		this.keyField.value = '';
 		this.deleteField.value = '';
 		this.findField.value = '';
 		return [];
 	}
 
 	insertCallback() {
-		const insertedValue = this.insertField.value;
-		if (insertedValue !== '') {
-			this.insertField.value = '';
-			this.implementAction(this.insertElement.bind(this), insertedValue);
+		const insertedKey = this.keyField.value;
+		const insertedValue = this.valueField.value;
+		if (insertedKey !== '' &&
+			insertedValue !== '') {
+			this.keyField.value = '';
+			this.valueField.value = '';
+			this.implementAction(this.insertElement.bind(this), insertedKey, insertedValue);
 		}
 	}
 

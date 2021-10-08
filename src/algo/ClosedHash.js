@@ -96,14 +96,14 @@ export default class ClosedHash extends Hash {
 			this.linearProblingButton.checked = true;
 			this.currentHashingTypeButtonState = this.linearProblingButton;
 			for (let i = 0; i < this.table_size; i++) {
-				this.skipDist[i] = i;
+				this.skipDist[i] = i + 1;
 			}
 		} else if (newProbingType === this.quadraticProbingButton) {
 			this.quadraticProbingButton.checked = true;
 			this.currentHashingTypeButtonState = this.quadraticProbingButton;
 
 			for (let i = 0; i < this.table_size; i++) {
-				this.skipDist[i] = i * i;
+				this.skipDist[i] = (i + 1) * (i + 1);
 			}
 		} else if (newProbingType === this.doubleHashingButton) {
 			this.doubleHashingButton.checked = true;
@@ -238,7 +238,6 @@ export default class ClosedHash extends Hash {
 				removedIndex = index;
 				this.cmd(act.step);
 			}
-			probes++;
 		
 			// increment index and clear labels
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
@@ -271,6 +270,7 @@ export default class ClosedHash extends Hash {
 					`Encountered matching key, so terminate loop`,
 				);
 			}
+			probes++;
 			this.cmd(act.step);
 		}
 
@@ -356,9 +356,9 @@ export default class ClosedHash extends Hash {
 		let index = this.doHash(key);
 
 		index = this.getElemIndex(index, key);
-		const elem = this.hashTableValues[index].elem;
 
 		if (index >= 0) {
+			const elem = this.hashTableValues[index].elem;
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
@@ -448,11 +448,11 @@ export default class ClosedHash extends Hash {
 
 		if (this.currentHashingTypeButtonState === this.linearProblingButton) {
 			for (let i = 0; i < this.table_size; i++) {
-				this.skipDist[i] = i;
+				this.skipDist[i] = (i + 1);
 			}
 		} else if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
 			for (let i = 0; i < this.table_size; i++) {
-				this.skipDist[i] = i * i;
+				this.skipDist[i] = (i + 1) * (i + 1);
 			}
 		}
 
@@ -589,7 +589,7 @@ export default class ClosedHash extends Hash {
 		this.commands = [];
 
 		for (let i = 0; i < this.table_size; i++) {
-			this.skipDist[i] = i; // Start with linear probing
+			this.skipDist[i] = i + 1; // Start with linear probing
 			this.hashTableVisual[i] = this.nextIndex++;
 			this.empty[i] = true;
 			this.deleted[i] = false;

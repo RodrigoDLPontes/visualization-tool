@@ -162,13 +162,13 @@ export default class ClosedHash extends Hash {
 			return this.commands;
 		}
 
-		if (index === -1) {
+		if (this.hashTableValues[index] && this.hashTableValues[index].key === key) {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Key ' + key + ' is already in HashMap.',
+				'Key ' + key + ' is already in HashMap, updating value.',``
 			);
-			return this.commands;
+			//return this.commands;
 		}
 
 		const labID = this.nextIndex++;
@@ -283,7 +283,7 @@ export default class ClosedHash extends Hash {
 
 		if (!this.empty[index] && this.hashTableValues[index].key === key && !this.deleted[index]) {
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
-			return -1;
+			return index;
 		} else if (probes === this.table_size && removedIndex === -1) {
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 			return -2;
@@ -366,7 +366,7 @@ export default class ClosedHash extends Hash {
 			);
 			// this.empty[index] = true;
 			this.deleted[index] = true;
-			this.cmd(act.setText, this.hashTableVisual[index], '<deleted>');
+			this.cmd(act.setText, this.hashTableVisual[index], 'DEL');
 			this.size--;
 		} else {
 			this.cmd(

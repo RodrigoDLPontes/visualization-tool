@@ -77,6 +77,8 @@ export default class OpenHash extends Hash {
 			75,
 		);
 		let found = false;
+		let prev;
+		let old;
 		if (this.hashTableValues[index] != null) {
 			// Search for duplicates
 			this.cmd(act.setText, this.ExplainLabel, 'Searching for duplicates of ' + key);
@@ -84,10 +86,12 @@ export default class OpenHash extends Hash {
 			const compareIndex = this.nextIndex++;
 			let tmp = this.hashTableValues[index];
 			this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
-			while (tmp != null && !found) {
+			while (tmp.next != null && !found) {
 				this.cmd(act.setHighlight, tmp.graphicID, 1);
-				if (tmp.key === key) {
+				if (tmp.next.key === key) {
 					this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
+					prev = tmp;
+					old = tmp.next;
 					found = true;
 				} else {
 					this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
@@ -105,8 +109,12 @@ export default class OpenHash extends Hash {
 		}
 
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  found!');
-			this.cmd(act.delete, node.graphicID);
+			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  found! Updating value!');
+			//this.cmd(act.delete, node.graphicID);
+			node.next = old.next;
+			prev.next = node;
+			this.cmd(act.connect, prev.graphicID, node.graphicID);
+			this.repositionList(index);
 			this.cmd(act.step);
 		} else {
 			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  not found!');

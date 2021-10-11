@@ -132,8 +132,8 @@ export default class ClosedHash extends Hash {
 	}
 
 	insertElement(key, value) {
-		const elem = `<${key}, ${value}>`;
 		const entry = new MapEntry(key, value);
+		const elem = entry.elem;
 		this.commands = [];
 
 		if (
@@ -168,7 +168,6 @@ export default class ClosedHash extends Hash {
 				this.ExplainLabel,
 				'Key ' + key + ' is already in HashMap, updating value.',``
 			);
-			//return this.commands;
 		}
 
 		const labID = this.nextIndex++;

@@ -112,7 +112,7 @@ export default class OpenHash extends Hash {
 		}
 
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  found! Updating value!');
+			this.cmd(act.setText, this.ExplainLabel, 'Key ' + key + ' is already in HashMap, updating value.');
 			this.cmd(act.delete, old.graphicID);
 			node.next = old.next;
 
@@ -240,31 +240,31 @@ export default class OpenHash extends Hash {
 		return this.commands;
 	}
 
-	findElement(elem) {
+	findElement(key) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key);
 
-		const index = this.doHash(elem);
+		const index = this.doHash(key);
 		const compareIndex = this.nextIndex++;
 		let found = false;
 		let tmp = this.hashTableValues[index];
 		this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 		while (tmp != null && !found) {
 			this.cmd(act.setHighlight, tmp.graphicID, 1);
-			if (tmp.data === elem) {
-				this.cmd(act.setText, compareIndex, tmp.data + '==' + elem);
+			if (tmp.key === key) {
+				this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
 				found = true;
 			} else {
-				this.cmd(act.setText, compareIndex, tmp.data + '!=' + elem);
+				this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
 			}
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key + '  Found!');
 		} else {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key + '  Not Found!');
 		}
 		this.cmd(act.delete, compareIndex);
 		this.nextIndex--;

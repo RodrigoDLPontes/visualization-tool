@@ -41,7 +41,7 @@ const HASH_NUMBER_START_Y = 10;
 const HASH_ADD_START_Y = 30;
 const HASH_INPUT_START_X = 60;
 const HASH_INPUT_X_DIFF = 7;
-const HASH_INPUT_START_Y = 45;
+const HASH_INPUT_START_Y = 55;
 const HASH_ADD_LINE_Y = 42;
 const HASH_RESULT_Y = 50;
 const ELF_HASH_SHIFT = 10;
@@ -74,6 +74,7 @@ export default class Hash extends Algorithm {
 		);
 		this.controls.push(this.keyField);
 
+		//I'm allowing any type of data be inserted for the value, should it be restricted?
 		addLabelToAlgorithmBar('Value: ');
 		this.valueField = addControlToAlgorithmBar('Text', '');
 		this.valueField.size = MAX_HASH_LENGTH;
@@ -81,7 +82,7 @@ export default class Hash extends Algorithm {
 			this.valueField,
 			this.insertCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true,
+			false,
 		);
 		this.controls.push(this.valueField);
 
@@ -249,7 +250,7 @@ export default class Hash extends Algorithm {
 			return index;
 		} else {
 			const label1 = this.nextIndex++;
-			this.cmd(act.createLabel, label1, 'Hashing:', 10, 45, 0);
+			this.cmd(act.createLabel, label1, 'Hashing:', 10, 55, 0);
 			const wordToHashID = new Array(input.length);
 			const wordToHash = new Array(input.length);
 			for (let i = 0; i < input.length; i++) {

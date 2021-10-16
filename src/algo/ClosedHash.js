@@ -163,7 +163,7 @@ export default class ClosedHash extends Hash {
 			return this.commands;
 		}
 
-		if (this.hashTableValues[index] && this.hashTableValues[index].key === key) {
+		if (this.hashTableValues[index] && this.hashTableValues[index].key === key && !this.deleted[index]) {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
@@ -310,8 +310,8 @@ export default class ClosedHash extends Hash {
 
 		const start = index;
 		let foundIndex = -1;
+		let candidateIndex = index;
 		for (let i = 0; i < this.table_size; i++) {
-			const candidateIndex = (index + this.skipDist[i]) % this.table_size;
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 1);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.hashTableVisual[candidateIndex], 0);
@@ -336,6 +336,7 @@ export default class ClosedHash extends Hash {
 				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` +
 					` ${(start + this.skipDist[i + 1]) % this.table_size}`,
 			);
+			candidateIndex = (index + this.skipDist[i]) % this.table_size;
 		}
 
 		this.cmd(act.setText, this.HashIndexID, '');
@@ -353,6 +354,7 @@ export default class ClosedHash extends Hash {
 		let index = this.doHash(key);
 
 		index = this.getElemIndex(index, key);
+		console.log(index);
 
 		if (index >= 0) {
 			const elem = this.hashTableValues[index].elem;
@@ -369,7 +371,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element with key: ' + key + '  Element not in table',
+				'Deleting element with key: ' + key + '  Key not in table',
 			);
 		}
 		return this.commands;

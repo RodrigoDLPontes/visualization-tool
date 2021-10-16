@@ -57,9 +57,6 @@ export default class OpenHash extends Hash {
 		super.addControls();
 	}
 
-
-	//TODO replace "elem" with key where appropriate
-
 	insertElement(key, value) {
 		const elem = `<${key}, ${value}>`;
 		this.commands = [];
@@ -112,7 +109,11 @@ export default class OpenHash extends Hash {
 		}
 
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Key ' + key + ' is already in HashMap, updating value.');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Key ' + key + ' is already in HashMap, updating value.',
+			);
 			this.cmd(act.delete, old.graphicID);
 			node.next = old.next;
 
@@ -175,14 +176,10 @@ export default class OpenHash extends Hash {
 
 	deleteElement(key) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Deleting key: ' + key);
+		this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key);
 		const index = this.doHash(key);
 		if (this.hashTableValues[index] == null) {
-			this.cmd(
-				act.setText,
-				this.ExplainLabel,
-				'Deleting key: ' + key + '  Key not in table',
-			);
+			this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Key not in table');
 			return this.commands;
 		}
 		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 1);
@@ -212,11 +209,7 @@ export default class OpenHash extends Hash {
 			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			if (tmp.key === key) {
 				found = true;
-				this.cmd(
-					act.setText,
-					this.ExplainLabel,
-					'Deleting key: ' + key + '  Key deleted',
-				);
+				this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Entry deleted');
 				if (tmp.next != null) {
 					this.cmd(act.connect, tmpPrev.graphicID, tmp.next.graphicID);
 				} else {
@@ -231,18 +224,14 @@ export default class OpenHash extends Hash {
 			}
 		}
 		if (!found) {
-			this.cmd(
-				act.setText,
-				this.ExplainLabel,
-				'Deleting key: ' + key + '  Key not in table',
-			);
+			this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Key not in table');
 		}
 		return this.commands;
 	}
 
 	findElement(key) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key);
+		this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key);
 
 		const index = this.doHash(key);
 		const compareIndex = this.nextIndex++;
@@ -262,9 +251,17 @@ export default class OpenHash extends Hash {
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key + '  Found!');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Finding entry with key: ' + key + '  Found!',
+			);
 		} else {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element with key: ' + key + '  Not Found!');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Finding entry with key: ' + key + '  Not Found!',
+			);
 		}
 		this.cmd(act.delete, compareIndex);
 		this.nextIndex--;
@@ -322,7 +319,13 @@ export default class OpenHash extends Hash {
 			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd(act.createLabel, this.loadFactorID, `Load Factor: ${this.load_factor}`, LOAD_LABEL_X, LOAD_LABEL_Y);
+		this.cmd(
+			act.createLabel,
+			this.loadFactorID,
+			`Load Factor: ${this.load_factor}`,
+			LOAD_LABEL_X,
+			LOAD_LABEL_Y,
+		);
 		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

@@ -137,8 +137,8 @@ export default class ClosedHash extends Hash {
 		this.commands = [];
 
 		if (
-			(this.size + 1) / this.table_size > this.load_factor
-			&& this.table_size * 2 < MAX_SIZE
+			(this.size + 1) / this.table_size > this.load_factor &&
+			this.table_size * 2 < MAX_SIZE
 		) {
 			this.resize(false);
 		}
@@ -153,12 +153,13 @@ export default class ClosedHash extends Hash {
 		if (index === -2 && this.table_size * 2 < MAX_SIZE) {
 			this.resize(true);
 		} else if (index === -2) {
-			this.cmd(act.setText,
+			this.cmd(
+				act.setText,
 				this.ExplainLabel,
 				`Array would normally resize after length number of probes,
 				however there just isn't enough space on the screen to resize. 
-				So here's a cute emoji of jack instead: V•ᴥ•V`
-				)
+				So here's a cute emoji of jack instead: V•ᴥ•V`,
+			);
 			return this.commands;
 		}
 
@@ -166,18 +167,14 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Key ' + key + ' is already in HashMap, updating value.',``
+				'Key ' + key + ' is already in HashMap, updating value.',
+				``,
 			);
 		}
 
 		const labID = this.nextIndex++;
 		this.cmd(act.createLabel, labID, elem, 20, 25);
-		this.cmd(
-			act.move,
-			labID,
-			this.indexXPos[index],
-			this.indexYPos[index] - ARRAY_ELEM_HEIGHT,
-		);
+		this.cmd(act.move, labID, this.indexXPos[index], this.indexYPos[index] - ARRAY_ELEM_HEIGHT);
 		this.cmd(act.step);
 		this.cmd(act.delete, labID);
 		this.cmd(act.setText, this.hashTableVisual[index], elem);
@@ -193,12 +190,14 @@ export default class ClosedHash extends Hash {
 	}
 
 	resetSkipDist(key, labelID) {
-		const skipVal = this.nextLowestPrime - this.currHash % this.nextLowestPrime;
+		const skipVal = this.nextLowestPrime - (this.currHash % this.nextLowestPrime);
 		this.cmd(
 			act.createLabel,
 			labelID,
-			`hash2(${String(key)}) = `
-			+ `${this.nextLowestPrime} - ${String(this.currHash)} % ${this.nextLowestPrime} = ${String(skipVal)}`,
+			`hash2(${String(key)}) = ` +
+				`${this.nextLowestPrime} - ${String(this.currHash)} % ${
+					this.nextLowestPrime
+				} = ${String(skipVal)}`,
 			HASH2_LABEL_X,
 			HASH2_LABEL_Y,
 			0,
@@ -227,7 +226,6 @@ export default class ClosedHash extends Hash {
 			!this.empty[index] &&
 			!(this.hashTableValues[index].key === key)
 		) {
-
 			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
 			this.cmd(act.step);
 			// storing removed index
@@ -237,7 +235,7 @@ export default class ClosedHash extends Hash {
 				removedIndex = index;
 				this.cmd(act.step);
 			}
-		
+
 			// increment index and clear labels
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 			this.cmd(act.setText, this.ExplainLabel, '');
@@ -251,8 +249,8 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.HashIndexID,
-				`Index to probe: (${start} + ${probes}*${skipVal}) % ${this.table_size} =` 
-				+ ` ${(start + this.skipDist[probes]) % this.table_size}`
+				`Index to probe: (${start} + ${probes}*${skipVal}) % ${this.table_size} =` +
+					` ${(start + this.skipDist[probes]) % this.table_size}`,
 			);
 
 			this.cmd(act.setHighlight, this.hashTableVisual[index], 1);
@@ -309,7 +307,7 @@ export default class ClosedHash extends Hash {
 			HashID = this.nextIndex++;
 			skipVal = this.resetSkipDist(key, HashID);
 		}
-		
+
 		const start = index;
 		let foundIndex = -1;
 		for (let i = 0; i < this.table_size; i++) {
@@ -327,7 +325,7 @@ export default class ClosedHash extends Hash {
 			} else if (this.empty[candidateIndex]) {
 				break;
 			}
-			
+
 			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
 				skipVal = i + 1;
 			}
@@ -335,8 +333,8 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.HashIndexID,
-				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` 
-				+ ` ${(start + this.skipDist[i + 1]) % this.table_size}`
+				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` +
+					` ${(start + this.skipDist[i + 1]) % this.table_size}`,
 			);
 		}
 
@@ -393,7 +391,7 @@ export default class ClosedHash extends Hash {
 	}
 
 	resize(fromCycle) {
-		this.commands = []; 
+		this.commands = [];
 
 		this.cmd(act.setText, this.ExplainLabel, '');
 		this.cmd(act.setText, this.DelIndexLabel, '');
@@ -402,18 +400,20 @@ export default class ClosedHash extends Hash {
 		if (!fromCycle) {
 			this.cmd(
 				act.createLabel,
-				resizeLabel, 
-				`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size + 1} / ${this.table_size}) > ${this.load_factor}`,
+				resizeLabel,
+				`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size + 1} / ${
+					this.table_size
+				}) > ${this.load_factor}`,
 				RESIZE_LABEL_X,
-				RESIZE_LABEL_Y
+				RESIZE_LABEL_Y,
 			);
 		} else {
 			this.cmd(
 				act.createLabel,
-				resizeLabel, 
+				resizeLabel,
 				`(Resize Required): ${this.table_size} elements probed`,
 				RESIZE_LABEL_X,
-				RESIZE_LABEL_Y
+				RESIZE_LABEL_Y,
 			);
 		}
 
@@ -425,7 +425,6 @@ export default class ClosedHash extends Hash {
 		}
 
 		this.cmd(act.step);
-		
 
 		this.oldHashTableVisual = this.hashTableVisual;
 		this.oldHashTableValues = this.hashTableValues;
@@ -447,7 +446,7 @@ export default class ClosedHash extends Hash {
 
 		if (this.currentHashingTypeButtonState === this.linearProblingButton) {
 			for (let i = 0; i < this.table_size; i++) {
-				this.skipDist[i] = (i + 1);
+				this.skipDist[i] = i + 1;
 			}
 		} else if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
 			for (let i = 0; i < this.table_size; i++) {
@@ -456,7 +455,6 @@ export default class ClosedHash extends Hash {
 		}
 
 		for (let i = 0; i < this.table_size; i++) {
-
 			this.hashTableVisual[i] = this.nextIndex++;
 			this.empty[i] = true;
 			this.deleted[i] = false;
@@ -478,7 +476,13 @@ export default class ClosedHash extends Hash {
 			this.indexXPos[i] = nextXPos;
 			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
 
-			this.cmd(act.createLabel, this.indexLabelID[i], i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(
+				act.createLabel,
+				this.indexLabelID[i],
+				i,
+				this.indexXPos[i],
+				this.indexYPos[i],
+			);
 			this.cmd(act.setForegroundColor, this.indexLabelID[i], INDEX_COLOR);
 		}
 		this.cmd(act.step);
@@ -486,7 +490,6 @@ export default class ClosedHash extends Hash {
 		let elementsMoved = 0;
 
 		for (let i = 0; i < this.table_size / 2 && elementsMoved < this.size; i++) {
-
 			this.cmd(act.setHighlight, this.oldHashTableVisual[i], 1);
 			this.cmd(act.step);
 
@@ -499,7 +502,13 @@ export default class ClosedHash extends Hash {
 
 				if (index !== -1) {
 					const labID = this.nextIndex++;
-					this.cmd(act.createLabel, labID, oldElement.elem, this.oldIndexXPos[i], this.oldIndexYPos[i] - ARRAY_ELEM_HEIGHT);
+					this.cmd(
+						act.createLabel,
+						labID,
+						oldElement.elem,
+						this.oldIndexXPos[i],
+						this.oldIndexYPos[i] - ARRAY_ELEM_HEIGHT,
+					);
 					this.cmd(
 						act.move,
 						labID,
@@ -550,7 +559,7 @@ export default class ClosedHash extends Hash {
 				act.setText,
 				this.loadFactorID,
 				`Load Factor: ${this.load_factor}
-			(Max Array Length)`
+			(Max Array Length)`,
 			);
 		}
 		this.cmd(act.step);
@@ -610,7 +619,13 @@ export default class ClosedHash extends Hash {
 			this.indexXPos[i] = nextXPos;
 			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
 
-			this.cmd(act.createLabel, this.indexLabelID[i], i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(
+				act.createLabel,
+				this.indexLabelID[i],
+				i,
+				this.indexXPos[i],
+				this.indexYPos[i],
+			);
 			this.cmd(act.setForegroundColor, this.indexLabelID[i], INDEX_COLOR);
 		}
 		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 40, 0);
@@ -621,7 +636,7 @@ export default class ClosedHash extends Hash {
 			this.loadFactorID,
 			`Load Factor: ${this.load_factor}`,
 			LOAD_LABEL_X,
-			LOAD_LABEL_Y
+			LOAD_LABEL_Y,
 		);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -698,6 +713,6 @@ class MapEntry {
 	constructor(key, val) {
 		this.key = key;
 		this.value = val;
-		this.elem = `<${key}, ${val}>`
+		this.elem = `<${key}, ${val}>`;
 	}
 }

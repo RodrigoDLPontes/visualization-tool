@@ -131,8 +131,8 @@ export default class Hash extends Algorithm {
 			this.loadField,
 			this.changeLoadFactor.bind(this),
 			MAX_LOAD_LENGTH,
-			true
-		)
+			true,
+		);
 
 		this.controls.push(this.loadField);
 
@@ -541,6 +541,7 @@ export default class Hash extends Algorithm {
 
 	resetAll() {
 		this.keyField.value = '';
+		this.valueField.value = '';
 		this.deleteField.value = '';
 		this.findField.value = '';
 		return [];
@@ -549,8 +550,7 @@ export default class Hash extends Algorithm {
 	insertCallback() {
 		const insertedKey = this.keyField.value;
 		const insertedValue = this.valueField.value;
-		if (insertedKey !== '' &&
-			insertedValue !== '') {
+		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';
 			this.valueField.value = '';
 			this.implementAction(this.insertElement.bind(this), insertedKey, insertedValue);

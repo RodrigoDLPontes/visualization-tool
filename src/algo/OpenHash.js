@@ -179,7 +179,11 @@ export default class OpenHash extends Hash {
 		this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key);
 		const index = this.doHash(key);
 		if (this.hashTableValues[index] == null) {
-			this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Key not in table');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Deleting entry with key: ' + key + '  Key not in table',
+			);
 			return this.commands;
 		}
 		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 1);
@@ -209,7 +213,11 @@ export default class OpenHash extends Hash {
 			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			if (tmp.key === key) {
 				found = true;
-				this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Entry deleted');
+				this.cmd(
+					act.setText,
+					this.ExplainLabel,
+					'Deleting entry with key: ' + key + '  Entry deleted',
+				);
 				if (tmp.next != null) {
 					this.cmd(act.connect, tmpPrev.graphicID, tmp.next.graphicID);
 				} else {
@@ -224,7 +232,11 @@ export default class OpenHash extends Hash {
 			}
 		}
 		if (!found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key + '  Key not in table');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Deleting entry with key: ' + key + '  Key not in table',
+			);
 		}
 		return this.commands;
 	}
@@ -251,11 +263,7 @@ export default class OpenHash extends Hash {
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(
-				act.setText,
-				this.ExplainLabel,
-				'Finding entry with key: ' + key + '  Found!',
-			);
+			this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key + '  Found!');
 		} else {
 			this.cmd(
 				act.setText,

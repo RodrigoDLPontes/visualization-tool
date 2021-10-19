@@ -163,13 +163,18 @@ export default class ClosedHash extends Hash {
 			return this.commands;
 		}
 
-		if (this.hashTableValues[index] && this.hashTableValues[index].key === key && !this.deleted[index]) {
+		if (
+			this.hashTableValues[index] &&
+			this.hashTableValues[index].key === key &&
+			!this.deleted[index]
+		) {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
 				'Key ' + key + ' is already in HashMap, updating value.',
 				``,
 			);
+			this.size--;
 		}
 
 		const labID = this.nextIndex++;
@@ -322,7 +327,10 @@ export default class ClosedHash extends Hash {
 			) {
 				foundIndex = candidateIndex;
 				break;
-			} else if (this.empty[candidateIndex]) {
+			} else if (
+				this.empty[candidateIndex] ||
+				(this.deleted[candidateIndex] && this.hashTableValues[candidateIndex].key === key)
+			) {
 				break;
 			}
 
@@ -354,7 +362,6 @@ export default class ClosedHash extends Hash {
 		let index = this.doHash(key);
 
 		index = this.getElemIndex(index, key);
-		console.log(index);
 
 		if (index >= 0) {
 			const elem = this.hashTableValues[index].elem;

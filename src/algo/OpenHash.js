@@ -57,12 +57,13 @@ export default class OpenHash extends Hash {
 		super.addControls();
 	}
 
-	insertElement(elem) {
+	insertElement(key, value) {
+		const elem = `<${key}, ${value}>`;
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + String(elem));
-		const index = this.doHash(elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element ' + elem);
+		const index = this.doHash(key);
 
-		const node = new LinkedListNode(elem, this.nextIndex++, 100, 75);
+		const node = new LinkedListNode(key, value, this.nextIndex++, 100, 75);
 		this.cmd(
 			act.createLinkedListNode,
 			node.graphicID,
@@ -73,23 +74,30 @@ export default class OpenHash extends Hash {
 			75,
 		);
 		let found = false;
+		let prev = null;
+		let old;
 		if (this.hashTableValues[index] != null) {
 			// Search for duplicates
-			this.cmd(act.setText, this.ExplainLabel, 'Searching for duplicates of ' + elem);
+			this.cmd(act.setText, this.ExplainLabel, 'Searching for duplicates of ' + key);
 
 			const compareIndex = this.nextIndex++;
 			let tmp = this.hashTableValues[index];
 			this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 			while (tmp != null && !found) {
 				this.cmd(act.setHighlight, tmp.graphicID, 1);
-				if (tmp.data === elem) {
-					this.cmd(act.setText, compareIndex, tmp.data + '==' + elem);
+				if (tmp.key === key) {
+					this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
+					old = tmp;
 					found = true;
+					this.cmd(act.step);
+					this.cmd(act.setHighlight, tmp.graphicID, 0);
+					break;
 				} else {
-					this.cmd(act.setText, compareIndex, tmp.data + '!=' + elem);
+					this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
 				}
 				this.cmd(act.step);
 				this.cmd(act.setHighlight, tmp.graphicID, 0);
+				prev = tmp;
 				tmp = tmp.next;
 			}
 
@@ -101,11 +109,36 @@ export default class OpenHash extends Hash {
 		}
 
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + elem + '  found!');
-			this.cmd(act.delete, node.graphicID);
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Key ' + key + ' is already in HashMap, updating value.',
+			);
+			this.cmd(act.delete, old.graphicID);
+			node.next = old.next;
+
+			if (prev != null) {
+				prev.next = node;
+				this.cmd(act.connect, prev.graphicID, node.graphicID);
+			} else {
+				this.cmd(
+					act.disconnect,
+					this.hashTableVisual[index],
+					this.hashTableValues[index].graphicID,
+				);
+				this.cmd(act.connect, this.hashTableVisual[index], node.graphicID);
+				this.hashTableValues[index] = node;
+			}
+			if (node.next != null) {
+				this.cmd(act.connect, node.graphicID, node.next.graphicID);
+			} else {
+				this.cmd(act.setNull, node.graphicID, 1);
+			}
+
+			this.repositionList(index);
 			this.cmd(act.step);
 		} else {
-			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + elem + '  not found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  not found!');
 			this.cmd(act.step);
 
 			if (this.hashTableValues[index] != null) {
@@ -141,22 +174,22 @@ export default class OpenHash extends Hash {
 		}
 	}
 
-	deleteElement(elem) {
+	deleteElement(key) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Deleting element: ' + elem);
-		const index = this.doHash(elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key);
+		const index = this.doHash(key);
 		if (this.hashTableValues[index] == null) {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element not in table',
+				'Deleting entry with key: ' + key + '  Key not in table',
 			);
 			return this.commands;
 		}
 		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 1);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.hashTableValues[index].graphicID, 0);
-		if (this.hashTableValues[index].data === elem) {
+		if (this.hashTableValues[index].key === key) {
 			if (this.hashTableValues[index].next != null) {
 				this.cmd(
 					act.connect,
@@ -178,12 +211,12 @@ export default class OpenHash extends Hash {
 			this.cmd(act.setHighlight, tmp.graphicID, 1);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, tmp.graphicID, 0);
-			if (tmp.data === elem) {
+			if (tmp.key === key) {
 				found = true;
 				this.cmd(
 					act.setText,
 					this.ExplainLabel,
-					'Deleting element: ' + elem + '  Element deleted',
+					'Deleting entry with key: ' + key + '  Entry deleted',
 				);
 				if (tmp.next != null) {
 					this.cmd(act.connect, tmpPrev.graphicID, tmp.next.graphicID);
@@ -202,37 +235,41 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Deleting element: ' + elem + '  Element not in table',
+				'Deleting entry with key: ' + key + '  Key not in table',
 			);
 		}
 		return this.commands;
 	}
 
-	findElement(elem) {
+	findElement(key) {
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem);
+		this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key);
 
-		const index = this.doHash(elem);
+		const index = this.doHash(key);
 		const compareIndex = this.nextIndex++;
 		let found = false;
 		let tmp = this.hashTableValues[index];
 		this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 		while (tmp != null && !found) {
 			this.cmd(act.setHighlight, tmp.graphicID, 1);
-			if (tmp.data === elem) {
-				this.cmd(act.setText, compareIndex, tmp.data + '==' + elem);
+			if (tmp.key === key) {
+				this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
 				found = true;
 			} else {
-				this.cmd(act.setText, compareIndex, tmp.data + '!=' + elem);
+				this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
 			}
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, tmp.graphicID, 0);
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key + '  Found!');
 		} else {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Element: ' + elem + '  Not Found!');
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Finding entry with key: ' + key + '  Not Found!',
+			);
 		}
 		this.cmd(act.delete, compareIndex);
 		this.nextIndex--;
@@ -290,7 +327,13 @@ export default class OpenHash extends Hash {
 			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd(act.createLabel, this.loadFactorID, `Load Factor: ${this.load_factor}`, LOAD_LABEL_X, LOAD_LABEL_Y);
+		this.cmd(
+			act.createLabel,
+			this.loadFactorID,
+			`Load Factor: ${this.load_factor}`,
+			LOAD_LABEL_X,
+			LOAD_LABEL_Y,
+		);
 		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -343,8 +386,9 @@ export default class OpenHash extends Hash {
 }
 
 class LinkedListNode {
-	constructor(val, id, initialX, initialY) {
-		this.data = val;
+	constructor(key, val, id, initialX, initialY) {
+		this.key = key;
+		this.val = val;
 		this.graphicID = id;
 		this.x = initialX;
 		this.y = initialY;

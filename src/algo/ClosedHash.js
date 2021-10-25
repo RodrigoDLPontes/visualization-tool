@@ -207,7 +207,7 @@ export default class ClosedHash extends Hash {
 			HASH2_LABEL_Y,
 			0,
 		);
-		this.skipDist[0] = 0;
+		this.skipDist[0] = skipVal;
 		for (let i = 1; i < this.table_size; i++) {
 			this.skipDist[i] = this.skipDist[i - 1] + skipVal;
 		}
@@ -248,7 +248,7 @@ export default class ClosedHash extends Hash {
 			index = (start + this.skipDist[probes]) % this.table_size;
 
 			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
-				skipVal = probes;
+				skipVal = probes + 1;
 			}
 
 			this.cmd(

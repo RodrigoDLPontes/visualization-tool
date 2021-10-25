@@ -254,7 +254,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.HashIndexID,
-				`Index to probe: (${start} + ${probes}*${skipVal}) % ${this.table_size} =` +
+				`Index to probe: (${start} + ${probes + 1}*${skipVal}) % ${this.table_size} =` +
 					` ${(start + this.skipDist[probes]) % this.table_size}`,
 			);
 
@@ -338,11 +338,13 @@ export default class ClosedHash extends Hash {
 				skipVal = i + 1;
 			}
 
+			console.log(i);
+
 			this.cmd(
 				act.setText,
 				this.HashIndexID,
 				`Index to probe: (${start} + ${i + 1}*${skipVal}) % ${this.table_size} =` +
-					` ${(start + this.skipDist[i + 1]) % this.table_size}`,
+					` ${(start + this.skipDist[i]) % this.table_size}`,
 			);
 			candidateIndex = (index + this.skipDist[i]) % this.table_size;
 		}

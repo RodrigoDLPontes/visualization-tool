@@ -27,10 +27,13 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+
+const MAX_ARRAY_SIZE = 18;
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -48,22 +51,29 @@ export default class QuickSelect extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Comma separated list (e.g. "3,1,2", max 18 elements)');
+		const verticalGroup = addGroupToAlgorithmBar(false);
 
-		// List text field
-		this.listField = addControlToAlgorithmBar('Text', '');
+        addLabelToAlgorithmBar(
+			`Comma seperated list (e.g. "3,1,2"). Max ${MAX_ARRAY_SIZE} elements & no elements > 999`,
+			verticalGroup
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
+
+        // List text field
+		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.runCallback.bind(this),
-			60,
+			90,
 			false,
 		);
 		this.controls.push(this.listField);
 
-		addLabelToAlgorithmBar('kᵗʰ element (1 indexed)');
+		addLabelToAlgorithmBar('kᵗʰ element (1 indexed)', horizontalGroup);
 
 		// k text field
-		this.kField = addControlToAlgorithmBar('Text', '');
+		this.kField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.kField.onkeydown = this.returnSubmit(
 			this.kField,
 			this.runCallback.bind(this),
@@ -73,14 +83,9 @@ export default class QuickSelect extends Algorithm {
 		this.controls.push(this.kField);
 
 		// Run button
-		this.findButton = addControlToAlgorithmBar('Button', 'Run');
+		this.findButton = addControlToAlgorithmBar('Button', 'Run', horizontalGroup);
 		this.findButton.onclick = this.runCallback.bind(this);
 		this.controls.push(this.findButton);
-
-		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
-		this.controls.push(this.clearButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -102,6 +107,11 @@ export default class QuickSelect extends Algorithm {
 		this.pivotType = 'random';
 
 		addDivisorToAlgorithmBar();
+		
+		// Clear button
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
 	}
 
 	setup() {
@@ -128,19 +138,19 @@ export default class QuickSelect extends Algorithm {
 	}
 
 	runCallback() {
-		if (this.listField.value !== '' && this.kField.value !== '') {
-			const listStr = this.listField.value;
-			const list = listStr
-				.split(',')
-				.map(Number)
-				.filter(x => !Number.isNaN(x))
-				.slice(0, 18);
+		const list = this.listField.value.split(',').filter(x => x !== '');
+		if (
+			this.listField.value !== '' 
+			&& this.kField.value !== ''
+			&& list.length <= MAX_ARRAY_SIZE
+			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+			) {
 			const k = this.kField.value;
 			if (k > 0 && k <= list.length) {
 				this.implementAction(this.clear.bind(this));
 				this.listField.value = '';
 				this.kField.value = '';
-				this.implementAction(this.run.bind(this), listStr, k);
+				this.implementAction(this.run.bind(this), list, k);
 			}
 		}
 	}
@@ -167,7 +177,6 @@ export default class QuickSelect extends Algorithm {
 
 		this.arrayID = [];
 		this.arrayData = list
-			.split(',')
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
 			.slice(0, 18);

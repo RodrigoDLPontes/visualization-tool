@@ -26,9 +26,13 @@
 
 import Algorithm, {
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+
+const MAX_ARRAY_SIZE = 15;
 
 const INFO_MSG_X = 20;
 const INFO_MSG_Y = 150;
@@ -129,10 +133,17 @@ export default class HeapSort extends Algorithm {
     addControls() {
         this.controls = [];
 
-        addLabelToAlgorithmBar('Comma seperated list (e.g. "3,1,2", max 15 elements, no elements > 999)');
+		const verticalGroup = addGroupToAlgorithmBar(false);
+
+        addLabelToAlgorithmBar(
+			'Comma seperated list (e.g. "3,1,2"). Max 15 elements & no elements > 999',
+			verticalGroup
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
         // List text field
-		this.listField = addControlToAlgorithmBar('Text', '');
+		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.sortCallback.bind(this),
@@ -142,9 +153,11 @@ export default class HeapSort extends Algorithm {
 		this.controls.push(this.listField);
 
 		// Sort button
-		this.sortButton = addControlToAlgorithmBar('Button', 'Sort');
+		this.sortButton = addControlToAlgorithmBar('Button', 'Sort', horizontalGroup);
 		this.sortButton.onclick = this.sortCallback.bind(this);
 		this.controls.push(this.sortButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
@@ -208,10 +221,9 @@ export default class HeapSort extends Algorithm {
 		this.cmd(act.setHighlight, this.codeID[0][0], 1);
 
         this.arrayData = list
-			.split(',')
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
-			.slice(0, 15);
+			.slice(0, MAX_ARRAY_SIZE);
         const length = this.arrayData.length;
 		const displayDataTemp = new Array(length);
 		const elemCounts = new Map();
@@ -547,13 +559,13 @@ export default class HeapSort extends Algorithm {
     }
 
     sortCallback() {
-		const listValue = this.listField.value.split(',')
+		const list = this.listField.value.split(',').filter(x => x !== '');
         if (
 			this.listField.value !== ''
-			&& listValue.length <= 15
-			&& listValue.map(Number).filter(x => x > 999).length <= 0) {
+			&& list.length <= MAX_ARRAY_SIZE
+			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+			) {
             this.implementAction(this.clear.bind(this));
-            const list = this.listField.value;
             this.listField.value = '';
             this.implementAction(this.sort.bind(this), list);
         }

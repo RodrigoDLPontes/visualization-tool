@@ -33,8 +33,15 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+<<<<<<< HEAD
 const MAX_SIZE = 32;
 const ARRAY_ELEM_WIDTH = 40;
+=======
+const MAX_ARRAY_SIZE = 31;
+
+const ARRAY_SIZE = 32;
+const ARRAY_ELEM_WIDTH = 30;
+>>>>>>> master
 const ARRAY_ELEM_HEIGHT = 25;
 const ARRAY_INITIAL_X = 30;
 
@@ -65,6 +72,8 @@ export default class Heap extends Algorithm {
 	}
 
 	addControls() {
+		this.controls = [];
+
 		this.insertField = addControlToAlgorithmBar('Text', '');
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
@@ -72,26 +81,24 @@ export default class Heap extends Algorithm {
 			4,
 			true,
 		);
+		this.controls.push(this.insertField);
 
 		this.insertButton = addControlToAlgorithmBar('Button', 'Enqueue');
 		this.insertButton.onclick = this.insertCallback.bind(this);
+		this.controls.push(this.insertButton);
 
 		addDivisorToAlgorithmBar();
 
 		this.removeButton = addControlToAlgorithmBar('Button', 'Dequeue');
 		this.removeButton.onclick = this.removeCallback.bind(this);
-
-		addDivisorToAlgorithmBar();
-
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.removeButton);
 
 		addDivisorToAlgorithmBar();
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
 		addLabelToAlgorithmBar(
-			'Comma separated list (e.g. "3,1,2", max 31 elements)',
+			'Comma separated list (e.g. "3,1,2"). Max 31 elements & no elements > 999',
 			verticalGroup,
 		);
 
@@ -101,12 +108,20 @@ export default class Heap extends Algorithm {
 		this.buildHeapField.onkeydown = this.returnSubmit(
 			this.buildHeapField,
 			this.buildHeapCallback.bind(this),
-			61,
+			60,
 			false,
 		);
+		this.controls.push(this.buildHeapField);
 
 		this.buildHeapButton = addControlToAlgorithmBar('Button', 'BuildHeap', horizontalGroup);
 		this.buildHeapButton.onclick = this.buildHeapCallback.bind(this);
+		this.controls.push(this.buildHeapButton);
+
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -121,6 +136,8 @@ export default class Heap extends Algorithm {
 		this.maxHeapButton = minMaxButtonList[1];
 		this.maxHeapButton.onclick = this.maxHeapCallback.bind(this);
 		this.isMinHeap = true;
+		this.controls.push(this.minHeapButton);
+		this.controls.push(this.maxHeapButton);
 	}
 
 	createArray() {
@@ -192,8 +209,12 @@ export default class Heap extends Algorithm {
 	}
 
 	buildHeapCallback() {
-		if (this.buildHeapField.value !== '') {
-			const list = this.buildHeapField.value;
+		const list = this.buildHeapField.value.split(',').filter(x => x !== '');
+		if (
+			this.buildHeapField.value !== ''
+			&& list.length <= MAX_ARRAY_SIZE
+			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+			) {
 			this.buildHeapField.value = '';
 			this.implementAction(this.buildHeap.bind(this), list);
 		}
@@ -387,10 +408,9 @@ export default class Heap extends Algorithm {
 		this.implementAction(this.clear.bind(this));
 
 		this.arrayData = params
-			.split(',') // Split on commas
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
-			.slice(0, 31); // Get first 31 numbers
+			.slice(0, MAX_ARRAY_SIZE); // Get first 31 numbers
 		this.arrayData.unshift(0); // Add a 0 to start of array
 
 		this.currentHeapSize = this.arrayData.length - 1;
@@ -675,22 +695,10 @@ export default class Heap extends Algorithm {
 	}
 
 	disableUI() {
-		this.insertField.disabled = true;
-		this.insertButton.disabled = true;
-		this.removeButton.disabled = true;
-		this.clearButton.disabled = true;
-		this.buildHeapButton.disabled = true;
-		this.minHeapButton.disabled = true;
-		this.maxHeapButton.disabled = true;
+		this.controls.forEach(button => button.disabled = true);
 	}
 
 	enableUI() {
-		this.insertField.disabled = false;
-		this.insertButton.disabled = false;
-		this.removeButton.disabled = false;
-		this.clearButton.disabled = false;
-		this.buildHeapButton.disabled = false;
-		this.minHeapButton.disabled = false;
-		this.maxHeapButton.disabled = false;
+		this.controls.forEach(button => button.disabled = false);
 	}
 }

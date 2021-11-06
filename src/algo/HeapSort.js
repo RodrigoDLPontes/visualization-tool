@@ -26,15 +26,20 @@
 
 import Algorithm, {
 	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+
+const MAX_ARRAY_SIZE = 15;
 
 const INFO_MSG_X = 20;
 const INFO_MSG_Y = 150;
 const CODE_START_X = 25;
 const CODE_START_Y = 35;
 const CODE_LINE_HEIGHT = 14;
+const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
 const ARRAY_ELEM_WIDTH = 50;
@@ -129,10 +134,17 @@ export default class HeapSort extends Algorithm {
     addControls() {
         this.controls = [];
 
-        addLabelToAlgorithmBar('Comma seperated list (e.g. "3,1,2", max 15 elements, no elements > 999)');
+		const verticalGroup = addGroupToAlgorithmBar(false);
+
+        addLabelToAlgorithmBar(
+			'Comma seperated list (e.g. "3,1,2"). Max 15 elements & no elements > 999',
+			verticalGroup
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
         // List text field
-		this.listField = addControlToAlgorithmBar('Text', '');
+		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.sortCallback.bind(this),
@@ -142,9 +154,11 @@ export default class HeapSort extends Algorithm {
 		this.controls.push(this.listField);
 
 		// Sort button
-		this.sortButton = addControlToAlgorithmBar('Button', 'Sort');
+		this.sortButton = addControlToAlgorithmBar('Button', 'Sort', horizontalGroup);
 		this.sortButton.onclick = this.sortCallback.bind(this);
 		this.controls.push(this.sortButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
@@ -170,7 +184,7 @@ export default class HeapSort extends Algorithm {
 		this.code = [
 			['procedure heapSort(array)'],
 			['     heap <- create new PriorityQueue(array)'],
-			['     for i <- 0, array.length - 1 do'],
+			['     for i <- 0, array.length - 1, loop:'],
 			['          add ', 'heap.remove()', ' to data[i]'],
 			['     end for'],
 			['end procedure']
@@ -205,13 +219,12 @@ export default class HeapSort extends Algorithm {
     sort(list) {
         this.commands = [];
 
-		this.cmd(act.setHighlight, this.codeID[0][0], 1);
+		this.highlight(0, 0);
 
         this.arrayData = list
-			.split(',')
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
-			.slice(0, 15);
+			.slice(0, MAX_ARRAY_SIZE);
         const length = this.arrayData.length;
 		const displayDataTemp = new Array(length);
 		const elemCounts = new Map();
@@ -249,10 +262,10 @@ export default class HeapSort extends Algorithm {
 		}
         this.arrayData = displayDataTemp;
         this.cmd(act.step);
-		this.cmd(act.setHighlight, this.codeID[0][0], 0);
+		this.unhighlight(0, 0);
 
         //Create a new heap
-		this.cmd(act.setHighlight, this.codeID[1][0], 1);
+		this.highlight(1, 0);
         this.createHeap(this.arrayData);
         this.cmd(act.step);
 
@@ -265,19 +278,19 @@ export default class HeapSort extends Algorithm {
 		}
         this.cmd(act.step);
 
-		this.cmd(act.setHighlight, this.codeID[1][0], 0);
+		this.unhighlight(1, 0);
 		this.cmd(act.setText, this.infoLabelID, '');
 		
 
         //Remove all of the elements from the heap
         while (this.currentHeapSize > 0) {
-			this.cmd(act.setHighlight, this.codeID[2][0], 1);
+			this.highlight(2, 0);
 			this.cmd(act.step);
-			this.cmd(act.setHighlight, this.codeID[2][0], 0);
+			this.unhighlight(2, 0);
             this.remove();
 		}
 
-		this.cmd(act.setHighlight, this.codeID[4][0], 1);
+		this.highlight(4, 0);
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.step);
 
@@ -285,11 +298,11 @@ export default class HeapSort extends Algorithm {
             this.cmd(act.delete, this.heapArrayID[i]);
             this.cmd(act.delete, this.heapArrayLabelID[i]);
         }
-		this.cmd(act.setHighlight, this.codeID[4][0], 0);
-		this.cmd(act.setHighlight, this.codeID[5][0], 1);
+		this.unhighlight(4, 0);
+		this.highlight(5, 0);
 		this.cmd(act.step);
 	
-		this.cmd(act.setHighlight, this.codeID[5][0], 0);
+		this.unhighlight(5, 0);
 
         return this.commands;
     }
@@ -354,9 +367,9 @@ export default class HeapSort extends Algorithm {
 
 		this.cmd(act.setText, this.infoLabelID, '');
 
-		this.cmd(act.setHighlight, this.codeID[3][0], 1);
-		this.cmd(act.setHighlight, this.codeID[3][1], 1);
-		this.cmd(act.setHighlight, this.codeID[3][2], 1);
+		this.highlight(3, 0);
+		this.highlight(3, 1);
+		this.highlight(3, 2);
 
 		this.cmd(act.setText, this.heapArrayID[1], '');
 
@@ -385,8 +398,8 @@ export default class HeapSort extends Algorithm {
 
 		this.heapArrayData[1] = '';
 		
-		this.cmd(act.setHighlight, this.codeID[3][0], 0);
-		this.cmd(act.setHighlight, this.codeID[3][2], 0);
+		this.unhighlight(3, 0);
+		this.unhighlight(3, 2);
 		this.cmd(act.setText, this.infoLabelID, 'Downheap to maintain order');
 
 		if (this.currentHeapSize > 1) {
@@ -413,7 +426,7 @@ export default class HeapSort extends Algorithm {
 			this.cmd(act.step);
 			this.currentHeapSize--;
 		}
-		this.cmd(act.setHighlight, this.codeID[3][1], 0);
+		this.unhighlight(3, 1);
 		this.cmd(act.step);
 
 		return this.commands;
@@ -547,13 +560,13 @@ export default class HeapSort extends Algorithm {
     }
 
     sortCallback() {
-		const listValue = this.listField.value.split(',')
+		const list = this.listField.value.split(',').filter(x => x !== '');
         if (
 			this.listField.value !== ''
-			&& listValue.length <= 15
-			&& listValue.map(Number).filter(x => x > 999).length <= 0) {
+			&& list.length <= MAX_ARRAY_SIZE
+			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+			) {
             this.implementAction(this.clear.bind(this));
-            const list = this.listField.value;
             this.listField.value = '';
             this.implementAction(this.sort.bind(this), list);
         }
@@ -562,6 +575,14 @@ export default class HeapSort extends Algorithm {
     clearCallback() {
         this.implementAction(this.clear.bind(this));
     }
+
+	highlight(ind1, ind2) {
+		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+	}
+
+	unhighlight(ind1, ind2) {
+		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
+	}
 
     disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {

@@ -33,15 +33,10 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-<<<<<<< HEAD
 const MAX_SIZE = 32;
-const ARRAY_ELEM_WIDTH = 40;
-=======
-const MAX_ARRAY_SIZE = 31;
 
-const ARRAY_SIZE = 32;
-const ARRAY_ELEM_WIDTH = 30;
->>>>>>> master
+const MAX_ARRAY_SIZE = 31;
+const ARRAY_ELEM_WIDTH = 40;
 const ARRAY_ELEM_HEIGHT = 25;
 const ARRAY_INITIAL_X = 30;
 
@@ -68,6 +63,7 @@ export default class Heap extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.array_size = 8;
+		this.order = 'smaller';
 		this.setup();
 	}
 
@@ -185,7 +181,9 @@ export default class Heap extends Algorithm {
 		this.swapLabel4 = this.nextIndex++;
 		this.descriptLabel1 = this.nextIndex++;
 		this.descriptLabel2 = this.nextIndex++;
+		this.descriptLabel3 = this.nextIndex++;
 		this.cmd(act.createLabel, this.descriptLabel1, '', 20, 10, 0);
+		this.cmd(act.createLabel, this.descriptLabel3, '', 300, 10, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -211,10 +209,10 @@ export default class Heap extends Algorithm {
 	buildHeapCallback() {
 		const list = this.buildHeapField.value.split(',').filter(x => x !== '');
 		if (
-			this.buildHeapField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
+			this.buildHeapField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
 			this.buildHeapField.value = '';
 			this.implementAction(this.buildHeap.bind(this), list);
 		}
@@ -224,6 +222,7 @@ export default class Heap extends Algorithm {
 		if (!this.isMinHeap) {
 			this.clearCallback();
 			this.isMinHeap = true;
+			this.order = 'smaller';
 		}
 	}
 
@@ -231,6 +230,7 @@ export default class Heap extends Algorithm {
 		if (this.isMinHeap) {
 			this.clearCallback();
 			this.isMinHeap = false;
+			this.order = 'larger';
 		}
 	}
 
@@ -312,6 +312,7 @@ export default class Heap extends Algorithm {
 			childIndex = 2 * index;
 
 			if (index * 2 + 1 <= this.currentHeapSize) {
+				this.cmd(act.setText, this.descriptLabel3, `Finding ${this.order} of two children`);
 				this.setIndexHighlight(2 * index, 1);
 				this.setIndexHighlight(2 * index + 1, 1);
 				this.cmd(act.step);
@@ -321,11 +322,13 @@ export default class Heap extends Algorithm {
 					childIndex = 2 * index + 1;
 				}
 			}
+			this.cmd(act.setText, this.descriptLabel3, `Comparing child to parent`);
 			this.setIndexHighlight(index, 1);
 			this.setIndexHighlight(childIndex, 1);
 			this.cmd(act.step);
 			this.setIndexHighlight(index, 0);
 			this.setIndexHighlight(childIndex, 0);
+			this.cmd(act.setText, this.descriptLabel3, ``);
 
 			if (this.downheapCompare(childIndex, index)) {
 				this.swap(childIndex, index);
@@ -507,6 +510,7 @@ export default class Heap extends Algorithm {
 		if (currentIndex > 1) {
 			this.setIndexHighlight(currentIndex, 1);
 			this.setIndexHighlight(parentIndex, 1);
+			this.cmd(act.setText, this.descriptLabel3, `Comparing child to parent`);
 			this.cmd(act.step);
 			this.setIndexHighlight(currentIndex, 0);
 			this.setIndexHighlight(parentIndex, 0);
@@ -519,12 +523,14 @@ export default class Heap extends Algorithm {
 			if (currentIndex > 1) {
 				this.setIndexHighlight(currentIndex, 1);
 				this.setIndexHighlight(parentIndex, 1);
+				this.cmd(act.setText, this.descriptLabel3, `Comparing child to parent`);
 				this.cmd(act.step);
 				this.setIndexHighlight(currentIndex, 0);
 				this.setIndexHighlight(parentIndex, 0);
 			}
 		}
 		this.cmd(act.setText, this.descriptLabel1, '');
+		this.cmd(act.setText, this.descriptLabel3, '');
 		console.log(this.commands);
 		return this.commands;
 	}
@@ -695,10 +701,10 @@ export default class Heap extends Algorithm {
 	}
 
 	disableUI() {
-		this.controls.forEach(button => button.disabled = true);
+		this.controls.forEach(button => (button.disabled = true));
 	}
 
 	enableUI() {
-		this.controls.forEach(button => button.disabled = false);
+		this.controls.forEach(button => (button.disabled = false));
 	}
 }

@@ -26,22 +26,37 @@
 
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
+import { initialize } from 'react-ga';
 
-const POINTER_ARRAY_ELEM_WIDTH = 70;
-const POINTER_ARRAY_ELEM_HEIGHT = 30;
-const POINTER_ARRAY_ELEM_START_X = 50;
+const POINTER_ARRAY_ELEM_WIDTH = 50;
+const POINTER_ARRAY_ELEM_HEIGHT = 25;
+const POINTER_ARRAY_ELEM_START_X = 70;
+const POINTER_ARRAY_ELEM_START_Y = 100;
 
-const LINKED_ITEM_HEIGHT = 30;
-const LINKED_ITEM_WIDTH = 65;
+const RESIZE_POINTER_ARRAY_ELEM_START_X = 670;
+const RESIZE_POINTER_ARRAY_ELEM_START_Y = 30;
+const RESIZE_LABEL_X = 400;
+const RESIZE_LABEL_Y = 20;
 
-const LINKED_ITEM_Y_DELTA = 50;
+const LINKED_ITEM_WIDTH = 70;
+const LINKED_ITEM_HEIGHT = 20;
 
-const HASH_TABLE_SIZE = 13;
+const LINKED_ITEM_INITIAL_X = 70;
+const LINKED_ITEM_INITIAL_Y = 50;
+const LINKED_ITEM_X_DELTA_INIT = 70;
+const LINKED_ITEM_X_DELTA = 90;
+
+const EXPLAIN_LABEL_X = 200;
+const EXPLAIN_LABEL_Y = 15;
+
+const HASH_TABLE_SIZE = 7;
 
 const DEFAULT_LOAD_FACTOR = 0.67;
 
 const LOAD_LABEL_X = 60;
 const LOAD_LABEL_Y = 20;
+
+const MAX_SIZE = 30;
 
 const INDEX_COLOR = '#0000FF';
 
@@ -57,22 +72,92 @@ export default class OpenHash extends Hash {
 		super.addControls();
 	}
 
+	setup() {
+		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
+		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
+		this.hashTableValues = new Array(HASH_TABLE_SIZE);
+		this.indexXPos = new Array(HASH_TABLE_SIZE);
+		this.indexYPos = new Array(HASH_TABLE_SIZE);
+
+		this.ExplainLabel = this.nextIndex++;
+
+		this.loadFactorID = this.nextIndex++;
+
+		this.size = 0;
+
+		this.table_size = HASH_TABLE_SIZE;
+
+		this.load_factor = DEFAULT_LOAD_FACTOR;
+
+		this.resetIndex = this.nextIndex;
+
+		this.commands = [];
+		for (let i = 0; i < HASH_TABLE_SIZE; i++) {
+			let nextID = this.nextIndex++;
+
+			this.cmd(
+				act.createRectangle,
+				nextID,
+				'',
+				POINTER_ARRAY_ELEM_WIDTH,
+				POINTER_ARRAY_ELEM_HEIGHT,
+				POINTER_ARRAY_ELEM_START_X,
+				POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT,
+			);
+			this.hashTableVisual[i] = nextID;
+			this.cmd(act.setNull, this.hashTableVisual[i], 1);
+
+			nextID = this.nextIndex++;
+			this.hashTableIndices[i] = nextID;
+			this.hashTableValues[i] = null;
+
+			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
+			this.indexYPos[i] = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
+
+			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
+		}
+		this.cmd(
+			act.createLabel,
+			this.loadFactorID,
+			`Load Factor: ${this.load_factor}`,
+			LOAD_LABEL_X,
+			LOAD_LABEL_Y,
+		);
+		this.cmd(act.createLabel, this.ExplainLabel, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y, 0);
+		this.animationManager.startNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
+	}
+
 	insertElement(key, value) {
 		const elem = `<${key}, ${value}>`;
 		this.commands = [];
-		this.cmd(act.setText, this.ExplainLabel, 'Inserting element ' + elem);
-		const index = this.doHash(key);
 
-		const node = new LinkedListNode(key, value, this.nextIndex++, 100, 75);
+		if (
+			(this.size + 1) / this.table_size > this.load_factor &&
+			this.table_size * 2 + 1 < MAX_SIZE
+		) {
+			this.resize();
+		}
+
+		this.cmd(act.setText, this.ExplainLabel, 'Inserting element ' + elem);
+		const node = new LinkedListNode(key, value, this.nextIndex++, LINKED_ITEM_INITIAL_X, LINKED_ITEM_INITIAL_Y);
 		this.cmd(
 			act.createLinkedListNode,
 			node.graphicID,
 			elem,
 			LINKED_ITEM_WIDTH,
 			LINKED_ITEM_HEIGHT,
-			100,
-			75,
+			LINKED_ITEM_INITIAL_X,
+			LINKED_ITEM_INITIAL_Y,
+			0.25,
+			0,
+			1
 		);
+
+		const index = this.doHash(key);
+
 		let found = false;
 		let prev = null;
 		let old;
@@ -82,7 +167,7 @@ export default class OpenHash extends Hash {
 
 			const compareIndex = this.nextIndex++;
 			let tmp = this.hashTableValues[index];
-			this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
+			this.cmd(act.createLabel, compareIndex, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y + 30, 0);
 			while (tmp != null && !found) {
 				this.cmd(act.setHighlight, tmp.graphicID, 1);
 				if (tmp.key === key) {
@@ -135,7 +220,7 @@ export default class OpenHash extends Hash {
 				this.cmd(act.setNull, node.graphicID, 1);
 			}
 
-			this.repositionList(index);
+			this.repositionList(index, this.hashTableValues[index]);
 			this.cmd(act.step);
 		} else {
 			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  not found!');
@@ -153,7 +238,8 @@ export default class OpenHash extends Hash {
 			this.cmd(act.connect, this.hashTableVisual[index], node.graphicID);
 			node.next = this.hashTableValues[index];
 			this.hashTableValues[index] = node;
-			this.repositionList(index);
+			this.repositionList(index, this.hashTableValues[index]);
+			this.size++;
 		}
 
 		this.cmd(act.setText, this.ExplainLabel, '');
@@ -161,15 +247,28 @@ export default class OpenHash extends Hash {
 		return this.commands;
 	}
 
-	repositionList(index) {
-		const startX = POINTER_ARRAY_ELEM_START_X + index * POINTER_ARRAY_ELEM_WIDTH;
-		let startY = this.POINTER_ARRAY_ELEM_Y - LINKED_ITEM_Y_DELTA;
+	repositionList(index, tmp) {
+		let startX = POINTER_ARRAY_ELEM_START_X + LINKED_ITEM_X_DELTA_INIT;
+		const startY = POINTER_ARRAY_ELEM_START_Y + index * POINTER_ARRAY_ELEM_HEIGHT;
+		// let tmp = this.hashTableValues[index];
+		while (tmp != null) {
+			tmp.x = startX;
+			tmp.y = startY;
+			this.cmd(act.move, tmp.graphicID, tmp.x, tmp.y);
+			startX = startX + LINKED_ITEM_X_DELTA;
+			tmp = tmp.next;
+		}
+	}
+
+	repositionResizeList(index) {
+		let startX = RESIZE_POINTER_ARRAY_ELEM_START_X + LINKED_ITEM_X_DELTA_INIT;
+		const startY = RESIZE_POINTER_ARRAY_ELEM_START_Y + index * POINTER_ARRAY_ELEM_HEIGHT;
 		let tmp = this.hashTableValues[index];
 		while (tmp != null) {
 			tmp.x = startX;
 			tmp.y = startY;
 			this.cmd(act.move, tmp.graphicID, tmp.x, tmp.y);
-			startY = startY - LINKED_ITEM_Y_DELTA;
+			startX = startX + LINKED_ITEM_X_DELTA;
 			tmp = tmp.next;
 		}
 	}
@@ -201,7 +300,7 @@ export default class OpenHash extends Hash {
 			}
 			this.cmd(act.delete, this.hashTableValues[index].graphicID);
 			this.hashTableValues[index] = this.hashTableValues[index].next;
-			this.repositionList(index);
+			this.repositionList(index, this.hashTableValues[index]);
 			return this.commands;
 		}
 		let tmpPrev = this.hashTableValues[index];
@@ -225,7 +324,7 @@ export default class OpenHash extends Hash {
 				}
 				tmpPrev.next = tmpPrev.next.next;
 				this.cmd(act.delete, tmp.graphicID);
-				this.repositionList(index);
+				this.repositionList(index, this.hashTableValues[index]);
 			} else {
 				tmpPrev = tmp;
 				tmp = tmp.next;
@@ -276,34 +375,44 @@ export default class OpenHash extends Hash {
 		return this.commands;
 	}
 
-	changeLoadFactor(LF) {
+	resize() {
 		this.commands = [];
 
-		this.load_factor = LF;
-		this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+		this.cmd(act.setText, this.ExplainLabel, '');
+
+		const resizeLabel = this.nextIndex++;
+		this.cmd(
+			act.createLabel,
+			resizeLabel,
+			`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${
+				this.table_size
+			}) > ${this.load_factor}`,
+			RESIZE_LABEL_X,
+			RESIZE_LABEL_Y,
+		);
+
+		this.table_size = this.table_size * 2 + 1;
+
+		if (this.table_size * 2 + 1 > MAX_SIZE) {
+			this.load_factor = 0.99;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+		}
+
 		this.cmd(act.step);
 
-		return this.commands;
-	}
+		this.oldHashTableVisual = this.hashTableVisual;
+		this.oldHashTableValues = this.hashTableValues;
+		this.oldHashTableIndices = this.hashTableIndices;
+		this.oldIndexXPos = this.indexXPos;
+		this.oldIndexYPos = this.indexYPos;
 
-	setup() {
-		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
-		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
-		this.hashTableValues = new Array(HASH_TABLE_SIZE);
+		this.hashTableValues = new Array(this.table_size);
+		this.hashTableVisual = new Array(this.table_size);
+		this.hashTableIndices = new Array(this.table_size);
+		this.indexXPos = new Array(this.table_size);
+		this.indexYPos = new Array(this.table_size);
 
-		this.indexXPos = new Array(HASH_TABLE_SIZE);
-		this.indexYPos = new Array(HASH_TABLE_SIZE);
-
-		this.ExplainLabel = this.nextIndex++;
-
-		this.loadFactorID = this.nextIndex++;
-
-		this.table_size = HASH_TABLE_SIZE;
-
-		this.load_factor = DEFAULT_LOAD_FACTOR;
-
-		this.commands = [];
-		for (let i = 0; i < HASH_TABLE_SIZE; i++) {
+		for (let i = 0; i < this.table_size; i++) {
 			let nextID = this.nextIndex++;
 
 			this.cmd(
@@ -312,38 +421,126 @@ export default class OpenHash extends Hash {
 				'',
 				POINTER_ARRAY_ELEM_WIDTH,
 				POINTER_ARRAY_ELEM_HEIGHT,
-				POINTER_ARRAY_ELEM_START_X + i * POINTER_ARRAY_ELEM_WIDTH,
-				this.POINTER_ARRAY_ELEM_Y,
+				RESIZE_POINTER_ARRAY_ELEM_START_X,
+				RESIZE_POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT,
 			);
 			this.hashTableVisual[i] = nextID;
 			this.cmd(act.setNull, this.hashTableVisual[i], 1);
 
 			nextID = this.nextIndex++;
 			this.hashTableIndices[i] = nextID;
-			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X + i * POINTER_ARRAY_ELEM_WIDTH;
-			this.indexYPos[i] = this.POINTER_ARRAY_ELEM_Y + POINTER_ARRAY_ELEM_HEIGHT;
 			this.hashTableValues[i] = null;
+
+			this.indexXPos[i] = RESIZE_POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
+			this.indexYPos[i] = RESIZE_POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
 
 			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd(
-			act.createLabel,
-			this.loadFactorID,
-			`Load Factor: ${this.load_factor}`,
-			LOAD_LABEL_X,
-			LOAD_LABEL_Y,
-		);
-		this.cmd(act.createLabel, this.ExplainLabel, '', 10, 25, 0);
-		this.animationManager.startNewAnimation(this.commands);
-		this.animationManager.skipForward();
-		this.animationManager.clearHistory();
-		this.resetIndex = this.nextIndex;
+
+		for (let i = 0; i < (this.table_size - 1) / 2; i++) {
+			this.cmd(act.setHighlight, this.oldHashTableVisual[i], 1);
+			this.cmd(act.step);
+
+			while (this.oldHashTableValues[i] != null) {
+				this.cmd(act.setHighlight, this.oldHashTableVisual[i], 0);
+
+				const node = this.oldHashTableValues[i];
+				this.cmd(act.setHighlight, node.graphicID, 1);
+				this.cmd(act.step);
+
+				this.cmd(act.move, node.graphicID, LINKED_ITEM_INITIAL_X, LINKED_ITEM_INITIAL_Y);
+
+				this.oldHashTableValues[i] = this.oldHashTableValues[i].next;
+
+				this.cmd(act.disconnect, this.oldHashTableVisual[i], node.graphicID);
+				if (this.oldHashTableValues[i] != null) {
+					this.cmd(act.connect, this.oldHashTableVisual[i], this.oldHashTableValues[i].graphicID);
+					this.cmd(act.disconnect, node.graphicID, this.oldHashTableValues[i].graphicID);
+					this.repositionList(i, this.oldHashTableValues[i]);
+				} else {
+					this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
+				}
+				this.cmd(act.step);
+
+				const index = this.doHash(node.key);
+
+				node.next = this.hashTableValues[index];
+				this.cmd(act.setNull, node.graphicID, 1);
+				this.cmd(act.setNull, this.hashTableVisual[index], 0);
+
+				if (node.next != null) {
+					this.cmd(
+						act.disconnect,
+						this.hashTableVisual[index],
+						node.next.graphicID,
+					);
+					this.cmd(act.connect, node.graphicID, node.next.graphicID);
+				}
+				this.cmd(act.connect, this.hashTableVisual[index], node.graphicID);
+				this.hashTableValues[index] = node;
+				this.repositionResizeList(index);
+				
+				this.cmd(act.setHighlight, node.graphicID, 0);
+			}
+			this.cmd(act.setHighlight, this.oldHashTableVisual[i], 0);
+		}
+		this.cmd(act.step);
+
+		for (let i = 0; i < (this.table_size - 1) / 2; i++) {
+			this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
+			this.cmd(act.delete, this.oldHashTableVisual[i]);
+			this.cmd(act.delete, this.oldHashTableIndices[i]);
+		}
+
+		for (let i = 0; i < this.table_size; i++) {
+			const xpos = POINTER_ARRAY_ELEM_START_X;
+			const ypos = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
+
+			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
+			this.indexYPos[i] = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
+
+			this.cmd(act.move, this.hashTableVisual[i], xpos, ypos);
+			this.cmd(act.move, this.hashTableIndices[i], xpos - POINTER_ARRAY_ELEM_WIDTH, ypos);
+
+			let index = 0;
+			let tmp = this.hashTableValues[i];
+			while (tmp != null) {
+				this.cmd(act.move, tmp.graphicID, xpos + LINKED_ITEM_X_DELTA_INIT + (LINKED_ITEM_X_DELTA * index), ypos);
+				index++;
+				tmp = tmp.next;
+			}
+		}
+
+		this.cmd(act.delete, resizeLabel);
+		this.cmd(act.step);
+	}
+
+	changeLoadFactor(LF) {
+		this.commands = [];
+
+		if (this.table_size * 2 + 1 <= MAX_SIZE) {
+			this.load_factor = LF;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+		} else {
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+			(Max Array Length)`,
+			);
+		}
+		this.cmd(act.step);
+
+		return this.commands;
 	}
 
 	resetAll() {
 		let tmp;
 		this.commands = super.resetAll();
+
+		this.size = 0;
+
 		for (let i = 0; i < this.hashTableValues.length; i++) {
 			tmp = this.hashTableValues[i];
 			if (tmp != null) {
@@ -360,14 +557,26 @@ export default class OpenHash extends Hash {
 
 	// NEED TO OVERRIDE IN PARENT
 	reset() {
+		this.nextIndex = this.resetIndex;
+		this.table_size = HASH_TABLE_SIZE;
+		this.load_factor = DEFAULT_LOAD_FACTOR;
+		this.size = 0;
+
+		this.hashTableVisual = new Array(this.table_size);
+		this.hashTableValues = new Array(this.table_size);
+		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
+
+		this.indexXPos = new Array(HASH_TABLE_SIZE);
+		this.indexYPos = new Array(HASH_TABLE_SIZE);
+
 		for (let i = 0; i < this.table_size; i++) {
 			this.hashTableValues[i] = null;
+			this.hashTableVisual[i] = this.nextIndex++;
+			this.hashTableIndices[i] = this.nextIndex++;
 		}
-		this.nextIndex = this.resetIndex;
+		
 		super.reset();
 	}
-
-	resetCallback() {}
 
 	/*this.nextIndex = 0;
  this.commands = [];

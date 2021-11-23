@@ -26,7 +26,6 @@
 
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
-import { initialize } from 'react-ga';
 
 const POINTER_ARRAY_ELEM_WIDTH = 50;
 const POINTER_ARRAY_ELEM_HEIGHT = 25;

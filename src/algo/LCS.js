@@ -255,7 +255,7 @@ export default class LCS extends Algorithm {
 				
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
 						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
-						this.unhighlight(7, 3);
+						this.unhighlight(7, 1);
 						
 						this.tableVals[i + 1][j + 1] = this.tableVals[i][j + 1];
 						this.cmd(
@@ -266,7 +266,7 @@ export default class LCS extends Algorithm {
 							this.tableYPos[i][j + 1],
 						);
 					} else {
-						this.unhighlight(7, 1);
+						this.unhighlight(7, 3);
 						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 						this.tableVals[i + 1][j + 1] = this.tableVals[i + 1][j];
 						this.cmd(
@@ -288,10 +288,10 @@ export default class LCS extends Algorithm {
 					this.cmd(act.setText, this.tableID[i + 1][j + 1], this.tableVals[i + 1][j + 1]);
 					this.cmd(act.delete, moveID);
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
-						this.unhighlight(7, 1);
+						this.unhighlight(7, 3);
 						this.cmd(act.setHighlight, this.tableID[i][j + 1], 0);
 					} else {
-						this.unhighlight(7, 3);
+						this.unhighlight(7, 1);
 						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
 					}
 				}

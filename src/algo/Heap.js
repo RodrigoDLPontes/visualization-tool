@@ -34,6 +34,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const MAX_SIZE = 32;
+const LENGTH = 8;
 
 const MAX_ARRAY_SIZE = 31;
 const ARRAY_ELEM_WIDTH = 40;
@@ -62,7 +63,7 @@ export default class Heap extends Algorithm {
 
 		this.addControls();
 		this.nextIndex = 0;
-		this.array_size = 8;
+		this.array_size = LENGTH;
 		this.order = 'smaller';
 		this.setup();
 	}
@@ -174,7 +175,6 @@ export default class Heap extends Algorithm {
 	}
 
 	setup() {
-		this.createArray();
 		this.swapLabel1 = this.nextIndex++;
 		this.swapLabel2 = this.nextIndex++;
 		this.swapLabel3 = this.nextIndex++;
@@ -182,6 +182,8 @@ export default class Heap extends Algorithm {
 		this.descriptLabel1 = this.nextIndex++;
 		this.descriptLabel2 = this.nextIndex++;
 		this.descriptLabel3 = this.nextIndex++;
+		this.resetIndex = this.nextIndex;
+		this.createArray();
 		this.cmd(act.createLabel, this.descriptLabel1, '', 20, 10, 0);
 		this.cmd(act.createLabel, this.descriptLabel3, '', 300, 10, 0);
 		this.animationManager.startNewAnimation(this.commands);
@@ -203,7 +205,7 @@ export default class Heap extends Algorithm {
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
-		this.implementAction(this.resize.bind(this), 8, false);
+		this.implementAction(this.resize.bind(this), LENGTH, false);
 	}
 
 	buildHeapCallback() {
@@ -214,6 +216,7 @@ export default class Heap extends Algorithm {
 			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
 		) {
 			this.buildHeapField.value = '';
+			this.implementAction(this.clear.bind(this));
 			this.implementAction(this.buildHeap.bind(this), list);
 		}
 	}
@@ -247,6 +250,22 @@ export default class Heap extends Algorithm {
 
 	reset() {
 		this.currentHeapSize = 0;
+		this.array_size = LENGTH;
+
+		this.nextIndex = this.resetIndex;
+
+		this.arrayData = new Array(this.array_size);
+		this.arrayLabels = new Array(this.array_size);
+		this.arrayRects = new Array(this.array_size);
+		this.circleObjs = new Array(this.array_size);
+		this.arrayXPositions = new Array(this.array_size);
+
+		for (let i = 0; i < this.array_size; i++) {
+			this.arrayXPositions[i] = ARRAY_INITIAL_X + i * ARRAY_ELEM_WIDTH;
+			this.arrayLabels[i] = this.nextIndex++;
+			this.arrayRects[i] = this.nextIndex++;
+			this.circleObjs[i] = this.nextIndex++;
+		}
 	}
 
 	swap(index1, index2) {
@@ -408,8 +427,6 @@ export default class Heap extends Algorithm {
 	buildHeap(params) {
 		this.commands = [];
 
-		this.implementAction(this.clear.bind(this));
-
 		this.arrayData = params
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
@@ -531,7 +548,6 @@ export default class Heap extends Algorithm {
 		}
 		this.cmd(act.setText, this.descriptLabel1, '');
 		this.cmd(act.setText, this.descriptLabel3, '');
-		console.log(this.commands);
 		return this.commands;
 	}
 
@@ -576,9 +592,6 @@ export default class Heap extends Algorithm {
 			}
 			this.newArrayData[i] = this.arrayData[i];
 		}
-
-		console.log(this.circleObjs.toString());
-		console.log(this.newCircleObjs.toString());
 
 		if (add) {
 			for (let i = 0; i < this.array_size; i++) {

@@ -347,8 +347,8 @@ export default class LinkedList extends Algorithm {
 
 		if (this.size !== 0) {
 			if (index === 0) {
-				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index + 1])
-				this.cmd(act.connect, this.topID, this.linkedListElemID[index])
+				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index + 1]);
+				this.cmd(act.connect, this.topID, this.linkedListElemID[index]);
 
 				this.cmd(
 					act.connect,
@@ -380,7 +380,7 @@ export default class LinkedList extends Algorithm {
 				);
 			}
 		} else {
-			this.cmd(act.connect, this.topID, this.linkedListElemID[0])
+			this.cmd(act.connect, this.topID, this.linkedListElemID[0]);
 		}
 
 		this.cmd(act.step);
@@ -410,11 +410,8 @@ export default class LinkedList extends Algorithm {
 
 		if (this.size !== 1) {
 			if (index === 0) {
-				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index])
-
-				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1])
-
-				//TODO: Move head pointer
+				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,

@@ -33,19 +33,19 @@ const POINTER_ARRAY_ELEM_START_X = 70;
 const POINTER_ARRAY_ELEM_START_Y = 100;
 
 const RESIZE_POINTER_ARRAY_ELEM_START_X = 670;
-const RESIZE_POINTER_ARRAY_ELEM_START_Y = 30;
-const RESIZE_LABEL_X = 400;
+const RESIZE_POINTER_ARRAY_ELEM_START_Y = 50;
+const RESIZE_LABEL_X = 800;
 const RESIZE_LABEL_Y = 20;
 
 const LINKED_ITEM_WIDTH = 70;
 const LINKED_ITEM_HEIGHT = 20;
 
-const LINKED_ITEM_INITIAL_X = 70;
-const LINKED_ITEM_INITIAL_Y = 50;
+const LINKED_ITEM_INITIAL_X = 60;
+const LINKED_ITEM_INITIAL_Y = 40;
 const LINKED_ITEM_X_DELTA_INIT = 70;
 const LINKED_ITEM_X_DELTA = 90;
 
-const EXPLAIN_LABEL_X = 200;
+const EXPLAIN_LABEL_X = 550;
 const EXPLAIN_LABEL_Y = 15;
 
 const HASH_TABLE_SIZE = 7;
@@ -132,6 +132,8 @@ export default class OpenHash extends Hash {
 	insertElement(key, value) {
 		const elem = `<${key}, ${value}>`;
 		this.commands = [];
+
+		this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
 
 		if (
 			(this.size + 1) / this.table_size > this.load_factor &&
@@ -347,12 +349,14 @@ export default class OpenHash extends Hash {
 		const compareIndex = this.nextIndex++;
 		let found = false;
 		let tmp = this.hashTableValues[index];
+		let value = null;
 		this.cmd(act.createLabel, compareIndex, '', 10, 40, 0);
 		while (tmp != null && !found) {
 			this.cmd(act.setHighlight, tmp.graphicID, 1);
 			if (tmp.key === key) {
 				this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
 				found = true;
+				value = tmp.val;
 			} else {
 				this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
 			}
@@ -361,7 +365,7 @@ export default class OpenHash extends Hash {
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Found entry with key: ' + key + '  Value: ' + value);
 		} else {
 			this.cmd(
 				act.setText,

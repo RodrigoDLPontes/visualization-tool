@@ -392,7 +392,7 @@ export default class ClosedHash extends Hash {
 
 		const found = this.getElemIndex(index, key) !== -1;
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key + '  Found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Found Key: ' + key + '  Value: ' + this.hashTableValues[index].val);
 		} else {
 			this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key + '  Not Found!');
 		}
@@ -721,7 +721,7 @@ export default class ClosedHash extends Hash {
 class MapEntry {
 	constructor(key, val) {
 		this.key = key;
-		this.value = val;
+		this.val = val;
 		this.elem = `<${key}, ${val}>`;
 	}
 }

@@ -49,6 +49,14 @@ const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
 
+const TOP_POS_X = 180;
+const TOP_POS_Y = 100;
+const TOP_LABEL_X = 130;
+const TOP_LABEL_Y = 100;
+
+const TOP_ELEM_WIDTH = 30;
+const TOP_ELEM_HEIGHT = 30;
+
 const SIZE = 32;
 
 export default class LinkedList extends Algorithm {
@@ -200,11 +208,27 @@ export default class LinkedList extends Algorithm {
 	setup() {
 		this.linkedListElemID = new Array(SIZE);
 
+		this.topID = this.nextIndex++;
+		this.topLabelID = this.nextIndex++;
+
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
+		// this.top = 0;
 		this.leftoverLabelID = this.nextIndex++;
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+
+		this.cmd(act.createLabel, this.topLabelID, 'Head', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(
+			act.createRectangle,
+			this.topID,
+			'',
+			TOP_ELEM_WIDTH,
+			TOP_ELEM_HEIGHT,
+			TOP_POS_X,
+			TOP_POS_Y,
+		);
+		this.cmd(act.setNull, this.topID, 1);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -317,12 +341,15 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
 		this.cmd(act.delete, labPushValID);
 
-		if (index === this.size) {
+		if (index === this.size) { // adding to back , dont need to do anything to head
 			this.cmd(act.setNull, this.linkedListElemID[index], 1);
 		}
 
 		if (this.size !== 0) {
 			if (index === 0) {
+				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index + 1]);
+				this.cmd(act.connect, this.topID, this.linkedListElemID[index]);
+
 				this.cmd(
 					act.connect,
 					this.linkedListElemID[index],
@@ -352,6 +379,8 @@ export default class LinkedList extends Algorithm {
 					this.linkedListElemID[index + 1],
 				);
 			}
+		} else {
+			this.cmd(act.connect, this.topID, this.linkedListElemID[0]);
 		}
 
 		this.cmd(act.step);
@@ -381,7 +410,8 @@ export default class LinkedList extends Algorithm {
 
 		if (this.size !== 1) {
 			if (index === 0) {
-				//TODO: Move head pointer
+				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,

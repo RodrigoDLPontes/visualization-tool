@@ -49,7 +49,7 @@ const CF_STRING_X = 120;
 const CF_STRING_Y = 37;
 
 const EXP_LABEL_X = 250;
-const EXP_LABEL_Y = 30
+const EXP_LABEL_Y = 30;
 
 const NINF = '\u2212\u221E'; // Negative infinity
 const PINF = '\u221E'; // Positive infinity
@@ -352,7 +352,7 @@ export default class SkipList extends Algorithm {
 			}
 			this.nodeID[newCol] = [];
 			this.data[newCol] = [];
-	}
+		}
 
 		// Traverse and add
 		let col = 0;
@@ -412,70 +412,60 @@ export default class SkipList extends Algorithm {
 		// Add nodes bottom-up to the new column if no duplicate has been found
 		if (!foundDuplicate) {
 			this.shiftColumns(newCol);
-			} else {
+		} else {
 			this.cmd(
-					act.move,
-					highlightID,
-					SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
-				);
-				this.cmd(act.step);
+				act.move,
+				highlightID,
+				SKIP_LIST_START_X + SKIP_LIST_SPACING * col,
+				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
+			);
+			this.cmd(act.step);
 			this.cmd(act.setText, expLabelID, 'Duplicate found!');
 			this.cmd(act.step);
 		}
 		row++;
-			// Having a highlight circle in the previous ID causes an object to look weird (this
-			// seems to be an already existing bug) Creating a random object before it is a workaround
-			this.cmd(act.createCircle, this.nextIndex++, '', -100, -100, 0);
+		// Having a highlight circle in the previous ID causes an object to look weird (this
+		// seems to be an already existing bug) Creating a random object before it is a workaround
+		this.cmd(act.createCircle, this.nextIndex++, '', -100, -100, 0);
 
-			while (row <= heads) {
-				this.cmd(act.setText, expLabelID, 'Adding data');
-				this.cmd(act.step);
-				this.data[newCol][row] = value;
-				this.nodeID[newCol][row] = this.nextIndex++;
-				this.cmd(
-					act.createSkipListNode,
-					this.nodeID[newCol][row],
-					value,
-					SKIP_LIST_ELEM_SIZE,
-					SKIP_LIST_ELEM_SIZE,
-					SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
-				);
-				const prevCol = this.getPrevCol(newCol, row);
-				const nextCol = this.getNextCol(newCol, row);
-				this.cmd(act.disconnect, this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
+		while (row <= heads) {
+			this.cmd(act.setText, expLabelID, 'Adding data');
+			this.cmd(act.step);
+			this.data[newCol][row] = value;
+			this.nodeID[newCol][row] = this.nextIndex++;
+			this.cmd(
+				act.createSkipListNode,
+				this.nodeID[newCol][row],
+				value,
+				SKIP_LIST_ELEM_SIZE,
+				SKIP_LIST_ELEM_SIZE,
+				SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
+				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
+			);
+			const prevCol = this.getPrevCol(newCol, row);
+			const nextCol = this.getNextCol(newCol, row);
+			this.cmd(act.disconnect, this.nodeID[prevCol][row], this.nodeID[nextCol][row]);
+			this.cmd(act.connectSkipList, this.nodeID[prevCol][row], this.nodeID[newCol][row], 3);
+			this.cmd(act.connectSkipList, this.nodeID[newCol][row], this.nodeID[nextCol][row], 3);
+			if (row !== 0) {
 				this.cmd(
 					act.connectSkipList,
-					this.nodeID[prevCol][row],
+					this.nodeID[newCol][row - 1],
 					this.nodeID[newCol][row],
-					3,
+					0,
 				);
-				this.cmd(
-					act.connectSkipList,
-					this.nodeID[newCol][row],
-					this.nodeID[nextCol][row],
-					3,
-				);
-				if (row !== 0) {
-					this.cmd(
-						act.connectSkipList,
-						this.nodeID[newCol][row - 1],
-						this.nodeID[newCol][row],
-						0,
-					);
-				}
-				this.cmd(act.step);
-
-				this.cmd(
-					act.move,
-					highlightID,
-					SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
-					SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
-				);
-				this.cmd(act.step);
-				row++;
 			}
+			this.cmd(act.step);
+
+			this.cmd(
+				act.move,
+				highlightID,
+				SKIP_LIST_START_X + SKIP_LIST_SPACING * newCol,
+				SKIP_LIST_START_Y - SKIP_LIST_SPACING * row,
+			);
+			this.cmd(act.step);
+			row++;
+		}
 
 		this.cmd(act.delete, valueLabelId);
 		this.cmd(act.delete, valueStringId);

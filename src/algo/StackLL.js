@@ -52,6 +52,12 @@ const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
 
+const CODE_START_X = 400;
+const CODE_START_Y = 25;
+const CODE_LINE_HEIGHT = 14;
+const CODE_HIGHLIGHT_COLOR = '#FF0000';
+const CODE_STANDARD_COLOR = '#000000';
+
 const SIZE = 32;
 
 export default class StackLL extends Algorithm {
@@ -130,6 +136,43 @@ export default class StackLL extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
+		this.code = [
+			['procedure push(data)'],
+			['     head = new node(data, head)'],
+			// ['     increment size'],
+			['end procedure'],
+
+			[],
+			['procedure pop()'],
+
+			['     result = head.data'],
+			['     head = head.next'],
+			// ['     decrement size'],
+			// ['     return result'],
+			['end procedure'],
+		];
+
+		this.codeID = Array(this.code.length);
+		let i, j;
+		for (i = 0; i < this.code.length; i++) {
+			this.codeID[i] = new Array(this.code[i].length);
+			for (j = 0; j < this.code[i].length; j++) {
+				this.codeID[i][j] = this.nextIndex++;
+				this.cmd(
+					act.createLabel,
+					this.codeID[i][j],
+					this.code[i][j],
+					CODE_START_X,
+					CODE_START_Y + i * CODE_LINE_HEIGHT,
+					0,
+				);
+				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+				if (j > 0) {
+					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+				}
+			}
+		}
+
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -179,6 +222,7 @@ export default class StackLL extends Algorithm {
 		this.arrayData[this.top] = elemToPush;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.highlight(1, 0);
 
 		this.cmd(
 			act.createLinkedListNode,
@@ -223,6 +267,7 @@ export default class StackLL extends Algorithm {
 		this.resetLinkedListPositions();
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
+		this.unhighlight(1, 0);
 
 		return this.commands;
 	}
@@ -244,25 +289,40 @@ export default class StackLL extends Algorithm {
 			LINKED_LIST_START_Y,
 		);
 
+		this.highlight(5, 0);
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 		this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
+		this.unhighlight(5, 0);
 
 		if (this.top === 1) {
 			this.cmd(act.setNull, this.topID, 1);
 		} else {
 			this.cmd(act.connect, this.topID, this.linkedListElemID[this.top - 2]);
 		}
+		this.highlight(6, 0);
 		this.cmd(act.step);
+		this.unhighlight(6, 0);
 		this.cmd(act.delete, this.linkedListElemID[this.top - 1]);
+		this.highlight(7, 0);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
+		this.unhighlight(7, 0);
+
 
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
 		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);
 
 		return this.commands;
+	}
+
+	highlight(ind1, ind2) {
+		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+	}
+
+	unhighlight(ind1, ind2) {
+		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

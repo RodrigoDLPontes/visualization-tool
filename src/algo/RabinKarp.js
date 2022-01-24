@@ -256,9 +256,9 @@ export default class RabinKarp extends Algorithm {
 		const base = Math.pow(this.baseValue, pattern.length - 1);
 		let runningBase = base;
 		for (let i = 0; i < pattern.length; i++) {
-			textHash += text.charCodeAt(i) * runningBase - 97;
+			textHash += (text.charCodeAt(i) - 97) * runningBase;
 			textCalculation += `(${text.charAt(i)} * ${runningBase}) + `;
-			patternHash += pattern.charCodeAt(i) * runningBase - 97;
+			patternHash += (pattern.charCodeAt(i) - 97) * runningBase;
 			patternCalculation += `(${pattern.charAt(i)} * ${runningBase}) + `;
 			runningBase /= this.baseValue;
 		}
@@ -338,10 +338,8 @@ export default class RabinKarp extends Algorithm {
 				this.cmd(act.step);
 			}
 			if (i < text.length - pattern.length) {
-				textHash =
-					textHash -
-					(base * (text.charCodeAt(i) - 97)) +
-					(text.charCodeAt(i + pattern.length) - 97);
+				textHash = this.baseValue * (textHash - (base * (text.charCodeAt(i) - 97))) 
+				+ (text.charCodeAt(i + pattern.length) - 97);
 				textCalculation = '';
 				runningBase = base;
 				for (let k = 0; k < pattern.length; k++) {

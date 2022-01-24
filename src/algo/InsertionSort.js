@@ -24,8 +24,15 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, { 
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar 
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+
+const MAX_ARRAY_SIZE = 18;
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 200;
@@ -43,10 +50,17 @@ export default class InsertionSort extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Comma seperated list (e.g. "3,1,2", max 18 elements)');
+		const verticalGroup = addGroupToAlgorithmBar(false);
 
-		// List text field
-		this.listField = addControlToAlgorithmBar('Text', '');
+        addLabelToAlgorithmBar(
+			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 999',
+			verticalGroup
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
+
+        // List text field
+		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.sortCallback.bind(this),
@@ -56,9 +70,11 @@ export default class InsertionSort extends Algorithm {
 		this.controls.push(this.listField);
 
 		// Sort button
-		this.findButton = addControlToAlgorithmBar('Button', 'Sort');
-		this.findButton.onclick = this.sortCallback.bind(this);
-		this.controls.push(this.findButton);
+		this.sortButton = addControlToAlgorithmBar('Button', 'Sort', horizontalGroup);
+		this.sortButton.onclick = this.sortCallback.bind(this);
+		this.controls.push(this.sortButton);
+
+		addDivisorToAlgorithmBar();
 
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
@@ -88,9 +104,13 @@ export default class InsertionSort extends Algorithm {
 	}
 
 	sortCallback() {
-		if (this.listField.value !== '') {
+		const list = this.listField.value.split(',').filter(x => x !== '');
+		if (
+			this.listField.value !== ''
+			&& list.length <= MAX_ARRAY_SIZE
+			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+			) {
 			this.implementAction(this.clear.bind(this));
-			const list = this.listField.value;
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
 		}
@@ -116,10 +136,9 @@ export default class InsertionSort extends Algorithm {
 
 		this.arrayID = [];
 		this.arrayData = params
-			.split(',')
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
-			.slice(0, 18);
+			.slice(0, MAX_ARRAY_SIZE);
 		this.displayData = new Array(this.arrayData.length);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();

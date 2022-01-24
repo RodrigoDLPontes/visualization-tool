@@ -27,12 +27,13 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 10;
-const MAX_LOAD_LENGTH = 2;
+const MAX_LOAD_LENGTH = 5;
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -40,7 +41,7 @@ const HASH_NUMBER_START_Y = 10;
 const HASH_ADD_START_Y = 30;
 const HASH_INPUT_START_X = 60;
 const HASH_INPUT_X_DIFF = 7;
-const HASH_INPUT_START_Y = 45;
+const HASH_INPUT_START_Y = 55;
 const HASH_ADD_LINE_Y = 42;
 const HASH_RESULT_Y = 50;
 const ELF_HASH_SHIFT = 10;
@@ -62,15 +63,28 @@ export default class Hash extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		this.insertField = addControlToAlgorithmBar('Text', '');
-		this.insertField.size = MAX_HASH_LENGTH;
-		this.insertField.onkeydown = this.returnSubmit(
-			this.insertField,
+		addLabelToAlgorithmBar('Key: ');
+		this.keyField = addControlToAlgorithmBar('Text', '');
+		this.keyField.size = MAX_HASH_LENGTH;
+		this.keyField.onkeydown = this.returnSubmit(
+			this.keyField,
 			this.insertCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
 		);
-		this.controls.push(this.insertField);
+		this.controls.push(this.keyField);
+
+		//I'm allowing any type of data be inserted for the value, should it be restricted?
+		addLabelToAlgorithmBar('Value: ');
+		this.valueField = addControlToAlgorithmBar('Text', '');
+		this.valueField.size = MAX_HASH_LENGTH;
+		this.valueField.onkeydown = this.returnSubmit(
+			this.valueField,
+			this.insertCallback.bind(this),
+			MAX_HASH_LENGTH,
+			false,
+		);
+		this.controls.push(this.valueField);
 
 		this.insertButton = addControlToAlgorithmBar('Button', 'Insert');
 		this.insertButton.onclick = this.insertCallback.bind(this);
@@ -81,7 +95,7 @@ export default class Hash extends Algorithm {
 		this.deleteField = addControlToAlgorithmBar('Text', '');
 		this.deleteField.size = MAX_HASH_LENGTH;
 		this.deleteField.onkeydown = this.returnSubmit(
-			this.insertField,
+			this.keyField,
 			this.deleteCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
@@ -97,7 +111,7 @@ export default class Hash extends Algorithm {
 		this.findField = addControlToAlgorithmBar('Text', '');
 		this.findField.size = MAX_HASH_LENGTH;
 		this.findField.onkeydown = this.returnSubmit(
-			this.insertField,
+			this.keyField,
 			this.findCallback.bind(this),
 			MAX_HASH_LENGTH,
 			true,
@@ -117,8 +131,8 @@ export default class Hash extends Algorithm {
 			this.loadField,
 			this.changeLoadFactor.bind(this),
 			MAX_LOAD_LENGTH,
-			true
-		)
+			true,
+		);
 
 		this.controls.push(this.loadField);
 
@@ -154,40 +168,40 @@ export default class Hash extends Algorithm {
 		this.hashingIntegers = newHashingIntegerValue;
 		if (this.hashingIntegers) {
 			this.hashIntegerButton.checked = true;
-			this.insertField.onkeydown = this.returnSubmit(
-				this.insertField,
+			this.keyField.onkeydown = this.returnSubmit(
+				this.keyField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 			this.findField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
 				true,
 			);
 		} else {
 			this.hashStringButton.checked = true;
-			this.insertField.onkeydown = this.returnSubmit(
-				this.insertField,
+			this.keyField.onkeydown = this.returnSubmit(
+				this.keyField,
 				this.insertCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
 			);
 			this.deleteField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.deleteCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
 			);
 			this.findField.onkeydown = this.returnSubmit(
-				this.insertField,
+				this.keyField,
 				this.findCallback.bind(this),
 				MAX_HASH_LENGTH,
 				false,
@@ -236,7 +250,7 @@ export default class Hash extends Algorithm {
 			return index;
 		} else {
 			const label1 = this.nextIndex++;
-			this.cmd(act.createLabel, label1, 'Hashing:', 10, 45, 0);
+			this.cmd(act.createLabel, label1, 'Hashing:', 10, 55, 0);
 			const wordToHashID = new Array(input.length);
 			const wordToHash = new Array(input.length);
 			for (let i = 0; i < input.length; i++) {
@@ -526,17 +540,20 @@ export default class Hash extends Algorithm {
 	}
 
 	resetAll() {
-		this.insertField.value = '';
+		this.keyField.value = '';
+		this.valueField.value = '';
 		this.deleteField.value = '';
 		this.findField.value = '';
 		return [];
 	}
 
 	insertCallback() {
-		const insertedValue = this.insertField.value;
-		if (insertedValue !== '') {
-			this.insertField.value = '';
-			this.implementAction(this.insertElement.bind(this), insertedValue);
+		const insertedKey = this.keyField.value;
+		const insertedValue = this.valueField.value;
+		if (insertedKey !== '' && insertedValue !== '') {
+			this.keyField.value = '';
+			this.valueField.value = '';
+			this.implementAction(this.insertElement.bind(this), insertedKey, insertedValue);
 		}
 	}
 

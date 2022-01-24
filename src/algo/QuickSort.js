@@ -290,7 +290,7 @@ export default class QuickSort extends Algorithm {
 	helperLomuto(left, right) {
 		if (left > right) return;
 
-		// Hightlight cells in the current sub-array
+		// Highlight cells in the current sub-array
 		for (let i = left; i <= right; i++) {
 			this.cmd(act.setBackgroundColor, this.arrayID[i], '#99CCFF');
 		}
@@ -337,7 +337,7 @@ export default class QuickSort extends Algorithm {
 		this.cmd(act.delete, this.pPointerID);
 		this.cmd(act.step);
 
-		// Un-hightlight cells in sub-array and set pivot cell to green
+		// Un-highlight cells in sub-array and set pivot cell to green
 		for (let j = left; j <= right; j++) {
 			this.cmd(act.setBackgroundColor, this.arrayID[j], '#FFFFFF');
 		}

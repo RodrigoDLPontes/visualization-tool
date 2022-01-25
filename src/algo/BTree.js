@@ -167,13 +167,6 @@ export default class BTree extends Algorithm {
 		this.predButton = predSuccButtonList[0];
 		this.succButton = predSuccButtonList[1];
 
-		/*
-		When the replacement strategy changes, the tree is reset.
-		I kinda wanted to maintain the tree when you change it, but 
-		it causes a bug with skipBack. If you perform a removal with
-		pred, change to succ and undo the removal, some references get
-		mixed up and deleted.
-		*/
 		this.predButton.onclick = this.predCallback.bind(this);
 		this.succButton.onclick = this.succCallback.bind(this);
 		this.succButton.checked = true;
@@ -216,14 +209,14 @@ export default class BTree extends Algorithm {
 	predCallback() {
 		if (this.predSucc !== 'pred') {
 			this.predSucc = 'pred';
-			this.commands = this.clearCallback();
+			//this.commands = this.clearCallback();  maybe this isn't necessary?
 		}
 	}
 
 	succCallback() {
 		if (this.predSucc !== 'succ') {
 			this.predSucc = 'succ';
-			this.commands = this.clearCallback();
+			//this.commands = this.clearCallback();
 		}
 	}
 
@@ -1122,8 +1115,6 @@ export default class BTree extends Algorithm {
 					this.cmd(act.setHighlight, maxNode.graphicID, 0);
 					this.cmd(act.setHighlight, tree.graphicID, 0);
 
-					this.cmd(act.setNumElements, maxNode.graphicID, maxNode.numKeys);
-
 					/* When setNumElements is called with the new #, it cuts of the last element
 					(like removeFromBack in an array). Removing the successor is more like 
 					removeFromFront so you need to shift elements left by 1*/
@@ -1133,6 +1124,7 @@ export default class BTree extends Algorithm {
 							this.cmd(act.setText, maxNode.graphicID, maxNode.keys[j], j);
 						}
 					}
+					this.cmd(act.setNumElements, maxNode.graphicID, maxNode.numKeys);
 					this.repairAfterDelete(maxNode);
 				}
 			}

@@ -127,6 +127,7 @@ export default class CocktailSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
 	}
 
 	sortCallback() {
@@ -151,13 +152,17 @@ export default class CocktailSort extends Algorithm {
 	}
 
 	clear() {
-		this.arrayData = [];
 		this.commands = [];
-		this.compCount = 0;
-		this.displayData = [];
+
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
+
+		this.arrayData = [];
+		this.arrayID = [];
+		this.compCount = 0;
+		this.displayData = [];
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 

@@ -126,6 +126,7 @@ export default class BubbleSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
 		this.compCount = 0;
 	}
 
@@ -153,13 +154,16 @@ export default class BubbleSort extends Algorithm {
 
 	clear() {
 		this.commands = [];
+
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
-		this.compCount = 0;
+
 		this.arrayData = [];
 		this.arrayID = [];
+		this.compCount = 0;
 		this.displayData = [];
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 

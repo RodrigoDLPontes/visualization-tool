@@ -294,22 +294,38 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.step);
 		while (i <= j) {
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				i++;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
 				this.cmd(act.step);
 			}
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				j--;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
 				this.cmd(act.step);
 			}

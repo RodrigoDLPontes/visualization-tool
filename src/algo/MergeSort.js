@@ -127,9 +127,9 @@ export default class MergeSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
-	this.animationManager.startNewAnimation(this.commands);
-	this.animationManager.skipForward();
-	this.animationManager.clearHistory();
+		this.animationManager.startNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {

@@ -278,23 +278,39 @@ export default class QuickSort extends Algorithm {
 		while (i <= j) {
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
 				i++;
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
 				this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
 				// One additional comparison will be made in the above loop if i <= j
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.step);
 			}
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
 				j--;
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
 				this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
-				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.step);
 			}
 			if (i <= j) {

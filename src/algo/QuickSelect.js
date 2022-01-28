@@ -40,6 +40,9 @@ const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
+const COMP_COUNT_X = 100;
+const COMP_COUNT_Y = 50;
+
 export default class QuickSelect extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -53,14 +56,14 @@ export default class QuickSelect extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
+		addLabelToAlgorithmBar(
 			`Comma seperated list (e.g. "3,1,2"). Max ${MAX_ARRAY_SIZE} elements & no elements > 999`,
-			verticalGroup
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -107,7 +110,7 @@ export default class QuickSelect extends Algorithm {
 		this.pivotType = 'random';
 
 		addDivisorToAlgorithmBar();
-		
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -115,14 +118,25 @@ export default class QuickSelect extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.arrayData = [];
 		this.displayData = [];
 		this.arrayID = [];
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.pPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
 
-		this.animationManager.startNewAnimation();
+		this.compCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.comparisonCountID,
+			'Comparison Count: ' + this.compCount,
+			COMP_COUNT_X,
+			COMP_COUNT_Y,
+		);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -135,16 +149,18 @@ export default class QuickSelect extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.pPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	runCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== '' 
-			&& this.kField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
+			this.listField.value !== '' &&
+			this.kField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
 			const k = this.kField.value;
 			if (k > 0 && k <= list.length) {
 				this.implementAction(this.clear.bind(this));
@@ -167,6 +183,8 @@ export default class QuickSelect extends Algorithm {
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 
@@ -276,18 +294,22 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.step);
 		while (i <= j) {
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
+				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 				i++;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
+				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 				this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
 				this.cmd(act.step);
 			}
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
+				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 				j--;
 				this.movePointers(i, j);
 			}
 			if (i <= j) {
+				this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 				this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
 				this.cmd(act.step);
 			}

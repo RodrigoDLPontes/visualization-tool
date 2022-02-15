@@ -24,21 +24,24 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { 
+import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
-	addLabelToAlgorithmBar 
+	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
-const ARRAY_START_X = 120;
+const ARRAY_START_X = 250;
 const ARRAY_START_Y = 50;
 const ARRAY_LINE_SPACING = 80;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
+
+const COMP_COUNT_X = 100;
+const COMP_COUNT_Y = 50;
 
 // const ARRRAY_ELEMS_PER_LINE = 15;
 
@@ -76,14 +79,14 @@ export default class MergeSort extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
+		addLabelToAlgorithmBar(
 			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 999',
-			verticalGroup
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -107,11 +110,26 @@ export default class MergeSort extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.arrayData = [];
 		this.arrayID = [];
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+
+		this.compCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.comparisonCountID,
+			'Comparison Count: ' + this.compCount,
+			COMP_COUNT_X,
+			COMP_COUNT_Y,
+		);
+
+		this.animationManager.startNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -121,15 +139,17 @@ export default class MergeSort extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
+			this.listField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -148,6 +168,8 @@ export default class MergeSort extends Algorithm {
 		this.arrayData = [];
 		this.displayData = [];
 		this.arrayID = [];
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 
@@ -320,6 +342,7 @@ export default class MergeSort extends Algorithm {
 		let j = mid;
 		let k = left;
 		while (i < mid && j <= right) {
+			this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 			if (tempArray[i] <= tempArray[j]) {
 				this.copyData(
 					i,

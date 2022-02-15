@@ -40,6 +40,9 @@ const ARRAY_START_Y = 200;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
+const COMP_COUNT_X = 100;
+const COMP_COUNT_Y = 50;
+
 // const ARRRAY_ELEMS_PER_LINE = 15;
 // const ARRAY_LINE_SPACING = 130;
 
@@ -68,14 +71,14 @@ export default class SelectionSort extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
+		addLabelToAlgorithmBar(
 			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 999',
-			verticalGroup
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -111,13 +114,24 @@ export default class SelectionSort extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
 
-		this.animationManager.startNewAnimation();
+		this.compCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.comparisonCountID,
+			'Comparison Count: ' + this.compCount,
+			COMP_COUNT_X,
+			COMP_COUNT_Y,
+		);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -129,6 +143,8 @@ export default class SelectionSort extends Algorithm {
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	minCallback() {
@@ -148,10 +164,10 @@ export default class SelectionSort extends Algorithm {
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
+			this.listField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -164,12 +180,16 @@ export default class SelectionSort extends Algorithm {
 
 	clear() {
 		this.commands = [];
+
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
+
 		this.arrayData = [];
 		this.arrayID = [];
+		this.compCount = 0;
 		this.displayData = [];
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 
@@ -291,6 +311,7 @@ export default class SelectionSort extends Algorithm {
 	}
 
 	compare(i, j) {
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 		if (this.isMin) {
 			return i < j;
 		} else {

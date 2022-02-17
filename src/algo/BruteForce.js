@@ -95,7 +95,7 @@ export default class BruteForce extends Algorithm {
 		this.comparisonCountID = this.nextIndex++;
 
 		this.compCount = 0;
-		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y);
+		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -140,6 +140,9 @@ export default class BruteForce extends Algorithm {
 		} else {
 			this.cellSize = 20;
 		}
+
+		const labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
+		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
 
 		this.textRowID = new Array(text.length);
 		this.comparisonMatrixID = new Array(maxRows);

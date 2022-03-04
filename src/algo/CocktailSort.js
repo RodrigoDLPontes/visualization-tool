@@ -36,7 +36,7 @@ import { act } from '../anim/AnimationMain';
 const MAX_ARRAY_SIZE = 18;
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 100;
+const ARRAY_START_Y = 120;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 

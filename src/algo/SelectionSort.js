@@ -36,7 +36,7 @@ import { act } from '../anim/AnimationMain';
 const MAX_ARRAY_SIZE = 18;
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 100;
+const ARRAY_START_Y = 130;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
@@ -147,21 +147,6 @@ export default class SelectionSort extends Algorithm {
 			['               end if'],
 			['          end for'],
 			['          swap array[min], array[i]'],
-			['     end for'],
-			['end procedure']
-		];
-
-		this.codeMax = [
-			['procedure SelectionSort(array):'],
-			['     length <- length of array'],
-			['     for i <- length - 1, 0 do'],
-			['          max <- i'],
-			['          for j <- 0, i do'],
-			['               if array[j] > array[max]'],
-			['                    max <- j'],
-			['               end if'],
-			['          end for'],
-			['          swap array[max], array[i]'],
 			['     end for'],
 			['end procedure']
 		];

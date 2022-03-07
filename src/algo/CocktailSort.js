@@ -123,14 +123,14 @@ export default class CocktailSort extends Algorithm {
 			['     swapped <- start'],
 			['     while end > start'],
 			['          swapped <- start'],
-			['          for i <- start, i < end'],
+			['          for i <- start, end do'],
 			['               if array[i] > array[i + 1]'],
 			['                    swap array[i], array[i + 1]'],
 			['                    swapped <- i'],
 			['               end if'],
 			['          end for'],
 			['          end <- swapped'],
-			['          for i <- end, i > start'],
+			['          for i <- end, start do'],
 			['               if array[i] < array[i - 1]'],
 			['                    swap array[i], array[i + 1]'],
 			['                    swapped <- i'],
@@ -138,8 +138,8 @@ export default class CocktailSort extends Algorithm {
 			['          end for'],
 			['          start <- swapped'],
 			['     end while'],
-			['end procedure']
-		]
+			['end procedure'],
+		];
 
 		console.log(this.nextIndex);
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
@@ -161,12 +161,13 @@ export default class CocktailSort extends Algorithm {
 		this.comparisonCountID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[2][0], '     // swapped <- start')
-			this.cmd(act.setText, this.codeID[4][0], '          // swapped <- start')
-			this.cmd(act.setText, this.codeID[8][0], '                    // swapped <- i')
-			this.cmd(act.setText, this.codeID[11][0], '          end <- end - 1')
-			this.cmd(act.setText, this.codeID[15][0], '                    // swapped <- i')
-			this.cmd(act.setText, this.codeID[18][0], '          start <- start + 1')
+			this.cmd(act.setText, this.codeID[2][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[3][0], '     while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID[4][0], '          sorted <- true');
+			this.cmd(act.setText, this.codeID[8][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[11][0], '          end <- end - 1');
+			this.cmd(act.setText, this.codeID[15][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[18][0], '          start <- start + 1');
 		}
 	}
 
@@ -190,20 +191,22 @@ export default class CocktailSort extends Algorithm {
 	toggleLastSwap() {
 		if (lastSwapEnabled) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     // swapped <- start')
-			this.cmd(act.setText, this.codeID[4][0], '          // swapped <- start')
-			this.cmd(act.setText, this.codeID[8][0], '                    // swapped <- i')
-			this.cmd(act.setText, this.codeID[11][0], '          end <- end - 1')
-			this.cmd(act.setText, this.codeID[15][0], '                    // swapped <- i')
-			this.cmd(act.setText, this.codeID[18][0], '          start <- start + 1')
+			this.cmd(act.setText, this.codeID[2][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[3][0], '     while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID[4][0], '          sorted <- true');
+			this.cmd(act.setText, this.codeID[8][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[11][0], '          end <- end - 1');
+			this.cmd(act.setText, this.codeID[15][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[18][0], '          start <- start + 1');
 		} else {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     swapped <- start')
-			this.cmd(act.setText, this.codeID[4][0], '          swapped <- start')
-			this.cmd(act.setText, this.codeID[8][0], '                    swapped <- i')
-			this.cmd(act.setText, this.codeID[11][0], '          end <- swapped')
-			this.cmd(act.setText, this.codeID[15][0], '                    swapped <- i')
-			this.cmd(act.setText, this.codeID[18][0], '          start <- swapped')
+			this.cmd(act.setText, this.codeID[2][0], '     swapped <- start');
+			this.cmd(act.setText, this.codeID[3][0], '     while start < end');
+			this.cmd(act.setText, this.codeID[4][0], '          swapped <- start');
+			this.cmd(act.setText, this.codeID[8][0], '                    swapped <- i');
+			this.cmd(act.setText, this.codeID[11][0], '          end <- swapped');
+			this.cmd(act.setText, this.codeID[15][0], '                    swapped <- i');
+			this.cmd(act.setText, this.codeID[18][0], '          start <- swapped');
 		}
 		lastSwapEnabled = !lastSwapEnabled;
 	}
@@ -225,6 +228,7 @@ export default class CocktailSort extends Algorithm {
 
 	sort(params) {
 		this.commands = [];
+		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
@@ -284,6 +288,7 @@ export default class CocktailSort extends Algorithm {
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.cmd(act.step);
+		this.unhighlight(0, 0);
 
 		let sorted = true;
 		let start = 0;
@@ -293,13 +298,15 @@ export default class CocktailSort extends Algorithm {
 		this.cmd(act.step);
 		do {
 			this.unhighlight(3, 0);
+			this.highlight(4, 0);
+			this.cmd(act.step);
+			this.unhighlight(4, 0);
 			this.highlight(5, 0);
 			sorted = true;
 			for (let i = start; i < end; i++) {
 				this.movePointers(i, i + 1);
-				this.cmd(act.step);
 				this.unhighlight(5, 0);
-				this.highlight(6,0);
+				this.highlight(6, 0);
 				this.cmd(
 					act.setText,
 					this.comparisonCountID,
@@ -309,9 +316,7 @@ export default class CocktailSort extends Algorithm {
 				this.unhighlight(6, 0);
 				if (this.arrayData[i] > this.arrayData[i + 1]) {
 					this.highlight(7, 0);
-					if (lastSwapEnabled) {
 					this.highlight(8, 0);
-				}
 					this.swap(i, i + 1);
 					sorted = false;
 					lastSwapped = i;
@@ -342,7 +347,7 @@ export default class CocktailSort extends Algorithm {
 				for (let i = end; i > start; i--) {
 					this.movePointers(i - 1, i);
 					this.unhighlight(12, 0);
-					this.highlight(13,0);
+					this.highlight(13, 0);
 					this.cmd(
 						act.setText,
 						this.comparisonCountID,
@@ -352,9 +357,7 @@ export default class CocktailSort extends Algorithm {
 					this.unhighlight(13, 0);
 					if (+this.arrayData[i] < +this.arrayData[i - 1]) {
 						this.highlight(14, 0);
-						if (lastSwapEnabled) {
-							this.highlight(15, 0);
-						}
+						this.highlight(15, 0);
 						this.swap(i, i - 1);
 						sorted = false;
 						lastSwapped = i;

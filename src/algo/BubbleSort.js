@@ -124,7 +124,7 @@ export default class BubbleSort extends Algorithm {
 			['     swapped <- start'],
 			['     while start < end'],
 			['          swapped <- start'],
-			['          for j <- 0, j < end'],
+			['          for j <- 0, end do'],
 			['               if arr[j] > arr[j + 1]'],
 			['                    swap arr[j], arr[j + 1]'],
 			['                    swapped <- j'],
@@ -132,8 +132,8 @@ export default class BubbleSort extends Algorithm {
 			['          end for'],
 			['          end <- swapped'],
 			['     end while'],
-			['end procedure']
-		]
+			['end procedure'],
+		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
@@ -153,11 +153,11 @@ export default class BubbleSort extends Algorithm {
 		this.comparisonCountID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false')
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false')
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true')
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false')
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1')
+			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
+			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
 		}
 		this.compCount = 0;
 	}
@@ -181,19 +181,19 @@ export default class BubbleSort extends Algorithm {
 	}
 
 	toggleLastSwap() {
-		this.implementAction(this.clear.bind(this))
+		this.implementAction(this.clear.bind(this));
 		if (lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false')
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false')
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true')
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false')
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1')
+			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
+			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
+			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
 		} else {
-			this.cmd(act.setText, this.codeID[3][0], '     swapped <- start')
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end')
-			this.cmd(act.setText, this.codeID[5][0], '          swapped <- start')
-			this.cmd(act.setText, this.codeID[9][0], '                    swapped <- j')
-			this.cmd(act.setText, this.codeID[12][0], '          end <- swapped')
+			this.cmd(act.setText, this.codeID[3][0], '     swapped <- start');
+			this.cmd(act.setText, this.codeID[4][0], '     while start < end');
+			this.cmd(act.setText, this.codeID[5][0], '          swapped <- start');
+			this.cmd(act.setText, this.codeID[9][0], '                    swapped <- j');
+			this.cmd(act.setText, this.codeID[12][0], '          end <- swapped');
 		}
 		lastSwapEnabled = !lastSwapEnabled;
 	}
@@ -215,6 +215,7 @@ export default class BubbleSort extends Algorithm {
 
 	sort(params) {
 		this.commands = [];
+		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
@@ -272,18 +273,21 @@ export default class BubbleSort extends Algorithm {
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.cmd(act.step);
+		this.unhighlight(0, 0);
 
 		let sorted = true;
 		let end = this.arrayData.length - 1;
 		let lastSwapped = 0;
 		this.highlight(4, 0);
+		this.cmd(act.step);
 		do {
-			this.cmd(act.step);
-			sorted = true;
 			this.unhighlight(4, 0);
+			this.highlight(5, 0);
+			this.cmd(act.step);
+			this.unhighlight(5, 0);
+			sorted = true;
 			this.highlight(6, 0);
 			for (let i = 0; i < end; i++) {
-				this.cmd(act.step);
 				this.movePointers(i, i + 1);
 				this.highlight(7, 0);
 				this.unhighlight(6, 0);
@@ -293,7 +297,7 @@ export default class BubbleSort extends Algorithm {
 					this.comparisonCountID,
 					'Comparison Count: ' + ++this.compCount,
 				);
-				this.unhighlight(7,0)
+				this.unhighlight(7, 0);
 				if (this.arrayData[i] > this.arrayData[i + 1]) {
 					this.swap(i, i + 1);
 					sorted = false;

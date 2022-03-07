@@ -100,7 +100,6 @@ export default class QuickSelect extends Algorithm {
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
-
 		addDivisorToAlgorithmBar();
 		// Toggles
 		const pivotButtonList = addRadioButtonGroupToAlgorithmBar(
@@ -145,32 +144,32 @@ export default class QuickSelect extends Algorithm {
 		);
 
 		this.code = [
-		['procedure QuickSelect(array, left, right, k)'],
-		['     pivotIdx <- random index within [left, right]'],
-		['     pivot <- array[pivotIdx]'],
-		['     swap array[left] and array[pivotIdx]'],
-		['     i <- left + 1, j <- right - 1'],
-		['     while i <= j do'],
-		['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
-		['               i <- i + 1'],
-		['          end while'],
-		['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
-		['               j <- j - 1'],
-		['          end while'],
-		['          if i <= j then'],
-		['               swap array[i] and array[j]'],
-		['               i <- i + 1, j <- j - 1'],
-		['          end if'],
-		['     end while'],
-		['     swap pivot and array[j]'],
-		['     if j equals k - 1 then'],
-		['          return array[j]'],
-		['     if j > k - 1 then'],
-		['          QuickSelect on array, left, j - 1, k'],
-		['     else'],
-		['          QuickSelect on array, j + 1, right, k'],
-		['end procedure'],
-		]
+			['procedure QuickSelect(array, left, right, k):'],
+			['     pivotIdx <- random index within [left, right]'],
+			['     pivot <- array[pivotIdx]'],
+			['     swap array[left] and array[pivotIdx]'],
+			['     i <- left + 1, j <- right - 1'],
+			['     while i <= j do'],
+			['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
+			['               i <- i + 1'],
+			['          end while'],
+			['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
+			['               j <- j - 1'],
+			['          end while'],
+			['          if i <= j then'],
+			['               swap array[i] and array[j]'],
+			['               i <- i + 1, j <- j - 1'],
+			['          end if'],
+			['     end while'],
+			['     swap pivot and array[j]'],
+			['     if j equals k - 1 then'],
+			['          return array[j]'],
+			['     if j > k - 1 then'],
+			['          QuickSelect on array, left, j - 1, k'],
+			['     else'],
+			['          QuickSelect on array, j + 1, right, k'],
+			['end procedure'],
+		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
@@ -286,6 +285,8 @@ export default class QuickSelect extends Algorithm {
 	helper(left, right) {
 		if (left > right) return;
 
+		this.highlight(0, 0);
+
 		// Hightlight cells in the current sub-array
 		for (let i = left; i <= right; i++) {
 			this.cmd(act.setBackgroundColor, this.arrayID[i], '#99CCFF');
@@ -295,8 +296,10 @@ export default class QuickSelect extends Algorithm {
 		if (left === right) {
 			this.cmd(act.setBackgroundColor, this.arrayID[left], '#2ECC71');
 			this.cmd(act.step);
+			this.unhighlight(0, 0);
 			return;
 		}
+		this.unhighlight(0, 0);
 
 		// Create pivot pointer and swap with left-most element
 		// To make things more interesting (and clearer), we don't pick the left-most element as pivot
@@ -326,7 +329,7 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.step);
 		this.unhighlight(1, 0);
 		this.unhighlight(2, 0);
-		this.highlight(3, 0);		
+		this.highlight(3, 0);
 		this.swapPivot(pivot, left);
 		this.cmd(act.step);
 		this.unhighlight(3, 0);
@@ -350,8 +353,8 @@ export default class QuickSelect extends Algorithm {
 			this.unhighlight(6, 0);
 			this.unhighlight(6, 1);
 			this.highlight(6, 3);
+			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
-				this.cmd(act.step);
 				this.unhighlight(6, 3);
 				this.highlight(7, 0);
 				i++;
@@ -368,6 +371,7 @@ export default class QuickSelect extends Algorithm {
 					this.unhighlight(6, 1);
 					this.highlight(6, 3);
 				}
+				this.cmd(act.step);
 			}
 			this.unhighlight(6, 1);
 			this.unhighlight(6, 3);
@@ -383,7 +387,7 @@ export default class QuickSelect extends Algorithm {
 
 			this.highlight(9, 0);
 			this.cmd(act.step);
-			this.unhighlight(9, 0)
+			this.unhighlight(9, 0);
 			this.highlight(9, 1);
 			if (i <= j) {
 				this.cmd(act.step);
@@ -391,8 +395,8 @@ export default class QuickSelect extends Algorithm {
 				this.highlight(9, 3);
 			}
 
+			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
-				this.cmd(act.step);
 				this.unhighlight(9, 3);
 				this.highlight(10, 0);
 				j--;
@@ -409,6 +413,7 @@ export default class QuickSelect extends Algorithm {
 					this.unhighlight(9, 1);
 					this.highlight(9, 3);
 				}
+				this.cmd(act.step);
 			}
 			this.unhighlight(9, 1);
 			this.unhighlight(9, 3);

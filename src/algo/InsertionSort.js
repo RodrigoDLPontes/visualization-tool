@@ -116,8 +116,8 @@ export default class InsertionSort extends Algorithm {
 			['               j <- j - 1'],
 			['          end while'],
 			['     end for'],
-			['end procedure']
-		]
+			['end procedure'],
+		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
@@ -232,7 +232,7 @@ export default class InsertionSort extends Algorithm {
 		this.cmd(act.step);
 		this.unhighlight(0, 0);
 		this.highlight(2, 0);
-		
+
 		for (let i = 1; i < this.arrayData.length; i++) {
 			this.cmd(act.step);
 			this.unhighlight(2, 0);
@@ -240,13 +240,12 @@ export default class InsertionSort extends Algorithm {
 			this.cmd(act.step);
 			this.unhighlight(3, 0);
 			this.highlight(4, 0);
-			this.cmd(act.step);
 			for (let j = i; j >= 1; j--) {
+				this.movePointers(j - 1, j);
 				this.unhighlight(3, 0);
 				this.unhighlight(4, 0);
 				this.unhighlight(6, 0);
 				this.highlight(4, 1);
-				this.movePointers(j - 1, j);
 				this.cmd(act.step);
 				this.unhighlight(4, 1);
 				this.highlight(4, 2);
@@ -268,6 +267,7 @@ export default class InsertionSort extends Algorithm {
 					break;
 				}
 			}
+			this.cmd(act.step);
 			this.unhighlight(3, 0);
 			this.unhighlight(4, 0);
 			this.unhighlight(6, 0);

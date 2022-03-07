@@ -86,7 +86,7 @@ export default class SelectionSort extends Algorithm {
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.sortCallback.bind(this),
-			90,
+			60,
 			false,
 		);
 		this.controls.push(this.listField);
@@ -148,7 +148,7 @@ export default class SelectionSort extends Algorithm {
 			['          end for'],
 			['          swap array[min], array[i]'],
 			['     end for'],
-			['end procedure']
+			['end procedure'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
@@ -177,7 +177,7 @@ export default class SelectionSort extends Algorithm {
 			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
 			this.cmd(act.setText, this.codeID[5][0], '                    max <- j');
 			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
-		} 
+		}
 	}
 
 	minCallback() {
@@ -240,6 +240,7 @@ export default class SelectionSort extends Algorithm {
 
 	sort(params) {
 		this.commands = [];
+		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
@@ -307,6 +308,8 @@ export default class SelectionSort extends Algorithm {
 			ARRAY_START_X + circleShift,
 			ARRAY_START_Y,
 		);
+		this.cmd(act.step);
+		this.unhighlight(0, 0);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.highlight(2, 0);
 		this.cmd(act.step);
@@ -325,7 +328,7 @@ export default class SelectionSort extends Algorithm {
 			this.highlight(4, 0);
 			this.cmd(act.step);
 			for (let j = i + 1; j < this.arrayData.length; j++) {
-			this.unhighlight(4, 0);
+				this.unhighlight(4, 0);
 				let w = j;
 				if (!this.isMin) {
 					w = this.arrayData.length - 1 - j;

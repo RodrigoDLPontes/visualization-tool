@@ -189,7 +189,8 @@ export default class Algorithm {
 
 	addCodeToCanvasBase(code, start_x, start_y, line_height, standard_color, layer) {
 		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
-		standard_color = typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
+		standard_color =
+			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
 		layer = typeof layer !== 'undefined' ? layer : 0;
 		const codeID = Array(code.length);
 		console.log(this.nextIndex);
@@ -225,9 +226,8 @@ export default class Algorithm {
 	}
 
 	removeCode(codeID) {
-		for(let i = 0; i < codeID.length; i++) {
+		for (let i = 0; i < codeID.length; i++) {
 			for (let j = 0; j < codeID[i].length; j++) {
-				
 				this.cmd(act.delete, codeID[i][j]);
 			}
 		}

@@ -24,12 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { 
+import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
- } from './Algorithm.js';
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
@@ -50,6 +50,9 @@ const BUCKET_ELEM_WIDTH = 50;
 const BUCKET_ELEM_HEIGHT = 20;
 const BUCKET_ELEM_SPACING = 15;
 
+const CODE_START_X = 650;
+const CODE_START_Y = 140;
+
 export default class LSDRadix extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -63,14 +66,14 @@ export default class LSDRadix extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
+		addLabelToAlgorithmBar(
 			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements < 0',
-			verticalGroup
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -94,6 +97,7 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.arrayData = [];
 		this.arrayID = [];
 		this.arrayDisplay = [];
@@ -104,7 +108,30 @@ export default class LSDRadix extends Algorithm {
 		this.jPointerID = this.nextIndex++;
 		this.infoLabelID = this.nextIndex++;
 
-		this.animationManager.startNewAnimation();
+		this.code = [
+			['procedure LSDRadixSort(array):'],
+			['     buckets <- list of 10 lists'],
+			['     iterations <- length of longest number'],
+			['     length <- length of array'],
+			['     for i <- 1, iterations do'],
+			['          for j <- 0, length - 1 do'],
+			['               bucket <- ith digit of array[j]'],
+			['               add array[j] to buckets[bucket]'],
+			['          end for'],
+			['          index <- 0'],
+			['          for bucket <- 0, 9 do'],
+			["               while buckets[bucket] isn't empty"],
+			['                    array[index] <- remove first from buckets[bucket]'],
+			['                    index <- index + 1'],
+			['               end while'],
+			['          end for'],
+			['     end for'],
+			['end procedure'],
+		];
+
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -117,18 +144,20 @@ export default class LSDRadix extends Algorithm {
 		this.bucketsData = [];
 		this.bucketsID = [];
 		this.bucketsDisplay = [];
+		this.removeCode(this.codeID);
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.infoLabelID = this.nextIndex++;
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => Number.isNaN(x)).length <= 0
-			) {
+			this.listField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => Number.isNaN(x)).length <= 0
+		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -159,6 +188,7 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	sort(params) {
+		this.highlight(0, 0);
 		this.commands = [];
 
 		this.arrayID = [];
@@ -204,6 +234,10 @@ export default class LSDRadix extends Algorithm {
 
 		this.bucketsData = [];
 		this.bucketsID = [];
+
+		this.cmd(act.step);
+		this.unhighlight(0, 0);
+		this.highlight(1, 0);
 
 		// Create buckets
 		for (let i = 0; i < 10; i++) {
@@ -251,6 +285,9 @@ export default class LSDRadix extends Algorithm {
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 
+		this.cmd(act.step);
+		this.unhighlight(1, 0);
+		this.highlight(2, 0);
 		let greatest = 0;
 		for (let i = 1; i < this.arrayData.length; i++) {
 			this.movePointers(greatest, i);
@@ -274,7 +311,9 @@ export default class LSDRadix extends Algorithm {
 			longData + ' has greatest magnitude, number of digits is ' + digits,
 		);
 		this.cmd(act.step);
+		this.unhighlight(2, 0);
 		this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFFFF');
+		this.highlight(4, 0);
 
 		// Run algorithm
 		for (let i = 0; i < digits; i++) {
@@ -287,6 +326,9 @@ export default class LSDRadix extends Algorithm {
 				ARRAY_START_Y,
 			);
 			this.cmd(act.setHighlight, this.iPointerID, 1);
+			this.cmd(act.step);
+			this.unhighlight(4, 0);
+			this.highlight(5, 0);
 			for (let j = 0; j < this.arrayData.length; j++) {
 				this.cmd(
 					act.move,
@@ -295,6 +337,11 @@ export default class LSDRadix extends Algorithm {
 					ARRAY_START_Y,
 				);
 				this.cmd(act.step);
+				this.unhighlight(5, 0);
+				this.highlight(6, 0);
+				this.cmd(act.step);
+				this.unhighlight(6, 0);
+				this.highlight(7, 0);
 				const id = this.nextIndex++;
 				const data = this.arrayData[j];
 				const display = this.arrayDisplay[j];
@@ -323,15 +370,25 @@ export default class LSDRadix extends Algorithm {
 					2,
 				);
 				this.cmd(act.step);
+				this.unhighlight(7, 0);
 			}
 			this.cmd(act.delete, this.iPointerID);
+			this.highlight(9, 0);
 			this.cmd(act.step);
+			this.unhighlight(9, 0);
+			this.highlight(10, 0);
 			let index = 0;
+			this.cmd(act.step);
 			for (let j = 0; j < 10; j++) {
+				this.unhighlight(10, 0);
 				const idBucket = this.bucketsID[j];
 				const dataBucket = this.bucketsData[j];
 				const displayBucket = this.bucketsDisplay[j];
+				this.highlight(11, 0);
 				while (dataBucket.length) {
+					this.cmd(act.step);
+					this.unhighlight(11, 0);
+					this.highlight(12, 0);
 					const labelID = this.nextIndex++;
 					const nodeID = idBucket.splice(1, 1)[0];
 					const data = dataBucket.shift();
@@ -353,6 +410,8 @@ export default class LSDRadix extends Algorithm {
 					this.cmd(act.setText, this.arrayID[index], display);
 					this.cmd(act.delete, labelID);
 					this.cmd(act.delete, nodeID);
+					this.unhighlight(12, 0);
+					this.highlight(13, 0);
 					if (dataBucket.length) {
 						this.cmd(act.connect, idBucket[0], idBucket[1]);
 						for (let k = 1; k < idBucket.length; k++) {
@@ -363,12 +422,14 @@ export default class LSDRadix extends Algorithm {
 								BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
 							);
 						}
-						this.cmd(act.step);
 					}
+					this.cmd(act.step);
 					this.arrayData[index] = data;
 					this.arrayDisplay[index] = display;
 					index++;
+					this.unhighlight(13, 0);
 				}
+				this.unhighlight(11, 0);
 			}
 		}
 

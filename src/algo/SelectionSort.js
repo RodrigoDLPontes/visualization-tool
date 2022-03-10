@@ -36,12 +36,15 @@ import { act } from '../anim/AnimationMain';
 const MAX_ARRAY_SIZE = 18;
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 200;
+const ARRAY_START_Y = 130;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
 const COMP_COUNT_X = 100;
 const COMP_COUNT_Y = 50;
+
+const CODE_START_X = 50;
+const CODE_START_Y = 200;
 
 // const ARRRAY_ELEMS_PER_LINE = 15;
 // const ARRAY_LINE_SPACING = 130;
@@ -83,7 +86,7 @@ export default class SelectionSort extends Algorithm {
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
 			this.sortCallback.bind(this),
-			90,
+			60,
 			false,
 		);
 		this.controls.push(this.listField);
@@ -107,9 +110,11 @@ export default class SelectionSort extends Algorithm {
 
 		this.minButton = minMaxButtonList[0];
 		this.minButton.onclick = this.minCallback.bind(this);
+		this.controls.push(this.minButton);
 		this.minButton.checked = true;
 		this.maxButton = minMaxButtonList[1];
 		this.maxButton.onclick = this.maxCallback.bind(this);
+		this.controls.push(this.maxButton);
 		this.isMin = true;
 	}
 
@@ -131,6 +136,23 @@ export default class SelectionSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.code = [
+			['procedure SelectionSort(array):'],
+			['     length <- length of array'],
+			['     for i <- 0, length do'],
+			['          min <- i'],
+			['          for j <- i + 1, length do'],
+			['               if array[j] < array[min]'],
+			['                    min <- j'],
+			['               end if'],
+			['          end for'],
+			['          swap array[min], array[i]'],
+			['     end for'],
+			['end procedure'],
+		];
+
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -141,15 +163,32 @@ export default class SelectionSort extends Algorithm {
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
+		this.removeCode(this.codeID);
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
 		this.compCount = 0;
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		if (!this.isMin) {
+			this.implementAction(this.clear.bind(this));
+			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
+			this.cmd(act.setText, this.codeID[4][0], '          for j <- 0, i do');
+			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[5][0], '                    max <- j');
+			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
+		}
 	}
 
 	minCallback() {
 		if (!this.isMin) {
 			this.implementAction(this.clear.bind(this));
+			this.cmd(act.setText, this.codeID[2][0], '     for i <- 0, length do');
+			this.cmd(act.setText, this.codeID[3][0], '          min <- i');
+			this.cmd(act.setText, this.codeID[4][0], '          for j <- i + 1, length do');
+			this.cmd(act.setText, this.codeID[5][0], '               if array[j] < array[min]');
+			this.cmd(act.setText, this.codeID[6][0], '                    min <- j');
+			this.cmd(act.setText, this.codeID[9][0], '          swap array[min], array[i]');
 			this.isMin = true;
 		}
 	}
@@ -157,6 +196,12 @@ export default class SelectionSort extends Algorithm {
 	maxCallback() {
 		if (this.isMin) {
 			this.implementAction(this.clear.bind(this));
+			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
+			this.cmd(act.setText, this.codeID[4][0], '          for j <- 0, i do');
+			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[6][0], '                    max <- j');
+			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
 			this.isMin = false;
 		}
 	}
@@ -195,6 +240,7 @@ export default class SelectionSort extends Algorithm {
 
 	sort(params) {
 		this.commands = [];
+		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
@@ -262,10 +308,14 @@ export default class SelectionSort extends Algorithm {
 			ARRAY_START_X + circleShift,
 			ARRAY_START_Y,
 		);
-		this.cmd(act.setHighlight, this.jPointerID, 1);
 		this.cmd(act.step);
-
+		this.unhighlight(0, 0);
+		this.cmd(act.setHighlight, this.jPointerID, 1);
+		this.highlight(2, 0);
+		this.cmd(act.step);
+		this.unhighlight(2, 0);
 		for (let i = 0; i < this.arrayData.length - 1; i++) {
+			this.highlight(3, 0);
 			let k = i;
 			if (!this.isMin) {
 				k = this.arrayData.length - 1 - i;
@@ -273,8 +323,12 @@ export default class SelectionSort extends Algorithm {
 
 			let toSwap = k;
 			this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFF00');
-
+			this.cmd(act.step);
+			this.unhighlight(3, 0);
+			this.highlight(4, 0);
+			this.cmd(act.step);
 			for (let j = i + 1; j < this.arrayData.length; j++) {
+				this.unhighlight(4, 0);
 				let w = j;
 				if (!this.isMin) {
 					w = this.arrayData.length - 1 - j;
@@ -283,11 +337,13 @@ export default class SelectionSort extends Algorithm {
 				this.movePointers(toSwap, w);
 				if (this.compare(this.arrayData[w], this.arrayData[toSwap])) {
 					this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFFFF');
+					this.highlight(6, 0);
 					this.cmd(act.step);
 					toSwap = w;
 					this.movePointers(toSwap, w);
 					this.cmd(act.setBackgroundColor, this.arrayID[toSwap], '#FFFF00');
 					this.cmd(act.step);
+					this.unhighlight(6, 0);
 				}
 			}
 			this.swap(k, toSwap);
@@ -311,7 +367,10 @@ export default class SelectionSort extends Algorithm {
 	}
 
 	compare(i, j) {
+		this.highlight(5, 0);
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+		this.cmd(act.step);
+		this.unhighlight(5, 0);
 		if (this.isMin) {
 			return i < j;
 		} else {
@@ -330,6 +389,7 @@ export default class SelectionSort extends Algorithm {
 	}
 
 	swap(i, j) {
+		this.highlight(9, 0);
 		const iLabelID = this.nextIndex++;
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const iYPos = ARRAY_START_Y;
@@ -355,6 +415,7 @@ export default class SelectionSort extends Algorithm {
 		temp = this.displayData[i];
 		this.displayData[i] = this.displayData[j];
 		this.displayData[j] = temp;
+		this.unhighlight(9, 0);
 	}
 
 	disableUI() {

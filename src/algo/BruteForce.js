@@ -36,6 +36,9 @@ const ARRAY_START_Y = 30;
 
 const MAX_LENGTH = 22;
 
+const COMP_COUNT_X = 575;
+const COMP_COUNT_Y = 30;
+
 export default class BruteForce extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -85,10 +88,16 @@ export default class BruteForce extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
 
-		this.animationManager.startNewAnimation();
+		this.comparisonCountID = this.nextIndex++;
+
+		this.compCount = 0;
+		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -97,6 +106,8 @@ export default class BruteForce extends Algorithm {
 		this.nextIndex = 0;
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	findCallback() {
@@ -129,6 +140,9 @@ export default class BruteForce extends Algorithm {
 		} else {
 			this.cellSize = 20;
 		}
+
+		const labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
+		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
 
 		this.textRowID = new Array(text.length);
 		this.comparisonMatrixID = new Array(maxRows);
@@ -205,6 +219,11 @@ export default class BruteForce extends Algorithm {
 			}
 			this.cmd(act.step);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
 				this.cmd(act.step);
@@ -215,6 +234,13 @@ export default class BruteForce extends Algorithm {
 					this.cmd(act.move, jPointerID, xpos, ypos);
 					this.cmd(act.step);
 				}
+			}
+			if (j < pattern.length) {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 			}
 			if (j !== pattern.length) {
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
@@ -248,6 +274,8 @@ export default class BruteForce extends Algorithm {
 			}
 		}
 		this.comparisonMatrixID = [];
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, '');
 		return this.commands;
 	}
 

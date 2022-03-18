@@ -1,4 +1,5 @@
 import * as algos from './algo';
+import BogoSort from './algo/BogoSort';
 
 // After adding the export in algos/index.js, add new algorithms in the following format:
 // AlgorithmName: ['Menu Display Name', algos.ClassName, 'Verbose Display Name (optional)']
@@ -21,6 +22,7 @@ export const algoMap = {
 	SplayTree: ['SplayTree', algos.SplayTree],
 	AVL: ['AVL', algos.AVL],
 	BTree: ['2-4 Tree', algos.BTree],
+	BogoSort: ['Bogo Sort', BogoSort],
 	BubbleSort: ['Bubble Sort', algos.BubbleSort],
 	CocktailSort: ['Cocktail Shaker Sort', algos.CocktailSort],
 	InsertionSort: ['Insertion Sort', algos.InsertionSort],
@@ -67,6 +69,7 @@ export const algoList = [
 	'ClosedHash',
 	'OpenHash',
 	'Sorting and QuickSelect',
+	'BogoSort',
 	'BubbleSort',
 	'CocktailSort',
 	'InsertionSort',

@@ -125,7 +125,7 @@ function returnSubmit(field, func, maxSize, intOnly) {
 			return false;
 		} else if (
 			(maxSize !== undefined && field.value.length >= maxSize) ||
-			(intOnly && (keyASCII < 48 || keyASCII > 57))
+			(intOnly && !((keyASCII >= 48 && keyASCII <= 57) || (keyASCII >= 96 && keyASCII <= 105)))
 		) {
 			if (!controlKey(keyASCII)) return false;
 		}

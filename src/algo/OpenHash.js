@@ -302,6 +302,7 @@ export default class OpenHash extends Hash {
 			this.cmd(act.delete, this.hashTableValues[index].graphicID);
 			this.hashTableValues[index] = this.hashTableValues[index].next;
 			this.repositionList(index, this.hashTableValues[index]);
+			this.size--;
 			return this.commands;
 		}
 		let tmpPrev = this.hashTableValues[index];
@@ -326,6 +327,7 @@ export default class OpenHash extends Hash {
 				tmpPrev.next = tmpPrev.next.next;
 				this.cmd(act.delete, tmp.graphicID);
 				this.repositionList(index, this.hashTableValues[index]);
+				this.size--;
 			} else {
 				tmpPrev = tmp;
 				tmp = tmp.next;

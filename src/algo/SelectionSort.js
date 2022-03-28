@@ -170,10 +170,9 @@ export default class SelectionSort extends Algorithm {
 		this.compCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!this.isMin) {
-			this.implementAction(this.clear.bind(this));
 			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
 			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- 0, i do');
+			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
 			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
 			this.cmd(act.setText, this.codeID[5][0], '                    max <- j');
 			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
@@ -198,7 +197,7 @@ export default class SelectionSort extends Algorithm {
 			this.implementAction(this.clear.bind(this));
 			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
 			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- 0, i do');
+			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
 			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
 			this.cmd(act.setText, this.codeID[6][0], '                    max <- j');
 			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');

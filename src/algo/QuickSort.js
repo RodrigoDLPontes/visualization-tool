@@ -112,7 +112,6 @@ export default class QuickSort extends Algorithm {
 		this.controls.push(this.firstPivotSelect);
 		this.controls.push(this.minPivotSelect);
 
-
 		addDivisorToAlgorithmBar();
 	}
 
@@ -136,28 +135,28 @@ export default class QuickSort extends Algorithm {
 		);
 
 		this.code = [
-		['procedure QuickSort(array, left, right)'],
-		['     pivotIdx <- random index within region being sorted'],
-		['     pivot <- array[pivotIdx]'],
-		['     swap array[left] and array[pivotIdx]'],
-		['     i <- left + 1, j <- right - 1'],
-		['     while i <= j do'],
-		['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
-		['               i <- i + 1'],
-		['          end while'],
-		['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
-		['               j <- j - 1'],
-		['          end while'],
-		['          if i <= j then'],
-		['               swap array[i] and array[j]'],
-		['               i <- i + 1, j <- j - 1'],
-		['          end if'],
-		['     end while'],
-		['     swap pivot and array[j]'],
-		['     QuickSort on array, left, j'],
-		['     QuickSort on array, j + 1, right'],
-		['end procedure'],
-		]
+			['procedure QuickSort(array, left, right):'],
+			['     pivotIdx <- random index within region being sorted'],
+			['     pivot <- array[pivotIdx]'],
+			['     swap array[left] and array[pivotIdx]'],
+			['     i <- left + 1, j <- right - 1'],
+			['     while i <= j do'],
+			['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
+			['               i <- i + 1'],
+			['          end while'],
+			['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
+			['               j <- j - 1'],
+			['          end while'],
+			['          if i <= j then'],
+			['               swap array[i] and array[j]'],
+			['               i <- i + 1, j <- j - 1'],
+			['          end if'],
+			['     end while'],
+			['     swap pivot and array[j]'],
+			['     QuickSort on array, left, j'],
+			['     QuickSort on array, j + 1, right'],
+			['end procedure'],
+		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
@@ -266,15 +265,19 @@ export default class QuickSort extends Algorithm {
 	helper(left, right) {
 		if (left > right) return;
 
+		this.highlight(0, 0);
+
 		// Hightlight cells in the current sub-array
 		for (let i = left; i <= right; i++) {
 			this.cmd(act.setBackgroundColor, this.arrayID[i], '#99CCFF');
 		}
 		this.cmd(act.step);
+		this.unhighlight(0, 0);
 
 		if (left === right) {
 			this.cmd(act.setBackgroundColor, this.arrayID[left], '#2ECC71');
 			this.cmd(act.step);
+			this.unhighlight(0, 0);
 			return;
 		}
 
@@ -330,8 +333,8 @@ export default class QuickSort extends Algorithm {
 			this.unhighlight(6, 0);
 			this.unhighlight(6, 1);
 			this.highlight(6, 3);
+			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
-				this.cmd(act.step);
 				this.unhighlight(6, 3);
 				this.highlight(7, 0);
 				i++;
@@ -348,6 +351,7 @@ export default class QuickSort extends Algorithm {
 					this.unhighlight(6, 1);
 					this.highlight(6, 3);
 				}
+				this.cmd(act.step);
 			}
 			this.unhighlight(6, 1);
 			this.unhighlight(6, 3);
@@ -363,7 +367,7 @@ export default class QuickSort extends Algorithm {
 
 			this.highlight(9, 0);
 			this.cmd(act.step);
-			this.unhighlight(9, 0)
+			this.unhighlight(9, 0);
 			this.highlight(9, 1);
 			if (i <= j) {
 				this.cmd(act.step);
@@ -371,8 +375,8 @@ export default class QuickSort extends Algorithm {
 				this.highlight(9, 3);
 			}
 
+			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
-				this.cmd(act.step);
 				this.unhighlight(9, 3);
 				this.highlight(10, 0);
 				j--;
@@ -389,6 +393,7 @@ export default class QuickSort extends Algorithm {
 					this.unhighlight(9, 1);
 					this.highlight(9, 3);
 				}
+				this.cmd(act.step);
 			}
 			this.unhighlight(9, 1);
 			this.unhighlight(9, 3);

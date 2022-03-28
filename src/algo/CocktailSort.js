@@ -132,7 +132,7 @@ export default class CocktailSort extends Algorithm {
 			['          end <- swapped'],
 			['          for i <- end, start do'],
 			['               if array[i] < array[i - 1]'],
-			['                    swap array[i], array[i + 1]'],
+			['                    swap array[i], array[i - 1]'],
 			['                    swapped <- i'],
 			['               end if'],
 			['          end for'],
@@ -325,6 +325,7 @@ export default class CocktailSort extends Algorithm {
 				this.unhighlight(7, 0);
 				this.unhighlight(8, 0);
 			}
+			this.cmd(act.step);
 			this.unhighlight(5, 0);
 			this.highlight(11, 0);
 			if (lastSwapEnabled) {

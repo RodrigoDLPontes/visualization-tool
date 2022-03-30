@@ -19,10 +19,11 @@ export default {
 				comparison
 			</li>
 			<li>
-				When incorporating the Galil Rule, we can use logic similar to that of KMP to optimize our shifts.
-				After finding a full match, instead of shifting by 1 we shift by the period <i>k</i>. After that shift,
-				we don't need to compare the first <i>k</i> characters in the pattern because we've already compared
-				them and know that they match!
+				When incorporating the Galil Rule, we can use logic similar to that of KMP to
+				optimize our shifts. After finding a full match, instead of shifting by 1 we shift
+				by the period <i>k</i>. After that shift, we don't need to compare the first{' '}
+				<i>k</i> characters in the pattern because we've already compared them and know that
+				they match!
 			</li>
 		</ul>
 	),

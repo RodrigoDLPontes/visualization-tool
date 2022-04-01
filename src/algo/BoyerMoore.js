@@ -40,6 +40,9 @@ const PATTERN_START_Y = 100;
 
 const LAST_TABLE_START_Y = 200;
 
+const COMP_COUNT_X = 575;
+const COMP_COUNT_Y = 30;
+
 export default class BoyerMoore extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -96,6 +99,7 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
 		this.patternTableLabelID = this.nextIndex++;
@@ -105,7 +109,12 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
 
-		this.animationManager.startNewAnimation();
+		this.comparisonCountID = this.nextIndex++;
+
+		this.compCount = 0;
+		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -120,6 +129,8 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableLabelID = this.nextIndex++;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	findCallback() {
@@ -239,6 +250,11 @@ export default class BoyerMoore extends Algorithm {
 			}
 			this.cmd(act.step);
 			while (j >= 0 && pattern.charAt(j) === text.charAt(i + j)) {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j--;
 				this.cmd(act.step);
@@ -253,6 +269,11 @@ export default class BoyerMoore extends Algorithm {
 			if (j === -1) {
 				i++;
 			} else {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				let shift;
 				if (text.charAt(i + j) in lastTable) {
@@ -340,6 +361,8 @@ export default class BoyerMoore extends Algorithm {
 			LAST_TABLE_START_Y + 10,
 			0,
 		);
+		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 
 		// Display pattern table
 		const patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
@@ -475,6 +498,8 @@ export default class BoyerMoore extends Algorithm {
 			this.cmd(act.delete, this.lastTableCharacterID[i]);
 			this.cmd(act.delete, this.lastTableValueID[i]);
 		}
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, '');
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
 		return this.commands;

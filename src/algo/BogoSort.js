@@ -25,7 +25,6 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
-	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
@@ -43,12 +42,10 @@ const ARRAY_ELEM_HEIGHT = 50;
 const COMP_COUNT_X = 100;
 const COMP_COUNT_Y = 50;
 
-const CODE_START_X = 50;
-const CODE_START_Y = 200;
+const WARN_START_X = 200;
+const WARN_START_Y = 200;
 
-let lastSwapEnabled = true;
-
-export default class BubbleSort extends Algorithm {
+export default class BogoSort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
 		this.addControls();
@@ -62,7 +59,7 @@ export default class BubbleSort extends Algorithm {
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
 		addLabelToAlgorithmBar(
-			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 999',
+			'Comma seperated list (e.g. "3,1,2"). No more than 5 elements, unless you have time to spare...',
 			verticalGroup,
 		);
 
@@ -89,53 +86,43 @@ export default class BubbleSort extends Algorithm {
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
-
-		addDivisorToAlgorithmBar();
-
-		// Last swap optimization toggle
-		this.lastSwapCheckbox = addCheckboxToAlgorithmBar('Enable last swap optimization', true);
-		this.lastSwapCheckbox.onclick = this.toggleLastSwap.bind(this);
-		this.controls.push(this.lastSwapCheckbox);
 	}
 
 	setup() {
 		this.commands = [];
-
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
-
 		this.comparisonCountID = this.nextIndex++;
-		this.compCount = 0;
+		this.warningID = this.nextIndex++;
+		this.iterations = 0;
+
+		this.colors = [
+			'#f0928e',
+			'#f8b896',
+			'#a9fd99',
+			'#a8fdff',
+			'#94b3f9',
+			'#ca8ff9',
+			'#f092f9',
+			'#ed74f0',
+			'#ec74b3',
+			'#ed7370'
+		]
+
 		this.cmd(
 			act.createLabel,
 			this.comparisonCountID,
-			'Comparison Count: ' + this.compCount,
+			'Iterations: ' + this.iterations,
 			COMP_COUNT_X,
 			COMP_COUNT_Y,
 		);
 
-		this.code = [
-			['procedure BubbleSort(array):'],
-			['     end <- length of array'],
-			['     start <- 0'],
-			['     swapped <- start'],
-			['     while start < end'],
-			['          swapped <- start'],
-			['          for j <- 0, end do'],
-			['               if arr[j] > arr[j + 1]'],
-			['                    swap arr[j], arr[j + 1]'],
-			['                    swapped <- j'],
-			['               end if'],
-			['          end for'],
-			['          end <- swapped'],
-			['     end while'],
-			['end procedure'],
-		];
+		this.cmd(act.createLabel, this.warningID, '', WARN_START_X, WARN_START_Y);
 
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -151,20 +138,13 @@ export default class BubbleSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-		if (!lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
-		}
-		this.compCount = 0;
+		this.warningID = this.nextIndex++;
+		this.iterations = 0;
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		console.log(list);
+
 		if (
 			this.listField.value !== '' &&
 			list.length <= MAX_ARRAY_SIZE &&
@@ -174,54 +154,36 @@ export default class BubbleSort extends Algorithm {
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
 		}
+
 	}
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
 
-	toggleLastSwap() {
-		this.implementAction(this.clear.bind(this));
-		if (lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
-		} else {
-			this.cmd(act.setText, this.codeID[3][0], '     swapped <- start');
-			this.cmd(act.setText, this.codeID[4][0], '     while start < end');
-			this.cmd(act.setText, this.codeID[5][0], '          swapped <- start');
-			this.cmd(act.setText, this.codeID[9][0], '                    swapped <- j');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- swapped');
-		}
-		lastSwapEnabled = !lastSwapEnabled;
-	}
-
 	clear() {
 		this.commands = [];
-
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
-
 		this.arrayData = [];
 		this.arrayID = [];
-		this.compCount = 0;
 		this.displayData = [];
-		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.iterations = 0;
+		this.cmd(act.setText, this.comparisonCountID, 'Iterations: ' + this.iterations);
+		this.cmd(act.setText, this.warningID, '');
 		return this.commands;
 	}
 
 	sort(params) {
 		this.commands = [];
-		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
 			.slice(0, MAX_ARRAY_SIZE);
+		this.displayData = new Array(this.arrayData.length);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
 		const letterMap = new Map();
@@ -256,79 +218,52 @@ export default class BubbleSort extends Algorithm {
 				ypos,
 			);
 		}
-		this.cmd(
-			act.createHighlightCircle,
-			this.iPointerID,
-			'#0000FF',
-			ARRAY_START_X,
-			ARRAY_START_Y,
-		);
-		this.cmd(act.setHighlight, this.iPointerID, 1);
-		this.cmd(
-			act.createHighlightCircle,
-			this.jPointerID,
-			'#0000FF',
-			ARRAY_START_X + ARRAY_ELEM_WIDTH,
-			ARRAY_START_Y,
-		);
-		this.cmd(act.setHighlight, this.jPointerID, 1);
-		this.cmd(act.step);
-		this.unhighlight(0, 0);
-
-		let sorted = true;
-		let end = this.arrayData.length - 1;
-		let lastSwapped = 0;
-		this.highlight(4, 0);
-		this.cmd(act.step);
-		do {
-			this.unhighlight(4, 0);
-			this.highlight(5, 0);
-			this.cmd(act.step);
-			this.unhighlight(5, 0);
-			sorted = true;
-			this.highlight(6, 0);
-			for (let i = 0; i < end; i++) {
-				this.movePointers(i, i + 1);
-				this.highlight(7, 0);
-				this.unhighlight(6, 0);
-				this.cmd(act.step);
-				this.cmd(
-					act.setText,
-					this.comparisonCountID,
-					'Comparison Count: ' + ++this.compCount,
-				);
-				this.unhighlight(7, 0);
-				if (this.arrayData[i] > this.arrayData[i + 1]) {
-					this.swap(i, i + 1);
-					sorted = false;
-					lastSwapped = i;
-				}
-			}
-			this.unhighlight(6, 0);
-			this.highlight(12, 0);
-			if (lastSwapEnabled) {
-				end = lastSwapped;
-			} else {
-				end--;
-			}
-			if (!sorted) {
-				for (let i = end + 1; i < this.arrayData.length; i++) {
-					this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
-				}
-			}
-			this.cmd(act.step);
-			this.unhighlight(12, 0);
-		} while (!sorted);
-		this.highlight(4, 0);
-
-		this.cmd(act.delete, this.iPointerID);
-		this.cmd(act.delete, this.jPointerID);
-		this.cmd(act.step);
-		this.unhighlight(4, 0);
 
 		for (let i = 0; i < this.arrayData.length; i++) {
-			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
+			this.cmd(act.setBackgroundColor, this.arrayID[i], this.colors[i % this.colors.length]);
+    }
+
+		this.cmd(act.step);
+
+		if (this.arrayData.length >= 10) {
+			for (let i= 0; i < this.arrayData.length / 2; i++) {
+				this.cmd(act.step);
+			}
+			while (this.arrayID.length > 0) {
+				const cell = this.arrayID.splice(Math.floor(Math.random()*(this.arrayID.length - 1)), 1);
+				this.cmd(act.delete, cell);
+				this.cmd(act.step);
+			}
+			this.arrayID = [];
+			this.arrayData = [];
+			this.displayData = [];
+			this.iterations = 0;
+			this.cmd(act.setText, this.comparisonCountID, 'Iterations: ' + this.iterations);
+			this.cmd(act.setText, this.warningID, 'Yeah so that array was too long...try something smaller');
+			return this.commands;
 		}
+
+    let sorted = false;
+		while (!sorted) {
+      this.cmd(act.setText, this.comparisonCountID, "Iterations: " + this.iterations++);
+      sorted = true;
+
+      for (let i = 0; i < length - 1; i++) {
+        if (this.arrayData[i] > this.arrayData[i + 1]) {
+          sorted = false;
+          break;
+        }
+      }
+      if (!sorted) {
+        this.shuffle();
+      } else {
+        for (let i = 0; i < length; i++) {
+          this.cmd(act.setBackgroundColor, this.arrayID[i], this.colors[i % this.colors.length]);
+        }
+      }
+      this.cmd(act.step);
+    }
+
 		this.cmd(act.step);
 
 		return this.commands;
@@ -336,50 +271,38 @@ export default class BubbleSort extends Algorithm {
 
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd(act.move, this.iPointerID, iXPos, ARRAY_START_Y);
+		const iYPos = ARRAY_START_Y;
+		this.cmd(act.move, this.iPointerID, iXPos, iYPos);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd(act.move, this.jPointerID, jXPos, ARRAY_START_Y);
+		const jYPos = ARRAY_START_Y;
+		this.cmd(act.move, this.jPointerID, jXPos, jYPos);
 		this.cmd(act.step);
 	}
 
+  shuffle() {
+    for (let i = 0; i < this.arrayData.length; i++) {
+      this.swap(i, Math.floor(Math.random() * (this.arrayData.length - 1)));
+			this.cmd(act.setBackgroundColor, this.arrayID[i], this.colors[Math.abs((this.iterations - i)) % this.colors.length]);
+    }
+  }
+
 	swap(i, j) {
-		this.highlight(8, 0);
-		this.highlight(9, 0);
-		// Change pointer colors to red
-		this.cmd(act.setForegroundColor, this.iPointerID, '#FF0000');
-		this.cmd(act.setForegroundColor, this.jPointerID, '#FF0000');
-		// Create temporary labels and remove text in array
-		const iLabelID = this.nextIndex++;
-		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd(act.createLabel, iLabelID, this.displayData[i], iXPos, ARRAY_START_Y);
-		const jLabelID = this.nextIndex++;
-		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		this.cmd(act.createLabel, jLabelID, this.displayData[j], jXPos, ARRAY_START_Y);
-		this.cmd(act.setText, this.arrayID[i], '');
-		this.cmd(act.setText, this.arrayID[j], '');
-		// Move labels
-		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
-		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
-		this.cmd(act.step);
-		// Set text in array and delete temporary labels
+
+
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
 		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);
-		this.cmd(act.delete, iLabelID);
-		this.cmd(act.delete, jLabelID);
+
+
 		// Swap data in backend array
 		let temp = this.arrayData[i];
 		this.arrayData[i] = this.arrayData[j];
 		this.arrayData[j] = temp;
+
 		// Swap data in display array
 		temp = this.displayData[i];
 		this.displayData[i] = this.displayData[j];
 		this.displayData[j] = temp;
-		// Reset pointer colors back to blue
-		this.cmd(act.setForegroundColor, this.iPointerID, '#0000FF');
-		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
-		this.unhighlight(8, 0);
-		this.unhighlight(9, 0);
-		this.cmd(act.step);
+
 	}
 
 	disableUI() {
@@ -394,3 +317,4 @@ export default class BubbleSort extends Algorithm {
 		}
 	}
 }
+

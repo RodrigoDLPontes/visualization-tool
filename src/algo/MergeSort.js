@@ -24,21 +24,27 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { 
+import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
-	addLabelToAlgorithmBar 
+	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-const MAX_ARRAY_SIZE = 18;
+const MAX_ARRAY_SIZE = 15;
 
-const ARRAY_START_X = 120;
+const ARRAY_START_X = 450;
 const ARRAY_START_Y = 50;
-const ARRAY_LINE_SPACING = 80;
+const ARRAY_LINE_SPACING = 75;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
+
+const COMP_COUNT_X = 100;
+const COMP_COUNT_Y = 50;
+
+const CODE_START_X = 50;
+const CODE_START_Y = 80;
 
 // const ARRRAY_ELEMS_PER_LINE = 15;
 
@@ -76,14 +82,14 @@ export default class MergeSort extends Algorithm {
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
-			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 999',
-			verticalGroup
+		addLabelToAlgorithmBar(
+			'Comma seperated list (e.g. "3,1,2"). Max 15 elements & no elements > 999',
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -107,11 +113,59 @@ export default class MergeSort extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.arrayData = [];
 		this.arrayID = [];
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+
+		this.compCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.comparisonCountID,
+			'Comparison Count: ' + this.compCount,
+			COMP_COUNT_X,
+			COMP_COUNT_Y,
+		);
+
+		this.code = [
+			['procedure MergeSort(array)'],
+			['     length <- length of array, midIdx <- length / 2'],
+			['     leftArray <- array[0...midIdx - 1]'],
+			['     rightArray <- array[midIdx...length - 1]'],
+			['     MergeSort(leftArray)'],
+			['     MergeSort(rightArray)'],
+			['     leftIdx, rightIdx, currIdx <- 0'],
+			['     while leftIdx < midIdx and rightIdx < length - midIdx do'],
+			['          if leftArray[leftIdx] <= rightArray[rightIdx] then'],
+			['               array[currIdx] <- leftArray[leftIdx]'],
+			['               leftIdx <- leftIdx + 1'],
+			['          else'],
+			['               array[currIdx] <- rightArray[rightIdx]'],
+			['               rightIdx <- rightIdx + 1'],
+			['          end if'],
+			['          currIdx <- currIdx + 1'],
+			['     end while'],
+			['     while leftIdx < midIdx do'],
+			['          array[currIdx] <- leftArray[leftIdx]'],
+			['          currIdx <- currIdx + 1'],
+			['          leftIdx <- leftIdx + 1'],
+			['     end while'],
+			['     while rightIdx < length - midIdx do'],
+			['          array[currIdx] <- rightArray[rightIdx]'],
+			['          currIdx <- currIdx + 1'],
+			['          rightIdx <- rightIdx + 1'],
+			['     end while'],
+			['end procedure'],
+		];
+
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		this.animationManager.startNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
 	}
 
 	reset() {
@@ -121,15 +175,17 @@ export default class MergeSort extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.kPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
+			this.listField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
 			this.implementAction(this.sort.bind(this), list);
@@ -148,11 +204,14 @@ export default class MergeSort extends Algorithm {
 		this.arrayData = [];
 		this.displayData = [];
 		this.arrayID = [];
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;
 	}
 
 	sort(params) {
 		this.commands = [];
+		this.highlight(0, 0);
 
 		this.arrayID = [];
 		this.arrayData = params
@@ -195,11 +254,21 @@ export default class MergeSort extends Algorithm {
 			);
 		}
 		this.cmd(act.step);
+		this.unhighlight(0, 0);
 
 		if (this.arrayData.length !== 1) {
+			this.highlight(2, 0);
+			this.highlight(3, 0);
+			this.cmd(act.step);
+			this.unhighlight(2, 0);
+			this.unhighlight(3, 0);
 			const mid = Math.ceil((this.arrayData.length - 1) / 2);
+			this.highlight(4, 0);
 			this.leftHelper(0, mid - 1, -LARGE_OFFSET, 0, 1);
+			this.unhighlight(4, 0);
+			this.highlight(5, 0);
 			this.rightHelper(mid, this.arrayData.length - 1, LARGE_OFFSET, 0, 1);
+			this.unhighlight(5, 0);
 			this.merge(
 				0,
 				this.arrayData.length - 1,
@@ -219,15 +288,29 @@ export default class MergeSort extends Algorithm {
 	}
 
 	leftHelper(left, right, offset, prevOffset, row) {
+		this.cmd(act.step);
 		if (left > right) return;
+		this.unhighlight(4, 0);
+		this.unhighlight(5, 0);
+		this.highlight(0, 0);
 
 		const tempArrayID = this.drawArrayAndCopy(left, right, offset, prevOffset, row);
+		this.unhighlight(0, 0);
 
 		if (left !== right) {
+			this.highlight(2, 0);
+			this.highlight(3, 0);
+			this.cmd(act.step);
+			this.unhighlight(2, 0);
+			this.unhighlight(3, 0);
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
+			this.highlight(4, 0);
 			this.leftHelper(left, mid - 1, offset - extraOffset, offset, row + 1);
+			this.unhighlight(4, 0);
+			this.highlight(5, 0);
 			this.leftHelper(mid, right, offset, offset, row + 1);
+			this.unhighlight(5, 0);
 			this.merge(left, right, mid, row, offset, offset - extraOffset, offset, tempArrayID);
 		} else {
 			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
@@ -236,15 +319,29 @@ export default class MergeSort extends Algorithm {
 	}
 
 	rightHelper(left, right, offset, prevOffset, row) {
+		this.cmd(act.step);
 		if (left > right) return;
+		this.unhighlight(4, 0);
+		this.unhighlight(5, 0);
+		this.highlight(0, 0);
 
 		const tempArrayID = this.drawArrayAndCopy(left, right, offset, prevOffset, row);
+		this.unhighlight(0, 0);
 
 		if (left !== right) {
+			this.highlight(2, 0);
+			this.highlight(3, 0);
+			this.cmd(act.step);
+			this.unhighlight(2, 0);
+			this.unhighlight(3, 0);
 			const mid = Math.ceil((left + right) / 2);
 			const extraOffset = row < 2 ? 2 * LARGE_OFFSET : 2 * SMALL_OFFSET;
+			this.highlight(4, 0);
 			this.rightHelper(left, mid - 1, offset, offset, row + 1);
+			this.unhighlight(4, 0);
+			this.highlight(5, 0);
 			this.rightHelper(mid, right, offset + extraOffset, offset, row + 1);
+			this.unhighlight(5, 0);
 			this.merge(left, right, mid, row, offset, offset, offset + extraOffset, tempArrayID);
 		} else {
 			this.cmd(act.setBackgroundColor, tempArrayID[left], '#2ECC71');
@@ -301,6 +398,8 @@ export default class MergeSort extends Algorithm {
 			tempDisplay[i] = this.displayData[i];
 		}
 
+		this.highlight(6, 0);
+
 		// Create pointers
 		const bottomYPos = ARRAY_START_Y + (row + 1) * ARRAY_LINE_SPACING;
 		const iPointerID = this.nextIndex++;
@@ -315,12 +414,21 @@ export default class MergeSort extends Algorithm {
 		this.cmd(act.createHighlightCircle, kPointerID, '#0000FF', kXPos, topYPos);
 		this.cmd(act.step);
 
+		this.unhighlight(6, 0);
+		this.highlight(7, 0);
+		this.cmd(act.step);
+		this.unhighlight(7, 0);
 		// Merge data and animate
 		let i = left;
 		let j = mid;
 		let k = left;
 		while (i < mid && j <= right) {
+			this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+			this.highlight(8, 0);
+			this.cmd(act.step);
+			this.unhighlight(8, 0);
 			if (tempArray[i] <= tempArray[j]) {
+				this.highlight(9, 0);
 				this.copyData(
 					i,
 					k,
@@ -332,15 +440,21 @@ export default class MergeSort extends Algorithm {
 					currArrayID[k],
 					iPointerID,
 				);
+				this.unhighlight(9, 0);
 				this.arrayData[k] = tempArray[i];
 				this.displayData[k] = tempDisplay[i];
-				k++;
-				this.movePointer(k, row, currOffset, kPointerID);
 				i++;
+				this.highlight(10, 0);
 				if (i < mid) {
 					this.movePointer(i, row + 1, leftOffset, iPointerID);
 				}
+				this.cmd(act.step);
+				this.unhighlight(10, 0);
 			} else {
+				this.highlight(11, 0);
+				this.cmd(act.step);
+				this.unhighlight(11, 0);
+				this.highlight(12, 0);
 				this.copyData(
 					j,
 					k,
@@ -352,18 +466,29 @@ export default class MergeSort extends Algorithm {
 					currArrayID[k],
 					jPointerID,
 				);
+				this.unhighlight(12, 0);
 				this.arrayData[k] = tempArray[j];
 				this.displayData[k] = tempDisplay[j];
-				k++;
-				this.movePointer(k, row, currOffset, kPointerID);
 				j++;
+				this.highlight(13, 0);
 				if (j <= right) {
 					this.movePointer(j, row + 1, rightOffset, jPointerID);
 				}
+				this.cmd(act.step);
+
+				this.unhighlight(13, 0);
 			}
+			k++;
+			this.highlight(15, 0);
+			this.movePointer(k, row, currOffset, kPointerID);
 			this.cmd(act.step);
+			this.unhighlight(15, 0);
 		}
+		this.highlight(17, 0);
+		this.cmd(act.step);
+		this.unhighlight(17, 0);
 		while (i < mid) {
+			this.highlight(18, 0);
 			this.copyData(
 				i,
 				k,
@@ -375,6 +500,9 @@ export default class MergeSort extends Algorithm {
 				currArrayID[k],
 				iPointerID,
 			);
+			this.unhighlight(18, 0);
+			this.highlight(19, 0);
+			this.highlight(20, 0);
 			this.arrayData[k] = tempArray[i];
 			this.displayData[k] = tempDisplay[i];
 			k++;
@@ -383,8 +511,15 @@ export default class MergeSort extends Algorithm {
 				this.movePointer(i, row + 1, leftOffset, iPointerID);
 				this.movePointer(k, row, currOffset, kPointerID);
 			}
+			this.cmd(act.step);
+			this.unhighlight(19, 0);
+			this.unhighlight(20, 0);
 		}
+		this.highlight(22, 0);
+		this.cmd(act.step);
+		this.unhighlight(22, 0);
 		while (j <= right) {
+			this.highlight(23, 0);
 			this.copyData(
 				j,
 				k,
@@ -396,6 +531,9 @@ export default class MergeSort extends Algorithm {
 				currArrayID[k],
 				jPointerID,
 			);
+			this.unhighlight(23, 0);
+			this.highlight(24, 0);
+			this.highlight(25, 0);
 			this.arrayData[k] = tempArray[j];
 			this.displayData[k] = tempDisplay[j];
 			j++;
@@ -404,6 +542,10 @@ export default class MergeSort extends Algorithm {
 				this.movePointer(j, row + 1, rightOffset, jPointerID);
 				this.movePointer(k, row, currOffset, kPointerID);
 			}
+			this.cmd(act.step);
+
+			this.unhighlight(24, 0);
+			this.unhighlight(25, 0);
 		}
 
 		// Delete pointers

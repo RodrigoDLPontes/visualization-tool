@@ -38,6 +38,9 @@ const MAX_LENGTH = 22;
 
 const FAILURE_TABLE_START_Y = 100;
 
+const COMP_COUNT_X = 575;
+const COMP_COUNT_Y = 30;
+
 export default class KMP extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -94,13 +97,19 @@ export default class KMP extends Algorithm {
 	}
 
 	setup() {
+		this.commands = [];
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
 		this.failureTableLabelID = this.nextIndex++;
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
 
-		this.animationManager.startNewAnimation();
+		this.comparisonCountID = this.nextIndex++;
+
+		this.compCount = 0;
+		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
+
+		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
@@ -112,6 +121,8 @@ export default class KMP extends Algorithm {
 		this.failureTableLabelID = this.nextIndex++;
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
+		this.comparisonCountID = this.nextIndex++;
+		this.compCount = 0;
 	}
 
 	findCallback() {
@@ -267,6 +278,11 @@ export default class KMP extends Algorithm {
 			this.cmd(act.setAlpha, f0PointerID, 0);
 			this.cmd(act.setAlpha, f1PointerID, 0);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
 				this.cmd(act.step);
@@ -277,6 +293,13 @@ export default class KMP extends Algorithm {
 					this.cmd(act.move, jPointerID, xpos, ypos);
 					this.cmd(act.step);
 				}
+			}
+			if (j < pattern.length) {
+				this.cmd(
+					act.setText,
+					this.comparisonCountID,
+					'Comparison Count: ' + ++this.compCount,
+				);
 			}
 			if (j === 0) {
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i], '#E74C3C');
@@ -389,6 +412,9 @@ export default class KMP extends Algorithm {
 			0,
 		);
 
+		this.cmd(act.move, this.comparisonCountID, labelX, COMP_COUNT_Y);
+		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+
 		// Display empty failure table
 		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 110;
 		this.failureTableCharacterID = new Array(pattern.length);
@@ -446,6 +472,7 @@ export default class KMP extends Algorithm {
 		let i = 0;
 		let j = 1;
 		while (j < pattern.length) {
+			this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
 			if (pattern.charAt(i) === pattern.charAt(j)) {
 				i++;
 				failureTable[j] = i;
@@ -518,6 +545,8 @@ export default class KMP extends Algorithm {
 			this.cmd(act.delete, this.failureTableCharacterID[i]);
 			this.cmd(act.delete, this.failureTableValueID[i]);
 		}
+		this.compCount = 0;
+		this.cmd(act.setText, this.comparisonCountID, '');
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
 		return this.commands;

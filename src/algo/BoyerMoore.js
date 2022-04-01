@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
+	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addLabelToAlgorithmBar,
@@ -38,10 +39,15 @@ const MAX_LENGTH = 22;
 
 const PATTERN_START_Y = 100;
 
+const FAILURE_TABLE_START_Y = 300;
 const LAST_TABLE_START_Y = 200;
 
 const COMP_COUNT_X = 575;
 const COMP_COUNT_Y = 30;
+
+const PERIOD_Y = 60;
+
+let galilRuleEnabled = false;
 
 export default class BoyerMoore extends Algorithm {
 	constructor(am, w, h) {
@@ -96,6 +102,13 @@ export default class BoyerMoore extends Algorithm {
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
+
+		addDivisorToAlgorithmBar();
+
+		// Galil Rule button
+		this.galilButton = addCheckboxToAlgorithmBar('Galil Rule Optimization', false);
+		this.galilButton.onclick = this.toggleGalilRule.bind(this);
+		this.controls.push(this.galilButton);
 	}
 
 	setup() {
@@ -108,11 +121,18 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableLabelID = this.nextIndex++;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		// this.failureTableLabelID = this.nextIndex++;
+		// this.failureTableCharacterID = [];
+		// this.failureTableValueID = [];
 
 		this.comparisonCountID = this.nextIndex++;
+		this.periodLabelID = this.nextIndex++;
 
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
+
+		this.period = 1;
+		this.cmd(act.createLabel, this.periodLabelID, '', COMP_COUNT_X, PERIOD_Y, 0);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -129,8 +149,13 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableLabelID = this.nextIndex++;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		// this.failureTableLabelID = this.nextIndex++;
+		// this.failureTableCharacterID = [];
+		// this.failureTableValueID = [];
 		this.comparisonCountID = this.nextIndex++;
+		this.periodLabelID = this.nextIndex++;
 		this.compCount = 0;
+		this.period = 1;
 	}
 
 	findCallback() {
@@ -159,6 +184,11 @@ export default class BoyerMoore extends Algorithm {
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
+	}
+
+	toggleGalilRule() {
+		galilRuleEnabled = !galilRuleEnabled;
+		//this.implementAction(this.clear.bind(this));
 	}
 
 	find(text, pattern) {
@@ -215,6 +245,9 @@ export default class BoyerMoore extends Algorithm {
 		}
 
 		const lastTable = this.buildLastTable(text.length, pattern);
+		if (galilRuleEnabled) {
+			this.buildFailureTable(text.length, pattern);
+		}
 
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
@@ -238,6 +271,7 @@ export default class BoyerMoore extends Algorithm {
 		let i = 0;
 		let j = pattern.length - 1;
 		let row = 0;
+		let l = 0;
 		while (i <= text.length - pattern.length) {
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
@@ -247,9 +281,13 @@ export default class BoyerMoore extends Algorithm {
 					xpos,
 					ypos,
 				);
+				if (k - i < l) {
+					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][k], '#FFFF4D');
+				}
 			}
+
 			this.cmd(act.step);
-			while (j >= 0 && pattern.charAt(j) === text.charAt(i + j)) {
+			while (j >= l && pattern.charAt(j) === text.charAt(i + j)) {
 				this.cmd(
 					act.setText,
 					this.comparisonCountID,
@@ -266,14 +304,22 @@ export default class BoyerMoore extends Algorithm {
 					this.cmd(act.step);
 				}
 			}
-			if (j === -1) {
-				i++;
+			if (j < l) {
+				if (galilRuleEnabled) {
+					i += this.period;
+					l = pattern.length - this.period;
+				} else {
+					i++;
+				}
 			} else {
 				this.cmd(
 					act.setText,
 					this.comparisonCountID,
 					'Comparison Count: ' + ++this.compCount,
 				);
+				if (l !== 0) {
+					l = 0;
+				}
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				let shift;
 				if (text.charAt(i + j) in lastTable) {
@@ -470,38 +516,231 @@ export default class BoyerMoore extends Algorithm {
 		return lastTable;
 	}
 
+	buildFailureTable(textLength, pattern) {
+		const startIndex = this.nextIndex;
+		this.failureTableLabelID = this.nextIndex++;
+		this.failureTableCharacterID = [];
+		this.failureTableValueID = [];
+		// Display label
+		const labelX = ARRAY_START_X + textLength * this.cellSize + 10;
+		this.cmd(
+			act.createLabel,
+			this.failureTableLabelID,
+			'Failure table:',
+			labelX,
+			FAILURE_TABLE_START_Y + 10,
+			0,
+		);
+
+		this.cmd(act.move, this.periodLabelID, labelX, PERIOD_Y);
+		this.cmd(
+			act.setText,
+			this.periodLabelID,
+			'Period = pattern.length - FT[pattern.length - 1]',
+		);
+
+		// Display empty failure table
+		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 110;
+		this.failureTableCharacterID = new Array(pattern.length);
+		this.failureTableValueID = new Array(pattern.length);
+		for (let i = 0; i < pattern.length; i++) {
+			const xpos = tableStartX + i * this.cellSize;
+			this.failureTableCharacterID[i] = this.nextIndex++;
+			this.cmd(
+				act.createRectangle,
+				this.failureTableCharacterID[i],
+				pattern.charAt(i),
+				this.cellSize,
+				this.cellSize,
+				xpos,
+				FAILURE_TABLE_START_Y,
+			);
+			this.cmd(act.setBackgroundColor, this.failureTableCharacterID[i], '#D3D3D3');
+			this.failureTableValueID[i] = this.nextIndex++;
+			this.cmd(
+				act.createRectangle,
+				this.failureTableValueID[i],
+				'',
+				this.cellSize,
+				this.cellSize,
+				xpos,
+				FAILURE_TABLE_START_Y + this.cellSize,
+			);
+		}
+		this.cmd(act.step);
+
+		// Display pointers and set first value to 0
+		const iPointerID = this.nextIndex++;
+		const jPointerID = this.nextIndex++;
+		this.cmd(
+			act.createHighlightCircle,
+			iPointerID,
+			'#0000FF',
+			tableStartX,
+			FAILURE_TABLE_START_Y,
+			this.cellSize / 2,
+		);
+		this.cmd(
+			act.createHighlightCircle,
+			jPointerID,
+			'#FF0000',
+			tableStartX + this.cellSize,
+			FAILURE_TABLE_START_Y,
+			this.cellSize / 2,
+		);
+		this.cmd(act.setText, this.failureTableValueID[0], 0);
+		this.cmd(act.step);
+
+		const failureTable = [];
+		failureTable[0] = 0;
+		let i = 0;
+		let j = 1;
+		while (j < pattern.length) {
+			this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+			if (pattern.charAt(i) === pattern.charAt(j)) {
+				i++;
+				failureTable[j] = i;
+				this.cmd(act.setText, this.failureTableValueID[j], i);
+				j++;
+				if (j < pattern.length) {
+					this.cmd(
+						act.move,
+						iPointerID,
+						tableStartX + i * this.cellSize,
+						FAILURE_TABLE_START_Y,
+					);
+					this.cmd(
+						act.move,
+						jPointerID,
+						tableStartX + j * this.cellSize,
+						FAILURE_TABLE_START_Y,
+					);
+				}
+				this.cmd(act.step);
+			} else {
+				if (i === 0) {
+					failureTable[j] = i;
+					this.cmd(act.setText, this.failureTableValueID[j], i);
+					j++;
+					if (j < pattern.length) {
+						this.cmd(
+							act.move,
+							jPointerID,
+							tableStartX + j * this.cellSize,
+							FAILURE_TABLE_START_Y,
+						);
+					}
+					this.cmd(act.step);
+				} else {
+					i = failureTable[i - 1];
+					this.cmd(
+						act.move,
+						iPointerID,
+						tableStartX + i * this.cellSize,
+						FAILURE_TABLE_START_Y,
+					);
+					this.cmd(act.step);
+				}
+			}
+		}
+
+		this.cmd(
+			act.setText,
+			this.periodLabelID,
+			'Period = ' + pattern.length + ' - ' + failureTable[pattern.length - 1],
+		);
+		const ftPeriodLabel = this.nextIndex++;
+		this.cmd(
+			act.createHighlightCircle,
+			ftPeriodLabel,
+			'#FF0000',
+			tableStartX + this.cellSize * (pattern.length - 1),
+			FAILURE_TABLE_START_Y + this.cellSize,
+			this.cellSize / 2,
+		);
+		this.cmd(act.step);
+
+		this.period = pattern.length - failureTable[pattern.length - 1];
+		this.cmd(act.setText, this.periodLabelID, 'Period = ' + this.period);
+		this.cmd(act.delete, ftPeriodLabel);
+
+		if (this.failureTableValueID.length !== 0) {
+			this.cmd(act.delete, this.failureTableLabelID);
+		}
+
+		for (let i = 0; i < this.failureTableCharacterID.length; i++) {
+			this.cmd(act.delete, this.failureTableCharacterID[i]);
+			this.cmd(act.delete, this.failureTableValueID[i]);
+		}
+
+		this.cmd(act.delete, iPointerID);
+		this.cmd(act.delete, jPointerID);
+
+		this.nextIndex = startIndex;
+
+		return failureTable;
+	}
+
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
+			console.log('Text row ' + this.textRowID[i]);
 			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
+				console.log('Comp matrix: ' + this.comparisonMatrixID[i][j]);
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
+
 		this.comparisonMatrixID = [];
 		if (this.patternTableCharacterID.length !== 0) {
+			console.log('pat table label: ' + this.patternTableLabelID);
 			this.cmd(act.delete, this.patternTableLabelID);
 		}
+
 		for (let i = 0; i < this.patternTableCharacterID.length; i++) {
+			console.log('pat table char: ' + this.patternTableCharacterID[i]);
 			this.cmd(act.delete, this.patternTableCharacterID[i]);
+			console.log('pat table idx: ' + this.patternTableIndexID[i]);
 			this.cmd(act.delete, this.patternTableIndexID[i]);
 		}
+
 		this.patternTableCharacterID = [];
 		this.patternTableIndexID = [];
 		if (this.lastTableCharacterID.length !== 0) {
+			console.log('table label: ' + this.lastTableLabelID);
 			this.cmd(act.delete, this.lastTableLabelID);
 		}
+
 		for (let i = 0; i < this.lastTableCharacterID.length; i++) {
+			console.log(this.lastTableCharacterID.length);
+			console.log('table char: ' + this.lastTableCharacterID[i]);
 			this.cmd(act.delete, this.lastTableCharacterID[i]);
+			console.log('table val: ' + this.lastTableValueID[i]);
 			this.cmd(act.delete, this.lastTableValueID[i]);
 		}
+		console.log();
+
+		// if (this.failureTableValueID.length !== 0) {
+		// 	this.cmd(act.delete, this.failureTableLabelID);
+		// }
+
+		// for (let i = 0; i < this.failureTableCharacterID.length; i++) {
+		// 	this.cmd(act.delete, this.failureTableCharacterID[i]);
+		// 	this.cmd(act.delete, this.failureTableValueID[i]);
+		// }
+
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.periodLabelID, '');
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		this.failureTableCharacterID = [];
+		this.failureTableValueID = [];
+		this.period = 1;
 		return this.commands;
 	}
 

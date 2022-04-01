@@ -18,6 +18,13 @@ export default {
 				text and &quot;baaaa&quot; for pattern), since we will only mismatch on the last
 				comparison
 			</li>
+			<li>
+				When incorporating the Galil Rule, we can use logic similar to that of KMP to
+				optimize our shifts. After finding a full match, instead of shifting by 1 we shift
+				by the period <i>k</i>. After that shift, we don't need to compare the first{' '}
+				<i>k</i> characters in the pattern because we've already compared them and know that
+				they match!
+			</li>
 		</ul>
 	),
 	BruteForce: (

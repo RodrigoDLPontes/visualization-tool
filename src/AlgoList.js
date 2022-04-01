@@ -1,4 +1,5 @@
 import * as algos from './algo';
+import * as jokeAlgo from './joke-algo';
 
 // After adding the export in algos/index.js, add new algorithms in the following format:
 // AlgorithmName: ['Menu Display Name', algos.ClassName, 'Verbose Display Name (optional)']
@@ -41,6 +42,7 @@ export const algoMap = {
 	Kruskal: ["Kruskal's", algos.Kruskals],
 	LCS: ['LCS', algos.LCS, 'Longest Common Subsequence'],
 	Floyd: ['Floyd-Warshall', algos.Floyd],
+	NonLinearProbing: ['Non-Linear Probing', jokeAlgo.NonLinearProbing]
 };
 
 export const algoList = [
@@ -66,6 +68,7 @@ export const algoList = [
 	'HashMaps',
 	'ClosedHash',
 	'OpenHash',
+	'NonLinearProbing',
 	'Sorting and QuickSelect',
 	'BubbleSort',
 	'CocktailSort',
@@ -89,5 +92,5 @@ export const algoList = [
 	'Kruskal',
 	'Dynamic Programming',
 	'LCS',
-	'Floyd',
+	'Floyd'
 ];

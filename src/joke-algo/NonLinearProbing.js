@@ -135,7 +135,7 @@ export default class NonLinearProbing extends Hash {
 
 		this.commands = [];
 
-        this.equation = EQUATIONS[parseInt(Math.random() * (EQUATIONS.length - 1))]
+        this.equation = EQUATIONS[parseInt(Math.random() * (EQUATIONS.length))]
         console.log(this.equation.name);
 
 		for (let i = 0; i < this.table_size; i++) {

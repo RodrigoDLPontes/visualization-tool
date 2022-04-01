@@ -1,4 +1,5 @@
 export { default as AVL } from './AVL';
+export { default as LVA } from './LVA';
 export { default as ArrayList } from './ArrayList';
 export { default as BFS } from './BFS';
 export { default as BST } from './BST';

@@ -349,6 +349,28 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	getMaxRows(text, pattern) {
+
+		if (galilRuleEnabled) {
+			const failureTable = [];
+			failureTable[0] = 0;
+			let i = 0;
+			let j = 1;
+			while (j < pattern.length) {
+				if (pattern.charAt(i) === pattern.charAt(j)) {
+					i++;
+					failureTable[j] = i;
+					j++;
+				} else {
+					if (i === 0) {
+						failureTable[j] = i;
+						j++;
+					} else {
+						i = failureTable[i - 1];
+					}
+				}
+			}
+			this.period = pattern.length - failureTable[pattern.length - 1];
+		}
 		const lastTable = {};
 		for (let i = 0; i < pattern.length; i++) {
 			lastTable[pattern.charAt(i)] = i;
@@ -356,12 +378,18 @@ export default class BoyerMoore extends Algorithm {
 		let i = 0;
 		let j = pattern.length - 1;
 		let maxRows = 0;
+		let l = 0;
 		while (i <= text.length - pattern.length) {
-			while (j >= 0 && pattern.charAt(j) === text.charAt(i + j)) {
+			while (j >= l && pattern.charAt(j) === text.charAt(i + j)) {
 				j--;
 			}
-			if (j === -1) {
-				i++;
+			if (j < l) {
+				if (galilRuleEnabled) {
+					i += this.period;
+					l = pattern.length - this.period;
+				} else {
+					i++;
+				}
 			} else {
 				let shift;
 				if (text.charAt(i + j) in lastTable) {

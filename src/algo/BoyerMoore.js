@@ -391,6 +391,9 @@ export default class BoyerMoore extends Algorithm {
 					i++;
 				}
 			} else {
+				if (l !== 0) {
+					l = 0;
+				}
 				let shift;
 				if (text.charAt(i + j) in lastTable) {
 					shift = lastTable[text.charAt(i + j)];

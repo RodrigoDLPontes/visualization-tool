@@ -1,10 +1,8 @@
 export { default as AVL } from './AVL';
-export { default as LVA } from './LVA';
 export { default as ArrayList } from './ArrayList';
 export { default as BFS } from './BFS';
 export { default as BST } from './BST';
 export { default as BTree } from './BTree';
-export { default as BogoSort } from './BogoSort';
 export { default as BoyerMoore } from './BoyerMoore';
 export { default as BruteForce } from './BruteForce';
 export { default as BubbleSort } from './BubbleSort';

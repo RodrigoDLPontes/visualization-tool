@@ -553,7 +553,6 @@ export default class Hash extends Algorithm {
 		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';
 			this.valueField.value = '';
-			this.commands = [];
 			this.implementAction(this.insertElement.bind(this), insertedKey, insertedValue);
 		}
 	}

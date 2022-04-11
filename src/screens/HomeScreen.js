@@ -21,7 +21,6 @@ const HomeScreen = () => (
 											className="button"
 											type="button"
 											value={algoMap[name][0]}
-											style= {algoMap[name][0] === 'Bogo Sort' || algoMap[name][0] === 'LVA' || algoMap[name][0] === 'Non-Linear Probing' ? {color : "red"} : {}}
 										/>
 									</Link>
 								) : (

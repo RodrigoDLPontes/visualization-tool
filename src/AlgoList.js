@@ -1,5 +1,4 @@
 import * as algos from './algo';
-import * as jokeAlgo from './joke-algo';
 
 // After adding the export in algos/index.js, add new algorithms in the following format:
 // AlgorithmName: ['Menu Display Name', algos.ClassName, 'Verbose Display Name (optional)']
@@ -21,9 +20,7 @@ export const algoMap = {
 	OpenHash: ['HashMap (Chaining)', algos.OpenHash],
 	SplayTree: ['SplayTree', algos.SplayTree],
 	AVL: ['AVL', algos.AVL],
-	LVA: ['LVA', algos.LVA],
 	BTree: ['2-4 Tree', algos.BTree],
-	BogoSort: ['Bogo Sort', algos.BogoSort],
 	BubbleSort: ['Bubble Sort', algos.BubbleSort],
 	CocktailSort: ['Cocktail Shaker Sort', algos.CocktailSort],
 	InsertionSort: ['Insertion Sort', algos.InsertionSort],
@@ -44,7 +41,6 @@ export const algoMap = {
 	Kruskal: ["Kruskal's", algos.Kruskals],
 	LCS: ['LCS', algos.LCS, 'Longest Common Subsequence'],
 	Floyd: ['Floyd-Warshall', algos.Floyd],
-	NonLinearProbing: ['Non-Linear Probing', jokeAlgo.NonLinearProbing]
 };
 
 export const algoList = [
@@ -64,16 +60,13 @@ export const algoList = [
 	'BST',
 	'Heap',
 	'AVL',
-	'LVA',
 	'BTree',
 	'SplayTree',
 	'SkipList',
 	'HashMaps',
 	'ClosedHash',
 	'OpenHash',
-	'NonLinearProbing',
 	'Sorting and QuickSelect',
-	'BogoSort',
 	'BubbleSort',
 	'CocktailSort',
 	'InsertionSort',
@@ -96,5 +89,5 @@ export const algoList = [
 	'Kruskal',
 	'Dynamic Programming',
 	'LCS',
-	'Floyd'
+	'Floyd',
 ];

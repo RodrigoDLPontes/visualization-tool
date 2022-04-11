@@ -138,15 +138,4 @@ export default {
 			</li>
 		</ul>
 	),
-	BogoSort: (
-		<ul style={{listStyle: "none", textAlign: "center"}}>
-			<li>Ah, BogoSort</li>
-			<li>Rejecting the tumultuous logic of QuickSort, Bogosort adopts the idea of a random pivot and expands it to an entirely randomized array</li>
-			<li>This allows for a best case of O(1)! (probably idk)</li>
-			<li>It can be a lot to take in at once, so if you have any questions please direct them to Liam Gones</li>
-			<li><img src="https://tinyurl.com/bogomary" alt="" style={{width : "40px"}}></img></li>
-			<li>p.s. Choose your array carefully. An array of length 9 has 9! (362,880) possible permutations <span role="img" aria-label="shook">😳</span></li>
-		</ul>
-),
-
 };

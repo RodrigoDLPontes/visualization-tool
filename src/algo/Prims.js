@@ -176,7 +176,7 @@ export default class Prims extends Graph {
 		this.cmd(act.setText, this.infoLabelID, 'Enqueuing edges of ' + this.toStr(startVertex));
 		for (let neighbor = 0; neighbor < this.size; neighbor++) {
 			const weight = this.adj_matrix[startVertex][neighbor];
-			if (weight > 0) {
+			if (weight >= 0) {
 				this.highlightEdge(startVertex, neighbor, 1);
 				this.cmd(
 					act.createLabel,

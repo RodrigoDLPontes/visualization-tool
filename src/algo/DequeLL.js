@@ -48,6 +48,17 @@ const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
 
+const HEAD_POS_X = 180;
+const HEAD_POS_Y = 100;
+
+const TAIL_POS_X = 180;
+
+const POINTER_LABEL_X = 130;
+const HEAD_LABEL_Y = 100;
+
+const POINTER_ELEM_WIDTH = 30;
+const POINTER_ELEM_HEIGHT = 30;
+
 const SIZE = 32;
 
 export default class DequeLL extends Algorithm {
@@ -55,6 +66,9 @@ export default class DequeLL extends Algorithm {
 		super(am, w, h);
 		this.addControls();
 		this.nextIndex = 0;
+		this.commands = [];
+		this.tail_pos_y = h - LINKED_LIST_ELEM_HEIGHT;
+		this.tail_label_y = this.tail_pos_y;
 		this.setup();
 		this.initialIndex = this.nextIndex;
 	}
@@ -116,9 +130,40 @@ export default class DequeLL extends Algorithm {
 	setup() {
 		this.linkedListElemID = new Array(SIZE);
 
+		this.headID = this.nextIndex++;
+		this.headLabelID = this.nextIndex++;
+
+		this.tailID = this.nextIndex++;
+		this.tailLabelID = this.nextIndex++;
+
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
+
+		this.cmd(act.createLabel, this.headLabelID, 'Head', POINTER_LABEL_X, HEAD_LABEL_Y);
+		this.cmd(
+			act.createRectangle,
+			this.headID,
+			'',
+			POINTER_ELEM_WIDTH,
+			POINTER_ELEM_HEIGHT,
+			HEAD_POS_X,
+			HEAD_POS_Y,
+		);
+
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X, this.tail_label_y);
+		this.cmd(
+			act.createRectangle,
+			this.tailID,
+			'',
+			POINTER_ELEM_WIDTH,
+			POINTER_ELEM_HEIGHT,
+			TAIL_POS_X,
+			this.tail_pos_y,
+		);
+
+		this.cmd(act.setNull, this.headID, 1);
+		this.cmd(act.setNull, this.tailID, 1);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
@@ -211,10 +256,12 @@ export default class DequeLL extends Algorithm {
 
 		if (index === 0) {
 			this.cmd(act.setPrevNull, this.linkedListElemID[index], 1);
+			this.cmd(act.connect, this.headID, this.linkedListElemID[index]);
 		}
 
 		if (index === this.size) {
 			this.cmd(act.setNextNull, this.linkedListElemID[index], 1);
+			this.cmd(act.connect, this.tailID, this.linkedListElemID[index]);
 		}
 
 		if (this.size !== 0) {
@@ -230,6 +277,7 @@ export default class DequeLL extends Algorithm {
 					this.linkedListElemID[index + 1],
 					this.linkedListElemID[index],
 				);
+				this.cmd(act.disconnect, this.headID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size) {
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
@@ -242,6 +290,7 @@ export default class DequeLL extends Algorithm {
 					this.linkedListElemID[index],
 					this.linkedListElemID[index - 1],
 				);
+				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1]);
 			} else {
 				this.cmd(
 					act.disconnect,
@@ -309,6 +358,8 @@ export default class DequeLL extends Algorithm {
 					this.linkedListElemID[index],
 				);
 				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 1);
+				this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.headID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,
@@ -316,6 +367,8 @@ export default class DequeLL extends Algorithm {
 					this.linkedListElemID[index],
 				);
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 1);
+				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
 			} else {
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
@@ -344,6 +397,9 @@ export default class DequeLL extends Algorithm {
 					this.linkedListElemID[index - 1],
 				);
 			}
+		} else {
+			this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
+			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 		}
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
@@ -378,6 +434,8 @@ export default class DequeLL extends Algorithm {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.size = 0;
+		this.cmd(act.setNull, this.headID, 1);
+		this.cmd(act.setNull, this.tailID, 1);
 		return this.commands;
 	}
 }

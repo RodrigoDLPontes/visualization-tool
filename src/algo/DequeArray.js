@@ -61,7 +61,6 @@ const QUEUE_RESIZE_LABEL_Y = 60;
 
 const FRONT_LABEL_OFFSET = -40;
 
-
 const INDEX_COLOR = '#0000FF';
 
 const SIZE = 7;
@@ -188,11 +187,13 @@ export default class DequeArray extends Algorithm {
 			SIZE_POS_Y,
 		);
 
-		this.cmd(act.createLabel,
+		this.cmd(
+			act.createLabel,
 			this.frontPointerID,
 			'Front',
 			ARRAY_START_X,
-			ARRAY_START_Y + FRONT_LABEL_OFFSET);
+			ARRAY_START_Y + FRONT_LABEL_OFFSET,
+		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
 
@@ -210,7 +211,7 @@ export default class DequeArray extends Algorithm {
 		this.nextIndex = 0;
 
 		this.arrayData = new Array(SIZE);
-		this.arrayID = new Array(SIZE); 
+		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
 
 		for (let i = 0; i < SIZE; i++) {
@@ -226,13 +227,15 @@ export default class DequeArray extends Algorithm {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addLast.bind(this), pushVal);
-		} else if (this.size === this.arrayData.length 
-			&& this.addField.value !== ''
-			&& this.size * 2 < MAX_SIZE) {
-				const pushVal = this.addField.value;
-				this.addField.value = '';
-				this.implementAction(this.resize.bind(this), pushVal, false);
-			}
+		} else if (
+			this.size === this.arrayData.length &&
+			this.addField.value !== '' &&
+			this.size * 2 < MAX_SIZE
+		) {
+			const pushVal = this.addField.value;
+			this.addField.value = '';
+			this.implementAction(this.resize.bind(this), pushVal, false);
+		}
 	}
 
 	removeFirstCallback() {
@@ -252,13 +255,15 @@ export default class DequeArray extends Algorithm {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addFirst.bind(this), pushVal);
-		} else if (this.size === this.arrayData.length
-			&& this.addField.value !== ''
-			&& this.size * 2 < MAX_SIZE) {
-				const pushVal = this.addField.value;
-				this.addField.value = '';
-				this.implementAction(this.resize.bind(this), pushVal, true);
-			}
+		} else if (
+			this.size === this.arrayData.length &&
+			this.addField.value !== '' &&
+			this.size * 2 < MAX_SIZE
+		) {
+			const pushVal = this.addField.value;
+			this.addField.value = '';
+			this.implementAction(this.resize.bind(this), pushVal, true);
+		}
 	}
 
 	clearCallback() {
@@ -370,9 +375,9 @@ export default class DequeArray extends Algorithm {
 
 		const frontxpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const frontypos =
-			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
-		
+			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
+			ARRAY_START_Y +
+			FRONT_LABEL_OFFSET;
 
 		this.cmd(act.setText, this.arrayID[addIndex], elemToAdd);
 		this.cmd(act.step);
@@ -453,8 +458,9 @@ export default class DequeArray extends Algorithm {
 		this.front = (this.front + 1) % this.arrayData.length;
 		const frontxpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const frontypos =
-			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ ARRAY_START_Y + FRONT_LABEL_OFFSET;
+			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
+			ARRAY_START_Y +
+			FRONT_LABEL_OFFSET;
 
 		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
@@ -489,7 +495,8 @@ export default class DequeArray extends Algorithm {
 		const remLabelID = this.nextIndex++;
 		const remLabelValID = this.nextIndex++;
 
-		const remIndex = (this.front + this.size - 1 + this.arrayData.length) % this.arrayData.length;
+		const remIndex =
+			(this.front + this.size - 1 + this.arrayData.length) % this.arrayData.length;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
@@ -558,34 +565,35 @@ export default class DequeArray extends Algorithm {
 		this.arrayLabelIDNew = new Array(this.size * 2);
 		this.arrayDataNew = new Array(this.size * 2);
 
-		const frontOffset = (isFront) ? 1 : 0;
+		const frontOffset = isFront ? 1 : 0;
 
 		for (let i = 0; i < this.size * 2; i++) {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
 			if (i < this.size) {
-				this.arrayDataNew[i + frontOffset] = this.arrayData[(this.front + i) % this.arrayData.length];
+				this.arrayDataNew[i + frontOffset] =
+					this.arrayData[(this.front + i) % this.arrayData.length];
 			}
 		}
 
-		const extra = (isFront) ? ": elements shifted by 1" : '';
+		const extra = isFront ? ': elements shifted by 1' : '';
 
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value:', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(
-			act.createLabel, 
-			labEnqueueResizeID, 
-			`(Resize Required${extra})`, 
-			(isFront) ? QUEUE_RESIZE_LABEL_X + 100 : QUEUE_RESIZE_LABEL_X, 
-			QUEUE_RESIZE_LABEL_Y
+			act.createLabel,
+			labEnqueueResizeID,
+			`(Resize Required${extra})`,
+			isFront ? QUEUE_RESIZE_LABEL_X + 100 : QUEUE_RESIZE_LABEL_X,
+			QUEUE_RESIZE_LABEL_Y,
 		);
 		this.cmd(act.step);
 
 		//Create new array
 		for (let i = 0; i < this.size * 2; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING 
-			+ (RESIZE_ARRAY_START_Y);
+			const ypos =
+				Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
 			this.cmd(
 				act.createRectangle,
 				this.arrayIDNew[i],
@@ -605,20 +613,30 @@ export default class DequeArray extends Algorithm {
 
 		//Move old elements to new array
 		for (let i = 0; i < this.size; i++) {
-			const xposinit = (((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) 
-			* ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const yposinit = Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) 
-			* ARRAY_LINE_SPACING + ARRAY_START_Y;
+			const xposinit =
+				(((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) *
+					ARRAY_ELEM_WIDTH +
+				ARRAY_START_X;
+			const yposinit =
+				Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) *
+					ARRAY_LINE_SPACING +
+				ARRAY_START_Y;
 
-			const xpos = (((i + frontOffset) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X);
-			const ypos = Math.floor((i + frontOffset) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + RESIZE_ARRAY_START_Y;
+			const xpos =
+				((i + frontOffset) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH +
+				RESIZE_ARRAY_START_X;
+			const ypos =
+				Math.floor((i + frontOffset) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
+				RESIZE_ARRAY_START_Y;
 
 			this.arrayMoveID[i] = this.nextIndex++;
 
-			this.cmd(act.createLabel, this.arrayMoveID[i],
+			this.cmd(
+				act.createLabel,
+				this.arrayMoveID[i],
 				this.arrayData[(this.front + i) % this.arrayData.length],
 				xposinit,
-				yposinit
+				yposinit,
 			);
 			this.cmd(act.move, this.arrayMoveID[i], xpos, ypos);
 			this.cmd(act.step);
@@ -627,7 +645,11 @@ export default class DequeArray extends Algorithm {
 		//Delete movement objects and set text
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.arrayMoveID[i]);
-			this.cmd(act.setText, this.arrayIDNew[i + frontOffset], this.arrayDataNew[i + frontOffset]);
+			this.cmd(
+				act.setText,
+				this.arrayIDNew[i + frontOffset],
+				this.arrayDataNew[i + frontOffset],
+			);
 		}
 		this.cmd(act.step);
 
@@ -639,7 +661,7 @@ export default class DequeArray extends Algorithm {
 
 		//Move new array
 		for (let i = 0; i < this.size * 2; i++) {
-			const xpos = ((i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X);
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 			this.cmd(act.move, this.arrayIDNew[i], xpos, ypos);
@@ -664,28 +686,47 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
 		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
-		
-		const addIndex = (!isFront) ? (this.front + this.size) % this.arrayDataNew.length : this.front;
+
+		const addIndex = !isFront
+			? (this.front + this.size) % this.arrayDataNew.length
+			: this.front;
 
 		this.cmd(act.delete, labEnqueueResizeID);
 
 		//Just so the element travels over the array instead of underneath it
 		this.cmd(act.delete, labEnqueueValID);
 		const labEnqueueValIDNew = this.nextIndex++;
-		this.cmd(act.createLabel, labEnqueueValIDNew, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+		this.cmd(
+			act.createLabel,
+			labEnqueueValIDNew,
+			elemToEnqueue,
+			QUEUE_ELEMENT_X,
+			QUEUE_ELEMENT_Y,
+		);
 		this.cmd(act.step);
 
 		if (isFront) {
-			this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, FRONT_POS_X, FRONT_POS_Y);
+			this.cmd(
+				act.createHighlightCircle,
+				this.highlight1ID,
+				INDEX_COLOR,
+				FRONT_POS_X,
+				FRONT_POS_Y,
+			);
 		} else {
-			this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
+			this.cmd(
+				act.createHighlightCircle,
+				this.highlight1ID,
+				INDEX_COLOR,
+				SIZE_POS_X,
+				SIZE_POS_Y,
+			);
 		}
 		this.cmd(act.step);
 
 		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(addIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-		
 
 		this.cmd(
 			act.move,
@@ -705,7 +746,6 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.arrayID[addIndex], elemToEnqueue);
 		this.cmd(act.step);
 
-		
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.sizeID, this.size + 1);
@@ -734,10 +774,11 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.frontID, '0');
 		this.cmd(act.setText, this.sizeID, '0');
 		this.cmd(
-			act.setPosition, 
-			this.frontPointerID, 
+			act.setPosition,
+			this.frontPointerID,
 			ARRAY_START_X,
-			ARRAY_START_Y + FRONT_LABEL_OFFSET);
+			ARRAY_START_Y + FRONT_LABEL_OFFSET,
+		);
 		return this.commands;
 	}
 }

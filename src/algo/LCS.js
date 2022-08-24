@@ -121,7 +121,7 @@ export default class LCS extends Algorithm {
 			['               else'],
 			['                    currY--'],
 			['     end while'],
-			['end procedure']
+			['end procedure'],
 		];
 
 		this.codeID = Array(this.code.length);
@@ -252,11 +252,11 @@ export default class LCS extends Algorithm {
 					this.unhighlight(7, 0);
 					this.unhighlight(7, 2);
 					this.unhighlight(7, 4);
-				
+
 					if (this.tableVals[i][j + 1] > this.tableVals[i + 1][j]) {
 						this.cmd(act.setHighlight, this.tableID[i + 1][j], 0);
 						this.unhighlight(7, 1);
-						
+
 						this.tableVals[i + 1][j + 1] = this.tableVals[i][j + 1];
 						this.cmd(
 							act.createLabel,
@@ -465,7 +465,7 @@ export default class LCS extends Algorithm {
 			this.cmd(act.setHighlight, this.tableID[currX - 1][currY], 1);
 			this.cmd(act.setHighlight, this.tableID[currX][currY - 1], 1);
 			this.cmd(act.step);
-			
+
 			this.unhighlight(14, 1);
 			this.cmd(act.setHighlight, this.tableID[currX - 1][currY], 0);
 			this.cmd(act.setHighlight, this.tableID[currX][currY - 1], 0);
@@ -475,7 +475,7 @@ export default class LCS extends Algorithm {
 				this.cmd(act.setHighlight, this.tableID[currX][currY], 1);
 				this.cmd(act.setHighlight, this.tableID[currX - 1][currY - 1], 1);
 				this.cmd(act.step);
-				
+
 				this.unhighlight(15, 1);
 
 				this.cmd(act.setHighlight, this.tableID[currX][currY], 0);

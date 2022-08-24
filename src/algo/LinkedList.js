@@ -341,7 +341,8 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
 		this.cmd(act.delete, labPushValID);
 
-		if (index === this.size) { // adding to back , dont need to do anything to head
+		if (index === this.size) {
+			// adding to back , dont need to do anything to head
 			this.cmd(act.setNull, this.linkedListElemID[index], 1);
 		}
 

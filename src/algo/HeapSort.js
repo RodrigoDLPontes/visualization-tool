@@ -54,96 +54,36 @@ const HEAP_INITIAL_Y = 150;
 const HEAP_LABEL_Y_POS = 180;
 
 const HEAP_X_POSITIONS = [
-	0,
-	450,
-	250,
-	650,
-	150,
-	350,
-	550,
-	750,
-	100,
-	200,
-	300,
-	400,
-	500,
-	600,
-	700,
-	800,
-	75,
-	125,
-	175,
-	225,
-	275,
-	325,
-	375,
-	425,
-	475,
-	525,
-	575,
-	625,
-	675,
-	725,
-	775,
-	825,
+	0, 450, 250, 650, 150, 350, 550, 750, 100, 200, 300, 400, 500, 600, 700, 800, 75, 125, 175, 225,
+	275, 325, 375, 425, 475, 525, 575, 625, 675, 725, 775, 825,
 ];
 
 const HEAP_Y_POSITIONS = [
-	0,
-	250,
-	320,
-	320,
-	390,
-	390,
-	390,
-	390,
-	460,
-	460,
-	460,
-	460,
-	460,
-	460,
-	460,
-	460,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
-	530,
+	0, 250, 320, 320, 390, 390, 390, 390, 460, 460, 460, 460, 460, 460, 460, 460, 530, 530, 530,
+	530, 530, 530, 530, 530, 530, 530, 530, 530, 530, 530, 530, 530,
 ];
 
 export default class HeapSort extends Algorithm {
-    constructor(am, w, h) {
-        super(am, w, h);
-        this.addControls();
-        this.nextIndex = 0;
-        this.setup();
-    }
+	constructor(am, w, h) {
+		super(am, w, h);
+		this.addControls();
+		this.nextIndex = 0;
+		this.setup();
+	}
 
-    addControls() {
-        this.controls = [];
+	addControls() {
+		this.controls = [];
 
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
-        addLabelToAlgorithmBar(
+		addLabelToAlgorithmBar(
 			'Comma seperated list (e.g. "3,1,2"). Max 15 elements & no elements > 999',
-			verticalGroup
+			verticalGroup,
 		);
 
 		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup);
 
-        // List text field
+		// List text field
 		this.listField = addControlToAlgorithmBar('Text', '', horizontalGroup);
 		this.listField.onkeydown = this.returnSubmit(
 			this.listField,
@@ -164,21 +104,21 @@ export default class HeapSort extends Algorithm {
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
-    }
+	}
 
-    setup() {
-        this.commands = [];
+	setup() {
+		this.commands = [];
 
-        this.arrayData = [];
-        this.arrayID = [];
-        this.heapArrayData = [];
-        this.heapArrayID = [];
-        this.heapArrayLabelID = [];
-        this.heapTreeObj = [];
+		this.arrayData = [];
+		this.arrayID = [];
+		this.heapArrayData = [];
+		this.heapArrayID = [];
+		this.heapArrayLabelID = [];
+		this.heapTreeObj = [];
 
-        this.infoLabelID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 
-        this.infoLabelID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.code = [
@@ -187,7 +127,7 @@ export default class HeapSort extends Algorithm {
 			['     for i <- 0, array.length - 1, loop:'],
 			['          add ', 'heap.remove()', ' to data[i]'],
 			['     end for'],
-			['end procedure']
+			['end procedure'],
 		];
 
 		this.codeID = Array(this.code.length);
@@ -211,21 +151,21 @@ export default class HeapSort extends Algorithm {
 			}
 		}
 
-        this.animationManager.startNewAnimation(this.commands);
-        this.animationManager.skipForward();
-        this.animationManager.clearHistory();
-    }
+		this.animationManager.startNewAnimation(this.commands);
+		this.animationManager.skipForward();
+		this.animationManager.clearHistory();
+	}
 
-    sort(list) {
-        this.commands = [];
+	sort(list) {
+		this.commands = [];
 
 		this.highlight(0, 0);
 
-        this.arrayData = list
+		this.arrayData = list
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
 			.slice(0, MAX_ARRAY_SIZE);
-        const length = this.arrayData.length;
+		const length = this.arrayData.length;
 		const displayDataTemp = new Array(length);
 		const elemCounts = new Map();
 		const letterMap = new Map();
@@ -238,7 +178,7 @@ export default class HeapSort extends Algorithm {
 			elemCounts.set(this.arrayData[i], count + 1);
 		}
 
-        for (let i = 0; i < length; i++) {
+		for (let i = 0; i < length; i++) {
 			this.arrayID[i] = this.nextIndex++;
 			const xpos = i * ARRAY_ELEM_WIDTH + ARRAY_INITIAL_X;
 			const ypos = ARRAY_INITIAL_Y;
@@ -260,68 +200,67 @@ export default class HeapSort extends Algorithm {
 				ypos,
 			);
 		}
-        this.arrayData = displayDataTemp;
-        this.cmd(act.step);
+		this.arrayData = displayDataTemp;
+		this.cmd(act.step);
 		this.unhighlight(0, 0);
 
-        //Create a new heap
+		//Create a new heap
 		this.highlight(1, 0);
-        this.createHeap(this.arrayData);
-        this.cmd(act.step);
+		this.createHeap(this.arrayData);
+		this.cmd(act.step);
 
 		this.cmd(act.setText, this.infoLabelID, 'Buildheap the new array');
-        //Buildheap the new heap
+		//Buildheap the new heap
 		let nextElem = Math.floor(this.currentHeapSize / 2);
 		while (nextElem > 0) {
 			this.pushDown(nextElem);
 			nextElem = nextElem - 1;
 		}
-        this.cmd(act.step);
+		this.cmd(act.step);
 
 		this.unhighlight(1, 0);
 		this.cmd(act.setText, this.infoLabelID, '');
-		
 
-        //Remove all of the elements from the heap
-        while (this.currentHeapSize > 0) {
+		//Remove all of the elements from the heap
+		while (this.currentHeapSize > 0) {
 			this.highlight(2, 0);
 			this.cmd(act.step);
 			this.unhighlight(2, 0);
-            this.remove();
+			this.remove();
 		}
 
 		this.highlight(4, 0);
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.step);
 
-        for (let i = 0; i < length + 1; i++) {
-            this.cmd(act.delete, this.heapArrayID[i]);
-            this.cmd(act.delete, this.heapArrayLabelID[i]);
-        }
+		for (let i = 0; i < length + 1; i++) {
+			this.cmd(act.delete, this.heapArrayID[i]);
+			this.cmd(act.delete, this.heapArrayLabelID[i]);
+		}
 		this.unhighlight(4, 0);
 		this.highlight(5, 0);
 		this.cmd(act.step);
-	
+
 		this.unhighlight(5, 0);
 
-        return this.commands;
-    }
+		return this.commands;
+	}
 
-    createHeap(arrayData) {
-        const length = arrayData.length + 1;
+	createHeap(arrayData) {
+		const length = arrayData.length + 1;
 
 		this.cmd(act.setText, this.infoLabelID, 'Array-backed heap created');
 
-        this.heapArrayXPositions = new Array(length);
-        this.heapArrayData = arrayData.slice();
-        this.heapArrayData.unshift(null);
-        this.currentHeapSize = length - 1;
+		this.heapArrayXPositions = new Array(length);
+		this.heapArrayData = arrayData.slice();
+		this.heapArrayData.unshift(null);
+		this.currentHeapSize = length - 1;
 
-        for (let i = 0; i < length; i++) {
-            //Create heap array
+		for (let i = 0; i < length; i++) {
+			//Create heap array
 			this.heapArrayXPositions[i] = HEAP_INITIAL_X + i * HEAP_ARRAY_ELEM_WIDTH;
 			this.heapArrayID[i] = this.nextIndex++;
-            this.heapArrayLabelID[i] = this.nextIndex++;
+			this.heapArrayLabelID[i] = this.nextIndex++;
 			this.heapTreeObj[i] = this.nextIndex++;
 			this.cmd(
 				act.createRectangle,
@@ -337,33 +276,33 @@ export default class HeapSort extends Algorithm {
 				this.heapArrayLabelID[i],
 				i,
 				this.heapArrayXPositions[i],
-                HEAP_LABEL_Y_POS,
+				HEAP_LABEL_Y_POS,
 			);
 			this.cmd(act.setForegroundColor, this.heapArrayLabelID[i], '#0000FF');
 
-            //Create heap tree
-            if (i > 0) {
-                this.cmd(
-                    act.createCircle,
-                    this.heapTreeObj[i],
-                    this.heapArrayData[i],
-                    HEAP_X_POSITIONS[i],
-                    HEAP_Y_POSITIONS[i],
-                );
-                this.cmd(act.setText, this.heapArrayID[i], this.heapArrayData[i]);
-                if (i > 1) {
-                    this.cmd(act.connect, this.heapTreeObj[Math.floor(i / 2)], this.heapTreeObj[i]);
-                }
-            }
+			//Create heap tree
+			if (i > 0) {
+				this.cmd(
+					act.createCircle,
+					this.heapTreeObj[i],
+					this.heapArrayData[i],
+					HEAP_X_POSITIONS[i],
+					HEAP_Y_POSITIONS[i],
+				);
+				this.cmd(act.setText, this.heapArrayID[i], this.heapArrayData[i]);
+				if (i > 1) {
+					this.cmd(act.connect, this.heapTreeObj[Math.floor(i / 2)], this.heapTreeObj[i]);
+				}
+			}
 		}
 
-        return this.commands;
-    }
+		return this.commands;
+	}
 
 	remove() {
-        const index = this.arrayData.length - this.currentHeapSize;
-        const remData = this.heapArrayData[1];
-        const removedElementID = this.nextIndex; //no ++ since 'removedElementID' is deleted before any other elements are created
+		const index = this.arrayData.length - this.currentHeapSize;
+		const remData = this.heapArrayData[1];
+		const removedElementID = this.nextIndex; //no ++ since 'removedElementID' is deleted before any other elements are created
 
 		this.cmd(act.setText, this.infoLabelID, '');
 
@@ -373,7 +312,7 @@ export default class HeapSort extends Algorithm {
 
 		this.cmd(act.setText, this.heapArrayID[1], '');
 
-        this.cmd(
+		this.cmd(
 			act.createLabel,
 			removedElementID,
 			remData,
@@ -381,23 +320,23 @@ export default class HeapSort extends Algorithm {
 			HEAP_Y_POSITIONS[1],
 			0,
 		);
-        this.cmd(act.setText, this.heapTreeObj[1], '');
+		this.cmd(act.setText, this.heapTreeObj[1], '');
 		this.cmd(act.setText, this.arrayID[index], '');
-        this.cmd(
-            act.move,
-            removedElementID,
-            index * ARRAY_ELEM_WIDTH + ARRAY_INITIAL_X - 5,
-            ARRAY_INITIAL_Y - 5
-        );
-        this.cmd(act.step);
+		this.cmd(
+			act.move,
+			removedElementID,
+			index * ARRAY_ELEM_WIDTH + ARRAY_INITIAL_X - 5,
+			ARRAY_INITIAL_Y - 5,
+		);
+		this.cmd(act.step);
 
 		this.arrayData[index] = remData;
-        this.cmd(act.setText, this.arrayID[index], remData);
-        this.cmd(act.delete, removedElementID);
+		this.cmd(act.setText, this.arrayID[index], remData);
+		this.cmd(act.delete, removedElementID);
 		this.cmd(act.step);
 
 		this.heapArrayData[1] = '';
-		
+
 		this.unhighlight(3, 0);
 		this.unhighlight(3, 2);
 		this.cmd(act.setText, this.infoLabelID, 'Downheap to maintain order');
@@ -408,18 +347,20 @@ export default class HeapSort extends Algorithm {
 			this.cmd(act.setHighlight, this.heapTreeObj[1], 1);
 			this.cmd(act.setHighlight, this.heapTreeObj[this.currentHeapSize], 1);
 			this.cmd(act.step);
-			
+
 			this.cmd(act.setHighlight, this.heapArrayID[1], 0);
 			this.cmd(act.setHighlight, this.heapArrayID[this.currentHeapSize], 0);
 			this.cmd(act.setHighlight, this.heapTreeObj[1], 0);
 			this.cmd(act.setHighlight, this.heapTreeObj[this.currentHeapSize], 0);
 			this.swap(1, this.currentHeapSize);
-			
+
 			this.cmd(act.delete, this.heapTreeObj[this.currentHeapSize]);
 			this.cmd(act.step);
 
 			this.currentHeapSize--;
-            if (this.currentHeapSize > 0) { this.pushDown(1); }
+			if (this.currentHeapSize > 0) {
+				this.pushDown(1);
+			}
 		} else {
 			this.cmd(act.setText, this.heapArrayID[1], '');
 			this.cmd(act.delete, this.heapTreeObj[this.currentHeapSize]);
@@ -432,7 +373,7 @@ export default class HeapSort extends Algorithm {
 		return this.commands;
 	}
 
-    pushDown(index) {
+	pushDown(index) {
 		let childIndex; // Used to keep track of smallest (in MinHeap) or largest (in MaxHeap) child
 
 		while (index * 2 <= this.currentHeapSize) {
@@ -466,7 +407,10 @@ export default class HeapSort extends Algorithm {
 
 	downheapCheckRightChild(index) {
 		// Checks if the right child is smaller than left child
-		return this.compareWithLetters(this.heapArrayData[2 * index + 1], this.heapArrayData[2 * index]);
+		return this.compareWithLetters(
+			this.heapArrayData[2 * index + 1],
+			this.heapArrayData[2 * index],
+		);
 	}
 
 	downheapCompare(childIndex, index) {
@@ -478,11 +422,11 @@ export default class HeapSort extends Algorithm {
 		return parseInt(num1) < parseInt(num2);
 	}
 
-    swap(index1, index2) {
-        const swapLabel1 = this.nextIndex++;
-        const swapLabel2 = this.nextIndex++;
-        const swapLabel3 = this.nextIndex++;
-        const swapLabel4 = this.nextIndex++;
+	swap(index1, index2) {
+		const swapLabel1 = this.nextIndex++;
+		const swapLabel2 = this.nextIndex++;
+		const swapLabel3 = this.nextIndex++;
+		const swapLabel4 = this.nextIndex++;
 		this.cmd(act.setText, this.heapArrayID[index1], '');
 		this.cmd(act.setText, this.heapArrayID[index2], '');
 		this.cmd(act.setText, this.heapTreeObj[index1], '');
@@ -531,50 +475,50 @@ export default class HeapSort extends Algorithm {
 		this.cmd(act.delete, swapLabel2);
 		this.cmd(act.delete, swapLabel3);
 		this.cmd(act.delete, swapLabel4);
-        this.nextIndex -= 4;
+		this.nextIndex -= 4;
 	}
 
-    setIndexHighlight(index, highlightVal) {
+	setIndexHighlight(index, highlightVal) {
 		this.cmd(act.setHighlight, this.heapTreeObj[index], highlightVal);
 		this.cmd(act.setHighlight, this.heapArrayID[index], highlightVal);
 	}
 
-    clear() {
-        this.commands = [];
+	clear() {
+		this.commands = [];
 
-        for (let i = 0; i < this.arrayID.length; i++) {
+		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 
-        this.arrayData = [];
-        this.arrayID = [];
-        this.heapArrayData = [];
-        this.heapArrayID = [];
-        this.heapArrayLabelID = [];
+		this.arrayData = [];
+		this.arrayID = [];
+		this.heapArrayData = [];
+		this.heapArrayID = [];
+		this.heapArrayLabelID = [];
 
-        return this.commands;
-    }
+		return this.commands;
+	}
 
-    reset() {
-        this.currentHeapSize = 0;
-    }
+	reset() {
+		this.currentHeapSize = 0;
+	}
 
-    sortCallback() {
+	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-        if (
-			this.listField.value !== ''
-			&& list.length <= MAX_ARRAY_SIZE
-			&& list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-			) {
-            this.implementAction(this.clear.bind(this));
-            this.listField.value = '';
-            this.implementAction(this.sort.bind(this), list);
-        }
-    }
+		if (
+			this.listField.value !== '' &&
+			list.length <= MAX_ARRAY_SIZE &&
+			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
+		) {
+			this.implementAction(this.clear.bind(this));
+			this.listField.value = '';
+			this.implementAction(this.sort.bind(this), list);
+		}
+	}
 
-    clearCallback() {
-        this.implementAction(this.clear.bind(this));
-    }
+	clearCallback() {
+		this.implementAction(this.clear.bind(this));
+	}
 
 	highlight(ind1, ind2) {
 		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
@@ -584,7 +528,7 @@ export default class HeapSort extends Algorithm {
 		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
-    disableUI() {
+	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
 		}

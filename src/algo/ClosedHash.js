@@ -392,7 +392,11 @@ export default class ClosedHash extends Hash {
 
 		const found = this.getElemIndex(index, key) !== -1;
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Found Key: ' + key + '  Value: ' + this.hashTableValues[index].val);
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Found Key: ' + key + '  Value: ' + this.hashTableValues[index].val,
+			);
 		} else {
 			this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key + '  Not Found!');
 		}
@@ -410,9 +414,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.createLabel,
 				resizeLabel,
-				`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${
-					this.table_size
-				}) > ${this.load_factor}`,
+				`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${this.table_size}) > ${this.load_factor}`,
 				RESIZE_LABEL_X,
 				RESIZE_LABEL_Y,
 			);

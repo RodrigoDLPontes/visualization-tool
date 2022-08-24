@@ -309,7 +309,6 @@ export default class StackLL extends Algorithm {
 		this.resetLinkedListPositions();
 		this.unhighlight(7, 0);
 
-
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
 		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + this.arrayData[this.top]);

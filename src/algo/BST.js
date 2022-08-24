@@ -212,17 +212,15 @@ export default class BST extends Algorithm {
 		return this.commands;
 	}
 
-
-
 	preOrderRec(tree, passedCodeID) {
 		this.codeID = passedCodeID;
 		this.cmd(act.step);
 
 		const nextLabelID = this.nextIndex++;
 
-		this.unhighlight(3,0)
-		this.unhighlight(4,0)
-		this.highlight(2,0);
+		this.unhighlight(3, 0);
+		this.unhighlight(4, 0);
+		this.highlight(2, 0);
 
 		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
 		this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
@@ -234,33 +232,31 @@ export default class BST extends Algorithm {
 			this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
 			this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
 		}
-		this.unhighlight(2,0);
+		this.unhighlight(2, 0);
 
 		if (tree.left != null) {
-			this.highlight(3,0);
+			this.highlight(3, 0);
 			this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
 			this.preOrderRec(tree.left, passedCodeID);
-			
+
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(3,0);
+		this.unhighlight(3, 0);
 
 		if (tree.right != null) {
-			this.highlight(4,0);
+			this.highlight(4, 0);
 			this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
 			this.preOrderRec(tree.right, passedCodeID);
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(4,0);
-
+		this.unhighlight(4, 0);
 
 		return;
 	}
 
 	levelOrder(tree) {
-
 		this.highlightID = this.nextIndex++;
 		// const firstLabel = this.nextIndex;
 		this.cmd(
@@ -332,40 +328,34 @@ export default class BST extends Algorithm {
 		this.yPosOfNextLabel = this.first_print_pos_y;
 
 		if (this.traversal === 'pre') {
-			this.codeID = this.setUpPseudocode(
-				[
-					['procedure preOrder(Node node)'],
-					['     if node is not null:'],
-					['          look at data in the node'],
-					['          recurse left'],
-					['          recurse right'],
-					['end procedure']
-				]
-			);
+			this.codeID = this.setUpPseudocode([
+				['procedure preOrder(Node node)'],
+				['     if node is not null:'],
+				['          look at data in the node'],
+				['          recurse left'],
+				['          recurse right'],
+				['end procedure'],
+			]);
 			this.preOrderRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'in') {
-			this.codeID = this.setUpPseudocode(
-				[
-					['procedure inOrder(Node node)'],
-					['     if node is not null:'],
-					['          recurse left'],
-					['          look at data in the node'],
-					['          recurse right'],
-					['end procedure']
-				]
-			);
+			this.codeID = this.setUpPseudocode([
+				['procedure inOrder(Node node)'],
+				['     if node is not null:'],
+				['          recurse left'],
+				['          look at data in the node'],
+				['          recurse right'],
+				['end procedure'],
+			]);
 			this.printTreeRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'post') {
-			this.codeID = this.setUpPseudocode(
-				[
-					['procedure postOrder(Node node)'],
-					['     if node is not null:'],
-					['          recurse left'],
-					['          recurse right'],
-					['          look at data in the node'],
-					['end procedure']
-				]
-			);
+			this.codeID = this.setUpPseudocode([
+				['procedure postOrder(Node node)'],
+				['     if node is not null:'],
+				['          recurse left'],
+				['          recurse right'],
+				['          look at data in the node'],
+				['end procedure'],
+			]);
 			this.postOrderRec(this.treeRoot, this.codeID);
 		}
 
@@ -378,32 +368,30 @@ export default class BST extends Algorithm {
 		return this.commands;
 	}
 
-
 	postOrderRec(tree, passedCodeID) {
 		this.codeID = passedCodeID;
 		this.cmd(act.step);
 		if (tree.left != null) {
-			this.unhighlight(3,0)
-			this.highlight(2,0)
+			this.unhighlight(3, 0);
+			this.highlight(2, 0);
 			this.cmd(act.move, this.highlightID, tree.left.x, tree.left.y);
 			this.postOrderRec(tree.left, passedCodeID);
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(2,0)
-
+		this.unhighlight(2, 0);
 
 		if (tree.right != null) {
-			this.unhighlight(2,0)
-			this.highlight(3,0)
+			this.unhighlight(2, 0);
+			this.highlight(3, 0);
 			this.cmd(act.move, this.highlightID, tree.right.x, tree.right.y);
 			this.postOrderRec(tree.right, passedCodeID);
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(3,0)
+		this.unhighlight(3, 0);
 
-		this.highlight(4,0)
+		this.highlight(4, 0);
 		const nextLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
 		this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
@@ -415,14 +403,14 @@ export default class BST extends Algorithm {
 			this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
 			this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
 		}
-		this.unhighlight(4,0)
+		this.unhighlight(4, 0);
 
 		return;
 	}
 
 	printTreeRec(tree, passedCodeID) {
 		this.codeID = passedCodeID;
-		
+
 		this.cmd(act.step);
 		if (tree.left != null) {
 			this.unhighlight(3, 0);
@@ -433,10 +421,10 @@ export default class BST extends Algorithm {
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(2,0);
+		this.unhighlight(2, 0);
 
-		this.unhighlight(4,0);
-		this.highlight(3,0);
+		this.unhighlight(4, 0);
+		this.highlight(3, 0);
 		const nextLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, nextLabelID, tree.data, tree.x, tree.y);
 		this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
@@ -448,7 +436,7 @@ export default class BST extends Algorithm {
 			this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
 			this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
 		}
-		this.unhighlight(3,0);
+		this.unhighlight(3, 0);
 
 		if (tree.right != null) {
 			this.unhighlight(2, 0);
@@ -459,7 +447,7 @@ export default class BST extends Algorithm {
 			this.cmd(act.move, this.highlightID, tree.x, tree.y);
 			this.cmd(act.step);
 		}
-		this.unhighlight(4,0);
+		this.unhighlight(4, 0);
 
 		return;
 	}
@@ -843,7 +831,6 @@ export default class BST extends Algorithm {
 		}
 	}
 
-
 	setUpPseudocode(tailoredCode) {
 		this.code = tailoredCode;
 
@@ -869,7 +856,6 @@ export default class BST extends Algorithm {
 		}
 
 		return this.codeID;
-
 	}
 
 	highlight(ind1, ind2) {

@@ -143,7 +143,13 @@ export default class OpenHash extends Hash {
 		}
 
 		this.cmd(act.setText, this.ExplainLabel, 'Inserting element ' + elem);
-		const node = new LinkedListNode(key, value, this.nextIndex++, LINKED_ITEM_INITIAL_X, LINKED_ITEM_INITIAL_Y);
+		const node = new LinkedListNode(
+			key,
+			value,
+			this.nextIndex++,
+			LINKED_ITEM_INITIAL_X,
+			LINKED_ITEM_INITIAL_Y,
+		);
 		this.cmd(
 			act.createLinkedListNode,
 			node.graphicID,
@@ -154,7 +160,7 @@ export default class OpenHash extends Hash {
 			LINKED_ITEM_INITIAL_Y,
 			0.25,
 			0,
-			1
+			1,
 		);
 
 		const index = this.doHash(key);
@@ -367,7 +373,11 @@ export default class OpenHash extends Hash {
 			tmp = tmp.next;
 		}
 		if (found) {
-			this.cmd(act.setText, this.ExplainLabel, 'Found entry with key: ' + key + '  Value: ' + value);
+			this.cmd(
+				act.setText,
+				this.ExplainLabel,
+				'Found entry with key: ' + key + '  Value: ' + value,
+			);
 		} else {
 			this.cmd(
 				act.setText,
@@ -389,9 +399,7 @@ export default class OpenHash extends Hash {
 		this.cmd(
 			act.createLabel,
 			resizeLabel,
-			`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${
-				this.table_size
-			}) > ${this.load_factor}`,
+			`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${this.table_size}) > ${this.load_factor}`,
 			RESIZE_LABEL_X,
 			RESIZE_LABEL_Y,
 		);
@@ -460,7 +468,11 @@ export default class OpenHash extends Hash {
 
 				this.cmd(act.disconnect, this.oldHashTableVisual[i], node.graphicID);
 				if (this.oldHashTableValues[i] != null) {
-					this.cmd(act.connect, this.oldHashTableVisual[i], this.oldHashTableValues[i].graphicID);
+					this.cmd(
+						act.connect,
+						this.oldHashTableVisual[i],
+						this.oldHashTableValues[i].graphicID,
+					);
 					this.cmd(act.disconnect, node.graphicID, this.oldHashTableValues[i].graphicID);
 					this.repositionList(i, this.oldHashTableValues[i]);
 				} else {
@@ -475,17 +487,13 @@ export default class OpenHash extends Hash {
 				this.cmd(act.setNull, this.hashTableVisual[index], 0);
 
 				if (node.next != null) {
-					this.cmd(
-						act.disconnect,
-						this.hashTableVisual[index],
-						node.next.graphicID,
-					);
+					this.cmd(act.disconnect, this.hashTableVisual[index], node.next.graphicID);
 					this.cmd(act.connect, node.graphicID, node.next.graphicID);
 				}
 				this.cmd(act.connect, this.hashTableVisual[index], node.graphicID);
 				this.hashTableValues[index] = node;
 				this.repositionResizeList(index);
-				
+
 				this.cmd(act.setHighlight, node.graphicID, 0);
 			}
 			this.cmd(act.setHighlight, this.oldHashTableVisual[i], 0);
@@ -511,7 +519,12 @@ export default class OpenHash extends Hash {
 			let index = 0;
 			let tmp = this.hashTableValues[i];
 			while (tmp != null) {
-				this.cmd(act.move, tmp.graphicID, xpos + LINKED_ITEM_X_DELTA_INIT + (LINKED_ITEM_X_DELTA * index), ypos);
+				this.cmd(
+					act.move,
+					tmp.graphicID,
+					xpos + LINKED_ITEM_X_DELTA_INIT + LINKED_ITEM_X_DELTA * index,
+					ypos,
+				);
 				index++;
 				tmp = tmp.next;
 			}
@@ -579,7 +592,7 @@ export default class OpenHash extends Hash {
 			this.hashTableVisual[i] = this.nextIndex++;
 			this.hashTableIndices[i] = this.nextIndex++;
 		}
-		
+
 		super.reset();
 	}
 

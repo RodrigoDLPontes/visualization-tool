@@ -349,7 +349,6 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	getMaxRows(text, pattern) {
-
 		if (galilRuleEnabled) {
 			const failureTable = [];
 			failureTable[0] = 0;

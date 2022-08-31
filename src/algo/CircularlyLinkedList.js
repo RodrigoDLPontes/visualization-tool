@@ -307,8 +307,23 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
+	traverse(index) {
+		for (let i = 0; i <= index; i++) {
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
+			if (i > 0) {
+				this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
+			}
+		}
+		this.cmd(act.step);
+	}
+
 	add(elemToAdd, index) {
 		this.commands = [];
+
+		if (index < this.size) {
+			this.traverse(index - 1);
+		}
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -516,6 +531,8 @@ export default class CircularlyLinkedList extends Algorithm {
 			}
 		}
 
+		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
+
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
 
@@ -528,6 +545,8 @@ export default class CircularlyLinkedList extends Algorithm {
 		index = parseInt(index);
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
+
+		this.traverse(index - 1);
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
@@ -638,6 +657,8 @@ export default class CircularlyLinkedList extends Algorithm {
 		}
 		this.size = this.size - 1;
 		this.resetNodePositions();
+
+		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
 
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);

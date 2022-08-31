@@ -323,11 +323,39 @@ export default class DoublyLinkedList extends Algorithm {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
+	traverse(index) {
+		if (index < Math.floor(this.size / 2)) {
+			for (let i = 0; i <= index; i++) {
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
+				if (i > 0) {
+					this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
+				}
+			}
+			this.cmd(act.step);
+		} else {
+			for (let i = this.size - 1; i >= index; i--) {
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
+				if (i < this.size) {
+					this.cmd(act.setHighlight, this.linkedListElemID[i + 1], 0);
+				}
+			}
+			this.cmd(act.step);
+		}
+	}
+
 	add(elemToAdd, index) {
 		this.commands = [];
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
+
+		// iterate to the correct node if it is an index != 0 or size
+		const indexToTraverseTo = index < Math.floor(this.size / 2) ? index - 1 : index;
+		if (index > 0 && index < this.size) {
+			this.traverse(indexToTraverseTo);
+		}
 
 		for (let i = this.size - 1; i >= index; i--) {
 			this.arrayData[i + 1] = this.arrayData[i];
@@ -430,6 +458,14 @@ export default class DoublyLinkedList extends Algorithm {
 			}
 		}
 
+		this.cmd(
+			act.setHighlight,
+			this.linkedListElemID[
+				index < Math.floor(this.size / 2) ? indexToTraverseTo : indexToTraverseTo + 1
+			],
+			0,
+		);
+
 		this.cmd(act.step);
 		this.size = this.size + 1;
 		this.resetNodePositions();
@@ -447,6 +483,10 @@ export default class DoublyLinkedList extends Algorithm {
 		const labPopValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+
+		if (index > 0 && index < this.size - 1) {
+			this.traverse(index);
+		}
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;

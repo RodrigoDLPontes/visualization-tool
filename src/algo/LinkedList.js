@@ -304,13 +304,13 @@ export default class LinkedList extends Algorithm {
 
 	traverse(index) {
 		for (let i = 0; i <= index; i++) {
-			this.cmd(act.step)
-			this.cmd(act.setHighlight, this.linkedListElemID[i], 1)
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
 			if (i > 0) {
-				this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0)
+				this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
 			}
 		}
-		this.cmd(act.step)
+		this.cmd(act.step);
 	}
 
 	add(elemToAdd, index) {
@@ -328,7 +328,7 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1)
+		this.traverse(index - 1);
 
 		this.cmd(
 			act.createLinkedListNode,
@@ -397,7 +397,7 @@ export default class LinkedList extends Algorithm {
 			this.cmd(act.connect, this.topID, this.linkedListElemID[0]);
 		}
 
-		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0)
+		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
 
 		this.cmd(act.step);
 		this.size = this.size + 1;
@@ -417,7 +417,7 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1)
+		this.traverse(index - 1);
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
@@ -459,7 +459,7 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
 
-		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0)
+		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
 
 		for (let i = index; i < this.size; i++) {
 			this.arrayData[i] = this.arrayData[i + 1];

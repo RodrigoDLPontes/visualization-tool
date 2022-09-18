@@ -37,6 +37,31 @@ const CODE_LINE_HEIGHT = 14;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
+const PRE_CODE = [
+	['procedure preOrder(Node node)'],
+	['     if node is not null:'],
+	['          look at data in the node'],
+	['          recurse left'],
+	['          recurse right'],
+	['end procedure'],
+];
+const IN_CODE = [
+	['procedure inOrder(Node node)'],
+	['     if node is not null:'],
+	['          recurse left'],
+	['          look at data in the node'],
+	['          recurse right'],
+	['end procedure'],
+];
+const POST_CODE = [
+	['procedure postOrder(Node node)'],
+	['     if node is not null:'],
+	['          recurse left'],
+	['          recurse right'],
+	['          look at data in the node'],
+	['end procedure'],
+];
+
 export default class BST extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -148,6 +173,7 @@ export default class BST extends Algorithm {
 		this.nextIndex = 1;
 		this.treeRoot = null;
 		this.edges = [];
+		this.toClear = [];
 	}
 
 	insertCallback() {
@@ -257,18 +283,6 @@ export default class BST extends Algorithm {
 	}
 
 	levelOrder(tree) {
-		this.highlightID = this.nextIndex++;
-		// const firstLabel = this.nextIndex;
-		this.cmd(
-			act.createHighlightCircle,
-			this.highlightID,
-			BST.HIGHLIGHT_COLOR,
-			this.treeRoot.x,
-			this.treeRoot.y,
-		);
-		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
-		this.yPosOfNextLabel = this.first_print_pos_y;
-
 		const queue = [tree];
 
 		while (queue.length !== 0) {
@@ -297,10 +311,7 @@ export default class BST extends Algorithm {
 			}
 		}
 
-		this.cmd(act.delete, this.highlightID);
 		this.cmd(act.step);
-		// for (let i = firstLabel; i < this.nextIndex; i++) this.cmd(act.delete, i);
-		// this.nextIndex = this.highlightID; /// Reuse objects.  Not necessary.
 	}
 
 	traverse() {
@@ -309,10 +320,6 @@ export default class BST extends Algorithm {
 
 		if (this.treeRoot == null) {
 			return this.commands;
-		}
-
-		if (this.traversal === 'level') {
-			this.levelOrder(this.treeRoot);
 		}
 
 		this.highlightID = this.nextIndex++;
@@ -328,35 +335,31 @@ export default class BST extends Algorithm {
 		this.yPosOfNextLabel = this.first_print_pos_y;
 
 		if (this.traversal === 'pre') {
-			this.codeID = this.setUpPseudocode([
-				['procedure preOrder(Node node)'],
-				['     if node is not null:'],
-				['          look at data in the node'],
-				['          recurse left'],
-				['          recurse right'],
-				['end procedure'],
-			]);
+			this.codeID = this.addCodeToCanvasBase(
+				PRE_CODE,
+				CODE_START_X,
+				CODE_START_Y,
+				CODE_LINE_HEIGHT,
+			);
 			this.preOrderRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'in') {
-			this.codeID = this.setUpPseudocode([
-				['procedure inOrder(Node node)'],
-				['     if node is not null:'],
-				['          recurse left'],
-				['          look at data in the node'],
-				['          recurse right'],
-				['end procedure'],
-			]);
+			this.codeID = this.addCodeToCanvasBase(
+				IN_CODE,
+				CODE_START_X,
+				CODE_START_Y,
+				CODE_LINE_HEIGHT,
+			);
 			this.printTreeRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'post') {
-			this.codeID = this.setUpPseudocode([
-				['procedure postOrder(Node node)'],
-				['     if node is not null:'],
-				['          recurse left'],
-				['          recurse right'],
-				['          look at data in the node'],
-				['end procedure'],
-			]);
+			this.codeID = this.addCodeToCanvasBase(
+				POST_CODE,
+				CODE_START_X,
+				CODE_START_Y,
+				CODE_LINE_HEIGHT,
+			);
 			this.postOrderRec(this.treeRoot, this.codeID);
+		} else if (this.traversal === 'level') {
+			this.levelOrder(this.treeRoot);
 		}
 
 		this.cmd(act.delete, this.highlightID);
@@ -831,32 +834,34 @@ export default class BST extends Algorithm {
 		}
 	}
 
-	setUpPseudocode(tailoredCode) {
-		this.code = tailoredCode;
+	// Refactored to superclass
 
-		this.codeID = Array(this.code.length);
-		let i, j;
-		for (i = 0; i < this.code.length; i++) {
-			this.codeID[i] = new Array(this.code[i].length);
-			for (j = 0; j < this.code[i].length; j++) {
-				this.codeID[i][j] = this.nextIndex++;
-				this.cmd(
-					act.createLabel,
-					this.codeID[i][j],
-					this.code[i][j],
-					CODE_START_X,
-					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0,
-				);
-				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-				if (j > 0) {
-					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-				}
-			}
-		}
+	// setUpPseudocode(tailoredCode) {
+	// 	this.code = tailoredCode;
 
-		return this.codeID;
-	}
+	// 	this.codeID = Array(this.code.length);
+	// 	let i, j;
+	// 	for (i = 0; i < this.code.length; i++) {
+	// 		this.codeID[i] = new Array(this.code[i].length);
+	// 		for (j = 0; j < this.code[i].length; j++) {
+	// 			this.codeID[i][j] = this.nextIndex++;
+	// 			this.cmd(
+	// 				act.createLabel,
+	// 				this.codeID[i][j],
+	// 				this.code[i][j],
+	// 				CODE_START_X,
+	// 				CODE_START_Y + i * CODE_LINE_HEIGHT,
+	// 				0,
+	// 			);
+	// 			this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+	// 			if (j > 0) {
+	// 				this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+	// 			}
+	// 		}
+	// 	}
+
+	// 	return this.codeID;
+	// }
 
 	highlight(ind1, ind2) {
 		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);

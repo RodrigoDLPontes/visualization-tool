@@ -122,8 +122,8 @@ export default class Dijkstras extends Graph {
 			['        mark u as visited in VS'],
 			['    update DM for u with new shortest path d'],
 			['    for all (w, d2) adjacent to u and not visited in VS'],
-			['        PQ.enqueue((w, d + d2))']
-		]
+			['        PQ.enqueue((w, d + d2))'],
+		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
@@ -240,7 +240,8 @@ export default class Dijkstras extends Graph {
 		this.unhighlight(2, 0);
 		this.unhighlight(3, 0);
 
-		while (this.visited.includes(false) && this.pq.size() !== 0) { //TODO: ADD HIGHLIGHTS HERE
+		while (this.visited.includes(false) && this.pq.size() !== 0) {
+			//TODO: ADD HIGHLIGHTS HERE
 			this.highlight(5, 0);
 			this.highlight(6, 0);
 			[current, currentID] = this.pq.dequeue();
@@ -361,7 +362,7 @@ export default class Dijkstras extends Graph {
 										Math.floor((this.pq.size() - 1) / PQ_MAX_PER_LINE) *
 											PQ_LINE_SPACING,
 									0,
-								);								
+								);
 								this.highlight(11, 0);
 								this.cmd(act.step);
 								this.unhighlight(11, 0);
@@ -405,9 +406,9 @@ export default class Dijkstras extends Graph {
 								this.cmd(act.setHighlight, this.distanceID[current], 0);
 								this.cmd(act.setHighlight, this.distanceID[neighbor], 0);
 							}
-						}						
+						}
 						this.highlightEdge(current, neighbor, 0);
-					}					
+					}
 				}
 				this.unhighlight(10, 0);
 			} else {
@@ -420,7 +421,7 @@ export default class Dijkstras extends Graph {
 			}
 			this.leaveVertex();
 			this.cmd(act.delete, currentID);
-			this.unhighlight(5, 0)
+			this.unhighlight(5, 0);
 		}
 
 		if (this.pq.size() > 0) {

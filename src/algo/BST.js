@@ -36,6 +36,9 @@ const CODE_START_Y = 35;
 const CODE_LINE_HEIGHT = 14;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
+const QUEUE_START_X = 35;
+const QUEUE_START_Y = 250;
+const QUEUE_SPACING = 40;
 
 const PRE_CODE = [
 	['procedure preOrder(Node node)'],
@@ -59,6 +62,19 @@ const POST_CODE = [
 	['          recurse left'],
 	['          recurse right'],
 	['          look at data in the node'],
+	['end procedure'],
+];
+const LEVEL_CODE = [
+	['procedure levelOrder()'],
+	['     create Queue q'],
+	['     add root to q'],
+	['     while q is not empty'],
+	['          Node curr <- remove from q'],
+	['          record data from curr'],
+	['          if curr.left is not null:'],
+	['               add curr.left to q'],
+	['          if curr.right is not null:'],
+	['               add curr.right to q'],
 	['end procedure'],
 ];
 
@@ -282,19 +298,47 @@ export default class BST extends Algorithm {
 		return;
 	}
 
-	levelOrder(tree) {
+	levelOrder(tree, passedCodeID) {
+		this.codeID = passedCodeID;
 		const queue = [tree];
+		const queueLabelId = this.nextIndex++;
+
+		const queueID = [this.nextIndex];
+		this.cmd(
+			act.createLabel,
+			queueLabelId,
+			'Queue: ',
+			QUEUE_START_X - 5,
+			QUEUE_START_Y - 25,
+			0,
+		);
+		this.cmd(act.step);
+		this.cmd(act.createLabel, this.nextIndex, tree.data, tree.x, tree.y);
+		this.cmd(act.setForegroundColor, this.nextIndex, BST.PRINT_COLOR);
+		this.cmd(act.move, this.nextIndex++, QUEUE_START_X, QUEUE_START_Y, 0);
+		this.highlight(2, 0);
+		this.cmd(act.step);
+		this.unhighlight(2, 0);
+
+		this.highlight(3, 0);
+		this.cmd(act.step);
 
 		while (queue.length !== 0) {
 			const curr = queue.shift();
 
-			const nextLabelID = this.nextIndex++;
 			this.cmd(act.move, this.highlightID, curr.x, curr.y);
+			this.unhighlight(3, 0);
+
+			const currId = queueID.shift();
+			this.cmd(act.move, currId, this.xPosOfNextLabel, this.yPosOfNextLabel);
+			this.highlight(4, 0);
+			this.highlight(5, 0);
+			for (let i = 0; i < queueID.length; i++) {
+				this.cmd(act.move, queueID[i], QUEUE_START_X + i * QUEUE_SPACING, QUEUE_START_Y);
+			}
 			this.cmd(act.step);
-			this.cmd(act.createLabel, nextLabelID, curr.data, curr.x, curr.y);
-			this.cmd(act.setForegroundColor, nextLabelID, BST.PRINT_COLOR);
-			this.cmd(act.move, nextLabelID, this.xPosOfNextLabel, this.yPosOfNextLabel);
-			this.cmd(act.step);
+			this.unhighlight(4, 0);
+			this.unhighlight(5, 0);
 
 			this.xPosOfNextLabel += BST.PRINT_HORIZONTAL_GAP;
 			if (this.xPosOfNextLabel > this.print_max) {
@@ -302,16 +346,59 @@ export default class BST extends Algorithm {
 				this.yPosOfNextLabel += BST.PRINT_VERTICAL_GAP;
 			}
 
+			this.highlight(6, 0);
 			if (curr.left != null) {
+				this.cmd(act.step);
+				this.unhighlight(6, 0);
+				this.highlight(7, 0);
 				queue.push(curr.left);
+				queueID.push(this.nextIndex);
+				this.cmd(act.createLabel, this.nextIndex, curr.left.data, curr.left.x, curr.left.y);
+				this.cmd(act.setForegroundColor, this.nextIndex, BST.PRINT_COLOR);
+				this.cmd(
+					act.move,
+					this.nextIndex++,
+					QUEUE_START_X + (queue.length - 1) * QUEUE_SPACING,
+					QUEUE_START_Y,
+				);
+				this.cmd(act.step);
+				this.unhighlight(7, 0);
+			} else {
+				this.cmd(act.step);
+				this.unhighlight(6, 0);
 			}
 
+			this.highlight(8, 0);
 			if (curr.right != null) {
+				this.cmd(act.step);
+				this.unhighlight(8, 0);
+				this.highlight(9, 0);
 				queue.push(curr.right);
+				queueID.push(this.nextIndex);
+				this.cmd(
+					act.createLabel,
+					this.nextIndex,
+					curr.right.data,
+					curr.right.x,
+					curr.right.y,
+				);
+				this.cmd(act.setForegroundColor, this.nextIndex, BST.PRINT_COLOR);
+				this.cmd(
+					act.move,
+					this.nextIndex++,
+					QUEUE_START_X + (queue.length - 1) * QUEUE_SPACING,
+					QUEUE_START_Y,
+				);
+				this.cmd(act.step);
+				this.unhighlight(9, 0);
+			} else {
+				this.cmd(act.step);
+				this.unhighlight(8, 0);
 			}
+			this.highlight(3, 0);
+			this.cmd(act.step);
 		}
-
-		this.cmd(act.step);
+		this.unhighlight(3, 0);
 	}
 
 	traverse() {
@@ -359,7 +446,13 @@ export default class BST extends Algorithm {
 			);
 			this.postOrderRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'level') {
-			this.levelOrder(this.treeRoot);
+			this.codeID = this.addCodeToCanvasBase(
+				LEVEL_CODE,
+				CODE_START_X,
+				CODE_START_Y,
+				CODE_LINE_HEIGHT,
+			);
+			this.levelOrder(this.treeRoot, this.codeID);
 		}
 
 		this.cmd(act.delete, this.highlightID);

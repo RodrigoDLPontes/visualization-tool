@@ -193,7 +193,7 @@ export default class Algorithm {
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
 		layer = typeof layer !== 'undefined' ? layer : 0;
 		const codeID = Array(code.length);
-		console.log(this.nextIndex);
+		//console.log(this.nextIndex);
 		let i, j;
 		for (i = 0; i < code.length; i++) {
 			codeID[i] = new Array(code[i].length);

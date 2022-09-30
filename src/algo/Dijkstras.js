@@ -123,7 +123,6 @@ export default class Dijkstras extends Graph {
 			['    for all (w, d2) adjacent to u and not visited in VS'],
 			['        update DM for d2'],
 			['        PQ.enqueue((w, d + d2))'],
-			['    update DM for u with new shortest path d'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);

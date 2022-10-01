@@ -111,7 +111,7 @@ export default class Prims extends Graph {
 			['    if w is not visited in VS'],
 			['        add edge(u, w) to MST'],
 			['        mark w as visited in VS'],
-			['        for each edge(w, x) such that c is not visited'],
+			['        for each edge(w, x) such that x is not visited'],
 			['            PQ.enqueue(edge(w, x))'],
 		];
 

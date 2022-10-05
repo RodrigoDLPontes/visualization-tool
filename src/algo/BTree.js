@@ -620,7 +620,6 @@ export default class BTree extends Algorithm {
 				throw new Error("Couldn't find which child we were!");
 			}
 			this.cmd(act.setNumElements, currentParent.graphicID, currentParent.numKeys + 1);
-			console.log(`current parent graphic ID: ${currentParent.graphicID}`);
 			for (let i = currentParent.numKeys; i > parentIndex; i--) {
 				currentParent.children[i + 1] = currentParent.children[i];
 				this.cmd(

@@ -475,7 +475,6 @@ export default class BTree extends Algorithm {
 			this.cmd(act.setText, this.treeRoot.graphicID, insertedValue, 0);
 		} else {
 			if (this.preemptiveSplit) {
-				// this.preemptiveSplit is not set anywhere in the program
 				if (this.treeRoot.numKeys === this.max_keys) {
 					this.split(this.treeRoot);
 					this.resizeTree();

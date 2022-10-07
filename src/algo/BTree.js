@@ -535,8 +535,6 @@ export default class BTree extends Algorithm {
 		}
 	}
 
-// Testing vercel deployment
-
 	insert(tree, insertValue) {
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);

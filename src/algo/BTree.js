@@ -475,6 +475,7 @@ export default class BTree extends Algorithm {
 			this.cmd(act.setText, this.treeRoot.graphicID, insertedValue, 0);
 		} else {
 			if (this.preemptiveSplit) {
+				// this.preemptiveSplit is not set anywhere in the program
 				if (this.treeRoot.numKeys === this.max_keys) {
 					this.split(this.treeRoot);
 					this.resizeTree();
@@ -495,6 +496,13 @@ export default class BTree extends Algorithm {
 	}
 
 	insertNotFull(tree, insertValue) {
+		if (tree.keys.includes(insertValue)) {
+			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tree.graphicID, 0);
+			return;
+		}
+
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
 		if (tree.isLeaf) {
@@ -538,6 +546,14 @@ export default class BTree extends Algorithm {
 	insert(tree, insertValue) {
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
+
+		if (tree.keys.includes(insertValue)) {
+			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tree.graphicID, 0);
+			return;
+		}
+
 		if (tree.isLeaf) {
 			this.cmd(
 				act.setText,

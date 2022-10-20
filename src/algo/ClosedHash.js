@@ -703,6 +703,18 @@ export default class ClosedHash extends Hash {
 		super.reset();
 	}
 
+	clear() {
+		this.commands = [];		
+		for (let i = 0; i < this.table_size; i++) {
+			this.cmd(act.setText, this.hashTableVisual[i], '');
+			this.empty[i] = true;
+			this.deleted[i] = false;
+		}
+		this.size = 0;
+		this.hashTableValues = Array(this.table_size);
+		return this.commands;
+	}
+
 	resetCallback() {}
 
 	disableUI() {

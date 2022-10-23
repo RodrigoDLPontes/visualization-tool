@@ -37,15 +37,19 @@ const ARRAY_START_Y = 30;
 
 const MAX_LENGTH = 22;
 
-const PATTERN_START_Y = 100;
+const PATTERN_START_Y = 80;
 
-const FAILURE_TABLE_START_Y = 300;
-const LAST_TABLE_START_Y = 200;
+const FAILURE_TABLE_START_Y = 215;
+const LAST_TABLE_START_Y = 140;
 
 const COMP_COUNT_X = 575;
-const COMP_COUNT_Y = 30;
+const COMP_COUNT_Y = 15;
 
-const PERIOD_Y = 60;
+const PERIOD_Y = 35;
+
+const BM_CODE_Y = 195;
+
+const GALIL_CODE_Y = 265;
 
 let galilRuleEnabled = false;
 
@@ -121,12 +125,86 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableLabelID = this.nextIndex++;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		this.codeID = [];
 		// this.failureTableLabelID = this.nextIndex++;
 		// this.failureTableCharacterID = [];
 		// this.failureTableValueID = [];
 
 		this.comparisonCountID = this.nextIndex++;
 		this.periodLabelID = this.nextIndex++;
+
+		this.lastTableCode = [
+			['procedure BoyerMooreLastTable(pattern):'],
+			['     lastTable <- map from character to integer'],
+			['     for i < 0, length of pattern'],
+			['          lastTable[pattern[i]] <- i'],
+			['     return lastTable'],
+			['end procedure'],
+		];
+
+		this.failureTableCode = [
+			['procedure KMPFailureTable(pattern):'],
+			['     m <- length of pattern'],
+			['     failureTable <- array of length m'],
+			['     i <- 0, j <- 1'],
+			['     failureTable[0] <- 0'],
+			['     while j < m'],
+			['          if pattern[i] = pattern[j]'],
+			['               failureTable[j] <- i + 1'],
+			['               i < i + 1, j <- j + 1'],
+			['          else'],
+			['               if i = 0'],
+			['                    failureTable[j] <- 0'],
+			['                    j <- j + 1'],
+			['               else'],
+			['                    i <- failureTable[i - 1]'],
+			['     return failureTable'],
+			['end procedure'],
+		]
+
+		this.BMCode = [
+			['procedure BoyerMoore(text, pattern):'],
+			['     initialize lastTable'],
+			['     m <- length of pattern, n <- length of text'],
+			['     i <- 0'],
+			['     while i <= n - m'],
+			['          j = m - 1'],
+			['          while j >= 0 and text[i + j] = pattern[j]'],
+			['               j -> j - 1'],
+			['          if j = -1'],
+			['               match found at i'],
+			['               i <- i + 1'],
+			['          else'],
+			['               shift <- lastTable[text[i + j]]'],
+			['               if shift < j'],
+			['                    i <- i + (j - shift)'],
+			['               else'],
+			['                    i <- i + 1'],
+			['end procedure'],
+		]
+
+		this.GalilCode = [
+			['procedure BoyerMooreGalil(text, pattern):'],
+			['     initialize lastTable, failureTable'],
+			['     m <- length of pattern, n <- length of text'],
+			['     k <- m - failureTable[m - 1]'],
+			['     i <- 0, w <- 0'],
+			['     while i <= n - m'],
+			['          j = m - 1'],
+			['          while j >= w and text[i + j] = pattern[j]'],
+			['               j -> j - 1'],
+			['          if j < w'],
+			['               match found at i'],
+			['               i <- i + k'],
+			['               w <- m - k'],
+			['          else'],
+			['               shift <- lastTable[text[i + j]]'],
+			['               if shift < j'],
+			['                    i <- i + (j - shift)'],
+			['               else'],
+			['                    i <- i + 1'],
+			['end procedure'],
+		]
 
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
@@ -149,6 +227,7 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableLabelID = this.nextIndex++;
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
+		this.codeID = [];
 		// this.failureTableLabelID = this.nextIndex++;
 		// this.failureTableCharacterID = [];
 		// this.failureTableValueID = [];
@@ -192,6 +271,10 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	find(text, pattern) {
+		console.log(this.codeID);
+		if (this.codeID) {
+			this.removeCode(this.codeID);
+		}
 		this.commands = [];
 
 		const maxRows = this.getMaxRows(text, pattern);
@@ -247,6 +330,9 @@ export default class BoyerMoore extends Algorithm {
 		const lastTable = this.buildLastTable(text.length, pattern);
 		if (galilRuleEnabled) {
 			this.buildFailureTable(text.length, pattern);
+			this.codeID = this.addCodeToCanvasBase(this.GalilCode, ARRAY_START_X + text.length * this.cellSize + 10, BM_CODE_Y);
+		} else {
+			this.codeID = this.addCodeToCanvasBase(this.BMCode, ARRAY_START_X + text.length * this.cellSize + 10, BM_CODE_Y);
 		}
 
 		const iPointerID = this.nextIndex++;
@@ -272,7 +358,10 @@ export default class BoyerMoore extends Algorithm {
 		let j = pattern.length - 1;
 		let row = 0;
 		let l = 0;
+		let gr = galilRuleEnabled ? 1 : 0;
+		this.highlight(gr + 4, 0);
 		while (i <= text.length - pattern.length) {
+			gr = galilRuleEnabled ? 1 : 0;
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
 					act.setText,
@@ -285,8 +374,10 @@ export default class BoyerMoore extends Algorithm {
 					this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][k], '#FFFF4D');
 				}
 			}
-
+			this.highlight(gr + 5, 0);
 			this.cmd(act.step);
+			this.unhighlight(gr + 5, 0);
+			this.highlight(gr + 6, 0);
 			while (j >= l && pattern.charAt(j) === text.charAt(i + j)) {
 				this.cmd(
 					act.setText,
@@ -295,7 +386,9 @@ export default class BoyerMoore extends Algorithm {
 				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j--;
+				this.highlight(gr + 7, 0);
 				this.cmd(act.step);
+				this.unhighlight(gr + 7, 0);
 				if (j >= 0) {
 					const xpos = (i + j) * this.cellSize + ARRAY_START_X;
 					this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
@@ -304,13 +397,24 @@ export default class BoyerMoore extends Algorithm {
 					this.cmd(act.step);
 				}
 			}
+			this.unhighlight(gr + 6, 0);
+			this.highlight(gr + 8, 0);
+			this.cmd(act.step);
+			this.unhighlight(gr + 8, 0);
 			if (j < l) {
+				this.highlight(gr + 9, 0);
+				this.highlight(gr + 10, 0);
 				if (galilRuleEnabled) {
+					this.highlight(gr + 11, 0);
 					i += this.period;
 					l = pattern.length - this.period;
 				} else {
 					i++;
 				}
+				this.cmd(act.step);
+				this.unhighlight(gr + 9, 0);
+				this.unhighlight(gr + 10, 0);
+				this.unhighlight(gr + 11, 0);
 			} else {
 				this.cmd(
 					act.setText,
@@ -320,18 +424,36 @@ export default class BoyerMoore extends Algorithm {
 				if (l !== 0) {
 					l = 0;
 				}
+				gr = galilRuleEnabled ? 2 : 0;
+				this.highlight(11 + gr, 0);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				let shift;
+				this.cmd(act.step);
+				this.unhighlight(11 + gr, 0);
+				this.highlight(12 + gr, 0);
 				if (text.charAt(i + j) in lastTable) {
 					shift = lastTable[text.charAt(i + j)];
 				} else {
 					shift = -1;
 				}
+				this.cmd(act.step);
+				this.unhighlight(12 + gr, 0);
+				this.highlight(13 + gr, 0);
+				this.cmd(act.step);
+				this.unhighlight(13 + gr, 0);
 				if (shift < j) {
+					this.highlight(14 + gr, 0);
 					i += j - shift;
 				} else {
+					this.highlight(15 + gr, 0);
+					this.cmd(act.step);
+					this.unhighlight(15 + gr, 0);
+					this.highlight(16 + gr, 0);
 					i++;
 				}
+				this.cmd(act.step);
+				this.unhighlight(14 + gr, 0);
+				this.unhighlight(16 + gr, 0);
 			}
 			j = pattern.length - 1;
 			row++;
@@ -342,6 +464,9 @@ export default class BoyerMoore extends Algorithm {
 				this.cmd(act.move, jPointerID, xpos, ypos);
 			}
 		}
+		gr = galilRuleEnabled ? 1 : 0;
+		this.unhighlight(gr + 4, 0);
+		this.cmd(act.step);
 
 		this.cmd(act.delete, iPointerID);
 		this.cmd(act.delete, jPointerID);
@@ -440,6 +565,8 @@ export default class BoyerMoore extends Algorithm {
 		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 
+		this.codeID = this.addCodeToCanvasBase(this.lastTableCode, labelsX, BM_CODE_Y);
+
 		// Display pattern table
 		const patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
 		this.patternTableCharacterID = new Array(pattern.length);
@@ -477,10 +604,13 @@ export default class BoyerMoore extends Algorithm {
 			this.cellSize / 2,
 		);
 		this.cmd(act.setHighlight, lotPointerID, 1);
-
+		this.highlight(2, 0);
+		
 		for (let i = 0; i < pattern.length; i++) {
+			this.cmd(act.step);
 			let xpos = patternTableStartX + i * this.cellSize;
 			this.cmd(act.move, lotPointerID, xpos, PATTERN_START_Y);
+			this.highlight(3, 0);
 			if (lastTable[pattern.charAt(i)]) {
 				this.cmd(act.setText, lastTable[pattern.charAt(i)][1], i);
 				this.cmd(act.setHighlight, lastTable[pattern.charAt(i)][1], 1);
@@ -513,8 +643,10 @@ export default class BoyerMoore extends Algorithm {
 				lastTable[pattern.charAt(i)] = [i, this.nextIndex++];
 			}
 			this.cmd(act.step);
+			this.unhighlight(3, 0);
 			this.cmd(act.setHighlight, lastTable[pattern.charAt(i)][1], 0);
 		}
+		this.unhighlight(2, 0);
 
 		// Display '*' entry
 		this.cmd(act.delete, lotPointerID);
@@ -540,7 +672,10 @@ export default class BoyerMoore extends Algorithm {
 			xpos,
 			LAST_TABLE_START_Y + this.cellSize,
 		);
+		this.highlight(4, 0);
 		this.cmd(act.step);
+		this.unhighlight(4, 0);
+		this.removeCode(this.codeID);
 
 		Object.keys(lastTable).map(char => (lastTable[char] = lastTable[char][0])); // Return only indices
 		return lastTable;
@@ -568,6 +703,8 @@ export default class BoyerMoore extends Algorithm {
 			this.periodLabelID,
 			'Period = pattern.length - FT[pattern.length - 1]',
 		);
+
+		this.codeID = this.addCodeToCanvasBase(this.failureTableCode, labelX, GALIL_CODE_Y);
 
 		// Display empty failure table
 		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 110;
@@ -619,15 +756,25 @@ export default class BoyerMoore extends Algorithm {
 			this.cellSize / 2,
 		);
 		this.cmd(act.setText, this.failureTableValueID[0], 0);
+		this.highlight(3, 0);
+		this.highlight(4, 0);
 		this.cmd(act.step);
+		this.unhighlight(3, 0);
+		this.unhighlight(4, 0);
 
 		const failureTable = [];
 		failureTable[0] = 0;
 		let i = 0;
 		let j = 1;
+		this.highlight(5, 0);
 		while (j < pattern.length) {
 			this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + ++this.compCount);
+			this.highlight(6, 0);
+			this.cmd(act.step);
+			this.unhighlight(6, 0);
 			if (pattern.charAt(i) === pattern.charAt(j)) {
+				this.highlight(7, 0);
+				this.highlight(8, 0);
 				i++;
 				failureTable[j] = i;
 				this.cmd(act.setText, this.failureTableValueID[j], i);
@@ -647,8 +794,18 @@ export default class BoyerMoore extends Algorithm {
 					);
 				}
 				this.cmd(act.step);
+				this.unhighlight(7, 0);
+				this.unhighlight(8, 0);
 			} else {
+				this.highlight(9, 0);
+				this.cmd(act.step);
+				this.unhighlight(9, 0);
+				this.highlight(10, 0);
+				this.cmd(act.step);
+				this.unhighlight(10, 0);
 				if (i === 0) {
+					this.highlight(11, 0);
+					this.highlight(12, 0);
 					failureTable[j] = i;
 					this.cmd(act.setText, this.failureTableValueID[j], i);
 					j++;
@@ -661,7 +818,13 @@ export default class BoyerMoore extends Algorithm {
 						);
 					}
 					this.cmd(act.step);
+					this.unhighlight(11, 0);
+					this.unhighlight(12, 0);
 				} else {
+					this.highlight(13, 0);
+					this.cmd(act.step);
+					this.unhighlight(13, 0);
+					this.highlight(14, 0);
 					i = failureTable[i - 1];
 					this.cmd(
 						act.move,
@@ -670,10 +833,14 @@ export default class BoyerMoore extends Algorithm {
 						FAILURE_TABLE_START_Y,
 					);
 					this.cmd(act.step);
+					this.unhighlight(14, 0);
 				}
 			}
 		}
-
+		this.unhighlight(5, 0);
+		this.highlight(15, 0);
+		this.cmd(act.step);
+		this.unhighlight(15, 0);
 		this.cmd(
 			act.setText,
 			this.periodLabelID,
@@ -705,6 +872,7 @@ export default class BoyerMoore extends Algorithm {
 
 		this.cmd(act.delete, iPointerID);
 		this.cmd(act.delete, jPointerID);
+		this.removeCode(this.codeID);
 
 		this.nextIndex = startIndex;
 
@@ -714,45 +882,37 @@ export default class BoyerMoore extends Algorithm {
 	clear() {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
-			console.log('Text row ' + this.textRowID[i]);
 			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
-				console.log('Comp matrix: ' + this.comparisonMatrixID[i][j]);
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
 
 		this.comparisonMatrixID = [];
 		if (this.patternTableCharacterID.length !== 0) {
-			console.log('pat table label: ' + this.patternTableLabelID);
 			this.cmd(act.delete, this.patternTableLabelID);
 		}
 
 		for (let i = 0; i < this.patternTableCharacterID.length; i++) {
-			console.log('pat table char: ' + this.patternTableCharacterID[i]);
 			this.cmd(act.delete, this.patternTableCharacterID[i]);
-			console.log('pat table idx: ' + this.patternTableIndexID[i]);
 			this.cmd(act.delete, this.patternTableIndexID[i]);
 		}
 
 		this.patternTableCharacterID = [];
 		this.patternTableIndexID = [];
 		if (this.lastTableCharacterID.length !== 0) {
-			console.log('table label: ' + this.lastTableLabelID);
 			this.cmd(act.delete, this.lastTableLabelID);
 		}
 
 		for (let i = 0; i < this.lastTableCharacterID.length; i++) {
-			console.log(this.lastTableCharacterID.length);
-			console.log('table char: ' + this.lastTableCharacterID[i]);
 			this.cmd(act.delete, this.lastTableCharacterID[i]);
-			console.log('table val: ' + this.lastTableValueID[i]);
 			this.cmd(act.delete, this.lastTableValueID[i]);
 		}
-		console.log();
+
+		this.removeCode(this.codeID);
 
 		// if (this.failureTableValueID.length !== 0) {
 		// 	this.cmd(act.delete, this.failureTableLabelID);
@@ -770,6 +930,7 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableValueID = [];
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
+		this.codeID = [];
 		this.period = 1;
 		return this.commands;
 	}

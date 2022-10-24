@@ -328,6 +328,7 @@ export default class BoyerMoore extends Algorithm {
 		}
 
 		const lastTable = this.buildLastTable(text.length, pattern);
+		this.removeCode(this.codeID);
 		if (galilRuleEnabled) {
 			this.buildFailureTable(text.length, pattern);
 			this.codeID = this.addCodeToCanvasBase(this.GalilCode, ARRAY_START_X + text.length * this.cellSize + 10, BM_CODE_Y);
@@ -675,7 +676,6 @@ export default class BoyerMoore extends Algorithm {
 		this.highlight(4, 0);
 		this.cmd(act.step);
 		this.unhighlight(4, 0);
-		this.removeCode(this.codeID);
 
 		Object.keys(lastTable).map(char => (lastTable[char] = lastTable[char][0])); // Return only indices
 		return lastTable;

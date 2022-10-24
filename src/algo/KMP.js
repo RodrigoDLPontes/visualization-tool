@@ -130,7 +130,7 @@ export default class KMP extends Algorithm {
 			['                    i <- failureTable[i - 1]'],
 			['     return failureTable'],
 			['end procedure'],
-		]
+		];
 
 		this.KMPCode = [
 			['procedure KMP(text, pattern):'],
@@ -149,7 +149,7 @@ export default class KMP extends Algorithm {
 			['               i <- i + j - shift'],
 			['               j <- shift'],
 			['end procedure'],
-		]
+		];
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -252,7 +252,11 @@ export default class KMP extends Algorithm {
 		this.removeCode(this.codeID);
 		const tableStartX = ARRAY_START_X + text.length * this.cellSize + 110;
 
-		this.codeID = this.addCodeToCanvasBase(this.KMPCode, ARRAY_START_X + text.length * this.cellSize + 10, CODE_Y);
+		this.codeID = this.addCodeToCanvasBase(
+			this.KMPCode,
+			ARRAY_START_X + text.length * this.cellSize + 10,
+			CODE_Y,
+		);
 
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;

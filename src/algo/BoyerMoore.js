@@ -160,7 +160,7 @@ export default class BoyerMoore extends Algorithm {
 			['                    i <- failureTable[i - 1]'],
 			['     return failureTable'],
 			['end procedure'],
-		]
+		];
 
 		this.BMCode = [
 			['procedure BoyerMoore(text, pattern):'],
@@ -181,7 +181,7 @@ export default class BoyerMoore extends Algorithm {
 			['               else'],
 			['                    i <- i + 1'],
 			['end procedure'],
-		]
+		];
 
 		this.GalilCode = [
 			['procedure BoyerMooreGalil(text, pattern):'],
@@ -204,7 +204,7 @@ export default class BoyerMoore extends Algorithm {
 			['               else'],
 			['                    i <- i + 1'],
 			['end procedure'],
-		]
+		];
 
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
@@ -331,9 +331,17 @@ export default class BoyerMoore extends Algorithm {
 		this.removeCode(this.codeID);
 		if (galilRuleEnabled) {
 			this.buildFailureTable(text.length, pattern);
-			this.codeID = this.addCodeToCanvasBase(this.GalilCode, ARRAY_START_X + text.length * this.cellSize + 10, BM_CODE_Y);
+			this.codeID = this.addCodeToCanvasBase(
+				this.GalilCode,
+				ARRAY_START_X + text.length * this.cellSize + 10,
+				BM_CODE_Y,
+			);
 		} else {
-			this.codeID = this.addCodeToCanvasBase(this.BMCode, ARRAY_START_X + text.length * this.cellSize + 10, BM_CODE_Y);
+			this.codeID = this.addCodeToCanvasBase(
+				this.BMCode,
+				ARRAY_START_X + text.length * this.cellSize + 10,
+				BM_CODE_Y,
+			);
 		}
 
 		const iPointerID = this.nextIndex++;
@@ -606,7 +614,7 @@ export default class BoyerMoore extends Algorithm {
 		);
 		this.cmd(act.setHighlight, lotPointerID, 1);
 		this.highlight(2, 0);
-		
+
 		for (let i = 0; i < pattern.length; i++) {
 			this.cmd(act.step);
 			let xpos = patternTableStartX + i * this.cellSize;

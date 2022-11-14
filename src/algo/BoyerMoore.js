@@ -203,6 +203,7 @@ export default class BoyerMoore extends Algorithm {
 			['                    i <- i + (j - shift)'],
 			['               else'],
 			['                    i <- i + 1'],
+			['               w <- 0'],
 			['end procedure'],
 		];
 

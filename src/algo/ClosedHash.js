@@ -705,13 +705,55 @@ export default class ClosedHash extends Hash {
 
 	clear() {
 		this.commands = [];		
+		
 		for (let i = 0; i < this.table_size; i++) {
-			this.cmd(act.setText, this.hashTableVisual[i], '');
+			this.cmd(act.delete, this.hashTableVisual[i]);
+			this.cmd(act.delete, this.indexLabelID[i]);
+		}
+
+		this.table_size = CLOSED_HASH_TABLE_SIZE;
+		this.empty = Array(this.table_size);
+		this.deleted = Array(this.table_size);
+		const newHashTableVisual = Array(this.table_size);
+		const newIndexLabelID = Array(this.table_size);
+		this.hashTableValues = Array(this.table_size);
+
+		for (let i = 0; i < this.table_size; i++) {
+
+			newHashTableVisual[i] = this.nextIndex++;
+			const nextXPos = ARRAY_ELEM_START_X + (i % this.elements_per_row) * ARRAY_ELEM_WIDTH;
+			const nextYPos =
+				ARRAY_ELEM_START_Y +
+				Math.floor(i / this.elements_per_row) * ARRAY_VERTICAL_SEPARATION;
+			this.cmd(
+				act.createRectangle,
+				newHashTableVisual[i],
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				nextXPos,
+				nextYPos,
+			);
+
+			newIndexLabelID[i] = this.nextIndex++;
+			this.indexXPos[i] = nextXPos;
+			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
+			this.cmd(
+				act.createLabel,
+				newIndexLabelID[i],
+				i,
+				this.indexXPos[i],
+				this.indexYPos[i],
+			);
+			this.cmd(act.setForegroundColor, newIndexLabelID[i], INDEX_COLOR);
+
 			this.empty[i] = true;
 			this.deleted[i] = false;
+			this.hashTableValues[i] = undefined;
 		}
 		this.size = 0;
-		this.hashTableValues = Array(this.table_size);
+		this.hashTableVisual = newHashTableVisual;
+		this.indexLabelID = newIndexLabelID;
 		return this.commands;
 	}
 

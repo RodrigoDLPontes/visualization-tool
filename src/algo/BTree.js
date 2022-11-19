@@ -495,6 +495,13 @@ export default class BTree extends Algorithm {
 	}
 
 	insertNotFull(tree, insertValue) {
+		if (tree.keys.includes(insertValue)) {
+			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tree.graphicID, 0);
+			return;
+		}
+
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
 		if (tree.isLeaf) {
@@ -538,6 +545,14 @@ export default class BTree extends Algorithm {
 	insert(tree, insertValue) {
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
+
+		if (tree.keys.includes(insertValue)) {
+			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
+			this.cmd(act.step);
+			this.cmd(act.setHighlight, tree.graphicID, 0);
+			return;
+		}
+
 		if (tree.isLeaf) {
 			this.cmd(
 				act.setText,

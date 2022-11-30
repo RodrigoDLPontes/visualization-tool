@@ -153,6 +153,12 @@ export default class Hash extends Algorithm {
 		this.hashStringButton.onclick = this.changeHashTypeCallback.bind(this, false);
 		this.hashIntegerButton.checked = true;
 		this.controls.push(this.hashStringButton);
+
+		addDivisorToAlgorithmBar();
+
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
 	}
 
 	// Do this extra level of wrapping to get undo to work properly.
@@ -208,6 +214,10 @@ export default class Hash extends Algorithm {
 			);
 		}
 		return this.resetAll();
+	}
+
+	clearCallback() {
+		this.implementAction(this.clear.bind(this));
 	}
 
 	doHash(input) {

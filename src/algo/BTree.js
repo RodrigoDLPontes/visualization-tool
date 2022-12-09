@@ -495,7 +495,10 @@ export default class BTree extends Algorithm {
 	}
 
 	insertNotFull(tree, insertValue) {
-		if (tree.keys.includes(insertValue)) {
+		if (
+			tree.keys.includes(insertValue) &&
+			tree.keys.findIndex(e => e === insertValue) < tree.numKeys
+		) {
 			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -546,7 +549,10 @@ export default class BTree extends Algorithm {
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
 
-		if (tree.keys.includes(insertValue)) {
+		if (
+			tree.keys.includes(insertValue) &&
+			tree.keys.findIndex(e => e === insertValue) < tree.numKeys
+		) {
 			this.cmd(act.setText, 0, `${insertValue} == ${insertValue}. Ignoring duplicate!`);
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, tree.graphicID, 0);
@@ -786,7 +792,7 @@ export default class BTree extends Algorithm {
 		} else {
 			this.doDelete(this.treeRoot, deletedValue);
 		}
-		if (this.treeRoot.numKeys === 0) {
+		if (this.treeRoot && this.treeRoot.numKeys === 0) {
 			this.cmd(act.step);
 			this.cmd(act.delete, this.treeRoot.graphicID);
 			this.treeRoot = this.treeRoot.children[0];

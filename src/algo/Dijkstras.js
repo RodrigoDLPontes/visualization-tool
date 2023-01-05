@@ -302,7 +302,7 @@ export default class Dijkstras extends Graph {
 								this.infoLabelID,
 								this.toStr(neighbor) + ' has already been visited, skipping',
 							);
-							
+
 							this.cmd(act.step);
 						} else {
 							this.cmd(act.setText, this.infoLabelID, 'Comparing distances');
@@ -333,7 +333,7 @@ export default class Dijkstras extends Graph {
 									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
 									0,
 								);
-								
+
 								this.highlight(10, 0);
 								this.cmd(act.step);
 
@@ -368,7 +368,7 @@ export default class Dijkstras extends Graph {
 									0,
 								);
 								this.highlight(11, 0);
-								this.cmd(act.step);								
+								this.cmd(act.step);
 
 								const newPqIDs = this.pq.getIDs();
 								if (String(pqIDs) !== String(newPqIDs.slice(0, -1))) {
@@ -428,7 +428,6 @@ export default class Dijkstras extends Graph {
 			this.leaveVertex();
 			this.cmd(act.delete, currentID);
 			this.unhighlight(5, 0);
-			
 		}
 
 		if (this.pq.size() > 0) {

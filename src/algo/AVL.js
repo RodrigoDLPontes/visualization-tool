@@ -31,6 +31,7 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+
 export default class AVL extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);

@@ -600,18 +600,19 @@ export default class OpenHash extends Hash {
 		this.commands = [];
 
 		for (let i = 0; i < this.hashTableValues.length; i++) {
-			if (this.hashTableValues[i]) {
-				let node = this.hashTableValues[i];
-				while (node != null) {
-					console.log(`node != null: ${node}`)
-					this.cmd(act.delete, node.graphicID);
-					node = node.next;
-				}
+			let node = this.hashTableValues[i];
+			if (node != null) {
+				this.cmd(act.delete, node.graphicID);
+			}
+			if (i >= HASH_TABLE_SIZE) {
+				this.cmd(act.delete, this.hashTableVisual[i], 1);
+				this.cmd(act.delete, this.hashTableIndices[i]);
+			} else {
 				this.cmd(act.setNull, this.hashTableVisual[i], 1);
 			}
 		}
 
-		this.hashTableValues = new Array(this.table_size);
+		this.hashTableValues = new Array(HASH_TABLE_SIZE);
 		this.size = 0;
 
 		return this.commands;

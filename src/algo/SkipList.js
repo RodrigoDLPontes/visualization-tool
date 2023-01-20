@@ -272,7 +272,7 @@ export default class SkipList extends Algorithm {
 		this.commands = [];
 
 		if (heads === undefined) {
-			heads = Math.floor(Math.random() * (this.size + 1));
+			heads = Math.floor(Math.random() * 5); // random int between [0, 4]
 		}
 		heads = Math.min(heads, 4);
 

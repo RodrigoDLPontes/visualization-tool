@@ -596,6 +596,28 @@ export default class OpenHash extends Hash {
 		super.reset();
 	}
 
+	clear() {
+		this.commands = [];
+
+		for (let i = 0; i < this.hashTableValues.length; i++) {
+			let node = this.hashTableValues[i];
+			if (node != null) {
+				this.cmd(act.delete, node.graphicID);
+			}
+			if (i >= HASH_TABLE_SIZE) {
+				this.cmd(act.delete, this.hashTableVisual[i], 1);
+				this.cmd(act.delete, this.hashTableIndices[i]);
+			} else {
+				this.cmd(act.setNull, this.hashTableVisual[i], 1);
+			}
+		}
+
+		this.hashTableValues = new Array(HASH_TABLE_SIZE);
+		this.size = 0;
+
+		return this.commands;
+	}
+
 	/*this.nextIndex = 0;
  this.commands = [];
  this.cmd(act.createLabel, 0, "", 20, 50, 0);

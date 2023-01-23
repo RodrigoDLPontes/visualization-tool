@@ -7,9 +7,9 @@
 
 [data-theme='dark'] {
     --primary: #FFF;
-	--control: #3A3B3C;
+	--control: #121212;
 	--border: #FFF;
-	--button: #3A3B3C;
+	--button: #121212;
 }
 
 .VisualizationMainPage body {
@@ -39,6 +39,7 @@
 	justify-content: space-between;
 	align-items: center;
 	border-bottom: var(--border) 2px solid;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
@@ -73,6 +74,7 @@
 .VisualizationMainPage #generalAnimationControlSection {
 	background: var(--control);
 	border-top: 2px var(--border) solid;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #GeneralAnimationControls {

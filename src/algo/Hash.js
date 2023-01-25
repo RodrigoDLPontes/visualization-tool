@@ -161,10 +161,15 @@ export default class Hash extends Algorithm {
 		this.rightVerticalTop = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
 		this.rightVerticalBottom = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
 
+		this.initialSizeLabel = addLabelToAlgorithmBar('Initial Size: ', this.rightVerticalTop);
 		this.initialSizeField = addControlToAlgorithmBar('Text', '', this.rightVerticalTop);
-			
-		this.restart = addControlToAlgorithmBar('Button', 'Restart', this.rightVerticalBottom);
-		this.restart.onclick = this.clearCallback.bind(this);
+		this.initialSizeField.size = MAX_HASH_LENGTH;
+		this.restartButton = addControlToAlgorithmBar(
+			'Button',
+			'Restart',
+			this.rightVerticalBottom,
+		);
+		this.restartButton.onclick = this.clearCallback.bind(this);
 	}
 
 	// Do this extra level of wrapping to get undo to work properly.

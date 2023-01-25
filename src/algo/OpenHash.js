@@ -69,6 +69,7 @@ export default class OpenHash extends Hash {
 
 	addControls() {
 		super.addControls();
+		this.restartButton.onclick = this.resizeInitialTableCall.bind(this);
 	}
 
 	setup() {
@@ -127,6 +128,65 @@ export default class OpenHash extends Hash {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
+	}
+
+	resizeInitialTableCall() {
+		this.implementAction(this.resizeInitialTable.bind(this));
+	}
+
+	resizeInitialTable() {
+		this.commands = [];
+
+		this.clear();
+
+		this.table_size = parseInt(this.initialSizeField.value)
+			? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
+			: HASH_TABLE_SIZE;
+
+		this.hashTableVisual = new Array(this.table_size);
+		this.hashTableIndices = new Array(this.table_size);
+		this.hashTableValues = new Array(this.table_size);
+		this.indexXPos = new Array(this.table_size);
+		this.indexYPos = new Array(this.table_size);
+
+		this.ExplainLabel = this.nextIndex++;
+		this.loadFactorID = this.nextIndex++;
+
+		for (let i = 0; i < HASH_TABLE_SIZE; i++) {
+			let nextID = this.nextIndex++;
+
+			this.cmd(
+				act.createRectangle,
+				nextID,
+				'',
+				POINTER_ARRAY_ELEM_WIDTH,
+				POINTER_ARRAY_ELEM_HEIGHT,
+				POINTER_ARRAY_ELEM_START_X,
+				POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT,
+			);
+			this.hashTableVisual[i] = nextID;
+			this.cmd(act.setNull, this.hashTableVisual[i], 1);
+
+			nextID = this.nextIndex++;
+			this.hashTableIndices[i] = nextID;
+			this.hashTableValues[i] = null;
+
+			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
+			this.indexYPos[i] = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
+
+			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
+		}
+		this.cmd(
+			act.createLabel,
+			this.loadFactorID,
+			`Load Factor: ${this.load_factor}`,
+			LOAD_LABEL_X,
+			LOAD_LABEL_Y,
+		);
+		this.cmd(act.createLabel, this.ExplainLabel, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y, 0);
+
+		return this.commands;
 	}
 
 	insertElement(key, value) {
@@ -248,7 +308,6 @@ export default class OpenHash extends Hash {
 			this.repositionList(index, this.hashTableValues[index]);
 			this.size++;
 		}
-
 		this.cmd(act.setText, this.ExplainLabel, '');
 
 		return this.commands;
@@ -600,7 +659,7 @@ export default class OpenHash extends Hash {
 		this.commands = [];
 
 		for (let i = 0; i < this.hashTableValues.length; i++) {
-			let node = this.hashTableValues[i];
+			const node = this.hashTableValues[i];
 			if (node != null) {
 				this.cmd(act.delete, node.graphicID);
 			}

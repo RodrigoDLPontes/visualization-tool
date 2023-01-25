@@ -869,6 +869,7 @@ export default class ObjectManager {
 		backgroundColor,
 		foregroundColor,
 	) {
+		console.log('About to use ' + objectID);
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addRectangleObject: object with same ID already exists!');
 		}

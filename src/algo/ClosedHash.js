@@ -88,6 +88,7 @@ export default class ClosedHash extends Hash {
 		this.linearProblingButton.checked = true;
 		this.currentHashingTypeButtonState = this.linearProblingButton;
 
+		this.initialSizeField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
 
@@ -706,12 +707,9 @@ export default class ClosedHash extends Hash {
 	clear() {
 		this.commands = [];
 
-		for (let i = 0; i < this.table_size; i++) {
-			this.cmd(act.delete, this.hashTableVisual[i]);
-			this.cmd(act.delete, this.indexLabelID[i]);
-		}
-
-		this.table_size = CLOSED_HASH_TABLE_SIZE;
+		this.table_size = parseInt(this.initialSizeField.value)
+			? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
+			: CLOSED_HASH_TABLE_SIZE;
 		this.empty = Array(this.table_size);
 		this.deleted = Array(this.table_size);
 		const newHashTableVisual = Array(this.table_size);

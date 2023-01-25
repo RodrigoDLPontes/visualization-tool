@@ -33,7 +33,7 @@ const ARRAY_ELEM_HEIGHT = 30;
 const ARRAY_ELEM_START_Y = 110;
 const ARRAY_VERTICAL_SEPARATION = 70;
 
-const CLOSED_HASH_TABLE_SIZE = 13;
+const CLOSED_HASH_TABLE_SIZE = 10;
 
 const ARRAY_ELEM_START_X = 100;
 // If you want to center the array:
@@ -704,8 +704,8 @@ export default class ClosedHash extends Hash {
 	}
 
 	clear() {
-		this.commands = [];		
-		
+		this.commands = [];
+
 		for (let i = 0; i < this.table_size; i++) {
 			this.cmd(act.delete, this.hashTableVisual[i]);
 			this.cmd(act.delete, this.indexLabelID[i]);
@@ -719,7 +719,6 @@ export default class ClosedHash extends Hash {
 		this.hashTableValues = Array(this.table_size);
 
 		for (let i = 0; i < this.table_size; i++) {
-
 			newHashTableVisual[i] = this.nextIndex++;
 			const nextXPos = ARRAY_ELEM_START_X + (i % this.elements_per_row) * ARRAY_ELEM_WIDTH;
 			const nextYPos =
@@ -738,13 +737,7 @@ export default class ClosedHash extends Hash {
 			newIndexLabelID[i] = this.nextIndex++;
 			this.indexXPos[i] = nextXPos;
 			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
-			this.cmd(
-				act.createLabel,
-				newIndexLabelID[i],
-				i,
-				this.indexXPos[i],
-				this.indexYPos[i],
-			);
+			this.cmd(act.createLabel, newIndexLabelID[i], i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, newIndexLabelID[i], INDEX_COLOR);
 
 			this.empty[i] = true;

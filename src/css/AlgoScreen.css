@@ -1,15 +1,15 @@
 [data-theme='light'] {
-    --primary: #000;
-	--control: #FFF;
-	--border: #121212;
-	--button: #FFF;
+    --primary: #282828;
+	--control: #F2F2F2;
+	--border: #282828;
+	--button: #F2F2F2;
 }
 
 [data-theme='dark'] {
-    --primary: #FFF;
-	--control: #121212;
-	--border: #FFF;
-	--button: #121212;
+    --primary: #F2F2F2;
+	--control: #282828;
+	--border: #F2F2F2;
+	--button: #282828;
 }
 
 .VisualizationMainPage body {

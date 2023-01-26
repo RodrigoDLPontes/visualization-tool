@@ -1,19 +1,18 @@
-/* :root {
-    --background: #fff;
-    --primary: #000;
-} */
 
 [data-theme='light'] {
-    --background: #fff;
-    --primary: #000;
+    --background: #F2F2F2;
+    --primary: #282828;
 	--secondary: #3970BA;
+	--shadow: rgba(0, 0, 0, .5);
 }
 
 [data-theme='dark'] {
-    --background: #121212;
-    --primary: #fff;
+    --background: #282828;
+    --primary: #F2F2F2;
 	--secondary: #3970BA;
+	--shadow: rgba(242, 242, 242, .09);
 }
+
 
 #left {
 	float: left;
@@ -182,12 +181,13 @@ div.container {
 
 div.header,
 div.footer {
-	color: #FFFFF0;
+	color: #F2F2F2;
 	background: #3970BA;
+	text-align: center;
 }
 
 .footer {
-	padding-left: 10px;
+	padding: 10px;
 }
 
 .footer a {
@@ -214,9 +214,9 @@ div.content {
 	padding: 10px;
 	margin: 15px;
 	cursor: pointer;
-	border: 1px #FFFFF0 solid;
+	border: 1px #F2F2F2 solid;
 	border-radius: 15px;
-	box-shadow: 0px 8px 15px rgba(0, 0, 0, .5);
+	box-shadow: 0px 8px 15px var(--shadow);
 	transition: all 0.4s ease 0s;
 }
 

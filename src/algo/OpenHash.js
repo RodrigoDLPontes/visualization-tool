@@ -73,6 +73,7 @@ export default class OpenHash extends Hash {
 	}
 
 	setup() {
+		this.initialSizeField.value = HASH_TABLE_SIZE;
 		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
 		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
 		this.hashTableValues = new Array(HASH_TABLE_SIZE);
@@ -135,24 +136,28 @@ export default class OpenHash extends Hash {
 	}
 
 	resizeInitialTable() {
+		// Make command stack empty, and clear the elements of the list.
 		this.commands = [];
+		//Delete current hashTable
+		this.oldHashTableVisual = this.hashTableVisual;
+		this.oldHashTableIndices = this.hashTableIndices;
+		for (let i = 0; i < this.table_size; i++) {
+			this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
+			this.cmd(act.delete, this.oldHashTableVisual[i]);
+			this.cmd(act.delete, this.oldHashTableIndices[i]);
+		}
 
-		this.clear();
-
-		this.table_size = parseInt(this.initialSizeField.value)
-			? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
-			: HASH_TABLE_SIZE;
-
+		if (this.initialSizeField !== '') {
+			this.table_size = parseInt(this.initialSizeField.value)
+				? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
+				: HASH_TABLE_SIZE;
+		}
 		this.hashTableVisual = new Array(this.table_size);
 		this.hashTableIndices = new Array(this.table_size);
-		this.hashTableValues = new Array(this.table_size);
 		this.indexXPos = new Array(this.table_size);
 		this.indexYPos = new Array(this.table_size);
 
-		this.ExplainLabel = this.nextIndex++;
-		this.loadFactorID = this.nextIndex++;
-
-		for (let i = 0; i < HASH_TABLE_SIZE; i++) {
+		for (let i = 0; i < this.table_size; i++) {
 			let nextID = this.nextIndex++;
 
 			this.cmd(
@@ -169,7 +174,6 @@ export default class OpenHash extends Hash {
 
 			nextID = this.nextIndex++;
 			this.hashTableIndices[i] = nextID;
-			this.hashTableValues[i] = null;
 
 			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
 			this.indexYPos[i] = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
@@ -177,14 +181,23 @@ export default class OpenHash extends Hash {
 			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
-		this.cmd(
-			act.createLabel,
-			this.loadFactorID,
-			`Load Factor: ${this.load_factor}`,
-			LOAD_LABEL_X,
-			LOAD_LABEL_Y,
-		);
-		this.cmd(act.createLabel, this.ExplainLabel, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y, 0);
+
+		if (this.size != 0) {
+			for (let i = 0; i < this.hashTableValues.length; i++) {
+				const node = this.hashTableValues[i];
+				if (node != null) {
+					this.cmd(act.delete, node.graphicID);
+					while(node.next != null) {
+						node = node.next
+						this.cmd(act.delete, node.graphicID);
+					}
+				}
+				
+			}
+
+			this.hashTableValues = new Array(HASH_TABLE_SIZE);
+			this.size = 0;
+		}
 
 		return this.commands;
 	}

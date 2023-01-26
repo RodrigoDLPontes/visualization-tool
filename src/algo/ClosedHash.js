@@ -707,6 +707,11 @@ export default class ClosedHash extends Hash {
 	clear() {
 		this.commands = [];
 
+		for (let i = 0; i < this.table_size; i++) {
+			this.cmd(act.delete, this.hashTableVisual[i]);
+			this.cmd(act.delete, this.indexLabelID[i]);
+		}
+
 		this.table_size = parseInt(this.initialSizeField.value)
 			? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
 			: CLOSED_HASH_TABLE_SIZE;

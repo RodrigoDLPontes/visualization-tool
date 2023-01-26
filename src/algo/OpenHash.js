@@ -182,17 +182,16 @@ export default class OpenHash extends Hash {
 			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
 		}
 
-		if (this.size != 0) {
+		if (this.size !== 0) {
 			for (let i = 0; i < this.hashTableValues.length; i++) {
-				const node = this.hashTableValues[i];
+				let node = this.hashTableValues[i];
 				if (node != null) {
 					this.cmd(act.delete, node.graphicID);
-					while(node.next != null) {
-						node = node.next
+					while (node.next != null) {
+						node = node.next;
 						this.cmd(act.delete, node.graphicID);
 					}
 				}
-				
 			}
 
 			this.hashTableValues = new Array(HASH_TABLE_SIZE);

@@ -79,7 +79,8 @@ body {
 	font-size: 1.4em;
 	font-weight: bold;
 	text-decoration: none;
-	color: white;
+	color: var(--primary);
+	transition: all 0.4s ease 0s;
 }
 
 .menu a:hover {

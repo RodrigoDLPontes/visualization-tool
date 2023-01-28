@@ -2,17 +2,22 @@
 [data-theme='light'] {
     --background: #F2F2F2;
     --primary: #282828;
-	--secondary: #3970BA;
-	--shadow: rgba(0, 0, 0, .5);
+	--shadow: rgba(0, 0, 0, 5);
+	--buttons: #012F57;
+	--text: #F9C333;
+	--filter: brightness(70%);
+	--borders: #012F57;
 }
 
 [data-theme='dark'] {
     --background: #282828;
     --primary: #F2F2F2;
-	--secondary: #3970BA;
-	--shadow: rgba(242, 242, 242, .09);
+	--shadow: rgba(242, 242, 242, .1);
+	--buttons: #282828;
+	--text: #F2F2F2;
+	--filter: brightness(185%);
+	--borders: #F2F2F2;
 }
-
 
 #left {
 	float: left;
@@ -84,7 +89,7 @@ body {
 }
 
 .menu a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .content {
@@ -116,7 +121,7 @@ body {
 
 .about a:hover,
 .four-o-four a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .text,
@@ -131,7 +136,7 @@ body {
 }
 
 .personal a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .header {
@@ -180,11 +185,18 @@ div.container {
 	margin: 0px;
 }
 
-div.header,
-div.footer {
-	color: #F2F2F2;
-	background: #3970BA;
+div.header {
+	color: var(--text);
+	background: var(--buttons);
 	text-align: center;
+	border-bottom: 1px var(--borders) solid;
+}
+
+div.footer {
+	color: var(--text);
+	background: var(--buttons);
+	text-align: center;
+	border-top: 1px var(--borders) solid;
 }
 
 .footer {
@@ -192,7 +204,7 @@ div.footer {
 }
 
 .footer a {
-	color: #022639;
+	color: var(--text);
 }
 
 div.content {
@@ -209,13 +221,13 @@ div.content {
 	font-family: Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
 	font-weight: bold;
-	color: var(--primary);
-	background: var(--background);
+	color: var(--text);
+	background: var(--buttons);
 	width: 90%;
 	padding: 10px;
 	margin: 15px;
 	cursor: pointer;
-	border: 1px var(--primary) solid;
+	border: 1px var(--borders) solid;
 	border-radius: 15px;
 	box-shadow: 0px 8px 15px var(--shadow);
 	transition: all 0.4s ease 0s;
@@ -223,8 +235,7 @@ div.content {
 
 .inner-flex input.button:hover,
 .inner-flex input.button:active {
-	background: var(--secondary);
-	border: 1px var(--secondary) solid;
+	filter: var(--filter);
 }
 
 .inner-flex input.button:focus,

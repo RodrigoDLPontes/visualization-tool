@@ -3,6 +3,7 @@
 	--control: #F2F2F2;
 	--border: #282828;
 	--button: #F2F2F2;
+	--header: #012F57;
 }
 
 [data-theme='dark'] {
@@ -10,6 +11,7 @@
 	--control: #282828;
 	--border: #F2F2F2;
 	--button: #282828;
+	--header: #282828;
 }
 
 .VisualizationMainPage body {
@@ -82,7 +84,8 @@
 }
 
 .VisualizationMainPage #header {
-	background: #3970BA;
+	background: var(--header);
+	border-bottom: 1px var(--border) solid;
 	color: #FFFFF0;
 	padding: 0 10px 0 5px;
 }
@@ -142,7 +145,8 @@
 
 .VisualizationMainPage #footer {
 	padding: 0 10px;
-	background: #3970BA;
+	background: var(--header);
+	border-top: 1px var(--border) solid;
 	color: #f7c245;
 }
 
@@ -164,11 +168,10 @@ em {
 }
 
 .VisualizationMainPage .modal-content {
-	background-color: #fefefe;
 	padding: 15px 30px 0px 0px;
 	height: 100%;
 	border-radius: 20px;
-	background-color: #f7c245;
+	background-color: var(--control);
 }
 
 .VisualizationMainPage .modal-content ul {

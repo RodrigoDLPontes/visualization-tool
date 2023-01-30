@@ -1,10 +1,26 @@
+[data-theme='light'] {
+    --primary: #282828;
+	--control: #F2F2F2;
+	--border: #282828;
+	--button: #F2F2F2;
+	--header: #012F57;
+}
+
+[data-theme='dark'] {
+    --primary: #F2F2F2;
+	--control: #282828;
+	--border: #F2F2F2;
+	--button: #282828;
+	--header: #282828;
+}
+
 .VisualizationMainPage body {
 	font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 .VisualizationMainPage #mainContent {
 	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-	background: #ffffff;
+	background:#ffffff;
 }
 
 .VisualizationMainPage #container {
@@ -13,17 +29,24 @@
 	text-align: left; /* this overrides the text-align: center on the body element. */
 }
 
+.VisualizationMainPage #toggle {
+	margin-right: 16px;
+	float: right;
+}
+
 .VisualizationMainPage #algoControlSection {
-	background: #f7c245;
+	background: var(--control);
 	color: #000000;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	border-bottom: var(--border) 2px solid;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
 	vertical-align: middle;
-	padding: 2px 5px;
+	padding: 5px 5px;
 }
 
 .VisualizationMainPage #examplesButton {
@@ -51,8 +74,9 @@
 }
 
 .VisualizationMainPage #generalAnimationControlSection {
-	background: #f7c245;
-	color: #006600;
+	background: var(--control);
+	border-top: 2px var(--border) solid;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #GeneralAnimationControls {
@@ -60,14 +84,15 @@
 }
 
 .VisualizationMainPage #header {
-	background: #4277bb;
-	color: #f7c245;
+	background: var(--header);
+	border-bottom: 1px var(--border) solid;
+	color: #FFFFF0;
 	padding: 0 10px 0 5px;
 }
 
 .VisualizationMainPage #header a:visited {
 	text-decoration: none;
-	color: #f7c245;
+	color: #FFFFF0;
 }
 
 .VisualizationMainPage #header a:focus {
@@ -81,7 +106,7 @@
 
 .VisualizationMainPage #header a:link {
 	text-decoration: none;
-	color: #f7c245;
+	color: white;
 }
 
 .VisualizationMainPage #container {
@@ -92,12 +117,12 @@
 
 .VisualizationMainPage #footer a:visited {
 	text-decoration: none;
-	color: #f7c245;
+	color: white;
 }
 
 .VisualizationMainPage #footer a:link {
 	text-decoration: none;
-	color: #f7c245;
+	color: white;
 }
 
 .VisualizationMainPage #mainContent h1 {
@@ -120,7 +145,8 @@
 
 .VisualizationMainPage #footer {
 	padding: 0 10px;
-	background: #4277bb;
+	background: var(--header);
+	border-top: 1px var(--border) solid;
 	color: #f7c245;
 }
 
@@ -142,11 +168,10 @@ em {
 }
 
 .VisualizationMainPage .modal-content {
-	background-color: #fefefe;
 	padding: 15px 30px 0px 0px;
 	height: 100%;
 	border-radius: 20px;
-	background-color: #f7c245;
+	background-color: var(--control);
 }
 
 .VisualizationMainPage .modal-content ul {
@@ -180,22 +205,26 @@ em {
 }
 
 .VisualizationMainPage .groupChild {
-	margin: 0 5px 5px 0;
+	margin: 5px 5px 5px 5px;
 }
 
 .VisualizationMainPage .divisorLeft {
-	width: 3px;
+	width: 15px;
 }
+
 .VisualizationMainPage .divisorRight {
-	border-left: 2px #a4812f solid;
-	padding-right: 5px;
+	border-left: 2px var(--border) solid;
+	width: 15px;
 }
 
 .VisualizationMainPage input[type='button'] {
-	background: linear-gradient(#fff, #ddd);
-	border: #999 1px solid;
-	border-radius: 5px;
-	padding: 5px 20px;
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 8px 22px;
+	color: var(--primary);
+	margin: 6px;
+	
 }
 
 .VisualizationMainPage input[type='button']::-moz-focus-inner {

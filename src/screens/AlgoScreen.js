@@ -9,6 +9,8 @@ import React from 'react';
 import ReactGA from 'react-ga';
 import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
+import { Toggle } from 'react-hook-theme';
+import 'react-hook-theme/dist/styles/style.css';
 
 class AlgoScreen extends React.Component {
 	constructor(props) {
@@ -74,6 +76,9 @@ class AlgoScreen extends React.Component {
 					<div id="header">
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
+							<div id='toggle'>
+								<Toggle />
+							</div>
 						</h1>
 					</div>
 

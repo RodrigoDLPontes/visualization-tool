@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
+import { Toggle } from 'react-hook-theme';
+import 'react-hook-theme/dist/styles/style.css';
 
 class Header extends React.Component {
 	state = { menuVisible: null };
@@ -10,11 +12,19 @@ class Header extends React.Component {
 		return (
 			<React.Fragment>
 				<div className="header">
-					<button
-						className={this.state.menuVisible ? 'selected' : ''}
-						onClick={this.toggleMenu}
-					></button>
-					<h1>CS1332 Data Structures and Algorithms Visualizations</h1>
+					<div id="left">
+						<button
+							className={this.state.menuVisible ? 'selected' : ''}
+							onClick={this.toggleMenu}
+						>
+						</button>
+					</div>
+					<div id="center">
+						<h1>CS 1332 Data Structures and Algorithms Visualizations</h1>
+					</div>
+					<div id="right">
+						<Toggle />
+					</div>
 				</div>
 				<div className={`menu ${menuClass[this.state.menuVisible]}`}>
 					<ul>

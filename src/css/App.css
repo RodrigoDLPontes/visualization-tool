@@ -1,8 +1,47 @@
+
+[data-theme='light'] {
+    --background: #F2F2F2;
+    --primary: #282828;
+	--shadow: rgba(0, 0, 0, 5);
+	--buttons: #012F57;
+	--text: #F9C333;
+	--filter: brightness(70%);
+	--borders: #012F57;
+}
+
+[data-theme='dark'] {
+    --background: #282828;
+    --primary: #F2F2F2;
+	--shadow: rgba(242, 242, 242, .1);
+	--buttons: #282828;
+	--text: #F2F2F2;
+	--filter: brightness(185%);
+	--borders: #F2F2F2;
+}
+
+#left {
+	float: left;
+	width: 100px;
+}
+
+#right {
+	float: right;
+	width: 100px; 
+	margin-top: 10px;
+}
+
+#center {
+	margin: 0 
+	auto;
+	width: 100px;
+}
+
 body {
 	font: 100% 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
-	color: #000000;
+	background-color: var(--background);
+    color: var(--primary);
 }
 
 .about {
@@ -10,7 +49,7 @@ body {
 }
 
 .code {
-	background: #eeeeee;
+	background: #000;
 }
 
 .menu {
@@ -19,11 +58,10 @@ body {
 	left: -240px;
 	height: 100%;
 	width: 200px;
-	background-color: #80b3ff;
+	background-color: var(--background);
 	opacity: 0;
 	line-height: 2.5em;
 	padding: 1em;
-	border-right: 2px solid #4277bb;
 }
 
 .menu.show {
@@ -46,15 +84,17 @@ body {
 	font-size: 1.4em;
 	font-weight: bold;
 	text-decoration: none;
-	color: white;
+	color: var(--primary);
+	transition: all 0.4s ease 0s;
 }
 
 .menu a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .content {
-	background-color: #fafcff;
+	background-color: var(--background);
+	transition: all 0.4s ease 0s;
 }
 
 .content h1 {
@@ -81,7 +121,7 @@ body {
 
 .about a:hover,
 .four-o-four a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .text,
@@ -96,7 +136,7 @@ body {
 }
 
 .personal a:hover {
-	color: #f7c245;
+	color: #F9C333;
 }
 
 .header {
@@ -145,18 +185,26 @@ div.container {
 	margin: 0px;
 }
 
-div.header,
+div.header {
+	color: var(--text);
+	background: var(--buttons);
+	text-align: center;
+	border-bottom: 1px var(--borders) solid;
+}
+
 div.footer {
-	color: #f7c245;
-	background: #4277bb;
+	color: var(--text);
+	background: var(--buttons);
+	text-align: center;
+	border-top: 1px var(--borders) solid;
 }
 
 .footer {
-	padding-left: 10px;
+	padding: 10px;
 }
 
 .footer a {
-	color: #022639;
+	color: var(--text);
 }
 
 div.content {
@@ -173,18 +221,21 @@ div.content {
 	font-family: Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
 	font-weight: bold;
-	color: #f7c245;
-	background: linear-gradient(#033754, #022639);
+	color: var(--text);
+	background: var(--buttons);
 	width: 90%;
 	padding: 10px;
 	margin: 15px;
 	cursor: pointer;
-	border: 2px #00333d solid;
-	border-radius: 4px;
+	border: 1px var(--borders) solid;
+	border-radius: 15px;
+	box-shadow: 0px 8px 15px var(--shadow);
+	transition: all 0.4s ease 0s;
 }
 
+.inner-flex input.button:hover,
 .inner-flex input.button:active {
-	background: linear-gradient(#011a27, #033754);
+	filter: var(--filter);
 }
 
 .inner-flex input.button:focus,
@@ -213,15 +264,16 @@ div.content {
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	margin: 20px 0px 2px 0px;
+	margin: 20px 5px 20px 5px;
 	white-space: nowrap;
 }
 
 .divider span {
-	background-color: #999;
+	background-color: #B0B3B8;
 	color: white;
-	border-radius: 5px;
-	padding: 5px 10px;
+	border-radius: 15px;
+	padding: 5px 10px 5px 10px;
+	box-shadow: 0px 8px 15px rgba(0, 0, 0, .5);
 }
 
 @media screen and (min-width: 1280px) {

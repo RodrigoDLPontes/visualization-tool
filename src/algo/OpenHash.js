@@ -73,7 +73,7 @@ export default class OpenHash extends Hash {
 	}
 
 	setup() {
-		this.initialSizeField.value = HASH_TABLE_SIZE;
+		this.initialCapacityField.value = HASH_TABLE_SIZE;
 		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
 		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
 		this.hashTableValues = new Array(HASH_TABLE_SIZE);
@@ -147,10 +147,28 @@ export default class OpenHash extends Hash {
 			this.cmd(act.delete, this.oldHashTableIndices[i]);
 		}
 
-		if (this.initialSizeField !== '') {
-			this.table_size = parseInt(this.initialSizeField.value)
-				? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
+		if (this.initialCapacityField !== '') {
+			this.table_size = parseInt(this.initialCapacityField.value)
+				? Math.min(Math.max(0, parseInt(this.initialCapacityField.value)), MAX_SIZE)
 				: HASH_TABLE_SIZE;
+		}
+
+		if (this.table_size * 2 + 1 > MAX_SIZE) {
+			this.load_factor = 0.99;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+				(Array Length too large for resize)`,
+			);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
+		} else {
+			this.load_factor = DEFAULT_LOAD_FACTOR;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: auto; color: black');
 		}
 		this.hashTableVisual = new Array(this.table_size);
 		this.hashTableIndices = new Array(this.table_size);
@@ -479,7 +497,13 @@ export default class OpenHash extends Hash {
 
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
-			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+			(Max Array Length)`,
+			);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 
 		this.cmd(act.step);

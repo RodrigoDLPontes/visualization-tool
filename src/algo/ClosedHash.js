@@ -88,7 +88,7 @@ export default class ClosedHash extends Hash {
 		this.linearProblingButton.checked = true;
 		this.currentHashingTypeButtonState = this.linearProblingButton;
 
-		this.initialSizeField.value = CLOSED_HASH_TABLE_SIZE;
+		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
 
@@ -143,7 +143,6 @@ export default class ClosedHash extends Hash {
 		) {
 			this.resize(false);
 		}
-
 		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + elem);
 		this.cmd(act.step);
 
@@ -433,7 +432,13 @@ export default class ClosedHash extends Hash {
 
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
-			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+			(Max Array Length)`,
+			);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 
 		this.cmd(act.step);
@@ -571,7 +576,7 @@ export default class ClosedHash extends Hash {
 				act.setText,
 				this.loadFactorID,
 				`Load Factor: ${this.load_factor}
-			(Max Array Length)`,
+			(Array Length too large for resize)`,
 			);
 		}
 		this.cmd(act.step);
@@ -712,9 +717,27 @@ export default class ClosedHash extends Hash {
 			this.cmd(act.delete, this.indexLabelID[i]);
 		}
 
-		this.table_size = parseInt(this.initialSizeField.value)
-			? Math.min(Math.max(0, parseInt(this.initialSizeField.value)), MAX_SIZE)
+		this.table_size = parseInt(this.initialCapacityField.value)
+			? Math.min(Math.max(0, parseInt(this.initialCapacityField.value)), MAX_SIZE)
 			: CLOSED_HASH_TABLE_SIZE;
+
+		if (this.table_size * 2 + 1 > MAX_SIZE) {
+			this.load_factor = 0.99;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+				(Max Array Length)`,
+			);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
+		} else {
+			this.load_factor = DEFAULT_LOAD_FACTOR;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: auto; color: black');
+		}
 		this.empty = Array(this.table_size);
 		this.deleted = Array(this.table_size);
 		const newHashTableVisual = Array(this.table_size);

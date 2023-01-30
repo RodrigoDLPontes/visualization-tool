@@ -12,7 +12,7 @@
 		"react-ga": "^3.1.2",
 		"react-hook-theme": "^1.2.5",
 		"react-router-dom": "^5.1.2",
-		"react-scripts": "3.2.0"
+		"react-scripts": "5.0.1"
 	},
 	"devDependencies": {
 		"all-contributors-cli": "^6.20.0",

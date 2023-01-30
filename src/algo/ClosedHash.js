@@ -432,7 +432,7 @@ export default class ClosedHash extends Hash {
 
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
-			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.setText, this.loadFactorID, `Load Factor:n ${this.load_factor}`);
 			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 

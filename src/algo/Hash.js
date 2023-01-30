@@ -161,7 +161,10 @@ export default class Hash extends Algorithm {
 		this.rightVerticalTop = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
 		this.rightVerticalBottom = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
 
-		this.initialCapacityLabel = addLabelToAlgorithmBar('Initial Capacity: ', this.rightVerticalTop);
+		this.initialCapacityLabel = addLabelToAlgorithmBar(
+			'Initial Capacity: ',
+			this.rightVerticalTop,
+		);
 		this.initialCapacityField = addControlToAlgorithmBar('Text', '', this.rightVerticalTop);
 		this.initialCapacityField.size = MAX_HASH_LENGTH;
 		this.restartButton = addControlToAlgorithmBar(

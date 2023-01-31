@@ -58,8 +58,9 @@ import ObjectManager from './ObjectManager.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SingleAnimation from './SingleAnimation.js';
-import { Slider, withStyles } from '@material-ui/core';
+import { Slider } from '@mui/material';
 import { UndoConnect } from './AnimatedLine.js';
+import { withStyles } from '@mui/styles';
 
 // Utility function to read a cookie
 function getCookie(cookieName) {

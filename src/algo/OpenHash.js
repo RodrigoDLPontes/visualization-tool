@@ -600,7 +600,7 @@ export default class OpenHash extends Hash {
 		this.commands = [];
 
 		for (let i = 0; i < this.hashTableValues.length; i++) {
-			let node = this.hashTableValues[i];
+			const node = this.hashTableValues[i];
 			if (node != null) {
 				this.cmd(act.delete, node.graphicID);
 			}

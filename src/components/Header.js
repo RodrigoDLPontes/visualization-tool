@@ -1,8 +1,8 @@
+
+import 'react-hook-theme/dist/styles/style.css';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Toggle } from 'react-hook-theme';
-import 'react-hook-theme/dist/styles/style.css';
-
 class Header extends React.Component {
 	state = { menuVisible: null };
 

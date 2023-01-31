@@ -4,7 +4,11 @@
 	"private": true,
 	"homepage": "https://csvistool.com/",
 	"dependencies": {
-		"@material-ui/core": "^4.7.2",
+		"@emotion/react": "^11.10.5",
+		"@emotion/styled": "^11.10.5",
+		"@mui/material": "5.11.7",
+		"@mui/styles": "^5.11.7",
+		"babel-eslint": "^10.1.0",
 		"gh-pages": "^2.1.1",
 		"prop-types": "^15.7.2",
 		"react": "^18.2.0",
@@ -12,7 +16,7 @@
 		"react-ga": "^3.1.2",
 		"react-hook-theme": "^1.2.5",
 		"react-router-dom": "^5.1.2",
-		"react-scripts": "3.2.0"
+		"react-scripts": "5.0.1"
 	},
 	"devDependencies": {
 		"all-contributors-cli": "^6.20.0",

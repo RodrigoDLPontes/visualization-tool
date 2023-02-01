@@ -69,9 +69,11 @@ export default class OpenHash extends Hash {
 
 	addControls() {
 		super.addControls();
+		this.restartButton.onclick = this.resizeInitialTableCall.bind(this);
 	}
 
 	setup() {
+		this.initialCapacityField.value = HASH_TABLE_SIZE;
 		this.hashTableVisual = new Array(HASH_TABLE_SIZE);
 		this.hashTableIndices = new Array(HASH_TABLE_SIZE);
 		this.hashTableValues = new Array(HASH_TABLE_SIZE);
@@ -127,6 +129,94 @@ export default class OpenHash extends Hash {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
+	}
+
+	resizeInitialTableCall() {
+		this.implementAction(this.resizeInitialTable.bind(this));
+	}
+
+	resizeInitialTable() {
+		// Make command stack empty, and clear the elements of the list.
+		this.commands = [];
+		//Delete current hashTable
+		this.oldHashTableVisual = this.hashTableVisual;
+		this.oldHashTableIndices = this.hashTableIndices;
+		for (let i = 0; i < this.table_size; i++) {
+			this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
+			this.cmd(act.delete, this.oldHashTableVisual[i]);
+			this.cmd(act.delete, this.oldHashTableIndices[i]);
+		}
+
+		if (this.initialCapacityField !== '') {
+			this.table_size = parseInt(this.initialCapacityField.value)
+				? Math.min(Math.max(0, parseInt(this.initialCapacityField.value)), MAX_SIZE)
+				: HASH_TABLE_SIZE;
+		}
+
+		if (this.table_size * 2 + 1 > MAX_SIZE) {
+			this.load_factor = 0.99;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+				(Array Length too large for resize)`,
+			);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
+		} else {
+			this.load_factor = DEFAULT_LOAD_FACTOR;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: auto; color: black');
+		}
+		this.hashTableVisual = new Array(this.table_size);
+		this.hashTableIndices = new Array(this.table_size);
+		this.indexXPos = new Array(this.table_size);
+		this.indexYPos = new Array(this.table_size);
+
+		for (let i = 0; i < this.table_size; i++) {
+			let nextID = this.nextIndex++;
+
+			this.cmd(
+				act.createRectangle,
+				nextID,
+				'',
+				POINTER_ARRAY_ELEM_WIDTH,
+				POINTER_ARRAY_ELEM_HEIGHT,
+				POINTER_ARRAY_ELEM_START_X,
+				POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT,
+			);
+			this.hashTableVisual[i] = nextID;
+			this.cmd(act.setNull, this.hashTableVisual[i], 1);
+
+			nextID = this.nextIndex++;
+			this.hashTableIndices[i] = nextID;
+
+			this.indexXPos[i] = POINTER_ARRAY_ELEM_START_X - POINTER_ARRAY_ELEM_WIDTH;
+			this.indexYPos[i] = POINTER_ARRAY_ELEM_START_Y + i * POINTER_ARRAY_ELEM_HEIGHT;
+
+			this.cmd(act.createLabel, nextID, i, this.indexXPos[i], this.indexYPos[i]);
+			this.cmd(act.setForegroundColor, nextID, INDEX_COLOR);
+		}
+
+		if (this.size !== 0) {
+			for (let i = 0; i < this.hashTableValues.length; i++) {
+				let node = this.hashTableValues[i];
+				if (node != null) {
+					this.cmd(act.delete, node.graphicID);
+					while (node.next != null) {
+						node = node.next;
+						this.cmd(act.delete, node.graphicID);
+					}
+				}
+			}
+
+			this.hashTableValues = new Array(HASH_TABLE_SIZE);
+			this.size = 0;
+		}
+
+		return this.commands;
 	}
 
 	insertElement(key, value) {
@@ -248,7 +338,6 @@ export default class OpenHash extends Hash {
 			this.repositionList(index, this.hashTableValues[index]);
 			this.size++;
 		}
-
 		this.cmd(act.setText, this.ExplainLabel, '');
 
 		return this.commands;
@@ -409,6 +498,7 @@ export default class OpenHash extends Hash {
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
 			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 
 		this.cmd(act.step);
@@ -600,7 +690,7 @@ export default class OpenHash extends Hash {
 		this.commands = [];
 
 		for (let i = 0; i < this.hashTableValues.length; i++) {
-			let node = this.hashTableValues[i];
+			const node = this.hashTableValues[i];
 			if (node != null) {
 				this.cmd(act.delete, node.graphicID);
 			}

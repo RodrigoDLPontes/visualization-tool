@@ -571,8 +571,9 @@ export default class DequeArray extends Algorithm {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
 			if (i < this.size) {
-				this.arrayDataNew[i + frontOffset] =
-					this.arrayData[(this.front + i) % this.arrayData.length];
+				this.arrayDataNew[i + frontOffset] = this.arrayData[
+					(this.front + i) % this.arrayData.length
+				];
 			}
 		}
 

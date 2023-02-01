@@ -33,7 +33,7 @@ const ARRAY_ELEM_HEIGHT = 30;
 const ARRAY_ELEM_START_Y = 110;
 const ARRAY_VERTICAL_SEPARATION = 70;
 
-const CLOSED_HASH_TABLE_SIZE = 13;
+const CLOSED_HASH_TABLE_SIZE = 10;
 
 const ARRAY_ELEM_START_X = 100;
 // If you want to center the array:
@@ -88,6 +88,7 @@ export default class ClosedHash extends Hash {
 		this.linearProblingButton.checked = true;
 		this.currentHashingTypeButtonState = this.linearProblingButton;
 
+		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
 
@@ -142,7 +143,6 @@ export default class ClosedHash extends Hash {
 		) {
 			this.resize(false);
 		}
-
 		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + elem);
 		this.cmd(act.step);
 
@@ -432,7 +432,8 @@ export default class ClosedHash extends Hash {
 
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
-			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.setText, this.loadFactorID, `Load Factor:n ${this.load_factor}`);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 
 		this.cmd(act.step);
@@ -570,7 +571,7 @@ export default class ClosedHash extends Hash {
 				act.setText,
 				this.loadFactorID,
 				`Load Factor: ${this.load_factor}
-			(Max Array Length)`,
+			(Array Length too large for resize)`,
 			);
 		}
 		this.cmd(act.step);
@@ -704,14 +705,34 @@ export default class ClosedHash extends Hash {
 	}
 
 	clear() {
-		this.commands = [];		
-		
+		this.commands = [];
+
 		for (let i = 0; i < this.table_size; i++) {
 			this.cmd(act.delete, this.hashTableVisual[i]);
 			this.cmd(act.delete, this.indexLabelID[i]);
 		}
 
-		this.table_size = CLOSED_HASH_TABLE_SIZE;
+		this.table_size = parseInt(this.initialCapacityField.value)
+			? Math.min(Math.max(0, parseInt(this.initialCapacityField.value)), MAX_SIZE)
+			: CLOSED_HASH_TABLE_SIZE;
+
+		if (this.table_size * 2 + 1 > MAX_SIZE) {
+			this.load_factor = 0.99;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(
+				act.setText,
+				this.loadFactorID,
+				`Load Factor: ${this.load_factor}
+				(Max Array Length)`,
+			);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
+		} else {
+			this.load_factor = DEFAULT_LOAD_FACTOR;
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			this.cmd(act.step);
+			this.loadButton.setAttribute('style', 'pointer-events: auto; color: black');
+		}
 		this.empty = Array(this.table_size);
 		this.deleted = Array(this.table_size);
 		const newHashTableVisual = Array(this.table_size);
@@ -719,7 +740,6 @@ export default class ClosedHash extends Hash {
 		this.hashTableValues = Array(this.table_size);
 
 		for (let i = 0; i < this.table_size; i++) {
-
 			newHashTableVisual[i] = this.nextIndex++;
 			const nextXPos = ARRAY_ELEM_START_X + (i % this.elements_per_row) * ARRAY_ELEM_WIDTH;
 			const nextYPos =
@@ -738,13 +758,7 @@ export default class ClosedHash extends Hash {
 			newIndexLabelID[i] = this.nextIndex++;
 			this.indexXPos[i] = nextXPos;
 			this.indexYPos[i] = nextYPos + ARRAY_ELEM_HEIGHT;
-			this.cmd(
-				act.createLabel,
-				newIndexLabelID[i],
-				i,
-				this.indexXPos[i],
-				this.indexYPos[i],
-			);
+			this.cmd(act.createLabel, newIndexLabelID[i], i, this.indexXPos[i], this.indexYPos[i]);
 			this.cmd(act.setForegroundColor, newIndexLabelID[i], INDEX_COLOR);
 
 			this.empty[i] = true;

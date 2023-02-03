@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import { Toggle } from 'react-hook-theme';
 import 'react-hook-theme/dist/styles/style.css';
+import { IconContext } from "react-icons";
+import { RxHamburgerMenu } from 'react-icons/rx';
 
 class Header extends React.Component {
 	state = { menuVisible: null };
@@ -13,11 +15,9 @@ class Header extends React.Component {
 			<React.Fragment>
 				<div className="header">
 					<div id="left">
-						<button
-							className={this.state.menuVisible ? 'selected' : ''}
-							onClick={this.toggleMenu}
-						>
-						</button>
+						<IconContext.Provider value={{ className: 'react-icons' }}>
+							<RxHamburgerMenu onClick={this.toggleMenu}/>
+						</IconContext.Provider>
 					</div>
 					<div id="center">
 						<h1>CS 1332 Data Structures and Algorithms Visualizations</h1>

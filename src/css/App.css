@@ -102,7 +102,7 @@ body {
 .content h1 {
 	font-size: 3em;
 	text-align: center;
-	color: #4277bb;
+	color: #4277BB;
 }
 
 .content h3 {
@@ -117,7 +117,7 @@ body {
 .about a,
 .four-o-four a {
 	text-decoration: none;
-	color: #5c9ba4;
+	color: #5C9BA4;
 	cursor: pointer;
 }
 
@@ -133,7 +133,7 @@ body {
 }
 
 .personal a {
-	color: #5c9ba4;
+	color: #5C9BA4;
 	text-decoration: none;
 }
 
@@ -154,6 +154,7 @@ body {
 	width: 35px;
 	height: 35px;
 	margin-top: 14px;
+	margin-right: 25px;
 	cursor: pointer;
 }
 .react-icons:hover {

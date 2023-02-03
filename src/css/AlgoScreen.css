@@ -20,11 +20,11 @@
 
 .VisualizationMainPage #mainContent {
 	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-	background:#ffffff;
+	background:#FFFFFF;
 }
 
 .VisualizationMainPage #container {
-	background: #ffffff;
+	background: #FFFFFF;
 	/* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
 	text-align: left; /* this overrides the text-align: center on the body element. */
 }
@@ -88,6 +88,7 @@
 	border-bottom: 1px var(--border) solid;
 	color: #FFFFF0;
 	padding: 0 10px 0 5px;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #header a:visited {
@@ -127,27 +128,27 @@
 
 .VisualizationMainPage #mainContent h1 {
 	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+	background: #FFFFFF;
+	color: #4277BB;
 }
 
 .VisualizationMainPage #mainContent h2 {
 	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+	background: #FFFFFF;
+	color: #4277BB;
 }
 
 .VisualizationMainPage #mainContent h3 {
 	padding: 0 20px;
-	background: #ffffff;
-	color: #4277bb;
+	background: #FFFFFF;
+	color: #4277BB;
 }
 
 .VisualizationMainPage #footer {
 	padding: 0 10px;
 	background: var(--header);
 	border-top: 1px var(--border) solid;
-	color: #f7c245;
+	color: #F7C245;
 }
 
 .VisualizationMainPage #footer p {
@@ -236,12 +237,12 @@ em {
 }
 
 .VisualizationMainPage input[type='button']:active:not([disabled]) {
-	background: linear-gradient(#ccc, #ddd);
+	background: linear-gradient(#CCC, #DDD);
 }
 
 .VisualizationMainPage input[type='text'] {
 	background: white;
-	border: #bbb 1px solid;
+	border: #BBB 1px solid;
 	border-radius: 5px;
 	padding: 6px;
 }

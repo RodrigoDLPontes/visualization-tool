@@ -254,16 +254,16 @@ export default class AnimationManager extends EventListener {
 
 		const CustomSlider = withStyles({
 			root: {
-				color: "#F9C333",
+				color: '#F9C333',
 				height: 3,
-				padding: "13px 0",
+				padding: '13px 0',
 			},
 			track: {
 				height: 4,
 				borderRadius: 2,
-			}
+			},
 		})(Slider);
-		
+
 		const slider = (
 			<CustomSlider
 				defaultValue={speed}
@@ -271,7 +271,6 @@ export default class AnimationManager extends EventListener {
 					this.setSpeed(val);
 					setCookie('VisualizationSpeed', String(val), 30);
 				}}
-
 			/>
 		);
 

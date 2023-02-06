@@ -1,15 +1,15 @@
 [data-theme='light'] {
-    --primary: #282828;
-	--control: #F2F2F2;
+	--primary: #282828;
+	--control: #f2f2f2;
 	--border: #282828;
-	--button: #F2F2F2;
-	--header: #012F57;
+	--button: #f2f2f2;
+	--header: #012f57;
 }
 
 [data-theme='dark'] {
-    --primary: #F2F2F2;
+	--primary: #f2f2f2;
 	--control: #282828;
-	--border: #F2F2F2;
+	--border: #f2f2f2;
 	--button: #282828;
 	--header: #282828;
 }
@@ -20,11 +20,11 @@
 
 .VisualizationMainPage #mainContent {
 	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-	background:#FFFFFF;
+	background: #ffffff;
 }
 
 .VisualizationMainPage #container {
-	background: #FFFFFF;
+	background: #ffffff;
 	/* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
 	text-align: left; /* this overrides the text-align: center on the body element. */
 }
@@ -86,14 +86,14 @@
 .VisualizationMainPage #header {
 	background: var(--header);
 	border-bottom: 1px var(--border) solid;
-	color: #FFFFF0;
+	color: #fffff0;
 	padding: 0 10px 0 5px;
 	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #header a:visited {
 	text-decoration: none;
-	color: #FFFFF0;
+	color: #fffff0;
 }
 
 .VisualizationMainPage #header a:focus {
@@ -128,27 +128,27 @@
 
 .VisualizationMainPage #mainContent h1 {
 	padding: 0 20px;
-	background: #FFFFFF;
-	color: #4277BB;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h2 {
 	padding: 0 20px;
-	background: #FFFFFF;
-	color: #4277BB;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #mainContent h3 {
 	padding: 0 20px;
-	background: #FFFFFF;
-	color: #4277BB;
+	background: #ffffff;
+	color: #4277bb;
 }
 
 .VisualizationMainPage #footer {
 	padding: 0 10px;
 	background: var(--header);
 	border-top: 1px var(--border) solid;
-	color: #F7C245;
+	color: #f7c245;
 }
 
 .VisualizationMainPage #footer p {
@@ -225,7 +225,6 @@ em {
 	padding: 8px 22px;
 	color: var(--primary);
 	margin: 6px;
-	
 }
 
 .VisualizationMainPage input[type='button']::-moz-focus-inner {
@@ -237,12 +236,12 @@ em {
 }
 
 .VisualizationMainPage input[type='button']:active:not([disabled]) {
-	background: linear-gradient(#CCC, #DDD);
+	background: linear-gradient(#ccc, #ddd);
 }
 
 .VisualizationMainPage input[type='text'] {
 	background: white;
-	border: #BBB 1px solid;
+	border: #bbb 1px solid;
 	border-radius: 5px;
 	padding: 6px;
 }

@@ -76,7 +76,7 @@ class AlgoScreen extends React.Component {
 					<div id="header">
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
-							<div id='toggle'>
+							<div id="toggle">
 								<Toggle />
 							</div>
 						</h1>

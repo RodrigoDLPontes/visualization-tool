@@ -1,11 +1,9 @@
-
 import 'react-hook-theme/dist/styles/style.css';
-import { IconContext } from "react-icons";
+import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { Toggle } from 'react-hook-theme';
-
 
 class Header extends React.Component {
 	state = { menuVisible: null };
@@ -18,7 +16,7 @@ class Header extends React.Component {
 				<div className="header">
 					<div id="left">
 						<IconContext.Provider value={{ className: 'react-icons' }}>
-							<RxHamburgerMenu onClick={this.toggleMenu}/>
+							<RxHamburgerMenu onClick={this.toggleMenu} />
 						</IconContext.Provider>
 					</div>
 					<div id="center">

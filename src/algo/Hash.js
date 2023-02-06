@@ -27,6 +27,7 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
@@ -156,9 +157,22 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
-		this.controls.push(this.clearButton);
+		this.rightVerticalGroup = addGroupToAlgorithmBar(false);
+		this.rightVerticalTop = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
+		this.rightVerticalBottom = addGroupToAlgorithmBar(true, this.rightVerticalGroup);
+
+		this.initialCapacityLabel = addLabelToAlgorithmBar(
+			'Initial Capacity: ',
+			this.rightVerticalTop,
+		);
+		this.initialCapacityField = addControlToAlgorithmBar('Text', '', this.rightVerticalTop);
+		this.initialCapacityField.size = MAX_HASH_LENGTH;
+		this.restartButton = addControlToAlgorithmBar(
+			'Button',
+			'Restart',
+			this.rightVerticalBottom,
+		);
+		this.restartButton.onclick = this.clearCallback.bind(this);
 	}
 
 	// Do this extra level of wrapping to get undo to work properly.

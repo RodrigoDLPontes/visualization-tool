@@ -15,6 +15,7 @@
 		"react-dom": "^18.2.0",
 		"react-ga": "^3.1.2",
 		"react-hook-theme": "^1.2.5",
+		"react-icons": "^4.7.1",
 		"react-router-dom": "^5.1.2",
 		"react-scripts": "5.0.1"
 	},

@@ -49,26 +49,6 @@
 	padding: 5px 5px;
 }
 
-.VisualizationMainPage #examplesButton {
-	background-image: url('../img/examples.png');
-	background-repeat: no-repeat;
-	background-size: 30px;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	width: 40px;
-	height: 40px;
-	outline: none;
-}
-
-.VisualizationMainPage #examplesButton.selected {
-	background-image: url('../img/examples-selected.png');
-}
-
-.VisualizationMainPage #examplesButton::-moz-focus-inner {
-	border: 0;
-}
-
 .VisualizationMainPage .viewport {
 	position: relative;
 }
@@ -158,6 +138,18 @@
 
 em {
 	text-decoration: bold;
+}
+
+.menu-modal {
+	width: 35px;
+	height: 35px;
+	margin-right: 20px;
+	cursor: pointer;
+	color: var(--primary);
+}
+
+.menu-modal:hover {
+	filter: opacity(50%);
 }
 
 .VisualizationMainPage .modal {

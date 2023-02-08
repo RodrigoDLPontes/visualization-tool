@@ -15,7 +15,7 @@ class Header extends React.Component {
 			<React.Fragment>
 				<div className="header">
 					<div id="left">
-						<IconContext.Provider value={{ className: 'react-icons' }}>
+						<IconContext.Provider value={{ className: 'menu-bar' }}>
 							<RxHamburgerMenu onClick={this.toggleMenu} />
 						</IconContext.Provider>
 					</div>

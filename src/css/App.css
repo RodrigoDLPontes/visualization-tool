@@ -148,14 +148,15 @@ body {
 	flex-direction: row;
 }
 
-.react-icons {
+.menu-bar {
 	width: 35px;
 	height: 35px;
 	margin-top: 14px;
 	margin-right: 25px;
 	cursor: pointer;
 }
-.react-icons:hover {
+
+.menu-bar:hover {
 	filter: opacity(50%);
 }
 

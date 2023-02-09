@@ -1,16 +1,19 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
+import 'react-hook-theme/dist/styles/style.css';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
+import { MdMenuBook } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactGA from 'react-ga';
+import { Toggle } from 'react-hook-theme';
 import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
-import { Toggle } from 'react-hook-theme';
-import 'react-hook-theme/dist/styles/style.css';
+
 
 class AlgoScreen extends React.Component {
 	constructor(props) {
@@ -76,7 +79,7 @@ class AlgoScreen extends React.Component {
 					<div id="header">
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
-							<div id='toggle'>
+							<div id="toggle">
 								<Toggle />
 							</div>
 						</h1>
@@ -86,11 +89,9 @@ class AlgoScreen extends React.Component {
 						<div id="algoControlSection">
 							<table id="AlgorithmSpecificControls"></table>
 							{modals[algoName] && (
-								<button
-									className={this.state.examplesEnabled ? 'selected' : ''}
-									id="examplesButton"
-									onClick={this.toggleExamples}
-								></button>
+								<IconContext.Provider value={{ className: 'menu-modal' }}>
+									<MdMenuBook onClick={this.toggleExamples} />
+								</IconContext.Provider>
 							)}
 						</div>
 

@@ -1,15 +1,15 @@
 [data-theme='light'] {
-    --primary: #282828;
-	--control: #F2F2F2;
+	--primary: #282828;
+	--control: #f2f2f2;
 	--border: #282828;
-	--button: #F2F2F2;
-	--header: #012F57;
+	--button: #f2f2f2;
+	--header: #012f57;
 }
 
 [data-theme='dark'] {
-    --primary: #F2F2F2;
+	--primary: #f2f2f2;
 	--control: #282828;
-	--border: #F2F2F2;
+	--border: #f2f2f2;
 	--button: #282828;
 	--header: #282828;
 }
@@ -20,7 +20,7 @@
 
 .VisualizationMainPage #mainContent {
 	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
-	background:#ffffff;
+	background: #ffffff;
 }
 
 .VisualizationMainPage #container {
@@ -49,26 +49,6 @@
 	padding: 5px 5px;
 }
 
-.VisualizationMainPage #examplesButton {
-	background-image: url('../img/examples.png');
-	background-repeat: no-repeat;
-	background-size: 30px;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	width: 40px;
-	height: 40px;
-	outline: none;
-}
-
-.VisualizationMainPage #examplesButton.selected {
-	background-image: url('../img/examples-selected.png');
-}
-
-.VisualizationMainPage #examplesButton::-moz-focus-inner {
-	border: 0;
-}
-
 .VisualizationMainPage .viewport {
 	position: relative;
 }
@@ -86,13 +66,14 @@
 .VisualizationMainPage #header {
 	background: var(--header);
 	border-bottom: 1px var(--border) solid;
-	color: #FFFFF0;
+	color: #fffff0;
 	padding: 0 10px 0 5px;
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage #header a:visited {
 	text-decoration: none;
-	color: #FFFFF0;
+	color: #fffff0;
 }
 
 .VisualizationMainPage #header a:focus {
@@ -157,6 +138,18 @@
 
 em {
 	text-decoration: bold;
+}
+
+.menu-modal {
+	width: 35px;
+	height: 35px;
+	margin-right: 20px;
+	cursor: pointer;
+	color: var(--primary);
+}
+
+.menu-modal:hover {
+	filter: opacity(50%);
 }
 
 .VisualizationMainPage .modal {
@@ -224,7 +217,6 @@ em {
 	padding: 8px 22px;
 	color: var(--primary);
 	margin: 6px;
-	
 }
 
 .VisualizationMainPage input[type='button']::-moz-focus-inner {

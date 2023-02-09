@@ -58,7 +58,7 @@ import ObjectManager from './ObjectManager.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SingleAnimation from './SingleAnimation.js';
-import { Slider, withStyles } from '@material-ui/core';
+import { Slider } from '@mui/material';
 import { UndoConnect } from './AnimatedLine.js';
 
 // Utility function to read a cookie
@@ -251,26 +251,15 @@ export default class AnimationManager extends EventListener {
 			speed = parseInt(speed);
 		}
 
-		const CustomSlider = withStyles({
-			root: {
-				color: "#F9C333",
-				height: 3,
-				padding: "13px 0",
-			},
-			track: {
-				height: 4,
-				borderRadius: 2,
-			}
-		})(Slider);
-		
 		const slider = (
-			<CustomSlider
+			<Slider
+				style={{ color: "f9c333", padding: '13px 0', height: 2 }}
+				track
 				defaultValue={speed}
 				onChange={(e, val) => {
 					this.setSpeed(val);
 					setCookie('VisualizationSpeed', String(val), 30);
 				}}
-
 			/>
 		);
 

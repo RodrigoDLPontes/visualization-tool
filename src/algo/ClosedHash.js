@@ -78,24 +78,24 @@ export default class ClosedHash extends Hash {
 			],
 			'Collision Strategy: h(elem) + f(i)',
 		);
-		this.linearProblingButton = radioButtonList[0];
-		this.linearProblingButton.onclick = this.linearProbeCallback.bind(this);
+		this.linearProbingButton = radioButtonList[0];
+		this.linearProbingButton.onclick = this.linearProbeCallback.bind(this);
 		this.quadraticProbingButton = radioButtonList[1];
 		this.quadraticProbingButton.onclick = this.quadraticProbeCallback.bind(this);
 		this.doubleHashingButton = radioButtonList[2];
 		this.doubleHashingButton.onclick = this.doubleHashingCallback.bind(this);
 
-		this.linearProblingButton.checked = true;
-		this.currentHashingTypeButtonState = this.linearProblingButton;
+		this.linearProbingButton.checked = true;
+		this.currentHashingTypeButtonState = this.linearProbingButton;
 
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
 
 	changeProbeType(newProbingType) {
-		if (newProbingType === this.linearProblingButton) {
-			this.linearProblingButton.checked = true;
-			this.currentHashingTypeButtonState = this.linearProblingButton;
+		if (newProbingType === this.linearProbingButton) {
+			this.linearProbingButton.checked = true;
+			this.currentHashingTypeButtonState = this.linearProbingButton;
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = i + 1;
 			}
@@ -127,8 +127,8 @@ export default class ClosedHash extends Hash {
 	}
 
 	linearProbeCallback() {
-		if (this.currentHashingTypeButtonState !== this.linearProblingButton) {
-			this.implementAction(this.changeProbeType.bind(this), this.linearProblingButton);
+		if (this.currentHashingTypeButtonState !== this.linearProbingButton) {
+			this.implementAction(this.changeProbeType.bind(this), this.linearProbingButton);
 		}
 	}
 
@@ -456,7 +456,7 @@ export default class ClosedHash extends Hash {
 		this.indexYPos = new Array(this.table_size);
 		this.indexLabelID = new Array(this.table_size);
 
-		if (this.currentHashingTypeButtonState === this.linearProblingButton) {
+		if (this.currentHashingTypeButtonState === this.linearProbingButton) {
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = i + 1;
 			}
@@ -775,14 +775,14 @@ export default class ClosedHash extends Hash {
 
 	disableUI() {
 		super.disableUI();
-		this.linearProblingButton.disabled = true;
+		this.linearProbingButton.disabled = true;
 		this.quadraticProbingButton.disabled = true;
 		this.doubleHashingButton.disabled = true;
 	}
 
 	enableUI() {
 		super.enableUI();
-		this.linearProblingButton.disabled = false;
+		this.linearProbingButton.disabled = false;
 		this.quadraticProbingButton.disabled = false;
 		this.doubleHashingButton.disabled = false;
 	}

@@ -25,9 +25,9 @@ const AboutScreen = () => (
 			<a href="https://material.io/resources/icons/?style=baseline">
 				Google&#39;s Material Icons
 			</a>
-			, and components from <a href="https://material-ui.com/">Material UI </a>
-			and{' '}
-			<a href="https://www.npmjs.com/package/react-hook-theme/v/1.2.5">react-hook-theme</a>.
+			{' '} and <a href="https://react-icons.github.io/react-icons">react-icons</a>
+			, and components from <a href="https://material-ui.com/">Material UI</a>
+			{' '} and <a href="https://www.npmjs.com/package/react-hook-theme/v/1.2.5">react-hook-theme</a>.
 		</p>
 	</div>
 );

@@ -79,14 +79,20 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 }
 
 export function addDropDownGroupToAlgorithmBar(buttonNames, groupName) {
-	const buttonList = [];
-	const dropDown = document.createElement("select");
+	const dropDown = document.createElement("SELECT");
+	dropDown.name = groupName;
 	for (let i = 0; i < buttonNames.length; i++) {
 		const option = document.createElement("option");
-		option.value = buttonNames[i];
-     	option.text = buttonNames[i];
-		dropDown.appendChild(option);
+    option.text = buttonNames[i];
+		dropDown.add(option);
 	}
+
+		const tableEntry = document.createElement('td');
+		tableEntry.appendChild(dropDown);
+
+		const controlBar = document.getElementById('AlgorithmSpecificControls');
+		controlBar.appendChild(tableEntry);
+	return dropDown;
 
 	// continue work
 }

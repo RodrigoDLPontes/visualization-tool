@@ -244,3 +244,15 @@ em {
 	border-radius: 5px;
 	padding: 6px;
 }
+
+.VisualizationMainPage select {
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 8px 22px;
+	color: var(--primary);
+	margin: 6px;
+	cursor: pointer;
+	width: min-content;
+	height: 50%;
+}

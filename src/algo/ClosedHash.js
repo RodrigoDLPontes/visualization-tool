@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addDivisorToAlgorithmBar, addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
+import { addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
 
@@ -70,67 +70,69 @@ export default class ClosedHash extends Hash {
 
 		addDivisorToAlgorithmBar();
 
-		const radioButtonList = addRadioButtonGroupToAlgorithmBar(
+		this.dropDown = addDropDownGroupToAlgorithmBar(
 			[
 				'Linear Probing: f(i) = i',
 				'Quadratic Probing: f(i) = i * i',
 				'Double Hashing: f(i) = i * hash2(elem)',
 			],
-			'Collision Strategy: h(elem) + f(i)',
+			'Probing Type',
 		);
-		this.linearProbingButton = radioButtonList[0];
-		this.linearProbingButton.onclick = this.linearProbeCallback.bind(this);
-		this.quadraticProbingButton = radioButtonList[1];
-		this.quadraticProbingButton.onclick = this.quadraticProbeCallback.bind(this);
-		this.doubleHashingButton = radioButtonList[2];
-		this.doubleHashingButton.onclick = this.doubleHashingCallback.bind(this);
 
-		this.linearProbingButton.checked = true;
-		this.currentHashingTypeButtonState = this.linearProbingButton;
+		this.dropDown.onchange = this.checkProbeType.bind(this);
+
+		this.currentProbeType = 'linear';
 
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
+ 
+	checkProbeType() {
+		if (this.dropDown.value === 'Linear Probing: f(i) = i') {
+			this.implementAction(this.changeProbeType.bind(this), 'linear');
+		} else if (this.dropDown.value === 'Quadratic Probing: f(i) = i * i') {
+			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
+		} else if (this.dropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
+			this.implementAction(this.changeProbeType.bind(this), 'double')
+		}
+	}
 
 	changeProbeType(newProbingType) {
-		if (newProbingType === this.linearProbingButton) {
-			this.linearProbingButton.checked = true;
-			this.currentHashingTypeButtonState = this.linearProbingButton;
+		if (newProbingType === 'linear') {
+			this.currentProbeType = 'linear';
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = i + 1;
 			}
-		} else if (newProbingType === this.quadraticProbingButton) {
-			this.quadraticProbingButton.checked = true;
-			this.currentHashingTypeButtonState = this.quadraticProbingButton;
+		} else if (newProbingType === 'quadratic') {
+			this.currentProbeType = 'quadratic';
 
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = (i + 1) * (i + 1);
 			}
-		} else if (newProbingType === this.doubleHashingButton) {
-			this.doubleHashingButton.checked = true;
-			this.currentHashingTypeButtonState = this.doubleHashingButton;
+		} else if (newProbingType === 'double') {
+			this.currentProbeType = 'double';
 		}
 		this.commands = this.resetAll();
 		return this.commands;
 	}
 
-	quadraticProbeCallback() {
-		if (this.currentHashingTypeButtonState !== this.quadraticProbingButton) {
-			this.implementAction(this.changeProbeType.bind(this), this.quadraticProbingButton);
-		}
-	}
+	// quadraticProbeCallback() {
+	// 	if (this.currentProbeType !== 'quadratic') {
+	// 		this.implementAction(this.changeProbeType.bind(this), 'quadratic');
+	// 	}
+	// }
 
-	doubleHashingCallback() {
-		if (this.currentHashingTypeButtonState !== this.doubleHashingButton) {
-			this.implementAction(this.changeProbeType.bind(this), this.doubleHashingButton);
-		}
-	}
+	// doubleHashingCallback() {
+	// 	if (this.currentProbeType !== 'double') {
+	// 		this.implementAction(this.changeProbeType.bind(this), 'double');
+	// 	}
+	// }
 
-	linearProbeCallback() {
-		if (this.currentHashingTypeButtonState !== this.linearProbingButton) {
-			this.implementAction(this.changeProbeType.bind(this), this.linearProbingButton);
-		}
-	}
+	// linearProbeCallback() {
+	// 	if (this.currentProbeType !== 'linear') {
+	// 		this.implementAction(this.changeProbeType.bind(this), 'linear');
+	// 	}
+	// }
 
 	insertElement(key, value) {
 		const entry = new MapEntry(key, value);
@@ -217,7 +219,7 @@ export default class ClosedHash extends Hash {
 	getEmptyIndex(index, key) {
 		let HashID = -1;
 		let skipVal = 1;
-		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
+		if (this.currentProbeType === 'double') {
 			HashID = this.nextIndex++;
 			skipVal = this.resetSkipDist(key, HashID);
 		}
@@ -247,7 +249,7 @@ export default class ClosedHash extends Hash {
 
 			index = (start + this.skipDist[probes]) % this.table_size;
 
-			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
+			if (this.currentProbeType === 'quadratic') {
 				skipVal = probes + 1;
 			}
 
@@ -308,7 +310,7 @@ export default class ClosedHash extends Hash {
 	getElemIndex(index, key) {
 		let HashID = -1;
 		let skipVal = 1;
-		if (this.currentHashingTypeButtonState === this.doubleHashingButton) {
+		if (this.currentProbeType === 'double') {
 			HashID = this.nextIndex++;
 			skipVal = this.resetSkipDist(key, HashID);
 		}
@@ -334,7 +336,7 @@ export default class ClosedHash extends Hash {
 				break;
 			}
 
-			if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
+			if (this.currentProbeType === 'quadratic') {
 				skipVal = i + 1;
 			}
 
@@ -456,11 +458,11 @@ export default class ClosedHash extends Hash {
 		this.indexYPos = new Array(this.table_size);
 		this.indexLabelID = new Array(this.table_size);
 
-		if (this.currentHashingTypeButtonState === this.linearProbingButton) {
+		if (this.currentProbeType === 'linear') {
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = i + 1;
 			}
-		} else if (this.currentHashingTypeButtonState === this.quadraticProbingButton) {
+		} else if (this.currentProbeType === 'quadratic') {
 			for (let i = 0; i < this.table_size; i++) {
 				this.skipDist[i] = (i + 1) * (i + 1);
 			}
@@ -775,16 +777,16 @@ export default class ClosedHash extends Hash {
 
 	disableUI() {
 		super.disableUI();
-		this.linearProbingButton.disabled = true;
-		this.quadraticProbingButton.disabled = true;
-		this.doubleHashingButton.disabled = true;
+		// 'linear'.disabled = true;
+		// 'quadratic'.disabled = true;
+		// 'double'.disabled = true;
 	}
 
 	enableUI() {
 		super.enableUI();
-		this.linearProbingButton.disabled = false;
-		this.quadraticProbingButton.disabled = false;
-		this.doubleHashingButton.disabled = false;
+		// 'linear'.disabled = false;
+		// 'quadratic'.disabled = false;
+		// 'double'.disabled = false;
 	}
 }
 

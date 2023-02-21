@@ -78,7 +78,7 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 	return element;
 }
 
-export function addDropDownGroupToAlgorithmBar(optionNames, groupName) {
+export function addDropDownGroupToAlgorithmBar(optionNames, groupName, group) {
 	const dropDown = document.createElement("select");
 	dropDown.name = groupName;
 	for (let i = 0; i < optionNames.length; i++) {
@@ -87,11 +87,20 @@ export function addDropDownGroupToAlgorithmBar(optionNames, groupName) {
 		dropDown.add(option);
 	}
 
-	const tableEntry = document.createElement('td');
-	tableEntry.appendChild(dropDown);
+	if (!group) {
+		const tableEntry = document.createElement('td');
+		tableEntry.appendChild(dropDown);
 
-	const controlBar = document.getElementById('AlgorithmSpecificControls');
-	controlBar.appendChild(tableEntry);
+		const controlBar = document.getElementById('AlgorithmSpecificControls');
+		controlBar.appendChild(tableEntry);
+	} else {
+		const span = document.createElement('span');
+		span.appendChild(dropDown);
+
+		group.appendChild(span);
+		span.setAttribute('class', 'groupChild');
+	}
+	
 	
 	return dropDown;
 }

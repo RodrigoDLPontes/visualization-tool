@@ -78,23 +78,22 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 	return element;
 }
 
-export function addDropDownGroupToAlgorithmBar(buttonNames, groupName) {
-	const dropDown = document.createElement("SELECT");
+export function addDropDownGroupToAlgorithmBar(optionNames, groupName) {
+	const dropDown = document.createElement("select");
 	dropDown.name = groupName;
-	for (let i = 0; i < buttonNames.length; i++) {
+	for (let i = 0; i < optionNames.length; i++) {
 		const option = document.createElement("option");
-    option.text = buttonNames[i];
+    	option.text = optionNames[i];
 		dropDown.add(option);
 	}
 
-		const tableEntry = document.createElement('td');
-		tableEntry.appendChild(dropDown);
+	const tableEntry = document.createElement('td');
+	tableEntry.appendChild(dropDown);
 
-		const controlBar = document.getElementById('AlgorithmSpecificControls');
-		controlBar.appendChild(tableEntry);
+	const controlBar = document.getElementById('AlgorithmSpecificControls');
+	controlBar.appendChild(tableEntry);
+	
 	return dropDown;
-
-	// continue work
 }
 
 export function addRadioButtonGroupToAlgorithmBar(buttonNames, groupName, group) {

@@ -27,6 +27,7 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addDropDownGroupToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
@@ -58,7 +59,7 @@ export default class Hash extends Algorithm {
 		super(am, w, h);
 		this.addControls();
 		this.nextIndex = 0;
-		this.hashingIntegers = true;
+		this.hashType = 'integers';
 	}
 
 	addControls() {
@@ -143,17 +144,29 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		const radioButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Hash Integer', 'Hash Strings'],
-			'HashType',
+		this.dropDown = addDropDownGroupToAlgorithmBar(
+			[
+				'Hash Integers',
+				'Hash Strings',
+			],
+			'Hash Type',
 		);
-		this.hashIntegerButton = radioButtonList[0];
-		this.hashIntegerButton.onclick = this.changeHashTypeCallback.bind(this, true);
-		this.controls.push(this.hashIntegerButton);
-		this.hashStringButton = radioButtonList[1];
-		this.hashStringButton.onclick = this.changeHashTypeCallback.bind(this, false);
-		this.hashIntegerButton.checked = true;
-		this.controls.push(this.hashStringButton);
+
+		this.dropDown.onchange = this.checkHashType.bind(this);
+
+		this.hashType = 'integers';
+
+		// const radioButtonList = addRadioButtonGroupToAlgorithmBar(
+		// 	['Hash Integer', 'Hash Strings'],
+		// 	'HashType',
+		// );
+		// this.hashIntegerButton = radioButtonList[0];
+		// this.hashIntegerButton.onclick = this.changeHashTypeCallback.bind(this, true);
+		// this.controls.push(this.hashIntegerButton);
+		// this.hashStringButton = radioButtonList[1];
+		// this.hashStringButton.onclick = this.changeHashTypeCallback.bind(this, false);
+		// this.hashIntegerButton.checked = true;
+		// this.controls.push(this.hashStringButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -175,58 +188,70 @@ export default class Hash extends Algorithm {
 		this.restartButton.onclick = this.clearCallback.bind(this);
 	}
 
-	// Do this extra level of wrapping to get undo to work properly.
-	// (also, so that we only implement the action if we are changing the
-	// radio button)
-	changeHashTypeCallback(newHashingIntegers) {
-		if (this.hashingIntegers !== newHashingIntegers) {
-			this.implementAction(this.changeHashType.bind(this), newHashingIntegers);
+	checkHashType() {
+		if (this.dropDown.value === 'Hash Integers') {
+			this.implementAction(this.changeHashType.bind(this), 'integers');
+		} else if (this.dropDown.value === 'Hash Strings') {
+			this.implementAction(this.changeHashType.bind(this), 'strings');
 		}
 	}
 
-	changeHashType(newHashingIntegerValue) {
-		this.hashingIntegers = newHashingIntegerValue;
-		if (this.hashingIntegers) {
-			this.hashIntegerButton.checked = true;
-			this.keyField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.insertCallback.bind(this),
-				MAX_HASH_LENGTH,
-				true,
-			);
-			this.deleteField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.deleteCallback.bind(this),
-				MAX_HASH_LENGTH,
-				true,
-			);
-			this.findField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.findCallback.bind(this),
-				MAX_HASH_LENGTH,
-				true,
-			);
-		} else {
-			this.hashStringButton.checked = true;
-			this.keyField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.insertCallback.bind(this),
-				MAX_HASH_LENGTH,
-				false,
-			);
-			this.deleteField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.deleteCallback.bind(this),
-				MAX_HASH_LENGTH,
-				false,
-			);
-			this.findField.onkeydown = this.returnSubmit(
-				this.keyField,
-				this.findCallback.bind(this),
-				MAX_HASH_LENGTH,
-				false,
-			);
-		}
+	// Do this extra level of wrapping to get undo to work properly.
+	// (also, so that we only implement the action if we are changing the
+	// radio button)
+
+	// changeHashTypeCallback(newHashingIntegers) {
+	// 	if (this.hashingIntegers !== newHashingIntegers) {
+	// 		this.implementAction(this.changeHashType.bind(this), newHashingIntegers);
+	// 	}
+	// }
+
+	changeHashType(newHashType) {
+		// this.hashingIntegers = newHashingIntegerValue;
+		if (this.hashType !== newHashType) {
+			this.hashType = newHashType;
+			if (this.hashType === 'integers') {
+				// this.hashIntegerButton.checked = true;
+				this.keyField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.insertCallback.bind(this),
+					MAX_HASH_LENGTH,
+					true,
+				);
+				this.deleteField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.deleteCallback.bind(this),
+					MAX_HASH_LENGTH,
+					true,
+				);
+				this.findField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.findCallback.bind(this),
+					MAX_HASH_LENGTH,
+					true,
+				);
+			} else if (this.hashType === 'strings') {
+				// this.hashStringButton.checked = true;
+				this.keyField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.insertCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
+				this.deleteField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.deleteCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
+				this.findField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.findCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
+			}
+		}	
 		return this.resetAll();
 	}
 
@@ -235,7 +260,7 @@ export default class Hash extends Algorithm {
 	}
 
 	doHash(input) {
-		if (this.hashingIntegers) {
+		if (this.hashType === 'integers') {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
@@ -272,7 +297,7 @@ export default class Hash extends Algorithm {
 			this.nextIndex -= 3;
 
 			return index;
-		} else {
+		} else if (this.hashType === 'strings') {
 			const label1 = this.nextIndex++;
 			this.cmd(act.createLabel, label1, 'Hashing:', 10, 55, 0);
 			const wordToHashID = new Array(input.length);

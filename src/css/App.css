@@ -18,6 +18,11 @@
 	--borders: #f2f2f2;
 }
 
+* {
+	-webkit-appearance: none;
+	-moz-appearance: none; 
+}
+
 #left {
 	float: left;
 	width: 100px;

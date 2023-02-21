@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addRadioButtonGroupToAlgorithmBar } from './Algorithm.js';
+import { addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
 
@@ -68,18 +68,17 @@ export default class ClosedHash extends Hash {
 	addControls() {
 		super.addControls();
 
-		addDivisorToAlgorithmBar();
-
-		this.dropDown = addDropDownGroupToAlgorithmBar(
+		this.probeTypeDropDown = addDropDownGroupToAlgorithmBar(
 			[
 				'Linear Probing: f(i) = i',
 				'Quadratic Probing: f(i) = i * i',
 				'Double Hashing: f(i) = i * hash2(elem)',
 			],
 			'Probing Type',
+			this.dropDownGroup
 		);
 
-		this.dropDown.onchange = this.checkProbeType.bind(this);
+		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
 		this.currentProbeType = 'linear';
 
@@ -88,11 +87,11 @@ export default class ClosedHash extends Hash {
 	}
  
 	checkProbeType() {
-		if (this.dropDown.value === 'Linear Probing: f(i) = i') {
+		if (this.probeTypeDropDown.value === 'Linear Probing: f(i) = i') {
 			this.implementAction(this.changeProbeType.bind(this), 'linear');
-		} else if (this.dropDown.value === 'Quadratic Probing: f(i) = i * i') {
+		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: f(i) = i * i') {
 			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
-		} else if (this.dropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
+		} else if (this.probeTypeDropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
 			this.implementAction(this.changeProbeType.bind(this), 'double')
 		}
 	}

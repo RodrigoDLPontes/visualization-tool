@@ -30,7 +30,6 @@ import Algorithm, {
 	addDropDownGroupToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
-	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
@@ -142,20 +141,6 @@ export default class Hash extends Algorithm {
 		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
 		this.controls.push(this.loadButton);
 
-		addDivisorToAlgorithmBar();
-
-		this.dropDown = addDropDownGroupToAlgorithmBar(
-			[
-				'Hash Integers',
-				'Hash Strings',
-			],
-			'Hash Type',
-		);
-
-		this.dropDown.onchange = this.checkHashType.bind(this);
-
-		this.hashType = 'integers';
-
 		// const radioButtonList = addRadioButtonGroupToAlgorithmBar(
 		// 	['Hash Integer', 'Hash Strings'],
 		// 	'HashType',
@@ -186,12 +171,30 @@ export default class Hash extends Algorithm {
 			this.rightVerticalBottom,
 		);
 		this.restartButton.onclick = this.clearCallback.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		this.dropDownGroup = addGroupToAlgorithmBar(false);
+
+		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
+			[
+				'Hash Integers',
+				'Hash Strings',
+			],
+			'Hash Type',
+			this.dropDownGroup
+		);
+
+		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
+
+		this.hashType = 'integers';
 	}
 
 	checkHashType() {
-		if (this.dropDown.value === 'Hash Integers') {
+		console.log(this.hashTypeDropDown.value)
+		if (this.hashTypeDropDown.value === 'Hash Integers') {
 			this.implementAction(this.changeHashType.bind(this), 'integers');
-		} else if (this.dropDown.value === 'Hash Strings') {
+		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
 			this.implementAction(this.changeHashType.bind(this), 'strings');
 		}
 	}

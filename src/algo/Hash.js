@@ -191,7 +191,6 @@ export default class Hash extends Algorithm {
 	}
 
 	checkHashType() {
-		console.log(this.hashTypeDropDown.value)
 		if (this.hashTypeDropDown.value === 'Hash Integers') {
 			this.implementAction(this.changeHashType.bind(this), 'integers');
 		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
@@ -203,18 +202,10 @@ export default class Hash extends Algorithm {
 	// (also, so that we only implement the action if we are changing the
 	// radio button)
 
-	// changeHashTypeCallback(newHashingIntegers) {
-	// 	if (this.hashingIntegers !== newHashingIntegers) {
-	// 		this.implementAction(this.changeHashType.bind(this), newHashingIntegers);
-	// 	}
-	// }
-
 	changeHashType(newHashType) {
-		// this.hashingIntegers = newHashingIntegerValue;
 		if (this.hashType !== newHashType) {
 			this.hashType = newHashType;
 			if (this.hashType === 'integers') {
-				// this.hashIntegerButton.checked = true;
 				this.keyField.onkeydown = this.returnSubmit(
 					this.keyField,
 					this.insertCallback.bind(this),
@@ -234,7 +225,6 @@ export default class Hash extends Algorithm {
 					true,
 				);
 			} else if (this.hashType === 'strings') {
-				// this.hashStringButton.checked = true;
 				this.keyField.onkeydown = this.returnSubmit(
 					this.keyField,
 					this.insertCallback.bind(this),
@@ -634,7 +624,7 @@ export default class Hash extends Algorithm {
 	}
 
 	reset() {
-		this.hashIntegerButton.checked = true;
+		this.hashType = 'integers';
 	}
 
 	disableUI() {

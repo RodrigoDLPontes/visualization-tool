@@ -94,6 +94,7 @@ export default class Hash extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.deleteField = addControlToAlgorithmBar('Text', '');
+		this.deleteField.setAttribute('placeholder', 'Key');
 		this.deleteField.size = MAX_HASH_LENGTH;
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.keyField,
@@ -110,6 +111,7 @@ export default class Hash extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
+		this.findField.setAttribute('placeholder', 'Key');
 		this.findField.size = MAX_HASH_LENGTH;
 		this.findField.onkeydown = this.returnSubmit(
 			this.keyField,

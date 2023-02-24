@@ -221,10 +221,12 @@ em {
 	background: var(--button);
 	border: var(--border) 2px solid;
 	border-radius: 6px;
-	padding: 8px 22px;
+	padding: 8px 20px;
 	color: var(--primary);
 	margin: 6px;
 	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
 }
 
 .VisualizationMainPage input[type='button']:hover {
@@ -245,23 +247,22 @@ em {
 
 .VisualizationMainPage input[type='text'] {
 	background: white;
-	border: #bbb 1px solid;
+	border: var(--border) 1px solid;
 	border-radius: 5px;
 	padding: 6px;
 }
 
 .VisualizationMainPage select {
+	-webkit-appearance: menulist-button;
 	background: var(--button);
 	border: var(--border) 2px solid;
 	border-radius: 6px;
-	padding: 8px 22px;
+	padding: 10px 10px 10px 8px;
 	color: var(--primary);
 	margin: 6px;
 	cursor: pointer;
-	width: min-content;
-	height: 50%;
 }
 
-input[type="radio"]{
+input[type="radio"] {
     -webkit-appearance: radio;
 }

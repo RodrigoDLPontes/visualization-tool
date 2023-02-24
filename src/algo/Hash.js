@@ -618,7 +618,7 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		if (this.loadField.value !== '') {
+		if (this.loadField.value !== '' && this.loadField.value < 100) {
 			const newLF = this.loadField.value / 100;
 			this.loadField.value = '';
 			this.implementAction(this.changeLoadFactor.bind(this), newLF);

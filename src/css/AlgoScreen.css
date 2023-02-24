@@ -4,6 +4,7 @@
 	--border: #282828;
 	--button: #f2f2f2;
 	--header: #012f57;
+	--filter: brightness(85%);
 }
 
 [data-theme='dark'] {
@@ -12,6 +13,12 @@
 	--border: #f2f2f2;
 	--button: #282828;
 	--header: #282828;
+	--filter: brightness(185%);
+}
+
+* {
+	-webkit-appearance: none;
+	-moz-appearance: none; 
 }
 
 .VisualizationMainPage body {
@@ -149,7 +156,7 @@ em {
 }
 
 .menu-modal:hover {
-	filter: opacity(50%);
+	filter: var(--filter);
 }
 
 .VisualizationMainPage .modal {
@@ -214,9 +221,16 @@ em {
 	background: var(--button);
 	border: var(--border) 2px solid;
 	border-radius: 6px;
-	padding: 8px 22px;
+	padding: 8px 20px;
 	color: var(--primary);
 	margin: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 550;
+}
+
+.VisualizationMainPage input[type='button']:hover {
+	filter: var(--filter);
 }
 
 .VisualizationMainPage input[type='button']::-moz-focus-inner {
@@ -233,7 +247,32 @@ em {
 
 .VisualizationMainPage input[type='text'] {
 	background: white;
-	border: #bbb 1px solid;
+	border: var(--border) 1px solid;
 	border-radius: 5px;
 	padding: 6px;
+}
+
+.VisualizationMainPage select {
+	appearance: menulist-button;
+	-moz-appearance: menulist-button;
+	-webkit-appearance: menulist-button;
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 10px 10px 10px 8px;
+	color: var(--primary);
+	margin: 6px;
+	cursor: pointer;
+}
+
+input[type="radio"] {
+	appearance: radio;
+	-moz-appearance: radio;
+    -webkit-appearance: radio;
+}
+
+input[type="checkbox"] {
+	appearance: checkbox;
+	-moz-appearance: checkbox;
+	-webkit-appearance: checkbox;
 }

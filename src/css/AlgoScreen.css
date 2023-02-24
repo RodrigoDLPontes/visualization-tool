@@ -253,6 +253,8 @@ em {
 }
 
 .VisualizationMainPage select {
+	appearance: menulist-button;
+	-moz-appearance: menulist-button;
 	-webkit-appearance: menulist-button;
 	background: var(--button);
 	border: var(--border) 2px solid;
@@ -264,9 +266,13 @@ em {
 }
 
 input[type="radio"] {
+	appearance: radio;
+	-moz-appearance: radio;
     -webkit-appearance: radio;
 }
 
 input[type="checkbox"] {
+	appearance: checkbox;
+	-moz-appearance: checkbox;
 	-webkit-appearance: checkbox;
 }

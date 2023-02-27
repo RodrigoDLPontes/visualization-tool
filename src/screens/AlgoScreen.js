@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { MdMenuBook } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 import { Toggle } from 'react-hook-theme';
 import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
@@ -28,7 +28,7 @@ class AlgoScreen extends React.Component {
 			examplesEnabled: false,
 			width: 0,
 		};
-		ReactGA.pageview(algoName);
+		ReactGA.send({ hitType: "pageview", page: algoName });
 	}
 
 	componentDidMount() {

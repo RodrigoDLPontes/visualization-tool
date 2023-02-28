@@ -165,7 +165,6 @@ export default class OpenHash extends Hash {
 		} else {
 			this.load_factor = DEFAULT_LOAD_FACTOR;
 			this.cmd(act.step);
-			this.loadButton.setAttribute('style', 'pointer-events: auto; color: black');
 		}
 		this.hashTableVisual = new Array(this.table_size);
 		this.hashTableIndices = new Array(this.table_size);
@@ -495,7 +494,6 @@ export default class OpenHash extends Hash {
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
 			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
-			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
 		}
 
 		this.cmd(act.step);

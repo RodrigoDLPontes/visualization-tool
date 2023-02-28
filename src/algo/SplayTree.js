@@ -27,11 +27,11 @@
 import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-const LINK_COLOR = '#007700';
+const LINK_COLOR = '#000000';
 const HIGHLIGHT_CIRCLE_COLOR = '#007700';
-const FOREGROUND_COLOR = '#007700';
-const BACKGROUND_COLOR = '#EEFFEE';
-const PRINT_COLOR = FOREGROUND_COLOR;
+const FOREGROUND_COLOR = '#000000';
+const BACKGROUND_COLOR = '#FFFFFF';
+const PRINT_COLOR = '#007700';
 
 const WIDTH_DELTA = 50;
 const HEIGHT_DELTA = 50;
@@ -282,8 +282,10 @@ export default class SplayTree extends Algorithm {
 
 	findCallback() {
 		const findValue = this.normalizeNumber(this.findField.value, 4);
-		this.findField.value = '';
-		this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		if (findValue !== '') {
+			this.findField.value = '';
+			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		}
 	}
 
 	findElement(findValue) {

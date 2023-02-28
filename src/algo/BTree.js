@@ -48,8 +48,8 @@ const NODE_HEIGHT = 20;
 const MESSAGE_X = 5;
 const MESSAGE_Y = 10;
 
-const FOREGROUND_COLOR = '#007700';
-const BACKGROUND_COLOR = '#EEFFEE';
+const FOREGROUND_COLOR = '#000000';
+const BACKGROUND_COLOR = '#FFFFFF';
 const PRINT_COLOR = FOREGROUND_COLOR;
 
 export default class BTree extends Algorithm {

@@ -18,7 +18,7 @@
 
 * {
 	-webkit-appearance: none;
-	-moz-appearance: none; 
+	-moz-appearance: none;
 }
 
 .VisualizationMainPage body {
@@ -52,6 +52,17 @@
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
+	color: var(--primary);
+	font-size: large;
+	transition: all 0.4s ease 0s;
+	vertical-align: middle;
+	padding: 5px 5px;
+}
+
+.VisualizationMainPage #AlgorithmSpecificControls {
+	color: var(--primary);
+	font-size: large;
+	transition: all 0.4s ease 0s;
 	vertical-align: middle;
 	padding: 5px 5px;
 }
@@ -250,6 +261,7 @@ em {
 	border: var(--border) 1px solid;
 	border-radius: 5px;
 	padding: 6px;
+	font-size: 14px;
 }
 
 .VisualizationMainPage select {

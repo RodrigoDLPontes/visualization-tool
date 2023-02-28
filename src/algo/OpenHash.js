@@ -26,7 +26,7 @@
 
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
-import {addDropDownGroupToAlgorithmBar } from './Algorithm.js';
+import { addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 
 const ARRAY_ELEM_WIDTH = 60;
 const ARRAY_ELEM_HEIGHT = 30;

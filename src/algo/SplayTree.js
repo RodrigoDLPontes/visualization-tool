@@ -62,6 +62,7 @@ export default class SplayTree extends Algorithm {
 		this.controls = [];
 
 		this.insertField = addControlToAlgorithmBar('Text', '');
+		this.insertField.style.textAlign = 'center';
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
@@ -77,6 +78,7 @@ export default class SplayTree extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.deleteField = addControlToAlgorithmBar('Text', '');
+		this.deleteField.style.textAlign = 'center';
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
@@ -92,6 +94,7 @@ export default class SplayTree extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
+		this.findField.style.textAlign = 'center';
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),

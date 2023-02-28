@@ -90,6 +90,7 @@ export default class RabinKarp extends Algorithm {
 
 		//Base value text field
 		this.baseField = addControlToAlgorithmBar('Base', '');
+		this.baseField.style.textAlign = 'center';
 		this.baseField.onkeydown = this.returnSubmit(
 			this.baseField,
 			this.findCallback.bind(this),

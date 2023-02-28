@@ -81,6 +81,7 @@ export default class QueueArray extends Algorithm {
 	addControls() {
 		this.controls = [];
 		this.enqueueField = addControlToAlgorithmBar('Text', '');
+		this.enqueueField.style.textAlign = 'center';
 		this.enqueueField.onkeydown = this.returnSubmit(
 			this.enqueueField,
 			this.enqueueCallback.bind(this),

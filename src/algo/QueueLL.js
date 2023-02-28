@@ -73,6 +73,7 @@ export default class QueueLL extends Algorithm {
 	addControls() {
 		this.controls = [];
 		this.enqueueField = addControlToAlgorithmBar('Text', '');
+		this.enqueueField.style.textAlign = 'center';
 		this.enqueueField.onkeydown = this.returnSubmit(
 			this.enqueueField,
 			this.enqueueCallback.bind(this),

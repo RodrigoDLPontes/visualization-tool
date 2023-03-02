@@ -390,8 +390,10 @@ export default class BTree extends Algorithm {
 
 	findCallback() {
 		const findValue = this.normalizeNumber(this.findField.value, 4);
-		this.findField.value = '';
-		this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		if (findValue !== '') {
+			this.findField.value = '';
+			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		}
 	}
 
 	findElement(findValue) {

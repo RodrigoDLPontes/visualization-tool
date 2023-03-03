@@ -273,6 +273,7 @@ input[type="radio"] {
 	appearance: radio;
 	-moz-appearance: radio;
     -webkit-appearance: radio;
+	margin-right: 2px;
 }
 
 input[type="radio"]:checked + label {

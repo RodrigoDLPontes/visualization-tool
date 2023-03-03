@@ -100,8 +100,6 @@ export function addDropDownGroupToAlgorithmBar(optionNames, groupName, group) {
 		group.appendChild(span);
 		span.setAttribute('class', 'groupChild');
 	}
-	
-	
 	return dropDown;
 }
 

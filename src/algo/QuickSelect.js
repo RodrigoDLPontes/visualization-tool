@@ -80,6 +80,7 @@ export default class QuickSelect extends Algorithm {
 
 		// k text field
 		this.kField = addControlToAlgorithmBar('Text', '', horizontalGroup);
+		this.kField.style.textAlign = 'center';
 		this.kField.onkeydown = this.returnSubmit(
 			this.kField,
 			this.runCallback.bind(this),

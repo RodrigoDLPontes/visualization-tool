@@ -100,6 +100,7 @@ export default class BST extends Algorithm {
 		this.controls = [];
 
 		this.insertField = addControlToAlgorithmBar('Text', '');
+		this.insertField.style.textAlign = 'center';
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
@@ -115,6 +116,7 @@ export default class BST extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.deleteField = addControlToAlgorithmBar('Text', '');
+		this.deleteField.style.textAlign = 'center';
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
@@ -130,6 +132,7 @@ export default class BST extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
+		this.findField.style.textAlign = 'center';
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),
@@ -978,19 +981,17 @@ class BSTNode {
 	}
 }
 
-// Various constants
-
-BST.HIGHLIGHT_LABEL_COLOR = '#FF0000';
-BST.HIGHLIGHT_LINK_COLOR = '#FF0000';
+// BST.HIGHLIGHT_LABEL_COLOR = '#FF0000';
+// BST.HIGHLIGHT_LINK_COLOR = '#FF0000';
 
 BST.HIGHLIGHT_COLOR = '#007700';
 BST.HEIGHT_LABEL_COLOR = '#007700';
 
-BST.LINK_COLOR = '#00B000';
+BST.LINK_COLOR = '#000000';
 BST.HIGHLIGHT_CIRCLE_COLOR = '#007700';
-BST.FOREGROUND_COLOR = '#007700';
-BST.BACKGROUND_COLOR = '#DDFFDD';
-BST.PRINT_COLOR = BST.FOREGROUND_COLOR;
+BST.FOREGROUND_COLOR = '#000000';
+BST.BACKGROUND_COLOR = '#FFFFFF';
+BST.PRINT_COLOR = '#007700';
 
 BST.WIDTH_DELTA = 50;
 BST.HEIGHT_DELTA = 50;

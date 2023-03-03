@@ -48,8 +48,8 @@ const NODE_HEIGHT = 20;
 const MESSAGE_X = 5;
 const MESSAGE_Y = 10;
 
-const FOREGROUND_COLOR = '#007700';
-const BACKGROUND_COLOR = '#EEFFEE';
+const FOREGROUND_COLOR = '#000000';
+const BACKGROUND_COLOR = '#FFFFFF';
 const PRINT_COLOR = FOREGROUND_COLOR;
 
 export default class BTree extends Algorithm {
@@ -89,6 +89,7 @@ export default class BTree extends Algorithm {
 		this.controls = [];
 
 		this.insertField = addControlToAlgorithmBar('Text', '');
+		this.insertField.style.textAlign = 'center';
 		this.insertField.onkeydown = this.returnSubmit(
 			this.insertField,
 			this.insertCallback.bind(this),
@@ -104,6 +105,7 @@ export default class BTree extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.deleteField = addControlToAlgorithmBar('Text', '');
+		this.deleteField.style.textAlign = 'center';
 		this.deleteField.onkeydown = this.returnSubmit(
 			this.deleteField,
 			this.deleteCallback.bind(this),
@@ -119,6 +121,7 @@ export default class BTree extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		this.findField = addControlToAlgorithmBar('Text', '');
+		this.findField.style.textAlign = 'center';
 		this.findField.onkeydown = this.returnSubmit(
 			this.findField,
 			this.findCallback.bind(this),
@@ -387,8 +390,10 @@ export default class BTree extends Algorithm {
 
 	findCallback() {
 		const findValue = this.normalizeNumber(this.findField.value, 4);
-		this.findField.value = '';
-		this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		if (findValue !== '') {
+			this.findField.value = '';
+			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		}
 	}
 
 	findElement(findValue) {

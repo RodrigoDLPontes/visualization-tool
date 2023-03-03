@@ -82,6 +82,7 @@ export default class SkipList extends Algorithm {
 
 		// Add's value text field
 		this.addValueField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.addValueField.style.textAlign = 'center';
 		this.addValueField.setAttribute('placeholder', 'Value');
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
@@ -95,6 +96,7 @@ export default class SkipList extends Algorithm {
 
 		// Heads' text field
 		this.headsField = addControlToAlgorithmBar('Text', '', topHorizontalGroup);
+		this.headsField.style.textAlign = 'center';
 		this.headsField.setAttribute('placeholder', '#');
 		this.headsField.onkeydown = this.returnSubmit(
 			this.headsField,
@@ -116,6 +118,7 @@ export default class SkipList extends Algorithm {
 
 		// Add's value text field
 		this.addValueFieldRandom = addControlToAlgorithmBar('Text', '', topHorizontalGroupRandom);
+		this.addValueFieldRandom.style.textAlign = 'center';
 		this.addValueFieldRandom.setAttribute('placeholder', 'Value');
 		this.addValueFieldRandom.onkeydown = this.returnSubmit(
 			this.addValueFieldRandom,
@@ -140,6 +143,7 @@ export default class SkipList extends Algorithm {
 
 		// Remove's text field
 		this.removeField = addControlToAlgorithmBar('Text', '');
+		this.removeField.style.textAlign = 'center';
 		this.removeField.onkeydown = this.returnSubmit(
 			this.removeField,
 			this.removeCallback.bind(this),
@@ -157,6 +161,7 @@ export default class SkipList extends Algorithm {
 
 		// Get's index text field
 		this.getField = addControlToAlgorithmBar('Text', '');
+		this.getField.style.textAlign = 'center';
 		this.getField.onkeydown = this.returnSubmit(
 			this.getField,
 			this.getCallback.bind(this),

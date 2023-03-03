@@ -85,6 +85,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		// Add's value text field
 		this.addValueField = addControlToAlgorithmBar('Text', '', addTopHorizontalGroup);
+		this.addValueField.style.textAlign = 'center';
 		this.addValueField.onkeydown = this.returnSubmit(
 			this.addValueField,
 			() => this.addIndexCallback(),
@@ -97,6 +98,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		// Add's index text field
 		this.addIndexField = addControlToAlgorithmBar('Text', '', addTopHorizontalGroup);
+		this.addIndexField.style.textAlign = 'center';
 		this.addIndexField.onkeydown = this.returnSubmit(
 			this.addIndexField,
 			() => this.addIndexCallback(),
@@ -144,6 +146,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		// Remove's index text field
 		this.removeField = addControlToAlgorithmBar('Text', '', removeTopHorizontalGroup);
+		this.removeField.style.textAlign = 'center';
 		this.removeField.onkeydown = this.returnSubmit(
 			this.removeField,
 			() => this.removeIndexCallback(),

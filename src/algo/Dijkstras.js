@@ -77,6 +77,7 @@ export default class Dijkstras extends Graph {
 		addLabelToAlgorithmBar('Start vertex: ');
 
 		this.startField = addControlToAlgorithmBar('Text', '');
+		this.startField.style.textAlign = 'center';
 		this.startField.onkeydown = this.returnSubmit(
 			this.startField,
 			this.startCallback.bind(this),

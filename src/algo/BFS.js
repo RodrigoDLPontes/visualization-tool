@@ -67,6 +67,7 @@ export default class BFS extends Graph {
 	addControls() {
 		addLabelToAlgorithmBar('Start vertex: ');
 		this.startField = addControlToAlgorithmBar('Text', '');
+		this.startField.style.textAlign = 'center';
 		this.startField.onkeydown = this.returnSubmit(
 			this.startField,
 			this.startCallback.bind(this),

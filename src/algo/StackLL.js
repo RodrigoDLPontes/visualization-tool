@@ -74,6 +74,7 @@ export default class StackLL extends Algorithm {
 	addControls() {
 		this.controls = [];
 		this.pushField = addControlToAlgorithmBar('Text', '');
+		this.pushField.style.textAlign = 'center';
 		this.pushField.onkeydown = this.returnSubmit(
 			this.pushField,
 			this.pushCallback.bind(this),

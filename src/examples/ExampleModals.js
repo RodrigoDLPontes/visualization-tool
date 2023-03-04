@@ -132,4 +132,30 @@ export default {
 			</li>
 		</ul>
 	),
+	OpenHash: (
+		<ul>
+			<li>
+				The Hash Integers option uses the integer key itself as a hashcode.
+			</li>
+			<li>
+				This Hash Strings option hashes the string key using the sum of the key's ASCII values and the XOR operator.
+			</li>
+			<li>
+				The True Hash option generates a Java-like hashcode for integer and string keys.
+			</li>
+		</ul>
+	),
+	ClosedHash: (
+		<ul>
+			<li>
+				The Hash Integers option uses the integer key itself as a hashcode.
+			</li>
+			<li>
+				This Hash Strings option hashes the string key using the sum of the key's ASCII values and the XOR operator.
+			</li>
+			<li>
+				The True Hash option generates a Java-like hashcode for both integer and string keys.
+			</li>
+		</ul>
+	)
 };

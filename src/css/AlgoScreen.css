@@ -175,6 +175,7 @@ em {
 	height: 100%;
 	border-radius: 20px;
 	background-color: var(--control);
+	transition: all 0.4s ease 0s;
 }
 
 .VisualizationMainPage .modal-content ul {

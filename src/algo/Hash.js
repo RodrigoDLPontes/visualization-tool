@@ -279,7 +279,6 @@ export default class Hash extends Algorithm {
 
 	doHash(input) {
 		if (this.hashType === 'integers') {
-			console.log(this.hashType);
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
@@ -317,7 +316,6 @@ export default class Hash extends Algorithm {
 
 			return index;
 		} else if (this.hashType === 'strings') {
-			console.log(this.hashType);
 			const label1 = this.nextIndex++;
 			this.cmd(act.createLabel, label1, 'Hashing:', 10, 55, 0);
 			const wordToHashID = new Array(input.length);

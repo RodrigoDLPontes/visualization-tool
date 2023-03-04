@@ -121,6 +121,9 @@ export default {
 			<li>
 				The True Hash option generates a Java-like hashcode for both integer and string keys.
 			</li>
+			<li>
+				Integer keys must be positive for these visualizations.
+			</li>
 		</ul>
 	),
 	CocktailSort: (
@@ -221,6 +224,9 @@ export default {
 			</li>
 			<li>
 				The True Hash option generates a Java-like hashcode for integer and string keys.
+			</li>
+			<li>
+				Integer keys must be positive for these visualizations.
 			</li>
 		</ul>
 	),

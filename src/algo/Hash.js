@@ -33,7 +33,7 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-const MAX_HASH_LENGTH = 10;
+const MAX_HASH_LENGTH = 4;
 const MAX_LOAD_LENGTH = 5;
 
 const HASH_NUMBER_START_X = 200;
@@ -182,6 +182,7 @@ export default class Hash extends Algorithm {
 			[
 				'Hash Integers',
 				'Hash Strings',
+				'Authentic Hash Function'
 			],
 			'Hash Type',
 			this.dropDownGroup
@@ -190,6 +191,7 @@ export default class Hash extends Algorithm {
 		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
 
 		this.hashType = 'integers';
+
 	}
 
 	checkHashType() {
@@ -197,6 +199,8 @@ export default class Hash extends Algorithm {
 			this.implementAction(this.changeHashType.bind(this), 'integers');
 		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
 			this.implementAction(this.changeHashType.bind(this), 'strings');
+		} else if (this.hashTypeDropDown.value === 'Authentic Hash Function') {
+			this.implementAction(this.changeHashType.bind(this), 'authentic')
 		}
 	}
 
@@ -245,6 +249,25 @@ export default class Hash extends Algorithm {
 					MAX_HASH_LENGTH,
 					false,
 				);
+			} else if (this.hashType === 'authentic') {
+				this.keyField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.insertCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
+				this.deleteField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.deleteCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
+				this.findField.onkeydown = this.returnSubmit(
+					this.keyField,
+					this.findCallback.bind(this),
+					MAX_HASH_LENGTH,
+					false,
+				);
 			}
 		}	
 		return this.resetAll();
@@ -256,6 +279,7 @@ export default class Hash extends Algorithm {
 
 	doHash(input) {
 		if (this.hashType === 'integers') {
+			console.log(this.hashType);
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
@@ -293,6 +317,7 @@ export default class Hash extends Algorithm {
 
 			return index;
 		} else if (this.hashType === 'strings') {
+			console.log(this.hashType);
 			const label1 = this.nextIndex++;
 			this.cmd(act.createLabel, label1, 'Hashing:', 10, 55, 0);
 			const wordToHashID = new Array(input.length);
@@ -580,8 +605,71 @@ export default class Hash extends Algorithm {
 			this.cmd(act.delete, label2);
 
 			return index;
+		} else if (this.hashType === 'authentic') {
+			console.log('table size:' + this.table_size);
+			const labelID1 = this.nextIndex++;
+			const labelID2 = this.nextIndex++;
+			const labelID3 = this.nextIndex++;
+			const highlightID = this.nextIndex++;
+			const hash = this.trueHash(String(input));
+			const index = hash % this.table_size;
+			console.log('true hash:' + this.trueHash(String(input)));
+			console.log('index:' + index);
+			// this.currHash = parseInt(input);
+
+			this.cmd(
+				act.createLabel,
+				labelID1,
+				input + '.hashcode() % ' + String(this.table_size) + ' = ',
+				HASH_LABEL_X,
+				HASH_LABEL_Y,
+			);
+			this.cmd(
+				act.createLabel,
+				labelID2,
+				String(hash) + ' % ' + String(this.table_size) + ' = ',
+				HASH_LABEL_X,
+				HASH_LABEL_Y + 25,
+			);
+			this.cmd(
+				act.createLabel,
+				labelID3,
+				index,
+				HASH_LABEL_X + HASH_LABEL_DELTA_X - 10,
+				HASH_LABEL_Y + 25,
+			);
+			this.cmd(act.step);
+			this.cmd(
+				act.createHighlightCircle,
+				highlightID,
+				HIGHLIGHT_COLOR,
+				HASH_LABEL_X + HASH_LABEL_DELTA_X,
+				HASH_LABEL_Y,
+			);
+			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
+			this.cmd(act.step);
+			this.cmd(act.delete, labelID1);
+			this.cmd(act.delete, labelID2);
+			this.cmd(act.delete, labelID3);
+			this.cmd(act.delete, highlightID);
+			this.nextIndex -= 4;
+
+			return index;
 		}
 	}
+
+	trueHash(key) {
+		if (key === '0') {
+			return 0;
+		}
+		let hash = 0;
+  		for (let i = 0; i < key.length; i++) {
+    		hash = ((hash << 5) - hash) + key.charCodeAt(i);
+			hash *= 11597109109121;
+			hash &= 0xFFFF // convert to 16 bits
+  		}
+  		return hash;
+	}			
 
 	resetAll() {
 		this.keyField.value = '';

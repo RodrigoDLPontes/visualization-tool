@@ -5,6 +5,7 @@
 	--button: #f2f2f2;
 	--header: #012f57;
 	--filter: brightness(85%);
+	--shadow: rgba(0, 0, 0, 0.75);
 }
 
 [data-theme='dark'] {
@@ -14,6 +15,7 @@
 	--button: #282828;
 	--header: #282828;
 	--filter: brightness(185%);
+	--shadow: rgba(242, 242, 242, 0.1);
 }
 
 * {
@@ -165,9 +167,9 @@ em {
 .VisualizationMainPage .modal {
 	position: absolute;
 	right: 20px;
-	top: 20px;
+	top: 10px;
 	width: 350px;
-	height: 445px;
+	height: 460px;
 }
 
 .VisualizationMainPage .modal-content {
@@ -176,6 +178,7 @@ em {
 	border-radius: 20px;
 	background-color: var(--control);
 	transition: all 0.4s ease 0s;
+	box-shadow: 0px 0px 5px var(--shadow);
 }
 
 .VisualizationMainPage .modal-content ul {
@@ -189,8 +192,10 @@ em {
 
 .VisualizationMainPage .equation {
 	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-style: italic;
 	text-align: center;
 	margin: -5px 0px 5px 0px;
+	
 }
 
 .VisualizationMainPage .inline-eq {

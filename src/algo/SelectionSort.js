@@ -106,7 +106,7 @@ export default class SelectionSort extends Algorithm {
 		//Min & Max selection button
 		addDivisorToAlgorithmBar();
 
-		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(['Min', 'Max'], 'Min/Max');
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(['Minimum', 'Maximum'], 'Min/Max');
 
 		this.minButton = minMaxButtonList[0];
 		this.minButton.onclick = this.minCallback.bind(this);

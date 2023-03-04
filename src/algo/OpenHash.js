@@ -28,7 +28,7 @@ import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
 import { addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 
-const ARRAY_ELEM_WIDTH = 60;
+const ARRAY_ELEM_WIDTH = 85;
 const ARRAY_ELEM_HEIGHT = 30;
 const ARRAY_ELEM_START_Y = 110;
 const ARRAY_VERTICAL_SEPARATION = 70;
@@ -232,7 +232,7 @@ export default class OpenHash extends Hash {
 			!this.empty[index] &&
 			!(this.hashTableValues[index].key === key)
 		) {
-			this.cmd(act.setText, this.ExplainLabel, `Entry occupied, so probe forward`);
+			this.cmd(act.setText, this.ExplainLabel, `Index occupied, so probe forward`);
 			this.cmd(act.step);
 			// storing removed index
 			if (removedIndex === -1 && this.deleted[index]) {
@@ -293,7 +293,7 @@ export default class OpenHash extends Hash {
 		} else {
 			if (removedIndex !== -1) {
 				this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
-				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earlier DEL spot');
+				this.cmd(act.setText, this.ExplainLabel, 'Inserting at earliest DEL spot');
 				index = removedIndex;
 			} else if (this.hashTableValues[index] == null) {
 				this.cmd(act.setText, this.ExplainLabel, 'Inserting at null spot');
@@ -415,7 +415,7 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.createLabel,
 				resizeLabel,
-				`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${this.table_size}) > ${this.load_factor}`,
+				`(Resize Required): (Size + 1.0 / length) > Load Factor --> (${this.size} + 1 / ${this.table_size}) > ${this.load_factor}`,
 				RESIZE_LABEL_X,
 				RESIZE_LABEL_Y,
 			);

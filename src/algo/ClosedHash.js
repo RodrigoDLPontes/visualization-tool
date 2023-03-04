@@ -37,13 +37,13 @@ const RESIZE_POINTER_ARRAY_ELEM_START_Y = 50;
 const RESIZE_LABEL_X = 800;
 const RESIZE_LABEL_Y = 20;
 
-const LINKED_ITEM_WIDTH = 90;
+const LINKED_ITEM_WIDTH = 110;
 const LINKED_ITEM_HEIGHT = 20;
 
 const LINKED_ITEM_INITIAL_X = 60;
 const LINKED_ITEM_INITIAL_Y = 40;
-const LINKED_ITEM_X_DELTA_INIT = 70;
-const LINKED_ITEM_X_DELTA = 90;
+const LINKED_ITEM_X_DELTA_INIT = 85;
+const LINKED_ITEM_X_DELTA = 100;
 
 const EXPLAIN_LABEL_X = 550;
 const EXPLAIN_LABEL_Y = 15;
@@ -271,7 +271,7 @@ export default class ClosedHash extends Hash {
 					this.cmd(act.setHighlight, tmp.graphicID, 0);
 					break;
 				} else {
-					this.cmd(act.setText, compareIndex, tmp.key + '!=' + key);
+					this.cmd(act.setText, compareIndex, tmp.key + ' != ' + key);
 				}
 				this.cmd(act.step);
 				this.cmd(act.setHighlight, tmp.graphicID, 0);
@@ -316,7 +316,7 @@ export default class ClosedHash extends Hash {
 			this.repositionList(index, this.hashTableValues[index]);
 			this.cmd(act.step);
 		} else {
-			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of  ' + key + '  not found!');
+			this.cmd(act.setText, this.ExplainLabel, 'Duplicate of ' + key + ' not found!');
 			this.cmd(act.step);
 
 			if (this.hashTableValues[index] != null) {
@@ -484,7 +484,7 @@ export default class ClosedHash extends Hash {
 		this.cmd(
 			act.createLabel,
 			resizeLabel,
-			`(Resize Required): (Size + 1 / length) > Load Factor --> (${this.size} + 1 / ${this.table_size}) > ${this.load_factor}`,
+			`(Resize Required): (Size + 1.0 / length) > Load Factor --> (${this.size} + 1.0 / ${this.table_size}) > ${this.load_factor}`,
 			RESIZE_LABEL_X,
 			RESIZE_LABEL_Y,
 		);

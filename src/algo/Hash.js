@@ -47,9 +47,9 @@ const HASH_ADD_LINE_Y = 42;
 const HASH_RESULT_Y = 50;
 const ELF_HASH_SHIFT = 10;
 
-const HASH_LABEL_X = 200;
-const HASH_LABEL_Y = 45;
-const HASH_LABEL_DELTA_X = 50;
+const HASH_LABEL_X = 270;
+const HASH_LABEL_Y = 46;
+const HASH_LABEL_DELTA_X = 45;
 
 const HIGHLIGHT_COLOR = '#0000FF';
 
@@ -182,7 +182,7 @@ export default class Hash extends Algorithm {
 			[
 				'Hash Integers',
 				'Hash Strings',
-				'Authentic Hash Function'
+				'True Hash Function'
 			],
 			'Hash Type',
 			this.dropDownGroup
@@ -199,8 +199,8 @@ export default class Hash extends Algorithm {
 			this.implementAction(this.changeHashType.bind(this), 'integers');
 		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
 			this.implementAction(this.changeHashType.bind(this), 'strings');
-		} else if (this.hashTypeDropDown.value === 'Authentic Hash Function') {
-			this.implementAction(this.changeHashType.bind(this), 'authentic')
+		} else if (this.hashTypeDropDown.value === 'True Hash Function') {
+			this.implementAction(this.changeHashType.bind(this), 'true')
 		}
 	}
 
@@ -249,7 +249,7 @@ export default class Hash extends Algorithm {
 					MAX_HASH_LENGTH,
 					false,
 				);
-			} else if (this.hashType === 'authentic') {
+			} else if (this.hashType === 'true') {
 				this.keyField.onkeydown = this.returnSubmit(
 					this.keyField,
 					this.insertCallback.bind(this),
@@ -605,17 +605,13 @@ export default class Hash extends Algorithm {
 			this.cmd(act.delete, label2);
 
 			return index;
-		} else if (this.hashType === 'authentic') {
-			console.log('table size:' + this.table_size);
+		} else if (this.hashType === 'true') {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const labelID3 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
 			const hash = this.trueHash(String(input));
 			const index = hash % this.table_size;
-			console.log('true hash:' + this.trueHash(String(input)));
-			console.log('index:' + index);
-			// this.currHash = parseInt(input);
 
 			this.cmd(
 				act.createLabel,
@@ -635,7 +631,7 @@ export default class Hash extends Algorithm {
 				act.createLabel,
 				labelID3,
 				index,
-				HASH_LABEL_X + HASH_LABEL_DELTA_X - 10,
+				HASH_LABEL_X + HASH_LABEL_DELTA_X,
 				HASH_LABEL_Y + 25,
 			);
 			this.cmd(act.step);
@@ -644,7 +640,7 @@ export default class Hash extends Algorithm {
 				highlightID,
 				HIGHLIGHT_COLOR,
 				HASH_LABEL_X + HASH_LABEL_DELTA_X,
-				HASH_LABEL_Y,
+				HASH_LABEL_Y + 25,
 			);
 			this.cmd(act.move, highlightID, this.indexXPos[index], this.indexYPos[index]);
 			this.cmd(act.step);
@@ -665,7 +661,7 @@ export default class Hash extends Algorithm {
 		let hash = 0;
   		for (let i = 0; i < key.length; i++) {
     		hash = ((hash << 5) - hash) + key.charCodeAt(i);
-			hash *= 11597109109121;
+			hash ^= 11597109109121;
 			hash &= 0xFFFF // convert to 16 bits
   		}
   		return hash;

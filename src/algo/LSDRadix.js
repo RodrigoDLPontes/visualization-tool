@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
+	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
@@ -50,8 +51,10 @@ const BUCKET_ELEM_WIDTH = 50;
 const BUCKET_ELEM_HEIGHT = 20;
 const BUCKET_ELEM_SPACING = 15;
 
-const CODE_START_X = 650;
-const CODE_START_Y = 140;
+const CODE_START_X = 50;
+const CODE_START_Y = 100;
+
+let negativeNumbersEnabled = false;
 
 export default class LSDRadix extends Algorithm {
 	constructor(am, w, h) {
@@ -94,6 +97,13 @@ export default class LSDRadix extends Algorithm {
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
+
+		addDivisorToAlgorithmBar();
+
+		// Option to sort negative numbers
+		this.negativeNumbersCheckbox = addCheckboxToAlgorithmBar('Sort negative numbers', false);
+		this.negativeNumbersCheckbox.onclick = this.toggleNegativeNumbers.bind(this);
+		this.controls.push(this.negativeNumbersCheckbox);
 	}
 
 	setup() {
@@ -110,7 +120,7 @@ export default class LSDRadix extends Algorithm {
 
 		this.code = [
 			['procedure LSDRadixSort(array):'],
-			['     buckets <- list of 10 lists'],
+			['     buckets <- array of 10 lists'],
 			['     iterations <- length of longest number'],
 			['     length <- length of array'],
 			['     for i <- 1, iterations do'],
@@ -149,6 +159,10 @@ export default class LSDRadix extends Algorithm {
 		this.jPointerID = this.nextIndex++;
 		this.infoLabelID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		if (negativeNumbersEnabled) {
+			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
+			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
+		}
 	}
 
 	sortCallback() {
@@ -166,6 +180,19 @@ export default class LSDRadix extends Algorithm {
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
+	}
+
+	toggleNegativeNumbers() {
+		negativeNumbersEnabled = !negativeNumbersEnabled;
+		this.implementAction(this.clear.bind(this));
+		if (negativeNumbersEnabled) {
+			console.log(negativeNumbersEnabled);
+			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
+			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
+		} else {
+			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 10 lists');
+			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- 0, 9 do');
+		}
 	}
 
 	clear() {

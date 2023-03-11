@@ -38,13 +38,14 @@ const MAX_ARRAY_SIZE = 18;
 const INFO_LABEL_X = 75;
 const INFO_LABEL_Y = 20;
 
-const ARRAY_START_X = 100;
+const ARRAY_START_X = 525;
 const ARRAY_START_Y = 70;
 
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const BUCKETS_START_X = 100;
+const BUCKETS_START_X = 525;
+const NEGATIVE_BUCKETS_START_X = 975;
 const BUCKETS_START_Y = 140;
 
 const BUCKET_ELEM_WIDTH = 50;
@@ -168,9 +169,9 @@ export default class LSDRadix extends Algorithm {
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		if (
-			this.listField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => Number.isNaN(x)).length <= 0
+			this.listField.value !== '' && // if there are numbers to sort
+			list.length <= MAX_ARRAY_SIZE && // if there are <= 18 numbers to sort
+			list.map(x => Number(x.replace(',', '.'))).filter(x => Number.isNaN(x)).length <= 0 // map each list item to a Number and if they are all numbers
 		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
@@ -205,6 +206,9 @@ export default class LSDRadix extends Algorithm {
 				this.cmd(act.delete, this.bucketsID[i][j]);
 			}
 		}
+
+		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):') // dummy line to start animation
+
 		this.arrayData = [];
 		this.arrayID = [];
 		this.arrayDisplay = [];
@@ -214,15 +218,17 @@ export default class LSDRadix extends Algorithm {
 		return this.commands;
 	}
 
-	sort(params) {
+	sort(params) { // params is list of numbers
 		this.highlight(0, 0);
 		this.commands = [];
 
 		this.arrayID = [];
+		console.log(params);
 		this.arrayData = params
-			.map(Number)
-			.filter(x => !Number.isNaN(x))
-			.slice(0, MAX_ARRAY_SIZE);
+    		.map(x => parseInt(x, 10))
+    		.filter(x => !Number.isNaN(x))
+    		.slice(0, MAX_ARRAY_SIZE);
+		console.log(this.arrayData);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
 		const letterMap = new Map();
@@ -267,23 +273,45 @@ export default class LSDRadix extends Algorithm {
 		this.highlight(1, 0);
 
 		// Create buckets
-		for (let i = 0; i < 10; i++) {
-			this.bucketsData[i] = [];
-			this.bucketsID[i] = [];
-			this.bucketsDisplay[i] = [];
-			this.bucketsID[i].push(this.nextIndex++);
-			const xpos = i * ARRAY_ELEM_WIDTH + BUCKETS_START_X;
-			const ypos = BUCKETS_START_Y;
-			this.cmd(
-				act.createRectangle,
-				this.bucketsID[i][0],
-				i,
-				BUCKET_ELEM_WIDTH,
-				BUCKET_ELEM_HEIGHT,
-				xpos,
-				ypos,
-			);
-			this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
+		if (negativeNumbersEnabled) {
+			for (let i = -9; i < 10; i++) {
+				this.bucketsData[i] = [];
+				this.bucketsID[i] = [];
+				this.bucketsDisplay[i] = [];
+				this.bucketsID[i].push(this.nextIndex++);
+				const xpos = i * ARRAY_ELEM_WIDTH + NEGATIVE_BUCKETS_START_X;
+				const ypos = BUCKETS_START_Y;
+				this.cmd(
+					act.createRectangle,
+					this.bucketsID[i][0],
+					i,
+					BUCKET_ELEM_WIDTH,
+					BUCKET_ELEM_HEIGHT,
+					xpos,
+					ypos,
+				);
+				this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
+			}
+
+		} else {
+			for (let i = 0; i < 10; i++) {
+				this.bucketsData[i] = [];
+				this.bucketsID[i] = [];
+				this.bucketsDisplay[i] = [];
+				this.bucketsID[i].push(this.nextIndex++);
+				const xpos = i * ARRAY_ELEM_WIDTH + BUCKETS_START_X;
+				const ypos = BUCKETS_START_Y;
+				this.cmd(
+					act.createRectangle,
+					this.bucketsID[i][0],
+					i,
+					BUCKET_ELEM_WIDTH,
+					BUCKET_ELEM_HEIGHT,
+					xpos,
+					ypos,
+				);
+				this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
+			}
 		}
 
 		// Find number of digits
@@ -318,7 +346,7 @@ export default class LSDRadix extends Algorithm {
 		let greatest = 0;
 		for (let i = 1; i < this.arrayData.length; i++) {
 			this.movePointers(greatest, i);
-			if (this.arrayData[i] > this.arrayData[greatest]) {
+			if (Math.abs(this.arrayData[i]) > Math.abs(this.arrayData[greatest])) {
 				greatest = i;
 				this.movePointers(greatest, i);
 			}
@@ -328,14 +356,14 @@ export default class LSDRadix extends Algorithm {
 		this.cmd(act.delete, this.jPointerID);
 		this.cmd(act.setBackgroundColor, this.arrayID[greatest], '#FFFF00');
 
-		let digits = Math.floor(Math.log10(this.arrayData[greatest])) + 1;
+		let digits = Math.floor(Math.log10(Math.abs(this.arrayData[greatest]))) + 1;
 		digits = digits || 1; // If greatest is 0, above returns NaN, so set to 1 if that happens
 
 		const longData = this.arrayData[greatest];
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
-			longData + ' has greatest magnitude, number of digits is ' + digits,
+			longData + ' the has largest magnitude with a number of digits k = ' + digits,
 		);
 		this.cmd(act.step);
 		this.unhighlight(2, 0);

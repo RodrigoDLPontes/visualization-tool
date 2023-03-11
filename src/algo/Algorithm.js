@@ -335,8 +335,8 @@ export default class Algorithm {
 			} else if (
 				keyASCII === 190 ||
 				keyASCII === 59 ||
-				keyASCII === 173 ||
-				keyASCII === 189
+				keyASCII === 173
+				// keyASCII === 189
 			) {
 				return false;
 			} else if (

@@ -30,6 +30,7 @@ import Algorithm, {
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
+import { NUM_HEADS } from './util/SkipListHeads.js';
 import { act } from '../anim/AnimationMain';
 
 const SKIP_LIST_START_X = 100;
@@ -202,6 +203,9 @@ export default class SkipList extends Algorithm {
 		this.data = [[Number.NEGATIVE_INFINITY], [Number.POSITIVE_INFINITY]];
 		this.size = 0;
 
+		this.seed = Math.floor(Math.random() * 100) % NUM_HEADS.length;
+		this.seedStart = this.seed;
+
 		this.cmd(
 			act.createSkipListNode,
 			this.nodeID[0][0],
@@ -232,6 +236,7 @@ export default class SkipList extends Algorithm {
 		this.nodeID = [[this.nextIndex++], [this.nextIndex++]];
 		this.data = [[Number.NEGATIVE_INFINITY], [Number.POSITIVE_INFINITY]];
 		this.size = 0;
+		this.seed = this.seedStart;
 	}
 
 	addRandomlyCallback() {
@@ -277,7 +282,7 @@ export default class SkipList extends Algorithm {
 		this.commands = [];
 
 		if (heads === undefined) {
-			heads = Math.floor(Math.random() * 5); // random int between [0, 4]
+			heads = NUM_HEADS[this.seed++ % NUM_HEADS.length]; // random int between [0, 4]
 		}
 		heads = Math.min(heads, 4);
 

@@ -55,6 +55,8 @@ const BUCKET_ELEM_SPACING = 15;
 const CODE_START_X = 50;
 const CODE_START_Y = 100;
 
+const MAX_VALUE = 9999999;
+
 let negativeNumbersEnabled = false;
 
 export default class LSDRadix extends Algorithm {
@@ -71,7 +73,7 @@ export default class LSDRadix extends Algorithm {
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
 		addLabelToAlgorithmBar(
-			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements < 0',
+			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 7 digits.',
 			verticalGroup,
 		);
 
@@ -171,7 +173,9 @@ export default class LSDRadix extends Algorithm {
 		if (
 			this.listField.value !== '' && // if there are numbers to sort
 			list.length <= MAX_ARRAY_SIZE && // if there are <= 18 numbers to sort
-			list.map(x => Number(x.replace(',', '.'))).filter(x => Number.isNaN(x)).length <= 0 // map each list item to a Number and if they are all numbers
+			list.map(x => Number(x.replace(',', '.'))).filter(x => Number.isNaN(x)).length <= 0 && // map each list item to a Number and if they are all numbers
+			(negativeNumbersEnabled || list.filter(x => x < 0).length <= 0) && // if negative numbers are enabled OR there are no negative numbers in the list
+			list.filter(x => Math.abs(x) > MAX_VALUE).length <= 0
 		) {
 			this.implementAction(this.clear.bind(this));
 			this.listField.value = '';
@@ -206,7 +210,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
-		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):') // dummy line to start animation
+		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):'); // dummy line to start animation
 
 		this.arrayData = [];
 		this.arrayID = [];
@@ -217,15 +221,16 @@ export default class LSDRadix extends Algorithm {
 		return this.commands;
 	}
 
-	sort(params) { // params is list of numbers
+	sort(params) {
+		// params is list of numbers
 		this.highlight(0, 0);
 		this.commands = [];
 
 		this.arrayID = [];
 		this.arrayData = params
-    		.map(x => parseInt(x, 10))
-    		.filter(x => !Number.isNaN(x))
-    		.slice(0, MAX_ARRAY_SIZE);
+			.map(x => parseInt(x, 10))
+			.filter(x => !Number.isNaN(x))
+			.slice(0, MAX_ARRAY_SIZE);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
 		const letterMap = new Map();
@@ -271,17 +276,17 @@ export default class LSDRadix extends Algorithm {
 
 		// Create buckets
 		if (negativeNumbersEnabled) {
-			for (let i = -9; i < 10; i++) {
+			for (let i = 0; i < 19; i++) {
 				this.bucketsData[i] = [];
 				this.bucketsID[i] = [];
 				this.bucketsDisplay[i] = [];
 				this.bucketsID[i].push(this.nextIndex++);
-				const xpos = i * ARRAY_ELEM_WIDTH + NEGATIVE_BUCKETS_START_X;
+				const xpos = (i - 9) * ARRAY_ELEM_WIDTH + NEGATIVE_BUCKETS_START_X;
 				const ypos = BUCKETS_START_Y;
 				this.cmd(
 					act.createRectangle,
 					this.bucketsID[i][0],
-					i,
+					i - 9,
 					BUCKET_ELEM_WIDTH,
 					BUCKET_ELEM_HEIGHT,
 					xpos,
@@ -289,7 +294,6 @@ export default class LSDRadix extends Algorithm {
 				);
 				this.cmd(act.setBackgroundColor, this.bucketsID[i], '#D3D3D3');
 			}
-
 		} else {
 			for (let i = 0; i < 10; i++) {
 				this.bucketsData[i] = [];
@@ -398,11 +402,11 @@ export default class LSDRadix extends Algorithm {
 				const data = this.arrayData[j];
 				const display = this.arrayDisplay[j];
 				const digit = this.nthDigit(data, i);
-				console.log(digit)
-				this.bucketsID[digit].push(id);
-				this.bucketsData[digit].push(data);
-				this.bucketsDisplay[digit].push(display);
-				const len = this.bucketsData[digit].length;
+				const offset = negativeNumbersEnabled ? 9 : 0;
+				this.bucketsID[digit + offset].push(id);
+				this.bucketsData[digit + offset].push(data);
+				this.bucketsDisplay[digit + offset].push(display);
+				const len = this.bucketsData[digit + offset].length;
 
 				if (negativeNumbersEnabled) {
 					this.cmd(
@@ -427,7 +431,7 @@ export default class LSDRadix extends Algorithm {
 				}
 				this.cmd(
 					act.connect,
-					this.bucketsID[digit][this.bucketsID[digit].length - 2],
+					this.bucketsID[digit + offset][this.bucketsID[digit + offset].length - 2],
 					id,
 					0,
 					0,
@@ -446,7 +450,7 @@ export default class LSDRadix extends Algorithm {
 			let index = 0;
 			this.cmd(act.step);
 			if (negativeNumbersEnabled) {
-				for (let j = -9; j < 10; j++) {
+				for (let j = 0; j < 19; j++) {
 					this.unhighlight(10, 0);
 					const idBucket = this.bucketsID[j];
 					const dataBucket = this.bucketsData[j];
@@ -464,7 +468,7 @@ export default class LSDRadix extends Algorithm {
 							act.createLabel,
 							labelID,
 							display,
-							NEGATIVE_BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
+							NEGATIVE_BUCKETS_START_X + (j - 9) * BUCKET_ELEM_WIDTH,
 							BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING,
 						);
 						this.cmd(
@@ -485,8 +489,10 @@ export default class LSDRadix extends Algorithm {
 								this.cmd(
 									act.move,
 									idBucket[k],
-									NEGATIVE_BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-									BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
+									NEGATIVE_BUCKETS_START_X + (j - 9) * BUCKET_ELEM_WIDTH,
+									BUCKETS_START_Y +
+										k * BUCKET_ELEM_HEIGHT +
+										k * BUCKET_ELEM_SPACING,
 								);
 							}
 						}
@@ -539,7 +545,9 @@ export default class LSDRadix extends Algorithm {
 									act.move,
 									idBucket[k],
 									BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-									BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
+									BUCKETS_START_Y +
+										k * BUCKET_ELEM_HEIGHT +
+										k * BUCKET_ELEM_SPACING,
 								);
 							}
 						}
@@ -603,11 +611,10 @@ export default class LSDRadix extends Algorithm {
 		data = Math.floor(data / Math.pow(10, digit));
 		data %= 10;
 		if (sign === -1) {
-		  data *= -1;
+			data *= -1;
 		}
-		console.log(data);
 		return data;
-	  }
+	}
 
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {

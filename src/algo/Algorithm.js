@@ -372,13 +372,13 @@ export default class Algorithm {
 
 export function controlKey(keyASCII) {
 	return (
-		keyASCII === 8 ||
-		keyASCII === 9 ||
-		keyASCII === 37 ||
-		keyASCII === 38 ||
-		keyASCII === 39 ||
-		keyASCII === 40 ||
-		keyASCII === 46
+		keyASCII === 8 ||  // backspace
+		keyASCII === 9 ||  // tab
+		keyASCII === 37 || // % percent 
+		keyASCII === 38 || // & ampersand
+		keyASCII === 39 || // ' apostrophe
+		keyASCII === 40 || // ( left parenthesis
+		keyASCII === 46    // . period
 	);
 }
 

@@ -122,7 +122,7 @@ export default class LSDRadix extends Algorithm {
 		this.code = [
 			['procedure LSDRadixSort(array):'],
 			['     buckets <- array of 10 lists'],
-			['     iterations <- length of longest number'],
+			['     iterations <- length of largest number by magnitude'],
 			['     length <- length of array'],
 			['     for i <- 1, iterations do'],
 			['          for j <- 0, length - 1 do'],
@@ -187,7 +187,6 @@ export default class LSDRadix extends Algorithm {
 		negativeNumbersEnabled = !negativeNumbersEnabled;
 		this.implementAction(this.clear.bind(this));
 		if (negativeNumbersEnabled) {
-			console.log(negativeNumbersEnabled);
 			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
 			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
 		} else {
@@ -223,12 +222,10 @@ export default class LSDRadix extends Algorithm {
 		this.commands = [];
 
 		this.arrayID = [];
-		console.log(params);
 		this.arrayData = params
     		.map(x => parseInt(x, 10))
     		.filter(x => !Number.isNaN(x))
     		.slice(0, MAX_ARRAY_SIZE);
-		console.log(this.arrayData);
 		const length = this.arrayData.length;
 		const elemCounts = new Map();
 		const letterMap = new Map();
@@ -372,7 +369,7 @@ export default class LSDRadix extends Algorithm {
 
 		// Run algorithm
 		for (let i = 0; i < digits; i++) {
-			this.cmd(act.setText, this.infoLabelID, 'Getting digits at position ' + (i + 1));
+			this.cmd(act.setText, this.infoLabelID, 'Getting digits at index ' + i);
 			this.cmd(
 				act.createHighlightCircle,
 				this.iPointerID,
@@ -401,19 +398,33 @@ export default class LSDRadix extends Algorithm {
 				const data = this.arrayData[j];
 				const display = this.arrayDisplay[j];
 				const digit = this.nthDigit(data, i);
+				console.log(digit)
 				this.bucketsID[digit].push(id);
 				this.bucketsData[digit].push(data);
 				this.bucketsDisplay[digit].push(display);
 				const len = this.bucketsData[digit].length;
-				this.cmd(
-					act.createRectangle,
-					id,
-					display,
-					BUCKET_ELEM_WIDTH,
-					BUCKET_ELEM_HEIGHT,
-					BUCKETS_START_X + digit * BUCKET_ELEM_WIDTH,
-					BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING,
-				);
+
+				if (negativeNumbersEnabled) {
+					this.cmd(
+						act.createRectangle,
+						id,
+						display,
+						BUCKET_ELEM_WIDTH,
+						BUCKET_ELEM_HEIGHT,
+						NEGATIVE_BUCKETS_START_X + digit * BUCKET_ELEM_WIDTH,
+						BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING,
+					);
+				} else {
+					this.cmd(
+						act.createRectangle,
+						id,
+						display,
+						BUCKET_ELEM_WIDTH,
+						BUCKET_ELEM_HEIGHT,
+						BUCKETS_START_X + digit * BUCKET_ELEM_WIDTH,
+						BUCKETS_START_Y + len * BUCKET_ELEM_HEIGHT + len * BUCKET_ELEM_SPACING,
+					);
+				}
 				this.cmd(
 					act.connect,
 					this.bucketsID[digit][this.bucketsID[digit].length - 2],
@@ -434,57 +445,112 @@ export default class LSDRadix extends Algorithm {
 			this.highlight(10, 0);
 			let index = 0;
 			this.cmd(act.step);
-			for (let j = 0; j < 10; j++) {
-				this.unhighlight(10, 0);
-				const idBucket = this.bucketsID[j];
-				const dataBucket = this.bucketsData[j];
-				const displayBucket = this.bucketsDisplay[j];
-				this.highlight(11, 0);
-				while (dataBucket.length) {
-					this.cmd(act.step);
-					this.unhighlight(11, 0);
-					this.highlight(12, 0);
-					const labelID = this.nextIndex++;
-					const nodeID = idBucket.splice(1, 1)[0];
-					const data = dataBucket.shift();
-					const display = displayBucket.shift();
-					this.cmd(
-						act.createLabel,
-						labelID,
-						display,
-						BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-						BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING,
-					);
-					this.cmd(
-						act.move,
-						labelID,
-						ARRAY_START_X + index * ARRAY_ELEM_WIDTH,
-						ARRAY_START_Y,
-					);
-					this.cmd(act.step);
-					this.cmd(act.setText, this.arrayID[index], display);
-					this.cmd(act.delete, labelID);
-					this.cmd(act.delete, nodeID);
-					this.unhighlight(12, 0);
-					this.highlight(13, 0);
-					if (dataBucket.length) {
-						this.cmd(act.connect, idBucket[0], idBucket[1]);
-						for (let k = 1; k < idBucket.length; k++) {
-							this.cmd(
-								act.move,
-								idBucket[k],
-								BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
-								BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
-							);
+			if (negativeNumbersEnabled) {
+				for (let j = -9; j < 10; j++) {
+					this.unhighlight(10, 0);
+					const idBucket = this.bucketsID[j];
+					const dataBucket = this.bucketsData[j];
+					const displayBucket = this.bucketsDisplay[j];
+					this.highlight(11, 0);
+					while (dataBucket.length) {
+						this.cmd(act.step);
+						this.unhighlight(11, 0);
+						this.highlight(12, 0);
+						const labelID = this.nextIndex++;
+						const nodeID = idBucket.splice(1, 1)[0];
+						const data = dataBucket.shift();
+						const display = displayBucket.shift();
+						this.cmd(
+							act.createLabel,
+							labelID,
+							display,
+							NEGATIVE_BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
+							BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING,
+						);
+						this.cmd(
+							act.move,
+							labelID,
+							ARRAY_START_X + index * ARRAY_ELEM_WIDTH,
+							ARRAY_START_Y,
+						);
+						this.cmd(act.step);
+						this.cmd(act.setText, this.arrayID[index], display);
+						this.cmd(act.delete, labelID);
+						this.cmd(act.delete, nodeID);
+						this.unhighlight(12, 0);
+						this.highlight(13, 0);
+						if (dataBucket.length) {
+							this.cmd(act.connect, idBucket[0], idBucket[1]);
+							for (let k = 1; k < idBucket.length; k++) {
+								this.cmd(
+									act.move,
+									idBucket[k],
+									NEGATIVE_BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
+									BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
+								);
+							}
 						}
+						this.cmd(act.step);
+						this.arrayData[index] = data;
+						this.arrayDisplay[index] = display;
+						index++;
+						this.unhighlight(13, 0);
 					}
-					this.cmd(act.step);
-					this.arrayData[index] = data;
-					this.arrayDisplay[index] = display;
-					index++;
-					this.unhighlight(13, 0);
+					this.unhighlight(11, 0);
 				}
-				this.unhighlight(11, 0);
+			} else {
+				for (let j = 0; j < 10; j++) {
+					this.unhighlight(10, 0);
+					const idBucket = this.bucketsID[j];
+					const dataBucket = this.bucketsData[j];
+					const displayBucket = this.bucketsDisplay[j];
+					this.highlight(11, 0);
+					while (dataBucket.length) {
+						this.cmd(act.step);
+						this.unhighlight(11, 0);
+						this.highlight(12, 0);
+						const labelID = this.nextIndex++;
+						const nodeID = idBucket.splice(1, 1)[0];
+						const data = dataBucket.shift();
+						const display = displayBucket.shift();
+						this.cmd(
+							act.createLabel,
+							labelID,
+							display,
+							BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
+							BUCKETS_START_Y + BUCKET_ELEM_HEIGHT + BUCKET_ELEM_SPACING,
+						);
+						this.cmd(
+							act.move,
+							labelID,
+							ARRAY_START_X + index * ARRAY_ELEM_WIDTH,
+							ARRAY_START_Y,
+						);
+						this.cmd(act.step);
+						this.cmd(act.setText, this.arrayID[index], display);
+						this.cmd(act.delete, labelID);
+						this.cmd(act.delete, nodeID);
+						this.unhighlight(12, 0);
+						this.highlight(13, 0);
+						if (dataBucket.length) {
+							this.cmd(act.connect, idBucket[0], idBucket[1]);
+							for (let k = 1; k < idBucket.length; k++) {
+								this.cmd(
+									act.move,
+									idBucket[k],
+									BUCKETS_START_X + j * BUCKET_ELEM_WIDTH,
+									BUCKETS_START_Y + k * BUCKET_ELEM_HEIGHT + k * BUCKET_ELEM_SPACING,
+								);
+							}
+						}
+						this.cmd(act.step);
+						this.arrayData[index] = data;
+						this.arrayDisplay[index] = display;
+						index++;
+						this.unhighlight(13, 0);
+					}
+					this.unhighlight(11, 0);
+				}
 			}
 		}
 
@@ -532,10 +598,16 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	nthDigit(data, digit) {
+		const sign = Math.sign(data);
+		data = Math.abs(data);
 		data = Math.floor(data / Math.pow(10, digit));
 		data %= 10;
+		if (sign === -1) {
+		  data *= -1;
+		}
+		console.log(data);
 		return data;
-	}
+	  }
 
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {

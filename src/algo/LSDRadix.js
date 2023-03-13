@@ -373,7 +373,7 @@ export default class LSDRadix extends Algorithm {
 
 		// Run algorithm
 		for (let i = 0; i < digits; i++) {
-			this.cmd(act.setText, this.infoLabelID, 'Getting digits at index ' + i);
+			this.cmd(act.setText, this.infoLabelID, 'Getting digits at index ' + i + ' (0-aligned)');
 			this.cmd(
 				act.createHighlightCircle,
 				this.iPointerID,

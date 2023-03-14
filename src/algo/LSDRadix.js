@@ -38,14 +38,14 @@ const MAX_ARRAY_SIZE = 18;
 const INFO_LABEL_X = 75;
 const INFO_LABEL_Y = 20;
 
-const ARRAY_START_X = 525;
+const ARRAY_START_X = 475;
 const ARRAY_START_Y = 70;
 
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const BUCKETS_START_X = 525;
-const NEGATIVE_BUCKETS_START_X = 975;
+const BUCKETS_START_X = 475;
+const NEGATIVE_BUCKETS_START_X = 925;
 const BUCKETS_START_Y = 140;
 
 const BUCKET_ELEM_WIDTH = 50;
@@ -55,7 +55,7 @@ const BUCKET_ELEM_SPACING = 15;
 const CODE_START_X = 50;
 const CODE_START_Y = 100;
 
-const MAX_VALUE = 9999999;
+const MAX_VALUE = 999999;
 
 let negativeNumbersEnabled = false;
 
@@ -73,7 +73,7 @@ export default class LSDRadix extends Algorithm {
 		const verticalGroup = addGroupToAlgorithmBar(false);
 
 		addLabelToAlgorithmBar(
-			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 7 digits.',
+			'Comma seperated list (e.g. "3,1,2"). Max 18 elements & no elements > 6 digits.',
 			verticalGroup,
 		);
 
@@ -327,17 +327,19 @@ export default class LSDRadix extends Algorithm {
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
-			'#FF0000',
+			'#FF0000', // red circle
 			ARRAY_START_X,
 			ARRAY_START_Y,
+			21.5
 		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
 			act.createHighlightCircle,
 			this.jPointerID,
-			'#0000FF',
+			'#0000FF', // blue circle
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y,
+			21.5
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 
@@ -380,6 +382,7 @@ export default class LSDRadix extends Algorithm {
 				'#0000FF',
 				ARRAY_START_X,
 				ARRAY_START_Y,
+				21.5
 			);
 			this.cmd(act.setHighlight, this.iPointerID, 1);
 			this.cmd(act.step);

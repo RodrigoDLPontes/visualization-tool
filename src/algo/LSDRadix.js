@@ -222,7 +222,6 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	sort(params) {
-		// params is list of numbers
 		this.highlight(0, 0);
 		this.commands = [];
 
@@ -327,7 +326,7 @@ export default class LSDRadix extends Algorithm {
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
-			'#FF0000', // red circle
+			'#FF0000',
 			ARRAY_START_X,
 			ARRAY_START_Y,
 			21.5
@@ -336,7 +335,7 @@ export default class LSDRadix extends Algorithm {
 		this.cmd(
 			act.createHighlightCircle,
 			this.jPointerID,
-			'#0000FF', // blue circle
+			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y,
 			21.5

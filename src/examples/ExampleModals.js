@@ -206,6 +206,16 @@ export default {
 			</li>
 		</ul>
 	),
+	LSDRadix: (
+		<ul>
+			<li>
+				The range of sortable numbers for this visualization is [-99999, 999999]. Any numbers outside this range will not be sorted.
+			</li>
+			<li>
+				When sorting negative numbers, a larger buckets array with indices -9 to 9 is needed.
+			</li>
+		</ul>
+	),
 	SkipList: (
 		<ul>
 			<li>

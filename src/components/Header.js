@@ -2,6 +2,7 @@ import 'react-hook-theme/dist/styles/style.css';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import ReactGA  from 'react-ga4';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { Toggle } from 'react-hook-theme';
 
@@ -23,7 +24,7 @@ class Header extends React.Component {
 						<h1>CS 1332 Data Structures and Algorithms Visualizations</h1>
 					</div>
 					<div id="right">
-						<Toggle />
+						<Toggle onclick={this.trackToggles}/>
 					</div>
 				</div>
 				<div className={`menu ${menuClass[this.state.menuVisible]}`}>
@@ -50,6 +51,13 @@ class Header extends React.Component {
 	}
 
 	toggleMenu = () => this.setState(state => ({ menuVisible: !state.menuVisible }));
+	
+	trackToggles = () => {
+		ReactGA.event({
+			category: 'Users',
+			action: 'theme_toggles',
+		});
+	}
 }
 
 export default Header;

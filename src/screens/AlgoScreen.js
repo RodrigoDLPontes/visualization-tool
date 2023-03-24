@@ -80,7 +80,7 @@ class AlgoScreen extends React.Component {
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
 							<div id="toggle">
-								<Toggle />
+								<Toggle onclick={this.trackToggles}/>
 							</div>
 						</h1>
 					</div>
@@ -125,6 +125,13 @@ class AlgoScreen extends React.Component {
 	}
 
 	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
+
+	trackToggles = () => {
+		ReactGA.event({
+			category: 'Users',
+			action: 'theme_toggles',
+		});
+	}
 }
 
 AlgoScreen.propTypes = {

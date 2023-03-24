@@ -149,7 +149,7 @@ export default class QuickSelect extends Algorithm {
 			['     pivotIdx <- random index within [left, right]'],
 			['     pivot <- array[pivotIdx]'],
 			['     swap array[left] and array[pivotIdx]'],
-			['     i <- left + 1, j <- right - 1'],
+			['     i <- left + 1, j <- right'],
 			['     while i <= j do'],
 			['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
 			['               i <- i + 1'],

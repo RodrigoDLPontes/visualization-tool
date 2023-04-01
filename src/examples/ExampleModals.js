@@ -259,5 +259,34 @@ export default {
 				To reduce to liklihood of pattern/text hash collisions, a large prime number should be used for the base.
 			</li>
 		</ul>
-	)
+	),
+	BogoSort: (
+ 		<ul style={{listStyle: "none", textAlign: "center"}}>
+ 			<li>Ah, BogoSort</li>
+ 			<li>Rejecting the tumultuous logic of QuickSort, Bogosort adopts the idea of a random pivot and expands it to an entirely randomized array</li>
+ 			<li>This allows for a best case of O(1)! (probably idk)</li>
+ 			<li>It can be a lot to take in at once, so if you have any questions please direct them to Liam Gones</li>
+ 			<li>p.s. Choose your array carefully. An array of length 9 has 9! (362,880) possible permutations <span role="img" aria-label="shook">😳</span></li>
+ 		</ul>
+ ),
+ LVA: (
+	<ul style={{listStyle: "none", textAlign: "center"}}>
+		<li>The LVA is the binary tree of the people</li>
+		<li>Life isn't always balanced, so why should our trees be so perfect?</li>
+		<li>----</li>
+		<li>It's not exactly clear what LVA stands for, but there are a few theories:</li>
+		<li>Lol Very AVL? Liam Villiam Akshay?</li>
+		<li>Who knows...just have fun with it!</li>
+		<li>----</li>
+		<li>It should be pretty intuitive but a right-LVA will have only right children, while a left-LVA will have only left children</li>
+	</ul>
+ ),
+ NonLinearProbing: (
+	<ul>
+		<li>Linear probing is so basic; the array is so rigid!</li>
+		<li>That's why we're introducing a more <i>exciting</i> approach to HashMaps (as if HashMaps could be anymore fun :D)</li>
+		<li>If you'd like to really expereince the power of NLP (we're working on getting that trademark), try pressing "Fill HashMap"</li>
+		<li>In order to feel all the different angles that NLP can bring, you may want to refresh the page a few times</li>
+	</ul>
+ )
 };

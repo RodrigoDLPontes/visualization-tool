@@ -36,3 +36,6 @@ export { default as SplayTree } from './SplayTree';
 export { default as StackArray } from './StackArray';
 export { default as StackLL } from './StackLL';
 export { default as HeapSort } from './HeapSort';
+export { default as LVA } from './LVA';
+export { default as BogoSort } from './BogoSort';
+export { default as NonLinearProbing } from './NonLinearProbing';

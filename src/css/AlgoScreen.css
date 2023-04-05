@@ -140,6 +140,7 @@
 	padding: 0 10px;
 	background: var(--header);
 	border-top: 1px var(--border) solid;
+	border-bottom: 1px var(--border) solid;
 	color: #f7c245;
 }
 

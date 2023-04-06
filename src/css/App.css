@@ -226,6 +226,7 @@ div.content {
 	border-radius: 15px;
 	box-shadow: 0px 8px 15px var(--shadow);
 	transition: all 0.4s ease 0s;
+	pointer-events: auto;
 }
 
 .inner-flex input.button:hover,
@@ -247,6 +248,7 @@ div.content {
 	display: flex;
 	align-items: center;
 	flex-direction: column;
+	pointer-events: none;
 }
 
 .inner-flex {

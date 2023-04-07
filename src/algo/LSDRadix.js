@@ -38,21 +38,21 @@ const MAX_ARRAY_SIZE = 18;
 const INFO_LABEL_X = 75;
 const INFO_LABEL_Y = 20;
 
-const ARRAY_START_X = 475;
+const ARRAY_START_X = 510;
 const ARRAY_START_Y = 70;
 
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const BUCKETS_START_X = 475;
-const NEGATIVE_BUCKETS_START_X = 925;
+const BUCKETS_START_X = 510;
+const NEGATIVE_BUCKETS_START_X = 960;
 const BUCKETS_START_Y = 140;
 
 const BUCKET_ELEM_WIDTH = 50;
 const BUCKET_ELEM_HEIGHT = 20;
 const BUCKET_ELEM_SPACING = 15;
 
-const CODE_START_X = 50;
+const CODE_START_X = 15;
 const CODE_START_Y = 100;
 
 const MAX_VALUE = 999999;
@@ -123,22 +123,22 @@ export default class LSDRadix extends Algorithm {
 
 		this.code = [
 			['procedure LSDRadixSort(array):'],
-			['     buckets <- array of 10 lists'],
-			['     iterations <- length of largest number by magnitude'],
-			['     length <- length of array'],
-			['     for i <- 1, iterations do'],
-			['          for j <- 0, length - 1 do'],
-			['               bucket <- ith digit of array[j]'],
-			['               add array[j] to buckets[bucket]'],
-			['          end for'],
-			['          index <- 0'],
-			['          for bucket <- 0, 9 do'],
-			["               while buckets[bucket] isn't empty"],
-			['                    array[index] <- remove first from buckets[bucket]'],
-			['                    index <- index + 1'],
-			['               end while'],
-			['          end for'],
-			['     end for'],
+			['  buckets <- array of 10 lists'],
+			['  iterations <- length of largest number by magnitude'],
+			['  length <- length of array'],
+			['  for i <- 1, iterations do'],
+			['    for j <- 0, length - 1 do'],
+			['      bucket <- ith digit of array[j]'],
+			['      add array[j] to buckets[bucket]'],
+			['    end for'],
+			['    index <- 0'],
+			['    for bucket <- 0, 9 do'],
+			["      while buckets[bucket] isn't empty"],
+			['        array[index] <- remove first from buckets[bucket]'],
+			['        index <- index + 1'],
+			['      end while'],
+			['    end for'],
+			['  end for'],
 			['end procedure'],
 		];
 
@@ -191,11 +191,11 @@ export default class LSDRadix extends Algorithm {
 		negativeNumbersEnabled = !negativeNumbersEnabled;
 		this.implementAction(this.clear.bind(this));
 		if (negativeNumbersEnabled) {
-			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
-			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
+			this.cmd(act.setText, this.codeID[1][0], '  buckets <- array of 19 lists');
+			this.cmd(act.setText, this.codeID[10][0], '    for bucket <- -9, 9 do');
 		} else {
-			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 10 lists');
-			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- 0, 9 do');
+			this.cmd(act.setText, this.codeID[1][0], '  buckets <- array of 10 lists');
+			this.cmd(act.setText, this.codeID[10][0], '    for bucket <- 0, 9 do');
 		}
 	}
 

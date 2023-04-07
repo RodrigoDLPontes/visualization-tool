@@ -64,7 +64,7 @@ const HIGHLIGHT_CIRCLE_RADIUS = 12;
 const MST_EDGE_COLOR = '#3399FF';
 const MST_EDGE_THICKNESS = 4;
 
-const CODE_START_X = 1100;
+const CODE_START_X = 985;
 const CODE_START_Y = 30;
 
 export default class Kruskals extends Graph {
@@ -160,10 +160,10 @@ export default class Kruskals extends Graph {
 			['initialize MST EdgeSet, MST'],
 			['initialize PriorityQueue, PQ with all edges in G'],
 			['while PQ is not empty and MST has fewer than n-1 edges'],
-			['    edge(u, v) <- PQ.dequeue()'],
-			['    if u and v are not in the same cluster'],
-			['        add edge(u, v) to MST'],
-			[`        merge u's cluster with v's cluster`],
+			['  edge(u, v) <- PQ.dequeue()'],
+			['  if u and v are not in the same cluster'],
+			['    add edge(u, v) to MST'],
+			[`    merge u's cluster with v's cluster`],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);

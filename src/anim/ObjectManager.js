@@ -727,7 +727,7 @@ export default class ObjectManager {
 		}
 	}
 
-	addLabelObject(objectID, objectLabel, centering) {
+	addLabelObject(objectID, objectLabel, centering, isCode) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addLabelObject: object already exists!');
 		}
@@ -737,6 +737,7 @@ export default class ObjectManager {
 			objectLabel,
 			centering,
 			this.getTextWidth(objectLabel),
+			isCode,
 		);
 		this.nodes[objectID] = newLabel;
 	}

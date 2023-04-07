@@ -34,7 +34,7 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 15;
 
-const ARRAY_START_X = 450;
+const ARRAY_START_X = 650;
 const ARRAY_START_Y = 50;
 const ARRAY_LINE_SPACING = 75;
 const ARRAY_ELEM_WIDTH = 50;
@@ -132,32 +132,32 @@ export default class MergeSort extends Algorithm {
 
 		this.code = [
 			['procedure MergeSort(array)'],
-			['     length <- length of array, midIdx <- length / 2'],
-			['     leftArray <- array[0...midIdx - 1]'],
-			['     rightArray <- array[midIdx...length - 1]'],
-			['     MergeSort(leftArray)'],
-			['     MergeSort(rightArray)'],
-			['     leftIdx, rightIdx, currIdx <- 0'],
-			['     while leftIdx < midIdx and rightIdx < length - midIdx do'],
-			['          if leftArray[leftIdx] <= rightArray[rightIdx] then'],
-			['               array[currIdx] <- leftArray[leftIdx]'],
-			['               leftIdx <- leftIdx + 1'],
-			['          else'],
-			['               array[currIdx] <- rightArray[rightIdx]'],
-			['               rightIdx <- rightIdx + 1'],
-			['          end if'],
-			['          currIdx <- currIdx + 1'],
-			['     end while'],
-			['     while leftIdx < midIdx do'],
-			['          array[currIdx] <- leftArray[leftIdx]'],
-			['          currIdx <- currIdx + 1'],
-			['          leftIdx <- leftIdx + 1'],
-			['     end while'],
-			['     while rightIdx < length - midIdx do'],
-			['          array[currIdx] <- rightArray[rightIdx]'],
-			['          currIdx <- currIdx + 1'],
-			['          rightIdx <- rightIdx + 1'],
-			['     end while'],
+			['  length <- length of array, midIdx <- length / 2'],
+			['    leftArray <- array[0...midIdx - 1]'],
+			['    rightArray <- array[midIdx...length - 1]'],
+			['    MergeSort(leftArray)'],
+			['    MergeSort(rightArray)'],
+			['    leftIdx, rightIdx, currIdx <- 0'],
+			['    while leftIdx < midIdx and rightIdx < length - midIdx do'],
+			['      if leftArray[leftIdx] <= rightArray[rightIdx] then'],
+			['        array[currIdx] <- leftArray[leftIdx]'],
+			['        leftIdx <- leftIdx + 1'],
+			['      else'],
+			['        array[currIdx] <- rightArray[rightIdx]'],
+			['        rightIdx <- rightIdx + 1'],
+			['      end if'],
+			['      currIdx <- currIdx + 1'],
+			['    end while'],
+			['    while leftIdx < midIdx do'],
+			['      array[currIdx] <- leftArray[leftIdx]'],
+			['      currIdx <- currIdx + 1'],
+			['      leftIdx <- leftIdx + 1'],
+			['    end while'],
+			['    while rightIdx < length - midIdx do'],
+			['      array[currIdx] <- rightArray[rightIdx]'],
+			['      currIdx <- currIdx + 1'],
+			['      rightIdx <- rightIdx + 1'],
+			['    end while'],
 			['end procedure'],
 		];
 

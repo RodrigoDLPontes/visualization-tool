@@ -97,13 +97,13 @@ export default class BruteForce extends Algorithm {
 
 		this.code = [
 			['procedure BruteForce(text, pattern)'],
-			['     n <- text.length, m <- pattern.length'],
-			['     for i <- 0, n - m'],
-			['          j <- 0'],
-			['          while j < m and pattern[j] = text[i + j]'],
-			['               j <- j + 1'],
-			['          if j = m'],
-			['               match found at i'],
+			['  n <- text.length, m <- pattern.length'],
+			['  for i <- 0, n - m'],
+			['    j <- 0'],
+			['    while j < m and pattern[j] = text[i + j]'],
+			['      j <- j + 1'],
+			['    if j = m'],
+			['      match found at i'],
 			['end procedure'],
 		];
 

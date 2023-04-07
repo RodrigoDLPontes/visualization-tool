@@ -916,11 +916,11 @@ export const act = {
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
 	createLabel(params) {
-		// id, label | x, y, centered
+		// id, label | x, y, centered, isCode
 		params[2] = params[2] || 0;
 		params[3] = params[3] || 0;
 		params[4] = params[4] !== false && params[4] !== 0;
-		this.animatedObjects.addLabelObject(params[0], String(params[1]), params[4]);
+		this.animatedObjects.addLabelObject(params[0], String(params[1]), params[4], params[5]);
 		this.animatedObjects.setNodePosition(params[0], params[2], params[3]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},

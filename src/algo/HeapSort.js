@@ -123,10 +123,10 @@ export default class HeapSort extends Algorithm {
 
 		this.code = [
 			['procedure heapSort(array)'],
-			['     heap <- create new PriorityQueue(array)'],
-			['     for i <- 0, array.length - 1, loop:'],
-			['          add ', 'heap.remove()', ' to data[i]'],
-			['     end for'],
+			['  heap <- create new PriorityQueue(array)'],
+			['  for i <- 0, array.length - 1, loop:'],
+			['    add ', 'heap.remove()', ' to data[i]'],
+			['  end for'],
 			['end procedure'],
 		];
 

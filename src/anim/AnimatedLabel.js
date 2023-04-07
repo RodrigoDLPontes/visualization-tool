@@ -28,7 +28,7 @@ import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedLabel extends AnimatedObject {
-	constructor(objectID, label, centered, initialWidth) {
+	constructor(objectID, label, centered, initialWidth, isCode) {
 		super();
 
 		this.objectID = objectID;
@@ -39,6 +39,7 @@ export default class AnimatedLabel extends AnimatedObject {
 		this.labelColor = '#000000';
 		this.highlighted = false;
 		this.centered = centered;
+		this.isCode = isCode;
 
 		this.leftWidth = -1;
 		this.centerWidth = -1;
@@ -53,7 +54,11 @@ export default class AnimatedLabel extends AnimatedObject {
 		if (!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
-		context.font = '12px Arial';
+		if (this.isCode) {
+			context.font = '13px Source Code Pro'
+		} else {
+			context.font = '12px Arial';
+		}
 
 		let startingXForHighlight = this.x;
 

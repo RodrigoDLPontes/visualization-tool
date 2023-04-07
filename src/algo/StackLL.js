@@ -139,17 +139,14 @@ export default class StackLL extends Algorithm {
 
 		this.code = [
 			['procedure push(data)'],
-			['     head = new node(data, head)'],
-			// ['     increment size'],
+			['  head = new node(data, head)'],
 			['end procedure'],
 
 			[],
 			['procedure pop()'],
 
-			['     result = head.data'],
-			['     head = head.next'],
-			// ['     decrement size'],
-			// ['     return result'],
+			['  result = head.data'],
+			['  head = head.next'],
 			['end procedure'],
 		];
 
@@ -166,6 +163,7 @@ export default class StackLL extends Algorithm {
 					CODE_START_X,
 					CODE_START_Y + i * CODE_LINE_HEIGHT,
 					0,
+					true,
 				);
 				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
 				if (j > 0) {

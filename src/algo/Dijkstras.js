@@ -64,8 +64,8 @@ const LARGE_TABLE_ENTRY_HEIGHT = 17;
 const TABLE_START_X = 50;
 const TABLE_START_Y = 180;
 
-const CODE_START_X = 1100;
-const CODE_START_Y = 50;
+const CODE_START_X = 1050;
+const CODE_START_Y = 190;
 
 export default class Dijkstras extends Graph {
 	constructor(am, w, h) {
@@ -118,12 +118,12 @@ export default class Dijkstras extends Graph {
 			['for all v in G, initialize distance of v to INF'],
 			['PQ.enqueue((s, 0))'],
 			['while PQ is not empty and VS is not full'],
-			['    (u, d) <- PQ.dequeue()'],
-			['    if u is not visited in VS'],
-			['        mark u as visited in VS'],
-			['    for all (w, d2) adjacent to u and not visited in VS'],
-			['        update DM for d2'],
-			['        PQ.enqueue((w, d + d2))'],
+			['  (u, d) <- PQ.dequeue()'],
+			['  if u is not visited in VS'],
+			['    mark u as visited in VS'],
+			['  for all (w, d2) adjacent to u and not visited in VS'],
+			['    update DM for d2'],
+			['    PQ.enqueue((w, d + d2))'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);

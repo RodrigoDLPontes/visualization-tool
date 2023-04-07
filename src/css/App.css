@@ -183,15 +183,15 @@ div.header {
 	color: var(--text);
 	background: var(--buttons);
 	text-align: center;
-	border-bottom: 1px var(--borders) solid;
+	border-bottom: 1.5px var(--borders) solid;
 }
 
 div.footer {
 	color: var(--text);
 	background: var(--buttons);
 	text-align: center;
-	border-top: 1px var(--borders) solid;
-	border-bottom: 1px var(--border) solid;
+	border-top: 1.5px var(--borders) solid;
+	border-bottom: 1.5px var(--border) solid;
 }
 
 .footer {
@@ -222,9 +222,9 @@ div.content {
 	padding: 10px;
 	margin: 15px;
 	cursor: pointer;
-	border: 1px var(--borders) solid;
+	border: 1.5px var(--borders) solid;
 	border-radius: 15px;
-	box-shadow: 0px 8px 15px var(--shadow);
+	box-shadow: 0px 4px 12px var(--shadow);
 	transition: all 0.4s ease 0s;
 	pointer-events: auto;
 }

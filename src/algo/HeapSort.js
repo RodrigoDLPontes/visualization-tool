@@ -130,26 +130,28 @@ export default class HeapSort extends Algorithm {
 			['end procedure'],
 		];
 
-		this.codeID = Array(this.code.length);
-		let i, j;
-		for (i = 0; i < this.code.length; i++) {
-			this.codeID[i] = new Array(this.code[i].length);
-			for (j = 0; j < this.code[i].length; j++) {
-				this.codeID[i][j] = this.nextIndex++;
-				this.cmd(
-					act.createLabel,
-					this.codeID[i][j],
-					this.code[i][j],
-					CODE_START_X,
-					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0,
-				);
-				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-				if (j > 0) {
-					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-				}
-			}
-		}
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		// this.codeID = Array(this.code.length);
+		// let i, j;
+		// for (i = 0; i < this.code.length; i++) {
+		// 	this.codeID[i] = new Array(this.code[i].length);
+		// 	for (j = 0; j < this.code[i].length; j++) {
+		// 		this.codeID[i][j] = this.nextIndex++;
+		// 		this.cmd(
+		// 			act.createLabel,
+		// 			this.codeID[i][j],
+		// 			this.code[i][j],
+		// 			CODE_START_X,
+		// 			CODE_START_Y + i * CODE_LINE_HEIGHT,
+		// 			0,
+		// 		);
+		// 		this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+		// 		if (j > 0) {
+		// 			this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+		// 		}
+		// 	}
+		// }
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

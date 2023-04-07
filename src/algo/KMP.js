@@ -128,7 +128,7 @@ export default class KMP extends Algorithm {
 			['        j <- j + 1'],
 			['      else'],
 			['        i <- failureTable[i - 1]'],
-			['     return failureTable'],
+			['  return failureTable'],
 			['end procedure'],
 		];
 

@@ -55,7 +55,7 @@ export default class AnimatedLabel extends AnimatedObject {
 
 		context.globalAlpha = this.alpha;
 		if (this.isCode) {
-			context.font = '13px Source Code Pro'
+			context.font = '13px Source Code Pro';
 		} else {
 			context.font = '12px Arial';
 		}
@@ -299,6 +299,7 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlightIndex,
 			this.highlighted,
 			this.highlightColor,
+			this.isCode
 		);
 	}
 }
@@ -315,6 +316,7 @@ class UndoDeleteLabel extends UndoBlock {
 		highlightIndex,
 		highlighted,
 		highlightColor,
+		isCode
 	) {
 		super();
 		this.objectID = objectID;
@@ -327,10 +329,11 @@ class UndoDeleteLabel extends UndoBlock {
 		this.highlightIndex = highlightIndex;
 		this.highlighted = highlighted;
 		this.highlightColor = highlightColor;
+		this.isCode = isCode;
 	}
 
 	undoInitialStep(world) {
-		world.addLabelObject(this.objectID, this.label, this.centered);
+		world.addLabelObject(this.objectID, this.label, this.centered, this.isCode);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setForegroundColor(this.objectID, this.labelColor);
 		world.setLayer(this.objectID, this.layer);

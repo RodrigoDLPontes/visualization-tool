@@ -35,7 +35,7 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
-const ARRAY_START_X = 350;
+const ARRAY_START_X = 475;
 const ARRAY_START_Y = 120;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
@@ -146,29 +146,29 @@ export default class QuickSelect extends Algorithm {
 
 		this.code = [
 			['procedure QuickSelect(array, left, right, k):'],
-			['     pivotIdx <- random index within [left, right]'],
-			['     pivot <- array[pivotIdx]'],
-			['     swap array[left] and array[pivotIdx]'],
-			['     i <- left + 1, j <- right'],
-			['     while i <= j do'],
-			['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
-			['               i <- i + 1'],
-			['          end while'],
-			['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
-			['               j <- j - 1'],
-			['          end while'],
-			['          if i <= j then'],
-			['               swap array[i] and array[j]'],
-			['               i <- i + 1, j <- j - 1'],
-			['          end if'],
-			['     end while'],
-			['     swap pivot and array[j]'],
-			['     if j equals k - 1 then'],
-			['          return array[j]'],
-			['     if j > k - 1 then'],
-			['          QuickSelect on array, left, j - 1, k'],
-			['     else'],
-			['          QuickSelect on array, j + 1, right, k'],
+			['  pivotIdx <- selected index within [left, right]'],
+			['  pivot <- array[pivotIdx]'],
+			['  swap array[left] and array[pivotIdx]'],
+			['  i <- left + 1, j <- right'],
+			['  while i <= j do'],
+			['    while ', 'i <= j', ' and ', 'array[i] <= pivot'],
+			['      i <- i + 1'],
+			['    end while'],
+			['    while ', 'i <= j', ' and ', 'array[j] >= pivot'],
+			['      j <- j - 1'],
+			['    end while'],
+			['    if i <= j then'],
+			['      swap array[i] and array[j]'],
+			['      i <- i + 1, j <- j - 1'],
+			['    end if'],
+			['  end while'],
+			['  swap pivot and array[j]'],
+			['  if j equals k - 1 then'],
+			['    return array[j]'],
+			['  if j > k - 1 then'],
+			['    QuickSelect on array, left, j - 1, k'],
+			['  else'],
+			['    QuickSelect on array, j + 1, right, k'],
 			['end procedure'],
 		];
 

@@ -68,7 +68,7 @@ const LARGE_RECURSION_SPACING_X = 10;
 const SMALL_RECURSION_SPACING_Y = 20;
 const LARGE_RECURSION_SPACING_Y = 15;
 
-const CODE_START_X = 1100;
+const CODE_START_X = 1000;
 const CODE_START_Y = 50;
 
 export default class DFS extends Graph {

@@ -213,7 +213,7 @@ export default class Algorithm {
 	}
 
 	addCodeToCanvasBase(code, start_x, start_y, isCode, line_height, standard_color, layer) {
-		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT; // line spacing
+		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
 		layer = typeof layer !== 'undefined' ? layer : 0;
@@ -227,7 +227,7 @@ export default class Algorithm {
 				this.cmd(
 					act.createLabel,
 					codeID[i][j],
-					code[i][j], // actual code -> params[1]
+					code[i][j],
 					start_x,
 					start_y + i * line_height,
 					0,

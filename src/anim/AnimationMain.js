@@ -298,7 +298,7 @@ export default class AnimationManager extends EventListener {
 		width = width == null || width === '' ? 1500 : parseInt(width);
 
 		let height = getCookie('VisualizationHeight');
-		height = height == null || height === '' ? 505 : parseInt(height);
+		height = height == null || height === '' ? 555 : parseInt(height);
 
 		canvas.width = width;
 		canvas.height = height;

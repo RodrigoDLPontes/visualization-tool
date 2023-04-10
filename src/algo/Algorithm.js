@@ -243,6 +243,15 @@ export default class Algorithm {
 		return codeID;
 	}
 
+	hideCodeFromCanvas(codeID) {
+		for (let i = 0; i < codeID.length; i++) {
+			for (let j = 0; j < codeID[i].length; j++) {
+				this.cmd(act.setForegroundColor, codeID[i][j], "#FFF");
+				console.log('hi');
+			}
+		}
+	}
+
 	highlight(ind1, ind2) {
 		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}

@@ -222,7 +222,7 @@ export default class Graph extends Algorithm {
 		this.currentLayer = newLayer;
 		if (this.currentLayer !== 1) {
 			console.log(this.codeID);
-			this.removeCode(this.codeID);
+			this.hideCodeFromCanvas(this.codeID);
 		}
 	}
 

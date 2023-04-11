@@ -138,16 +138,16 @@ export default class SelectionSort extends Algorithm {
 
 		this.code = [
 			['procedure SelectionSort(array):'],
-			['     length <- length of array'],
-			['     for i <- 0, length do'],
-			['          min <- i'],
-			['          for j <- i + 1, length do'],
-			['               if array[j] < array[min]'],
-			['                    min <- j'],
-			['               end if'],
-			['          end for'],
-			['          swap array[min], array[i]'],
-			['     end for'],
+			['  length <- length of array'],
+			['  for i <- 0, length do'],
+			['    min <- i'],
+			['    for j <- i + 1, length do'],
+			['      if array[j] < array[min]'],
+			['        min <- j'],
+			['      end if'],
+			['    end for'],
+			['    swap array[min], array[i]'],
+			['  end for'],
 			['end procedure'],
 		];
 
@@ -170,24 +170,24 @@ export default class SelectionSort extends Algorithm {
 		this.compCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!this.isMin) {
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[5][0], '                    max <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i <- length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '    max <- i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j <- i - 1, 0 do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[5][0], '        max <- j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
 		}
 	}
 
 	minCallback() {
 		if (!this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- 0, length do');
-			this.cmd(act.setText, this.codeID[3][0], '          min <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i + 1, length do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] < array[min]');
-			this.cmd(act.setText, this.codeID[6][0], '                    min <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[min], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i <- 0, length do');
+			this.cmd(act.setText, this.codeID[3][0], '    min <- i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j <- i + 1, length do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] < array[min]');
+			this.cmd(act.setText, this.codeID[6][0], '        min <- j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[min], array[i]');
 			this.isMin = true;
 		}
 	}
@@ -195,12 +195,12 @@ export default class SelectionSort extends Algorithm {
 	maxCallback() {
 		if (this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[6][0], '                    max <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i <- length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '    max <- i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j <- i - 1, 0 do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[6][0], '        max <- j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
 			this.isMin = false;
 		}
 	}

@@ -77,7 +77,7 @@
 
 .VisualizationMainPage #header {
 	background: var(--header);
-	border-bottom: 1px var(--border) solid;
+	border-bottom: 1.5px var(--border) solid;
 	color: #fffff0;
 	padding: 0 10px 0 5px;
 	transition: all 0.4s ease 0s;
@@ -139,7 +139,8 @@
 .VisualizationMainPage #footer {
 	padding: 0 10px;
 	background: var(--header);
-	border-top: 1px var(--border) solid;
+	border-top: 1.5px var(--border) solid;
+	border-bottom: 1.5px var(--border) solid;
 	color: #f7c245;
 }
 

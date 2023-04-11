@@ -68,8 +68,8 @@ const LARGE_RECURSION_SPACING_X = 10;
 const SMALL_RECURSION_SPACING_Y = 20;
 const LARGE_RECURSION_SPACING_Y = 15;
 
-const CODE_START_X = 250;
-const CODE_START_Y = 170;
+const CODE_START_X = 1000;
+const CODE_START_Y = 50;
 
 export default class DFS extends Graph {
 	constructor(am, w, h) {
@@ -167,28 +167,28 @@ export default class DFS extends Graph {
 
 		this.recCode = [
 			['Procedure DFS(Vertex s, Set VS, List L):'],
-			['     add s to VS, L'],
-			['     for all v adjacent to s'],
-			['          if v not in VS'],
-			['               do DFS(v, VS, L)'],
+			['  add s to VS, L'],
+			['  for all v adjacent to s'],
+			['    if v not in VS'],
+			['      do DFS(v, VS, L)'],
 		];
 
 		this.itCode = [
 			['Procedure DFS(Vertex s, Set VS, List L):'],
-			['     Initialize Stack K'],
-			['     add s to K, VS'],
-			['     while K not empty'],
-			['          v <- remove from K'],
-			['          add v to L'],
-			['          for all w adjacent to v'],
-			['               if w not in VS'],
-			['                    add w to K, VS'],
+			['  Initialize Stack K'],
+			['  add s to K, VS'],
+			['  while K not empty'],
+			['    v <- remove from K'],
+			['    add v to L'],
+			['    for all w adjacent to v'],
+			['      if w not in VS'],
+			['        add w to K, VS'],
 		];
 
 		if (this.physicalStack) {
-			this.codeID = this.addCodeToCanvasBase(this.itCode, CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBase(this.itCode, CODE_START_X, CODE_START_Y, undefined, undefined, 1);
 		} else {
-			this.codeID = this.addCodeToCanvasBase(this.recCode, CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBase(this.recCode, CODE_START_X, CODE_START_Y, undefined, undefined, 1);
 		}
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);

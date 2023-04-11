@@ -191,7 +191,7 @@ export function addGroupToAlgorithmBar(horizontal, parentGroup) {
 	return group;
 }
 
-const CODE_LINE_HEIGHT = 14;
+const CODE_LINE_HEIGHT = 15;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
@@ -217,8 +217,8 @@ export default class Algorithm {
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
 		layer = typeof layer !== 'undefined' ? layer : 0;
+		const isCode = true;
 		const codeID = Array(code.length);
-		//console.log(this.nextIndex);
 		let i, j;
 		for (i = 0; i < code.length; i++) {
 			codeID[i] = new Array(code[i].length);
@@ -231,6 +231,7 @@ export default class Algorithm {
 					start_x,
 					start_y + i * line_height,
 					0,
+					isCode,
 				);
 				this.cmd(act.setForegroundColor, codeID[i][j], standard_color);
 				this.cmd(act.setLayer, codeID[i][j], layer);

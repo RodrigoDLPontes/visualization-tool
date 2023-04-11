@@ -108,12 +108,12 @@ export default class Prims extends Graph {
 			['mark s as visited in VS'],
 			['for each edge(s, v) in G, PQ.enqueue(edge(s, v))'],
 			['while PQ is not empty and VS is not full'],
-			['    edge(u, w) <- PQ.dequeue()'],
-			['    if w is not visited in VS'],
-			['        add edge(u, w) to MST'],
-			['        mark w as visited in VS'],
-			['        for each edge(w, x) such that x is not visited'],
-			['            PQ.enqueue(edge(w, x))'],
+			['  edge(u, w) <- PQ.dequeue()'],
+			['  if w is not visited in VS'],
+			['    add edge(u, w) to MST'],
+			['    mark w as visited in VS'],
+			['    for each edge(w, x) such that x is not visited'],
+			['      PQ.enqueue(edge(w, x))'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);

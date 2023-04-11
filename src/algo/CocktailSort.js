@@ -119,29 +119,28 @@ export default class CocktailSort extends Algorithm {
 
 		this.code = [
 			['procedure CocktailSort(array):'],
-			['     start <- 0, end <- length of array - 1'],
-			['     swapped <- start'],
-			['     while end > start'],
-			['          swapped <- start'],
-			['          for i <- start, end do'],
-			['               if array[i] > array[i + 1]'],
-			['                    swap array[i], array[i + 1]'],
-			['                    swapped <- i'],
-			['               end if'],
-			['          end for'],
-			['          end <- swapped'],
-			['          for i <- end, start do'],
-			['               if array[i] < array[i - 1]'],
-			['                    swap array[i], array[i - 1]'],
-			['                    swapped <- i'],
-			['               end if'],
-			['          end for'],
-			['          start <- swapped'],
-			['     end while'],
+			['  start <- 0, end <- length of array - 1'],
+			['  swapped <- start'],
+			['  while end > start'],
+			['    swapped <- start'],
+			['    for i <- start, end do'],
+			['      if array[i] > array[i + 1]'],
+			['        swap array[i], array[i + 1]'],
+			['        swapped <- i'],
+			['      end if'],
+			['    end for'],
+			['    end <- swapped'],
+			['    for i <- end, start do'],
+			['      if array[i] < array[i - 1]'],
+			['        swap array[i], array[i - 1]'],
+			['        swapped <- i'],
+			['      end if'],
+			['    end for'],
+			['    start <- swapped'],
+			['  end while'],
 			['end procedure'],
 		];
 
-		console.log(this.nextIndex);
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
@@ -191,22 +190,22 @@ export default class CocktailSort extends Algorithm {
 	toggleLastSwap() {
 		if (lastSwapEnabled) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     sorted <- false');
-			this.cmd(act.setText, this.codeID[3][0], '     while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[4][0], '          sorted <- true');
-			this.cmd(act.setText, this.codeID[8][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[11][0], '          end <- end - 1');
-			this.cmd(act.setText, this.codeID[15][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[18][0], '          start <- start + 1');
+			this.cmd(act.setText, this.codeID[2][0], '  sorted <- false');
+			this.cmd(act.setText, this.codeID[3][0], '  while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID[4][0], '    sorted <- true');
+			this.cmd(act.setText, this.codeID[8][0], '        sorted <- false');
+			this.cmd(act.setText, this.codeID[11][0], '    end <- end - 1');
+			this.cmd(act.setText, this.codeID[15][0], '        sorted <- false');
+			this.cmd(act.setText, this.codeID[18][0], '    start <- start + 1');
 		} else {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     swapped <- start');
-			this.cmd(act.setText, this.codeID[3][0], '     while start < end');
-			this.cmd(act.setText, this.codeID[4][0], '          swapped <- start');
-			this.cmd(act.setText, this.codeID[8][0], '                    swapped <- i');
-			this.cmd(act.setText, this.codeID[11][0], '          end <- swapped');
-			this.cmd(act.setText, this.codeID[15][0], '                    swapped <- i');
-			this.cmd(act.setText, this.codeID[18][0], '          start <- swapped');
+			this.cmd(act.setText, this.codeID[2][0], '  swapped <- start');
+			this.cmd(act.setText, this.codeID[3][0], '  while start < end');
+			this.cmd(act.setText, this.codeID[4][0], '    swapped <- start');
+			this.cmd(act.setText, this.codeID[8][0], '        swapped <- i');
+			this.cmd(act.setText, this.codeID[11][0], '    end <- swapped');
+			this.cmd(act.setText, this.codeID[15][0], '        swapped <- i');
+			this.cmd(act.setText, this.codeID[18][0], '    start <- swapped');
 		}
 		lastSwapEnabled = !lastSwapEnabled;
 	}

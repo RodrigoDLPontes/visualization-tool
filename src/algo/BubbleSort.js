@@ -119,19 +119,19 @@ export default class BubbleSort extends Algorithm {
 
 		this.code = [
 			['procedure BubbleSort(array):'],
-			['     end <- length of array'],
-			['     start <- 0'],
-			['     swapped <- start'],
-			['     while start < end'],
-			['          swapped <- start'],
-			['          for j <- 0, end do'],
-			['               if arr[j] > arr[j + 1]'],
-			['                    swap arr[j], arr[j + 1]'],
-			['                    swapped <- j'],
-			['               end if'],
-			['          end for'],
-			['          end <- swapped'],
-			['     end while'],
+			['  end <- length of array'],
+			['  start <- 0'],
+			['  swapped <- start'],
+			['  while start < end'],
+			['    swapped <- start'],
+			['    for j <- 0, end do'],
+			['      if arr[j] > arr[j + 1]'],
+			['        swap arr[j], arr[j + 1]'],
+			['        swapped <- j'],
+			['      end if'],
+			['    end for'],
+			['    end <- swapped'],
+			['  end while'],
 			['end procedure'],
 		];
 
@@ -164,7 +164,6 @@ export default class BubbleSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		console.log(list);
 		if (
 			this.listField.value !== '' &&
 			list.length <= MAX_ARRAY_SIZE &&

@@ -54,7 +54,6 @@ const PUSH_ELEMENT_Y = 30;
 
 const CODE_START_X = 400;
 const CODE_START_Y = 25;
-const CODE_LINE_HEIGHT = 14;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
@@ -139,40 +138,40 @@ export default class StackLL extends Algorithm {
 
 		this.code = [
 			['procedure push(data)'],
-			['     head = new node(data, head)'],
-			// ['     increment size'],
+			['  head = new node(data, head)'],
 			['end procedure'],
 
 			[],
 			['procedure pop()'],
 
-			['     result = head.data'],
-			['     head = head.next'],
-			// ['     decrement size'],
-			// ['     return result'],
+			['  result = head.data'],
+			['  head = head.next'],
 			['end procedure'],
 		];
 
-		this.codeID = Array(this.code.length);
-		let i, j;
-		for (i = 0; i < this.code.length; i++) {
-			this.codeID[i] = new Array(this.code[i].length);
-			for (j = 0; j < this.code[i].length; j++) {
-				this.codeID[i][j] = this.nextIndex++;
-				this.cmd(
-					act.createLabel,
-					this.codeID[i][j],
-					this.code[i][j],
-					CODE_START_X,
-					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0,
-				);
-				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-				if (j > 0) {
-					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-				}
-			}
-		}
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		// this.codeID = Array(this.code.length);
+		// let i, j;
+		// for (i = 0; i < this.code.length; i++) {
+		// 	this.codeID[i] = new Array(this.code[i].length);
+		// 	for (j = 0; j < this.code[i].length; j++) {
+		// 		this.codeID[i][j] = this.nextIndex++;
+		// 		this.cmd(
+		// 			act.createLabel,
+		// 			this.codeID[i][j],
+		// 			this.code[i][j],
+		// 			CODE_START_X,
+		// 			CODE_START_Y + i * CODE_LINE_HEIGHT,
+		// 			0,
+		// 			true,
+		// 		);
+		// 		this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+		// 		if (j > 0) {
+		// 			this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+		// 		}
+		// 	}
+		// }
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

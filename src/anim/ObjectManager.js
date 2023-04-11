@@ -462,9 +462,9 @@ export default class ObjectManager {
 		return this.nodes[nodeID].x;
 	}
 
-	getTextWidth(text) {
+	getTextWidth(text, isCode) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
-		this.ctx.font = '12px Arial';
+		this.ctx.font = isCode ? '13px Source Code Pro' : '12px Arial';
 		const strList = text.split('\n');
 		let width = 0;
 		if (strList.length === 1) {
@@ -727,7 +727,7 @@ export default class ObjectManager {
 		}
 	}
 
-	addLabelObject(objectID, objectLabel, centering) {
+	addLabelObject(objectID, objectLabel, centering, isCode) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addLabelObject: object already exists!');
 		}
@@ -736,7 +736,8 @@ export default class ObjectManager {
 			objectID,
 			objectLabel,
 			centering,
-			this.getTextWidth(objectLabel),
+			this.getTextWidth(objectLabel, isCode),
+			isCode,
 		);
 		this.nodes[objectID] = newLabel;
 	}

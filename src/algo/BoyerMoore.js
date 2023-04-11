@@ -33,7 +33,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -295,8 +295,21 @@ export default class BoyerMoore extends Algorithm {
 
 		for (let i = 0; i < text.length; i++) {
 			const xpos = i * this.cellSize + ARRAY_START_X;
-			const ypos = ARRAY_START_Y;
+			const ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
+			this.cmd(
+				act.createLabel,
+				this.nextIndex++,
+				i,
+				xpos,
+				ypos,
+			);
+		}
+
+		for (let i = 0; i < text.length; i++) {
+			const xpos = i * this.cellSize + ARRAY_START_X;
+			const ypos = ARRAY_START_Y;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,

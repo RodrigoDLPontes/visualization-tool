@@ -123,7 +123,7 @@ export default class LCS extends Algorithm {
 			['end procedure'],
 		];
 
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y, true);
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
 		// this.codeID = Array(this.code.length);
 		// let i, j;

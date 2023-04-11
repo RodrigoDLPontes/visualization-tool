@@ -166,7 +166,7 @@ export default class Kruskals extends Graph {
 			[`    merge u's cluster with v's cluster`],
 		];
 
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y, undefined, undefined, 1);
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);

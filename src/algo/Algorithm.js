@@ -212,12 +212,12 @@ export default class Algorithm {
 		this.commands = [];
 	}
 
-	addCodeToCanvasBase(code, start_x, start_y, isCode, line_height, standard_color, layer) {
+	addCodeToCanvasBase(code, start_x, start_y, line_height, standard_color, layer) {
 		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
 		layer = typeof layer !== 'undefined' ? layer : 0;
-		isCode = true;
+		const isCode = true;
 		const codeID = Array(code.length);
 		let i, j;
 		for (i = 0; i < code.length; i++) {

@@ -32,7 +32,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -215,10 +215,24 @@ export default class KMP extends Algorithm {
 		}
 
 		let xpos, ypos;
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y - 25;
+			this.textRowID[i] = this.nextIndex;
+			this.cmd(
+				act.createLabel,
+				this.nextIndex++,
+				i,
+				xpos,
+				ypos,
+			);
+		}
+
 		for (let i = 0; i < text.length; i++) {
 			xpos = i * this.cellSize + ARRAY_START_X;
 			ypos = ARRAY_START_Y;
-			this.textRowID[i] = this.nextIndex;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,

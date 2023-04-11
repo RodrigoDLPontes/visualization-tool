@@ -32,7 +32,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -223,8 +223,21 @@ export default class RabinKarp extends Algorithm {
 
 		for (let i = 0; i < text.length; i++) {
 			xpos = i * this.cellSize + ARRAY_START_X;
-			ypos = ARRAY_START_Y;
+			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
+			this.cmd(
+				act.createLabel,
+				this.nextIndex++,
+				i,
+				xpos,
+				ypos,
+			);
+		}
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,
@@ -356,9 +369,9 @@ export default class RabinKarp extends Algorithm {
 				this.unhighlight(6, 0);
 				this.highlight(7, 0);
 				xpos = i * this.cellSize + ARRAY_START_X;
-				this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', xpos, ARRAY_START_Y);
+				this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', xpos, ARRAY_START_Y, this.cellSize / 2);
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', xpos, ypos);
+				this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', xpos, ypos, this.cellSize / 2);
 				this.cmd(act.step);
 				this.unhighlight(7, 0);
 				this.highlight(8, 0);

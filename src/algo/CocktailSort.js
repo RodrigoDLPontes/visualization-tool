@@ -141,7 +141,6 @@ export default class CocktailSort extends Algorithm {
 			['end procedure'],
 		];
 
-		console.log(this.nextIndex);
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);

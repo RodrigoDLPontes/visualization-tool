@@ -164,7 +164,6 @@ export default class BubbleSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		console.log(list);
 		if (
 			this.listField.value !== '' &&
 			list.length <= MAX_ARRAY_SIZE &&

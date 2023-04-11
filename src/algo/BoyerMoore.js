@@ -272,7 +272,6 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	find(text, pattern) {
-		console.log(this.codeID);
 		if (this.codeID) {
 			this.removeCode(this.codeID);
 		}

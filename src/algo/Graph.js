@@ -220,10 +220,6 @@ export default class Graph extends Algorithm {
 	graphRepChangedCallback(newLayer) {
 		this.animationManager.setAllLayers([0, newLayer]);
 		this.currentLayer = newLayer;
-		if (this.currentLayer !== 1) {
-			//console.log(this.codeID);
-			//this.hideCodeFromCanvas(this.codeID);
-		}
 	}
 
 	recolorGraph() {

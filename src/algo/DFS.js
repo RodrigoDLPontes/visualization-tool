@@ -178,7 +178,7 @@ export default class DFS extends Graph {
 			['  Initialize Stack K'],
 			['  add s to K, VS'],
 			['  while K not empty'],
-			['    v <- remove from K'],
+			['    v ← remove from K'],
 			['    add v to L'],
 			['    for all w adjacent to v'],
 			['      if w not in VS'],

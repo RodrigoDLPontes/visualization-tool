@@ -108,7 +108,7 @@ export default class Prims extends Graph {
 			['mark s as visited in VS'],
 			['for each edge(s, v) in G, PQ.enqueue(edge(s, v))'],
 			['while PQ is not empty and VS is not full'],
-			['  edge(u, w) <- PQ.dequeue()'],
+			['  edge(u, w) ← PQ.dequeue()'],
 			['  if w is not visited in VS'],
 			['    add edge(u, w) to MST'],
 			['    mark w as visited in VS'],

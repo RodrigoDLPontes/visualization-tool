@@ -108,12 +108,12 @@ export default class InsertionSort extends Algorithm {
 
 		this.code = [
 			['procedure InsertionSort(array):'],
-			['  length <- length of array'],
-			['  for i <- 1, length - 1 do'],
-			['    j <- i'],
+			['  length ← length of array'],
+			['  for i ← 1, length - 1 do'],
+			['    j ← i'],
 			['    while ', 'j > 0, ', 'array[j - 1] > array[j]', ' do'],
 			['      swap array[j-1], array[j] '],
-			['      j <- j - 1'],
+			['      j ← j - 1'],
 			['    end while'],
 			['  end for'],
 			['end procedure'],

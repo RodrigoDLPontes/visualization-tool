@@ -32,10 +32,10 @@ class AlgoScreen extends React.Component {
 	}
 
 	componentDidMount() {
-		if (!window.location.hash && /Chrome/.test(window.navigator.userAgent)) {
-			window.location = window.location + '#loaded';
-			window.location.reload();
-		}
+		// if (!window.location.hash) {
+		// 	window.location = window.location + '#loaded';
+		// 	window.location.reload();
+		// }
 
 		if (algoMap[this.state.algoName]) {
 			this.animManag = new AnimationManager(this.canvasRef, this.animBarRef);

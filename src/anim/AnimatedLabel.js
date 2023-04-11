@@ -54,8 +54,14 @@ export default class AnimatedLabel extends AnimatedObject {
 		if (!this.addedToScene) return;
 
 		context.globalAlpha = this.alpha;
+
+		const font = new FontFace('Source Code Pro', 'url(src/css/fonts/SourceCodePro-Regular.ttf)');
+		font.load().then(() => {
+			document.fonts.add(font);
+		});
+
 		if (this.isCode) {
-			context.font = '13px Source Code Pro';
+			context.font = '13px "Source Code Pro", monospace';
 		} else {
 			context.font = '12px Arial';
 		}

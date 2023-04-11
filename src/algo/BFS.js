@@ -106,7 +106,7 @@ export default class BFS extends Graph {
 			['initialize Queue, Q'],
 			['add S to Q'],
 			['while Q is not empty'],
-			['  v <- remove from Q'],
+			['  v ← remove from Q'],
 			['  for all w adjacent to v'],
 			['    if w not in VS'],
 			['      add w to Q'],

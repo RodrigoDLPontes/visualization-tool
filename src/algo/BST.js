@@ -69,7 +69,7 @@ const LEVEL_CODE = [
 	['  create Queue q'],
 	['  add root to q'],
 	['  while q is not empty'],
-	['    Node curr <- remove from q'],
+	['    Node curr ← remove from q'],
 	['    record data from curr'],
 	['    if curr.left is not null:'],
 	['      add curr.left to q'],

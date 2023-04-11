@@ -119,18 +119,18 @@ export default class BubbleSort extends Algorithm {
 
 		this.code = [
 			['procedure BubbleSort(array):'],
-			['  end <- length of array'],
-			['  start <- 0'],
-			['  swapped <- start'],
+			['  end ← length of array'],
+			['  start ← 0'],
+			['  swapped ← start'],
 			['  while start < end'],
-			['    swapped <- start'],
-			['    for j <- 0, end do'],
+			['    swapped ← start'],
+			['    for j ← 0, end do'],
 			['      if arr[j] > arr[j + 1]'],
 			['        swap arr[j], arr[j + 1]'],
-			['        swapped <- j'],
+			['        swapped ← j'],
 			['      end if'],
 			['    end for'],
-			['    end <- swapped'],
+			['    end ← swapped'],
 			['  end while'],
 			['end procedure'],
 		];
@@ -153,11 +153,11 @@ export default class BubbleSort extends Algorithm {
 		this.comparisonCountID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[3][0], '     sorted ← false');
 			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
+			this.cmd(act.setText, this.codeID[5][0], '          sorted ← true');
+			this.cmd(act.setText, this.codeID[9][0], '                    sorted ← false');
+			this.cmd(act.setText, this.codeID[12][0], '          end ← end - 1');
 		}
 		this.compCount = 0;
 	}
@@ -182,17 +182,17 @@ export default class BubbleSort extends Algorithm {
 	toggleLastSwap() {
 		this.implementAction(this.clear.bind(this));
 		if (lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '     sorted <- false');
+			this.cmd(act.setText, this.codeID[3][0], '     sorted ← false');
 			this.cmd(act.setText, this.codeID[4][0], '     while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '          sorted <- true');
-			this.cmd(act.setText, this.codeID[9][0], '                    sorted <- false');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- end - 1');
+			this.cmd(act.setText, this.codeID[5][0], '          sorted ← true');
+			this.cmd(act.setText, this.codeID[9][0], '                    sorted ← false');
+			this.cmd(act.setText, this.codeID[12][0], '          end ← end - 1');
 		} else {
-			this.cmd(act.setText, this.codeID[3][0], '     swapped <- start');
+			this.cmd(act.setText, this.codeID[3][0], '     swapped ← start');
 			this.cmd(act.setText, this.codeID[4][0], '     while start < end');
-			this.cmd(act.setText, this.codeID[5][0], '          swapped <- start');
-			this.cmd(act.setText, this.codeID[9][0], '                    swapped <- j');
-			this.cmd(act.setText, this.codeID[12][0], '          end <- swapped');
+			this.cmd(act.setText, this.codeID[5][0], '          swapped ← start');
+			this.cmd(act.setText, this.codeID[9][0], '                    swapped ← j');
+			this.cmd(act.setText, this.codeID[12][0], '          end ← swapped');
 		}
 		lastSwapEnabled = !lastSwapEnabled;
 	}

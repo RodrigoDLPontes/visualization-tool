@@ -160,7 +160,7 @@ export default class Kruskals extends Graph {
 			['initialize MST EdgeSet, MST'],
 			['initialize PriorityQueue, PQ with all edges in G'],
 			['while PQ is not empty and MST has fewer than n-1 edges'],
-			['  edge(u, v) <- PQ.dequeue()'],
+			['  edge(u, v) ← PQ.dequeue()'],
 			['  if u and v are not in the same cluster'],
 			['    add edge(u, v) to MST'],
 			[`    merge u's cluster with v's cluster`],

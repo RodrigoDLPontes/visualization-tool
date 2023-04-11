@@ -132,20 +132,20 @@ export default class RabinKarp extends Algorithm {
 
 		this.code = [
 			['procedure RabinKarp(text, pattern)'],
-			['  m <- length of pattern, n <- length of text'],
+			['  m ← length of pattern, n ← length of text'],
 			['  patternHash ← rolling hash of pattern'],
 			['  textHash ← rolling hash of first m characters of text'],
-			['  i <- 0'],
+			['  i ← 0'],
 			['  while i <= n - m'],
 			['    if patternHash = textHash'],
-			['      j <- 0'],
+			['      j ← 0'],
 			['      while j < m and text[i + j] = pattern[j]'],
-			['        j <- j + 1'],
+			['        j ← j + 1'],
 			['        if j = m'],
 			['          match found at i'],
-			['        i <- i + 1'],
+			['        i ← i + 1'],
 			['        if i <= n - m'],
-			['          textHash <- new hash of text, from i to i + m'],
+			['          textHash ← new hash of text, from i to i + m'],
 			['end procedure'],
 		];
 		this.codeID = [];

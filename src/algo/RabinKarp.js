@@ -143,9 +143,9 @@ export default class RabinKarp extends Algorithm {
 			['        j ← j + 1'],
 			['      if j = m'],
 			['        match found at i'],
-			['      i ← i + 1'],
-			['      if i <= n - m'],
-			['        textHash ← rolled hash of text, from i to i + m'],
+			['    i ← i + 1'],
+			['    if i <= n - m'],
+			['      textHash ← rolled hash of text, from i to i + m'],
 			['end procedure'],
 		];
 		this.codeID = [];

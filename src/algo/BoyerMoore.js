@@ -51,8 +51,6 @@ const BM_CODE_Y = 205;
 
 const GALIL_CODE_Y = 275;
 
-let galilRuleEnabled = false;
-
 export default class BoyerMoore extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -126,6 +124,7 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableCharacterID = [];
 		this.lastTableValueID = [];
 		this.codeID = [];
+		this.galilRuleEnabled = false;
 		// this.failureTableLabelID = this.nextIndex++;
 		// this.failureTableCharacterID = [];
 		// this.failureTableValueID = [];
@@ -267,7 +266,7 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	toggleGalilRule() {
-		galilRuleEnabled = !galilRuleEnabled;
+		this.galilRuleEnabled = !this.galilRuleEnabled;
 		//this.implementAction(this.clear.bind(this));
 	}
 
@@ -342,7 +341,7 @@ export default class BoyerMoore extends Algorithm {
 
 		const lastTable = this.buildLastTable(text.length, pattern);
 		this.removeCode(this.codeID);
-		if (galilRuleEnabled) {
+		if (this.galilRuleEnabled) {
 			this.buildFailureTable(text.length, pattern);
 			this.codeID = this.addCodeToCanvasBase(
 				this.GalilCode,
@@ -380,10 +379,10 @@ export default class BoyerMoore extends Algorithm {
 		let j = pattern.length - 1;
 		let row = 0;
 		let l = 0;
-		let gr = galilRuleEnabled ? 1 : 0;
+		let gr = this.galilRuleEnabled ? 1 : 0;
 		this.highlight(gr + 4, 0);
 		while (i <= text.length - pattern.length) {
-			gr = galilRuleEnabled ? 1 : 0;
+			gr = this.galilRuleEnabled ? 1 : 0;
 			for (let k = i; k < i + pattern.length; k++) {
 				this.cmd(
 					act.setText,
@@ -426,7 +425,7 @@ export default class BoyerMoore extends Algorithm {
 			if (j < l) {
 				this.highlight(gr + 9, 0);
 				this.highlight(gr + 10, 0);
-				if (galilRuleEnabled) {
+				if (this.galilRuleEnabled) {
 					this.highlight(gr + 11, 0);
 					i += this.period;
 					l = pattern.length - this.period;
@@ -446,7 +445,7 @@ export default class BoyerMoore extends Algorithm {
 				if (l !== 0) {
 					l = 0;
 				}
-				gr = galilRuleEnabled ? 2 : 0;
+				gr = this.galilRuleEnabled ? 2 : 0;
 				this.highlight(11 + gr, 0);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 				let shift;
@@ -486,7 +485,7 @@ export default class BoyerMoore extends Algorithm {
 				this.cmd(act.move, jPointerID, xpos, ypos);
 			}
 		}
-		gr = galilRuleEnabled ? 1 : 0;
+		gr = this.galilRuleEnabled ? 1 : 0;
 		this.unhighlight(gr + 4, 0);
 		this.cmd(act.step);
 
@@ -496,7 +495,7 @@ export default class BoyerMoore extends Algorithm {
 	}
 
 	getMaxRows(text, pattern) {
-		if (galilRuleEnabled) {
+		if (this.galilRuleEnabled) {
 			const failureTable = [];
 			failureTable[0] = 0;
 			let i = 0;
@@ -530,7 +529,7 @@ export default class BoyerMoore extends Algorithm {
 				j--;
 			}
 			if (j < l) {
-				if (galilRuleEnabled) {
+				if (this.galilRuleEnabled) {
 					i += this.period;
 					l = pattern.length - this.period;
 				} else {

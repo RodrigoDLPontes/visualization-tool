@@ -116,7 +116,7 @@ export default class Dijkstras extends Graph {
 			['initialize distanceMap, DM'],
 			['initialize PriorityQueue, PQ'],
 			['for all v in G, initialize distance of v to INF'],
-			['PQ.enqueue((s, 0))'],
+			['PQ.enqueue((s, 0)), DM.put(s, 0)'],
 			['while PQ is not empty and VS is not full'],
 			['  (u, d) ← PQ.dequeue()'],
 			['  if u is not visited in VS'],

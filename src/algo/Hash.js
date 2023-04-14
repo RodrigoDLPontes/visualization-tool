@@ -674,7 +674,7 @@ export default class Hash extends Algorithm {
 	}
 
 	insertCallback() {
-		const insertedKey = this.keyField.value;
+		const insertedKey = this.hashType === 'integers' ? parseInt(this.keyField.value).toString() : this.keyField.value;
 		const insertedValue = this.valueField.value;
 		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';

@@ -177,8 +177,8 @@ export default class BoyerMoore extends Algorithm {
 			['      shift ← lastTable[text[i + j]]'],
 			['      if shift < j'],
 			['        i ← i + (j - shift)'],
-			['       else'],
-			['         i ← i + 1'],
+			['      else'],
+			['        i ← i + 1'],
 			['end procedure'],
 		];
 

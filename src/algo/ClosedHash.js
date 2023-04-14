@@ -43,7 +43,7 @@ const LINKED_ITEM_HEIGHT = 20;
 const LINKED_ITEM_INITIAL_X = 60;
 const LINKED_ITEM_INITIAL_Y = 40;
 const LINKED_ITEM_X_DELTA_INIT = 85;
-const LINKED_ITEM_X_DELTA = 100;
+const LINKED_ITEM_X_DELTA = 130;
 
 const EXPLAIN_LABEL_X = 550;
 const EXPLAIN_LABEL_Y = 15;
@@ -264,7 +264,7 @@ export default class ClosedHash extends Hash {
 			while (tmp != null && !found) {
 				this.cmd(act.setHighlight, tmp.graphicID, 1);
 				if (tmp.key === key) {
-					this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
+					this.cmd(act.setText, compareIndex, tmp.key + ' == ' + key);
 					old = tmp;
 					found = true;
 					this.cmd(act.step);

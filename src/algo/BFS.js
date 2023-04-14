@@ -102,11 +102,13 @@ export default class BFS extends Graph {
 
 		this.code = [
 			['procedure BFS(Vertex S)'],
-			['initialize VisitedSet, VS'],
-			['initialize Queue, Q'],
-			['add S to Q'],
+			['initialize VisitedSet VS'],
+			['initialize Queue Q'],
+			['initialize List L'],
+			['add S to Q and VS'],
 			['while Q is not empty'],
 			['  v ← remove from Q'],
+			['  add v to L'],
 			['  for all w adjacent to v'],
 			['    if w not in VS'],
 			['      add w to Q'],
@@ -213,15 +215,17 @@ export default class BFS extends Graph {
 		this.highlight(1, 0);
 		this.highlight(2, 0);
 		this.highlight(3, 0);
+		this.highlight(4, 0);
 		this.cmd(act.step);
 		this.unhighlight(1, 0);
 		this.unhighlight(2, 0);
 		this.unhighlight(3, 0);
-		this.highlight(4, 0);
+		this.unhighlight(4, 0);
+		this.highlight(5, 0);
 		while (this.queue.length > 0 && this.listID.length < this.size) {
 			vertex = this.queue.shift();
-			this.highlight(5, 0);
-
+			this.highlight(6, 0);
+			this.highlight(7, 0);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
@@ -250,18 +254,19 @@ export default class BFS extends Graph {
 
 			this.visitVertex(vertex);
 			this.cmd(act.step);
-			this.unhighlight(5, 0);
-			this.highlight(6, 0);
+			this.unhighlight(6, 0);
+			this.unhighlight(7, 0);
+			this.highlight(8, 0);
 
 			for (let neighbor = 0; neighbor < this.size; neighbor++) {
 				if (this.adj_matrix[vertex][neighbor] > 0) {
 					this.highlightEdge(vertex, neighbor, 1);
-					this.highlight(7, 0);
+					this.highlight(9, 0);
 					this.cmd(act.step);
 					if (!this.visited[neighbor]) {
-						this.unhighlight(7, 0);
-						this.highlight(8, 0);
-						this.highlight(9, 0);
+						this.unhighlight(9, 0);
+						this.highlight(10, 0);
+						this.highlight(11, 0);
 						this.visited[neighbor] = true;
 						this.visitedID.push(this.nextIndex);
 						this.cmd(
@@ -288,7 +293,7 @@ export default class BFS extends Graph {
 							QUEUE_START_Y,
 						);
 					} else {
-						this.unhighlight(7, 0);
+						this.unhighlight(9, 0);
 						this.cmd(
 							act.setText,
 							this.infoLabelID,
@@ -296,18 +301,18 @@ export default class BFS extends Graph {
 						);
 					}
 					this.cmd(act.step);
-					this.unhighlight(8, 0);
-					this.unhighlight(9, 0);
+					this.unhighlight(10, 0);
+					this.unhighlight(11, 0);
 					this.highlightEdge(vertex, neighbor, 0);
 				}
 			}
-			this.unhighlight(6, 0);
+			this.unhighlight(8, 0);
 
 			this.cmd(act.delete, this.queueID.shift());
 
 			this.leaveVertex();
 		}
-		this.unhighlight(4, 0);
+		this.unhighlight(5, 0);
 
 		if (this.queue.length > 0) {
 			this.cmd(act.setText, this.infoLabelID, 'All vertices have been visited, done');

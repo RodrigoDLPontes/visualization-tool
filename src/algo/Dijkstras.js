@@ -121,9 +121,9 @@ export default class Dijkstras extends Graph {
 			['  (u, d) ← PQ.dequeue()'],
 			['  if u is not visited in VS'],
 			['    mark u as visited in VS'],
-			['  for all (w, d2) adjacent to u and not visited in VS'],
-			['    update DM for d2'],
-			['    PQ.enqueue((w, d + d2))'],
+			['    for all (w, d2) adjacent to u and not visited in VS'],
+			['      update DM for d2'],
+			['      PQ.enqueue((w, d + d2))'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y, undefined, undefined, 1);

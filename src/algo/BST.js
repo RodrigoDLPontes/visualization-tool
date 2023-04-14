@@ -42,10 +42,10 @@ const QUEUE_SPACING = 40;
 
 const PRE_CODE = [
 	['procedure preOrder(Node node)'],
-	['     if node is not null:'],
-	['          look at data in the node'],
-	['          recurse left'],
-	['          recurse right'],
+	['  if node is not null:'],
+	['    look at data in the node'],
+	['    recurse left'],
+	['    recurse right'],
 	['end procedure'],
 ];
 const IN_CODE = [

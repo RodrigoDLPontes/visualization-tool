@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
+	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
@@ -49,15 +50,22 @@ const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
 
-const TOP_POS_X = 180;
-const TOP_POS_Y = 100;
-const TOP_LABEL_X = 130;
-const TOP_LABEL_Y = 100;
+const HEAD_POS_X = 180;
+const HEAD_POS_Y = 100;
+const HEAD_LABEL_X = 130;
+const HEAD_LABEL_Y = 100;
 
-const TOP_ELEM_WIDTH = 30;
-const TOP_ELEM_HEIGHT = 30;
+const TAIL_POS_X = 180;
+const TAIL_POS_Y = 500;
+const TAIL_LABEL_X = 130;
+const TAIL_LABEL_Y = 500;
+
+const HEAD_ELEM_WIDTH = 30;
+const HEAD_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
+
+let tailEnabled = false;
 
 export default class LinkedList extends Algorithm {
 	constructor(am, w, h) {
@@ -190,10 +198,34 @@ export default class LinkedList extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		this.tailCheckbox = addCheckboxToAlgorithmBar('Tail pointer', false);
+		this.tailCheckbox.onclick = this.toggleTailPointer.bind(this);
+		this.controls.push(this.tailCheckbox);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
+	}
+
+	toggleTailPointer() {
+		tailEnabled = !tailEnabled;
+		this.implementAction(this.clearAll.bind(this));
+		if (tailEnabled) {
+			this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
+			this.cmd(
+				act.createRectangle,
+				this.tailID,
+				'',
+				HEAD_ELEM_WIDTH,
+				HEAD_ELEM_HEIGHT,
+				TAIL_POS_X,
+				TAIL_POS_Y,
+			);
+			this.cmd(act.setNull, this.tailID, 1);
+		}
 	}
 
 	enableUI() {
@@ -221,17 +253,35 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.cmd(act.createLabel, this.topLabelID, 'Head', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'Head', HEAD_LABEL_X, HEAD_LABEL_Y);
 		this.cmd(
 			act.createRectangle,
 			this.topID,
 			'',
-			TOP_ELEM_WIDTH,
-			TOP_ELEM_HEIGHT,
-			TOP_POS_X,
-			TOP_POS_Y,
+			HEAD_ELEM_WIDTH,
+			HEAD_ELEM_HEIGHT,
+			HEAD_POS_X,
+			HEAD_POS_Y,
 		);
 		this.cmd(act.setNull, this.topID, 1);
+
+		this.tailID = this.nextIndex++;
+		this.tailLabelID = this.nextIndex++;
+
+		if (tailEnabled) {
+			this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
+
+			this.cmd(
+				act.createRectangle,
+				this.tailID,
+				'',
+				HEAD_ELEM_WIDTH,
+				HEAD_ELEM_HEIGHT,
+				TAIL_POS_X,
+				TAIL_POS_Y,
+			);
+			this.cmd(act.setNull, this.tailID, 1);
+		}
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -241,6 +291,18 @@ export default class LinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.initialIndex;
+		if (tailEnabled) {
+			this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_LABEL_Y);
+			this.cmd(
+				act.createRectangle,
+				this.tailID,
+				'',
+				HEAD_ELEM_WIDTH,
+				HEAD_ELEM_HEIGHT,
+				TAIL_POS_X,
+				TAIL_POS_Y,
+			);
+		}
 	}
 
 	addIndexCallback() {
@@ -494,6 +556,17 @@ export default class LinkedList extends Algorithm {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.size = 0;
+
+		// this.cmd(
+		// 	act.createRectangle,
+		// 	this.tailID,
+		// 	'',
+		// 	HEAD_ELEM_WIDTH,
+		// 	HEAD_ELEM_HEIGHT,
+		// 	TAIL_POS_X,
+		// 	TAIL_POS_Y,
+		// );
+
 		return this.commands;
 	}
 }

@@ -258,8 +258,7 @@ export default class LinkedList extends Algorithm {
 		this.tailID = this.nextIndex++;
 		this.tailLabelID = this.nextIndex++;
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
-
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_LABEL_Y);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -357,8 +356,8 @@ export default class LinkedList extends Algorithm {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
-	traverse(index) {
-		for (let i = 0; i <= index; i++) {
+	traverse(startIndex, endIndex) {
+		for (let i = startIndex; i <= endIndex; i++) {
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
 			if (i > 0) {
@@ -383,7 +382,11 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1);
+		if (this.tailEnabled && index === this.size) {
+			this.traverse(this.size - 1, this.size);
+		} else {
+			this.traverse(0, index - 1);
+		}
 
 		this.cmd(
 			act.createLinkedListNode,
@@ -410,8 +413,9 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.delete, labPushValID);
 
 		if (index === this.size) {
-			// adding to back , dont need to do anything to head
 			this.cmd(act.setNull, this.linkedListElemID[index], 1);
+			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1])
+			this.cmd(act.connect, this.tailID, this.linkedListElemID[index]);
 		}
 
 		if (this.size !== 0) {
@@ -450,6 +454,7 @@ export default class LinkedList extends Algorithm {
 			}
 		} else {
 			this.cmd(act.connect, this.topID, this.linkedListElemID[0]);
+			this.cmd(act.connect, this.tailID, this.linkedListElemID[0]);
 		}
 
 		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
@@ -472,25 +477,32 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1);
+		this.traverse(0, index - 1);
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
 		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.setTextColor, this.linkedListElemID[index], "#FF0000");
 		this.cmd(act.step);
 
 		if (this.size !== 1) {
 			if (index === 0) {
 				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
+				this.cmd(act.step);
+				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index],
 				);
+
+				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
+
 				this.cmd(act.setNull, this.linkedListElemID[index - 1], 1);
 			} else {
 				const xPos =
@@ -509,6 +521,8 @@ export default class LinkedList extends Algorithm {
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index + 1],
 				);
+				this.cmd(act.step);
+				this.cmd(act.disconnect, this.linkedListElemID[index], this.linkedListElemID[index + 1]);
 			}
 		}
 		this.cmd(act.step);
@@ -546,17 +560,6 @@ export default class LinkedList extends Algorithm {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}
 		this.size = 0;
-
-		// this.cmd(
-		// 	act.createRectangle,
-		// 	this.tailID,
-		// 	'',
-		// 	HEAD_ELEM_WIDTH,
-		// 	HEAD_ELEM_HEIGHT,
-		// 	TAIL_POS_X,
-		// 	TAIL_POS_Y,
-		// );
-
 		return this.commands;
 	}
 }

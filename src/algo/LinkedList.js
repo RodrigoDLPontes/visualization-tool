@@ -65,8 +65,6 @@ const HEAD_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
 
-let tailEnabled = false;
-
 export default class LinkedList extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -211,20 +209,12 @@ export default class LinkedList extends Algorithm {
 	}
 
 	toggleTailPointer() {
-		tailEnabled = !tailEnabled;
+		this.tailEnabled = !this.tailEnabled;
 		this.implementAction(this.clearAll.bind(this));
-		if (tailEnabled) {
-			this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
-			this.cmd(
-				act.createRectangle,
-				this.tailID,
-				'',
-				HEAD_ELEM_WIDTH,
-				HEAD_ELEM_HEIGHT,
-				TAIL_POS_X,
-				TAIL_POS_Y,
-			);
-			this.cmd(act.setNull, this.tailID, 1);
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
 		}
 	}
 
@@ -268,19 +258,26 @@ export default class LinkedList extends Algorithm {
 		this.tailID = this.nextIndex++;
 		this.tailLabelID = this.nextIndex++;
 
-		if (tailEnabled) {
-			this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
+		this.cmd(act.createLabel, this.tailLabelID, 'Tails', TAIL_LABEL_X, TAIL_LABEL_Y);
 
-			this.cmd(
-				act.createRectangle,
-				this.tailID,
-				'',
-				HEAD_ELEM_WIDTH,
-				HEAD_ELEM_HEIGHT,
-				TAIL_POS_X,
-				TAIL_POS_Y,
-			);
-			this.cmd(act.setNull, this.tailID, 1);
+		this.cmd(
+			act.createRectangle,
+			this.tailID,
+			'',
+			HEAD_ELEM_WIDTH,
+			HEAD_ELEM_HEIGHT,
+			TAIL_POS_X,
+			TAIL_POS_Y,
+		);
+		this.cmd(act.setNull, this.tailID, 1);
+
+		this.cmd(act.setLayer, this.tailLabelID, 1);
+		this.cmd(act.setLayer, this.tailID, 1);
+
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
 		}
 
 		this.animationManager.startNewAnimation(this.commands);
@@ -291,17 +288,10 @@ export default class LinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.initialIndex;
-		if (tailEnabled) {
-			this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_LABEL_Y);
-			this.cmd(
-				act.createRectangle,
-				this.tailID,
-				'',
-				HEAD_ELEM_WIDTH,
-				HEAD_ELEM_HEIGHT,
-				TAIL_POS_X,
-				TAIL_POS_Y,
-			);
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
 		}
 	}
 

@@ -55,10 +55,16 @@ export default class AnimatedLabel extends AnimatedObject {
 
 		context.globalAlpha = this.alpha;
 
-		const font = new FontFace('Source Code Pro', 'url(src/css/fonts/SourceCodePro-Regular.ttf)');
-		font.load().then(() => {
-			document.fonts.add(font);
-		});
+		const font = new FontFace(
+			'Source Code Pro',
+			'url(src/css/fonts/SourceCodePro-Regular.ttf)',
+		);
+		font.load().then(
+			() => {
+				document.fonts.add(font);
+			},
+			() => {},
+		);
 
 		if (this.isCode) {
 			context.font = '13px "Source Code Pro", monospace';
@@ -305,7 +311,7 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlightIndex,
 			this.highlighted,
 			this.highlightColor,
-			this.isCode
+			this.isCode,
 		);
 	}
 }
@@ -322,7 +328,7 @@ class UndoDeleteLabel extends UndoBlock {
 		highlightIndex,
 		highlighted,
 		highlightColor,
-		isCode
+		isCode,
 	) {
 		super();
 		this.objectID = objectID;

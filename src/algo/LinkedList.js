@@ -493,17 +493,17 @@ export default class LinkedList extends Algorithm {
 				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
 				this.cmd(act.step);
 				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
+				this.cmd(act.setNull, this.linkedListElemID[0], 1)
 			} else if (index === this.size - 1) {
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index],
 				);
-
+				this.cmd(act.setNull, this.linkedListElemID[index - 1], 1);
+				this.cmd(act.step);
 				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
-
-				this.cmd(act.setNull, this.linkedListElemID[index - 1], 1);
 			} else {
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +

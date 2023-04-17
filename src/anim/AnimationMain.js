@@ -254,7 +254,6 @@ export default class AnimationManager extends EventListener {
 		const slider = (
 			<Slider
 				style={{ color: "f9c333", padding: '13px 0', height: 2 }}
-				track
 				defaultValue={speed}
 				onChange={(e, val) => {
 					this.setSpeed(val);

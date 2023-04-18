@@ -189,20 +189,27 @@ export default {
 	LinkedList: (
 		<ul>
 			<li>
-				The visualization may make it appear as if the head is a separate node. But keep in mind the head is just a reference to first node. So the head points to and effectively is the first node.
+				The visualization may make it appear as if the head and tail are a separate nodes. But keep in mind the head and tail are just a references to first and last nodes. So the head points to and effectively is the first node, and the tail points to and effectively is the last node.
 			</li>
 			<li>
 				LinkedLists are designed to operate at the head. So all operations acting at the front are {' '}
 				<text className="equation">
-					O(1)
+					O(1).
 				</text> 
 			</li>
 			<li>
-				This SLL has no tail. So removing from the back is {' '} 
+				Without the tail, adding to the back is {' '}
 				<text className="equation">
 					O(n)
 				</text>
-				{' '} since we must traverse to the node before the last the node.
+				{' '} since we must traverse from the head to the last node.
+			</li>
+			<li>
+				With the tail, adding to the back becomes {' '}
+				<text className="equation">
+					O(1)
+				</text>
+				{' '} since we can set the next pointer of the tail to the new node and then have the tail point to the new node.
 			</li>
 		</ul>
 	),

@@ -25,6 +25,7 @@
 // or implied, of the University of San Francisco
 
 import Algorithm, {
+	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
 	addGroupToAlgorithmBar,
@@ -49,13 +50,18 @@ const PUSH_LABEL_Y = 30;
 const PUSH_ELEMENT_X = 120;
 const PUSH_ELEMENT_Y = 30;
 
-const TOP_POS_X = 180;
-const TOP_POS_Y = 100;
-const TOP_LABEL_X = 130;
-const TOP_LABEL_Y = 100;
+const HEAD_POS_X = 180;
+const HEAD_POS_Y = 100;
+const HEAD_LABEL_X = 130;
+const HEAD_LABEL_Y = 100;
 
-const TOP_ELEM_WIDTH = 30;
-const TOP_ELEM_HEIGHT = 30;
+const TAIL_POS_X = 180;
+const TAIL_POS_Y = 500;
+const TAIL_LABEL_X = 130;
+const TAIL_LABEL_Y = 500;
+
+const HEAD_ELEM_WIDTH = 30;
+const HEAD_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
 
@@ -190,10 +196,26 @@ export default class LinkedList extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		this.tailCheckbox = addCheckboxToAlgorithmBar('Tail pointer', false);
+		this.tailCheckbox.onclick = this.toggleTailPointer.bind(this);
+		this.controls.push(this.tailCheckbox);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
+	}
+
+	toggleTailPointer() {
+		this.tailEnabled = !this.tailEnabled;
+		this.implementAction(this.clearAll.bind(this));
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
+		}
 	}
 
 	enableUI() {
@@ -221,17 +243,41 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.cmd(act.createLabel, this.topLabelID, 'Head', TOP_LABEL_X, TOP_LABEL_Y);
+		this.cmd(act.createLabel, this.topLabelID, 'Head', HEAD_LABEL_X, HEAD_LABEL_Y);
 		this.cmd(
 			act.createRectangle,
 			this.topID,
 			'',
-			TOP_ELEM_WIDTH,
-			TOP_ELEM_HEIGHT,
-			TOP_POS_X,
-			TOP_POS_Y,
+			HEAD_ELEM_WIDTH,
+			HEAD_ELEM_HEIGHT,
+			HEAD_POS_X,
+			HEAD_POS_Y,
 		);
 		this.cmd(act.setNull, this.topID, 1);
+
+		this.tailID = this.nextIndex++;
+		this.tailLabelID = this.nextIndex++;
+
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_LABEL_Y);
+		this.cmd(
+			act.createRectangle,
+			this.tailID,
+			'',
+			HEAD_ELEM_WIDTH,
+			HEAD_ELEM_HEIGHT,
+			TAIL_POS_X,
+			TAIL_POS_Y,
+		);
+		this.cmd(act.setNull, this.tailID, 1);
+
+		this.cmd(act.setLayer, this.tailLabelID, 1);
+		this.cmd(act.setLayer, this.tailID, 1);
+
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
+		}
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -241,6 +287,11 @@ export default class LinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.initialIndex;
+		if (this.tailEnabled) {
+			this.animationManager.setAllLayers([0, 1]);
+		} else {
+			this.animationManager.setAllLayers([0]);
+		}
 	}
 
 	addIndexCallback() {
@@ -305,8 +356,8 @@ export default class LinkedList extends Algorithm {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
-	traverse(index) {
-		for (let i = 0; i <= index; i++) {
+	traverse(startIndex, endIndex) {
+		for (let i = startIndex; i <= endIndex; i++) {
 			this.cmd(act.step);
 			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
 			if (i > 0) {
@@ -331,7 +382,11 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1);
+		if (this.tailEnabled && index === this.size) {
+			this.traverse(this.size - 1, this.size);
+		} else {
+			this.traverse(0, index - 1);
+		}
 
 		this.cmd(
 			act.createLinkedListNode,
@@ -358,8 +413,9 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.delete, labPushValID);
 
 		if (index === this.size) {
-			// adding to back , dont need to do anything to head
 			this.cmd(act.setNull, this.linkedListElemID[index], 1);
+			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1])
+			this.cmd(act.connect, this.tailID, this.linkedListElemID[index]);
 		}
 
 		if (this.size !== 0) {
@@ -398,6 +454,7 @@ export default class LinkedList extends Algorithm {
 			}
 		} else {
 			this.cmd(act.connect, this.topID, this.linkedListElemID[0]);
+			this.cmd(act.connect, this.tailID, this.linkedListElemID[0]);
 		}
 
 		this.cmd(act.setHighlight, this.linkedListElemID[index - 1], 0);
@@ -420,26 +477,34 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(index - 1);
+		this.traverse(0, index - 1);
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
 		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.setTextColor, this.linkedListElemID[index], "#FF0000");
 		this.cmd(act.step);
 
 		if (this.size !== 1) {
 			if (index === 0) {
 				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
+				this.cmd(act.step);
+				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
+				this.cmd(act.setNull, this.linkedListElemID[0], 1)
 			} else if (index === this.size - 1) {
+				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
+				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
+				this.cmd(act.step);
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index],
 				);
 				this.cmd(act.setNull, this.linkedListElemID[index - 1], 1);
+				this.cmd(act.step);
 			} else {
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
@@ -457,6 +522,8 @@ export default class LinkedList extends Algorithm {
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index + 1],
 				);
+				this.cmd(act.step);
+				this.cmd(act.disconnect, this.linkedListElemID[index], this.linkedListElemID[index + 1]);
 			}
 		}
 		this.cmd(act.step);

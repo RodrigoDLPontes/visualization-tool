@@ -165,7 +165,7 @@ export default class LCS extends Algorithm {
 		if (string1 !== '' && string2 !== '') {
 			this.S1Field.value = '';
 			this.S2Field.value = '';
-			this.implementAction(this.run.bind(this), string1, string2);
+			this.implementAction(this.run.bind(this), string2, string1);
 		}
 	}
 

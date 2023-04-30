@@ -331,7 +331,9 @@ export default class HeapSort extends Algorithm {
 		);
 		this.cmd(act.step);
 
+		this.cmd(act.setBackgroundColor, this.arrayID[index], '#2ECC71');
 		this.arrayData[index] = remData;
+
 		this.cmd(act.setText, this.arrayID[index], remData);
 		this.cmd(act.delete, removedElementID);
 		this.cmd(act.step);

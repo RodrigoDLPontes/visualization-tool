@@ -191,7 +191,7 @@ div.footer {
 	background: var(--buttons);
 	text-align: center;
 	border-top: 1.5px var(--borders) solid;
-	border-bottom: 1.5px var(--border) solid;
+	border-bottom: 1.5px var(--borders) solid;
 }
 
 .footer {

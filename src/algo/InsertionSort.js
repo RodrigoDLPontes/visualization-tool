@@ -106,6 +106,16 @@ export default class InsertionSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		);
+
 		this.code = [
 			['procedure InsertionSort(array):'],
 			['  length ← length of array'],
@@ -135,7 +145,9 @@ export default class InsertionSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
+		this.swapCountID = this.nextIndex++;
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
@@ -165,7 +177,9 @@ export default class InsertionSort extends Algorithm {
 		this.arrayID = [];
 		this.displayData = [];
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
@@ -309,6 +323,11 @@ export default class InsertionSort extends Algorithm {
 		this.cmd(act.setText, this.arrayID[j], '');
 		this.cmd(act.move, iLabelID, jXPos, jYPos);
 		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(
+			act.setText,
+			this.swapCountID,
+			'Swap Count: ' + ++this.swapCount,
+		);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
 		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);

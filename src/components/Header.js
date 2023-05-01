@@ -2,7 +2,6 @@ import 'react-hook-theme/dist/styles/style.css';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import ReactGA  from 'react-ga4';
 import { RxHamburgerMenu } from 'react-icons/rx';
 import { Toggle } from 'react-hook-theme';
 

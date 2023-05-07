@@ -121,7 +121,7 @@ export default class KMP extends Algorithm {
 			['  while j < m'],
 			['    if pattern[i] = pattern[j]'],
 			['      failureTable[j] ← i + 1'],
-			['      i < i + 1, j ← j + 1'],
+			['      i ← i + 1, j ← j + 1'],
 			['    else'],
 			['      if i = 0'],
 			['        failureTable[j] ← 0'],

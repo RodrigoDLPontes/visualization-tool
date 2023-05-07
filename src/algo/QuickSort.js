@@ -134,6 +134,16 @@ export default class QuickSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		);
+
 		this.code = [
 			['procedure QuickSort(array, left, right):'],
 			['  pivotIdx ← random index within region being sorted'],
@@ -176,6 +186,8 @@ export default class QuickSort extends Algorithm {
 		this.pPointerID = 0;
 		this.comparisonCountID = this.nextIndex++;
 		this.compCount = 0;
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
@@ -205,7 +217,9 @@ export default class QuickSort extends Algorithm {
 		this.arrayID = [];
 		this.displayData = [];
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
@@ -473,6 +487,11 @@ export default class QuickSort extends Algorithm {
 		this.cmd(act.move, this.pPointerID, lXPos, ARRAY_START_Y);
 		this.cmd(act.move, lLabelID, pXPos, ARRAY_START_Y);
 		moveJ && this.cmd(act.move, this.jPointerID, pXPos, ARRAY_START_Y);
+		this.cmd(
+			act.setText,
+			this.swapCountID,
+			'Swap Count: ' + ++this.swapCount,
+		);
 		this.cmd(act.step);
 		// Set text in array, and delete temporary labels and pointer
 		this.cmd(act.setText, this.arrayID[other], this.displayData[pivot]);
@@ -502,6 +521,11 @@ export default class QuickSort extends Algorithm {
 		// Move labels
 		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
 		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
+		this.cmd(
+			act.setText,
+			this.swapCountID,
+			'Swap Count: ' + ++this.swapCount,
+		);
 		this.cmd(act.step);
 		// Set text in array and delete temporary labels
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);

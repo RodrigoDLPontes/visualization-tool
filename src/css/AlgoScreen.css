@@ -283,6 +283,10 @@ input[type="radio"] {
 	margin-right: 2px;
 }
 
+input[type="radio"] + label {
+	color: var(--primary);
+}
+
 input[type="radio"]:checked + label {
 	padding: 1px 3px 1px 1px;
 	background-color: rgba(176, 179, 184, 0.8);

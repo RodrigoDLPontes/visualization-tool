@@ -117,6 +117,16 @@ export default class CocktailSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		);
+
 		this.code = [
 			['procedure CocktailSort(array):'],
 			['  start ← 0, end ← length of array - 1'],
@@ -151,6 +161,7 @@ export default class CocktailSort extends Algorithm {
 	reset() {
 		this.nextIndex = 0;
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
@@ -158,6 +169,7 @@ export default class CocktailSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
+		this.swapCountID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!lastSwapEnabled) {
 			this.cmd(act.setText, this.codeID[2][0], '     sorted ← false');
@@ -220,8 +232,10 @@ export default class CocktailSort extends Algorithm {
 		this.arrayData = [];
 		this.arrayID = [];
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.displayData = [];
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
@@ -320,9 +334,9 @@ export default class CocktailSort extends Algorithm {
 					sorted = false;
 					lastSwapped = i;
 				}
-				this.cmd(act.step);
 				this.unhighlight(7, 0);
 				this.unhighlight(8, 0);
+				this.cmd(act.step);
 			}
 			this.cmd(act.step);
 			this.unhighlight(5, 0);
@@ -362,9 +376,9 @@ export default class CocktailSort extends Algorithm {
 						sorted = false;
 						lastSwapped = i;
 					}
-					this.cmd(act.step);
 					this.unhighlight(14, 0);
 					this.unhighlight(15, 0);
+					this.cmd(act.step);
 				}
 				this.highlight(18, 0);
 				if (lastSwapEnabled) {
@@ -424,6 +438,11 @@ export default class CocktailSort extends Algorithm {
 		this.cmd(act.setText, this.arrayID[j], '');
 		this.cmd(act.move, iLabelID, jXPos, jYPos);
 		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(
+			act.setText,
+			this.swapCountID,
+			'Swap Count: ' + ++this.swapCount,
+		);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
 		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);

@@ -56,7 +56,7 @@ import {
 import EventListener from './CustomEvents.js';
 import ObjectManager from './ObjectManager.js';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@mui/material';
 import { UndoConnect } from './AnimatedLine.js';
@@ -271,7 +271,10 @@ export default class AnimationManager extends EventListener {
 		let midLevel = document.createElement('tr');
 		let bottomLevel = document.createElement('td');
 		midLevel.appendChild(bottomLevel);
-		ReactDOM.render(slider, bottomLevel);
+
+		const root = ReactDOM.createRoot(bottomLevel);
+		root.render(slider);
+
 		newTable.appendChild(midLevel);
 
 		midLevel = document.createElement('tr');

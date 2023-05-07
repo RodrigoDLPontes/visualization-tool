@@ -117,6 +117,16 @@ export default class BubbleSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		)
+
 		this.code = [
 			['procedure BubbleSort(array):'],
 			['  end ← length of array'],
@@ -144,6 +154,8 @@ export default class BubbleSort extends Algorithm {
 
 	reset() {
 		this.nextIndex = 0;
+		this.compCount = 0;
+		this.swapCount = 0;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
@@ -151,6 +163,7 @@ export default class BubbleSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
+		this.swapCountID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!lastSwapEnabled) {
 			this.cmd(act.setText, this.codeID[3][0], ' sorted ← false');
@@ -159,7 +172,6 @@ export default class BubbleSort extends Algorithm {
 			this.cmd(act.setText, this.codeID[9][0], '                sorted ← false');
 			this.cmd(act.setText, this.codeID[12][0], '      end ← end - 1');
 		}
-		this.compCount = 0;
 	}
 
 	sortCallback() {
@@ -207,8 +219,10 @@ export default class BubbleSort extends Algorithm {
 		this.arrayData = [];
 		this.arrayID = [];
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.displayData = [];
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
@@ -290,12 +304,12 @@ export default class BubbleSort extends Algorithm {
 				this.movePointers(i, i + 1);
 				this.highlight(7, 0);
 				this.unhighlight(6, 0);
-				this.cmd(act.step);
 				this.cmd(
 					act.setText,
 					this.comparisonCountID,
 					'Comparison Count: ' + ++this.compCount,
 				);
+				this.cmd(act.step);
 				this.unhighlight(7, 0);
 				if (this.arrayData[i] > this.arrayData[i + 1]) {
 					this.swap(i, i + 1);
@@ -359,6 +373,11 @@ export default class BubbleSort extends Algorithm {
 		// Move labels
 		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
 		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
+		this.cmd(
+			act.setText,
+			this.swapCountID,
+			'Swap Count: ' + ++this.swapCount,
+		);
 		this.cmd(act.step);
 		// Set text in array and delete temporary labels
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);

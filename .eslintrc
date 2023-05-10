@@ -1,5 +1,6 @@
 {
 	"extends": ["react-app"],
+	"parser": "@babel/eslint-parser",
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"sourceType": "module"

@@ -1,5 +1,4 @@
-import 'react-hook-theme/dist/styles/style.css';
-import { BsFillSunFill, BsMoonFill } from 'react-icons/bs';
+import { BsFillHouseFill, BsFillSunFill, BsGithub, BsInfoCircleFill, BsMoonFill } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
@@ -39,17 +38,17 @@ class Header extends React.Component {
 					<ul>
 						<li>
 							<Link to="/" onClick={this.toggleMenu}>
-								Home
+								<BsFillHouseFill size={20} />&nbsp;&nbsp;Home
 							</Link>
 						</li>
 						<li>
 							<Link to="/about" onClick={this.toggleMenu}>
-								About
+								<BsInfoCircleFill size={20} />&nbsp;&nbsp;About
 							</Link>
 						</li>
 						<li>
 							<a href="https://github.com/RodrigoDLPontes/visualization-tool">
-								Source Code
+								<BsGithub size={20} />&nbsp;&nbsp;Source Code
 							</a>
 						</li>
 					</ul>

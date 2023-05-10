@@ -74,7 +74,7 @@ body {
 	background-color: var(--background);
 	opacity: 0;
 	line-height: 3em;
-	padding: 01em;
+	padding: 1.5em;
 	z-index: 1;
 }
 

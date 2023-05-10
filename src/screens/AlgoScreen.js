@@ -1,6 +1,5 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
-import 'react-hook-theme/dist/styles/style.css';
 import { BsFillSunFill, BsMoonFill } from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';

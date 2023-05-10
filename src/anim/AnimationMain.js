@@ -253,7 +253,7 @@ export default class AnimationManager extends EventListener {
 
 		const slider = (
 			<Slider
-				style={{ color: "f9c333", padding: '13px 0', height: 2 }}
+				style={{ padding: '13px 0', height: 2 }}
 				defaultValue={speed}
 				onChange={(e, val) => {
 					this.setSpeed(val);
@@ -270,6 +270,7 @@ export default class AnimationManager extends EventListener {
 
 		let midLevel = document.createElement('tr');
 		let bottomLevel = document.createElement('td');
+		bottomLevel.classList.add('slider');
 		midLevel.appendChild(bottomLevel);
 
 		const root = ReactDOM.createRoot(bottomLevel);
@@ -282,6 +283,7 @@ export default class AnimationManager extends EventListener {
 		bottomLevel.align = 'center';
 		let txtNode = document.createTextNode('Animation Speed');
 		midLevel.appendChild(bottomLevel);
+		bottomLevel.classList.add('txt-node');
 		bottomLevel.appendChild(txtNode);
 		newTable.appendChild(midLevel);
 
@@ -307,6 +309,7 @@ export default class AnimationManager extends EventListener {
 
 		tableEntry = document.createElement('td');
 		txtNode = document.createTextNode('Canvas height:');
+		tableEntry.classList.add('txt-node');
 		tableEntry.appendChild(txtNode);
 		controlBar.appendChild(tableEntry);
 

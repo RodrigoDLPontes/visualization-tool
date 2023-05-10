@@ -31,7 +31,15 @@
 #right {
 	float: right;
 	width: 100px;
-	margin-top: 10px;
+	margin-top: 14px;
+	margin-right: 0px;
+	position: relative;
+	transition: 0.2s ease-out;
+}
+
+#right:hover {
+	transition: 0.4s ease-in;
+	transform: scale(1.15);
 }
 
 #center {

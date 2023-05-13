@@ -6,9 +6,9 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import React from 'react';
 
-const HomeScreen = () => (
+const HomeScreen = ({theme, toggleTheme}) => (
 	<div className="container">
-		<Header />
+		<Header theme={theme} toggleTheme={toggleTheme} />
 		<div className="content">
 			<Switch>
 				<Route exact path="/">

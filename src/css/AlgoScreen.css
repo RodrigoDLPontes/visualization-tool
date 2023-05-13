@@ -6,6 +6,7 @@
 	--header: #012f57;
 	--filter: brightness(85%);
 	--shadow: rgba(0, 0, 0, 0.75);
+	--slider: #f9c333;
 }
 
 [data-theme='dark'] {
@@ -16,6 +17,7 @@
 	--header: #282828;
 	--filter: brightness(185%);
 	--shadow: rgba(242, 242, 242, 0.1);
+	--slider: #d4f1f1;
 }
 
 * {
@@ -39,8 +41,16 @@
 }
 
 .VisualizationMainPage #toggle {
-	margin-right: 16px;
+	margin-top: 5px;
+	margin-right: 25px;
 	float: right;
+	position: relative;
+	transition: 0.2s ease-out;
+}
+
+.VisualizationMainPage #toggle:hover {
+	transition: 0.4s ease-in;
+	transform: scale(1.15);
 }
 
 .VisualizationMainPage #algoControlSection {
@@ -274,6 +284,14 @@ em {
 	color: var(--primary);
 	margin: 6px;
 	cursor: pointer;
+}
+
+.txt-node {
+	color: var(--primary);
+}
+
+.slider .MuiSlider-root {
+	color: var(--slider);
 }
 
 input[type="radio"] {

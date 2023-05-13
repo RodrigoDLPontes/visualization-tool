@@ -1,14 +1,18 @@
-import 'react-hook-theme/dist/styles/style.css';
+import { BsFillHouseFill, BsFillSunFill, BsGithub, BsInfoCircleFill, BsMoonFill } from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { RxHamburgerMenu } from 'react-icons/rx';
-import { Toggle } from 'react-hook-theme';
 
 class Header extends React.Component {
-	state = { menuVisible: null };
+	state = { 
+		menuVisible: null,
+		theme: 'light',
+	};
 
 	render() {
+		const theme = this.props.theme;
+    	const toggleTheme = this.props.toggleTheme;
 		const menuClass = { null: '', true: 'show', false: 'hide' };
 
 		return (
@@ -23,24 +27,28 @@ class Header extends React.Component {
 						<h1>CS 1332 Data Structures and Algorithms Visualizations</h1>
 					</div>
 					<div id="right">
-						<Toggle />
+						{theme === 'light' ? (
+  							<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" />
+						) : (
+  							<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+						)}
 					</div>
 				</div>
 				<div className={`menu ${menuClass[this.state.menuVisible]}`}>
 					<ul>
 						<li>
 							<Link to="/" onClick={this.toggleMenu}>
-								Home
+								<BsFillHouseFill size={20} />&nbsp;&nbsp;Home
 							</Link>
 						</li>
 						<li>
 							<Link to="/about" onClick={this.toggleMenu}>
-								About
+								<BsInfoCircleFill size={20} />&nbsp;&nbsp;About
 							</Link>
 						</li>
 						<li>
 							<a href="https://github.com/RodrigoDLPontes/visualization-tool">
-								Source Code
+								<BsGithub size={20} />&nbsp;&nbsp;Source Code
 							</a>
 						</li>
 					</ul>

@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Include the ClassName of algorithms that should have an example modal
-export default {
+const Modals = {
 	ArrayList: (
 		<ul>
 			<li>
@@ -268,3 +268,5 @@ export default {
 		</ul>
 	)
 };
+
+export default Modals;

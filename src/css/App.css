@@ -6,6 +6,7 @@
 	--text: #f9c333;
 	--filter: brightness(70%);
 	--borders: #012f57;
+	--hover-text: #f9c333;
 }
 
 [data-theme='dark'] {
@@ -16,6 +17,7 @@
 	--text: #f2f2f2;
 	--filter: brightness(185%);
 	--borders: #f2f2f2;
+	--hover-text: #8dd3dd;
 }
 
 * {
@@ -31,7 +33,15 @@
 #right {
 	float: right;
 	width: 100px;
-	margin-top: 10px;
+	margin-top: 14px;
+	margin-right: 0px;
+	position: relative;
+	transition: 0.2s ease-out;
+}
+
+#right:hover {
+	transition: 0.4s ease-in;
+	transform: scale(1.15);
 }
 
 #center {
@@ -57,14 +67,14 @@ body {
 
 .menu {
 	position: fixed;
-	top: 60px;
+	top: 62px;
 	left: -240px;
 	height: 100%;
-	width: 200px;
+	width: 220px;
 	background-color: var(--background);
 	opacity: 0;
-	line-height: 2.5em;
-	padding: 1em;
+	line-height: 3em;
+	padding: 1.5em;
 	z-index: 1;
 }
 
@@ -94,7 +104,7 @@ body {
 }
 
 .menu a:hover {
-	color: #f9c333;
+	color: var(--hover-text);
 }
 
 .content {
@@ -119,14 +129,15 @@ body {
 
 .about a,
 .four-o-four a {
-	text-decoration: none;
-	color: #5c9ba4;
+	text-decoration: underline;
+	color: var(--primary);
 	cursor: pointer;
+	transition: all 0.4s ease 0s;
 }
 
 .about a:hover,
 .four-o-four a:hover {
-	color: #f9c333;
+	color: var(--hover-text);
 }
 
 .text,
@@ -159,10 +170,12 @@ body {
 	margin-top: 14px;
 	margin-right: 25px;
 	cursor: pointer;
+	transition: 0.2s ease-out;
 }
 
 .menu-bar:hover {
-	filter: opacity(50%);
+	transform: scale(1.15);
+	transition: 0.4s ease-in;
 }
 
 div.header h1 {

@@ -8,7 +8,7 @@ const AboutScreen = () => (
 			<a href="https://www.cs.usfca.edu/~galles/visualization/about.html">
 				Data Structures Visualizations website
 			</a>{' '}
-			by David Gales.
+			by David Galles.
 		</p>
 		<p>
 			The CS 1332 Visualization Tool was adapted and expanded by{' '}

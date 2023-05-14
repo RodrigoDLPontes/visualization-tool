@@ -50,10 +50,10 @@ const TOP_ELEM_HEIGHT = 30;
 const TAIL_POS_X = 180;
 const TAIL_LABEL_X = 130;
 
-const PUSH_LABEL_X = 50;
-const PUSH_LABEL_Y = 30;
-const PUSH_ELEMENT_X = 120;
-const PUSH_ELEMENT_Y = 30;
+const QUEUE_LABEL_X = 60;
+const QUEUE_LABEL_Y = 30;
+const QUEUE_ELEMENT_X = 130;
+const QUEUE_ELEMENT_Y = 30;
 
 const SIZE = 32;
 
@@ -124,6 +124,7 @@ export default class QueueLL extends Algorithm {
 		this.arrayData = new Array(SIZE);
 		this.top = 0;
 		this.leftoverLabelID = this.nextIndex++;
+		this.leftoverValID = this.nextIndex++;
 
 		this.cmd(act.createLabel, this.headLabelID, 'Head', TOP_LABEL_X, TOP_LABEL_Y);
 		this.cmd(
@@ -149,7 +150,8 @@ export default class QueueLL extends Algorithm {
 		);
 		this.cmd(act.setNull, this.tailID, 1);
 
-		this.cmd(act.createLabel, this.leftoverLabelID, '', 5, PUSH_LABEL_Y, 0);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -198,6 +200,7 @@ export default class QueueLL extends Algorithm {
 		this.arrayData[this.top] = elemToPush;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		for (let i = this.top; i > 0; i--) {
 			this.arrayData[i] = this.arrayData[i - 1];
@@ -222,8 +225,8 @@ export default class QueueLL extends Algorithm {
 		);
 
 		this.cmd(act.setNull, this.linkedListElemID[0], 1);
-		this.cmd(act.createLabel, labPushID, 'Enqueuing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToPush, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.cmd(act.step);
 
@@ -263,7 +266,7 @@ export default class QueueLL extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.cmd(act.createLabel, labPopID, 'Dequeued Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopID, 'Dequeued Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(
 			act.createLabel,
 			labPopValID,
@@ -272,7 +275,7 @@ export default class QueueLL extends Algorithm {
 			LINKED_LIST_START_Y,
 		);
 
-		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.move, labPopValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 		this.cmd(act.disconnect, this.headID, this.linkedListElemID[this.top - 1]);
 
@@ -290,7 +293,8 @@ export default class QueueLL extends Algorithm {
 
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
-		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ' + this.arrayData[this.top]);
+		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ');
+		this.cmd(act.setText, this.leftoverValID, this.arrayData[this.top]);
 
 		return this.commands;
 	}

@@ -31,6 +31,9 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 60;
 
@@ -107,8 +110,10 @@ export default class BruteForce extends Algorithm {
 			['end procedure'],
 		];
 
-		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0, 0);
 
+		this.comparisonCountID = this.nextIndex++;
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
@@ -122,23 +127,18 @@ export default class BruteForce extends Algorithm {
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 		this.codeID = [];
 	}
 
 	findCallback() {
-		if (
-			this.textField.value !== '' &&
-			this.patternField.value !== '' &&
-			this.textField.value.length >= this.patternField.value.length
-		) {
-			this.implementAction(this.clear.bind(this));
-			const text = this.textField.value;
-			const pattern = this.patternField.value;
-			this.textField.value = '';
-			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text, pattern);
-		}
+		this.implementAction(this.clear.bind(this));
+		const text = this.textField.value;
+		const pattern = this.patternField.value;
+		this.textField.value = '';
+		this.patternField.value = '';
+		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
 	clearCallback() {
@@ -147,6 +147,19 @@ export default class BruteForce extends Algorithm {
 
 	find(text, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!text || !pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
+			return this.commands;
+		} else if (text.length < pattern.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Pattern is longer than text, no matches exist',
+			);
+			return this.commands;
+		}
 
 		const maxRows = text.length - pattern.length + 1;
 		if (maxRows <= 14) {
@@ -320,6 +333,8 @@ export default class BruteForce extends Algorithm {
 		this.codeID = [];
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.infoLabelID, '');
+
 		return this.commands;
 	}
 

@@ -118,6 +118,7 @@ export default class StackArray extends Algorithm {
 
 		this.top = 0;
 		this.leftoverLabelID = this.nextIndex++;
+		this.leftoverValID = this.nextIndex++;
 		this.commands = [];
 
 		for (let i = 0; i < SIZE; i++) {
@@ -147,6 +148,7 @@ export default class StackArray extends Algorithm {
 		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverValID, '', PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 
 		this.highlight1ID = this.nextIndex++;
 		this.highlight2ID = this.nextIndex++;
@@ -213,6 +215,7 @@ export default class StackArray extends Algorithm {
 		const labPushValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(act.createLabel, labPushID, 'Pushing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
@@ -258,6 +261,7 @@ export default class StackArray extends Algorithm {
 		const labPopValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(act.createLabel, labPopID, 'Popped Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 
@@ -288,7 +292,8 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.delete, labPopID);
 		this.cmd(act.delete, this.highlight1ID);
-		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ' + popVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'Popped Value: ');
+		this.cmd(act.setText, this.leftoverValID, popVal);
 		this.cmd(act.delete, labPopValID);
 
 		this.nextIndex = this.nextIndex - 2;

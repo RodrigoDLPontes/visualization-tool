@@ -125,7 +125,7 @@ export default class BubbleSort extends Algorithm {
 			'Swap Count: ' + this.swapCount,
 			COMP_COUNT_X + 250,
 			COMP_COUNT_Y,
-		)
+		);
 
 		this.code = [
 			['procedure BubbleSort(array):'],
@@ -373,11 +373,7 @@ export default class BubbleSort extends Algorithm {
 		// Move labels
 		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
 		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
-		this.cmd(
-			act.setText,
-			this.swapCountID,
-			'Swap Count: ' + ++this.swapCount,
-		);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		// Set text in array and delete temporary labels
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);

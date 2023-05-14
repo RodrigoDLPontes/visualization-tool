@@ -329,7 +329,7 @@ export default class LSDRadix extends Algorithm {
 			'#FF0000',
 			ARRAY_START_X,
 			ARRAY_START_Y,
-			21.5
+			21.5,
 		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
@@ -338,7 +338,7 @@ export default class LSDRadix extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y,
-			21.5
+			21.5,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 
@@ -374,14 +374,18 @@ export default class LSDRadix extends Algorithm {
 
 		// Run algorithm
 		for (let i = 0; i < digits; i++) {
-			this.cmd(act.setText, this.infoLabelID, 'Getting digits at index ' + i + ' (0-aligned)');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Getting digits at index ' + i + ' (0-aligned)',
+			);
 			this.cmd(
 				act.createHighlightCircle,
 				this.iPointerID,
 				'#0000FF',
 				ARRAY_START_X,
 				ARRAY_START_Y,
-				21.5
+				21.5,
 			);
 			this.cmd(act.setHighlight, this.iPointerID, 1);
 			this.cmd(act.step);

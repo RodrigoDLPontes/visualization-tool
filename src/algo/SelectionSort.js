@@ -106,7 +106,10 @@ export default class SelectionSort extends Algorithm {
 		//Min & Max selection button
 		addDivisorToAlgorithmBar();
 
-		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(['Minimum', 'Maximum'], 'Min/Max');
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
+			['Minimum', 'Maximum'],
+			'Min/Max',
+		);
 
 		this.minButton = minMaxButtonList[0];
 		this.minButton.onclick = this.minCallback.bind(this);
@@ -415,11 +418,7 @@ export default class SelectionSort extends Algorithm {
 		this.cmd(act.setText, this.arrayID[j], '');
 		this.cmd(act.move, iLabelID, jXPos, jYPos);
 		this.cmd(act.move, jLabelID, iXPos, iYPos);
-		this.cmd(
-			act.setText,
-			this.swapCountID,
-			'Swap Count: ' + ++this.swapCount,
-		);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
 		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);

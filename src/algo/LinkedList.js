@@ -414,7 +414,7 @@ export default class LinkedList extends Algorithm {
 
 		if (index === this.size) {
 			this.cmd(act.setNull, this.linkedListElemID[index], 1);
-			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1])
+			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1]);
 			this.cmd(act.connect, this.tailID, this.linkedListElemID[index]);
 		}
 
@@ -484,7 +484,7 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-		this.cmd(act.setTextColor, this.linkedListElemID[index], "#FF0000");
+		this.cmd(act.setTextColor, this.linkedListElemID[index], '#FF0000');
 		this.cmd(act.step);
 
 		if (this.size !== 1) {
@@ -493,7 +493,7 @@ export default class LinkedList extends Algorithm {
 				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
 				this.cmd(act.step);
 				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
-				this.cmd(act.setNull, this.linkedListElemID[0], 1)
+				this.cmd(act.setNull, this.linkedListElemID[0], 1);
 			} else if (index === this.size - 1) {
 				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
@@ -523,7 +523,11 @@ export default class LinkedList extends Algorithm {
 					this.linkedListElemID[index + 1],
 				);
 				this.cmd(act.step);
-				this.cmd(act.disconnect, this.linkedListElemID[index], this.linkedListElemID[index + 1]);
+				this.cmd(
+					act.disconnect,
+					this.linkedListElemID[index],
+					this.linkedListElemID[index + 1],
+				);
 			}
 		}
 		this.cmd(act.step);

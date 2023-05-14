@@ -609,7 +609,11 @@ export default class BTree extends Algorithm {
 	}
 
 	split(tree) {
-		this.cmd(act.setText, this.messageID, 'Node now contains too many elements.  Splitting ...');
+		this.cmd(
+			act.setText,
+			this.messageID,
+			'Node now contains too many elements.  Splitting ...',
+		);
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, tree.graphicID, 0);

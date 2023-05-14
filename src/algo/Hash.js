@@ -179,19 +179,14 @@ export default class Hash extends Algorithm {
 		this.dropDownGroup = addGroupToAlgorithmBar(false);
 
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[
-				'Hash Integers',
-				'Hash Strings',
-				'True Hash Function'
-			],
+			['Hash Integers', 'Hash Strings', 'True Hash Function'],
 			'Hash Type',
-			this.dropDownGroup
+			this.dropDownGroup,
 		);
 
 		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
 
 		this.hashType = 'integers';
-
 	}
 
 	checkHashType() {
@@ -200,7 +195,7 @@ export default class Hash extends Algorithm {
 		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
 			this.implementAction(this.changeHashType.bind(this), 'strings');
 		} else if (this.hashTypeDropDown.value === 'True Hash Function') {
-			this.implementAction(this.changeHashType.bind(this), 'true')
+			this.implementAction(this.changeHashType.bind(this), 'true');
 		}
 	}
 
@@ -269,7 +264,7 @@ export default class Hash extends Algorithm {
 					false,
 				);
 			}
-		}	
+		}
 		return this.resetAll();
 	}
 
@@ -657,13 +652,13 @@ export default class Hash extends Algorithm {
 			return 0;
 		}
 		let hash = 0;
-  		for (let i = 0; i < key.length; i++) {
-    		hash = ((hash << 5) - hash) + key.charCodeAt(i);
+		for (let i = 0; i < key.length; i++) {
+			hash = (hash << 5) - hash + key.charCodeAt(i);
 			hash ^= 11597109109121;
-			hash &= 0xFFFF // convert to 16 bits
-  		}
-  		return hash;
-	}			
+			hash &= 0xffff; // convert to 16 bits
+		}
+		return hash;
+	}
 
 	resetAll() {
 		this.keyField.value = '';
@@ -674,7 +669,10 @@ export default class Hash extends Algorithm {
 	}
 
 	insertCallback() {
-		const insertedKey = this.hashType === 'integers' ? parseInt(this.keyField.value).toString() : this.keyField.value;
+		const insertedKey =
+			this.hashType === 'integers'
+				? parseInt(this.keyField.value).toString()
+				: this.keyField.value;
 		const insertedValue = this.valueField.value;
 		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';

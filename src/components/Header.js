@@ -1,18 +1,24 @@
-import { BsFillHouseFill, BsFillSunFill, BsGithub, BsInfoCircleFill, BsMoonFill } from 'react-icons/bs';
+import {
+	BsFillHouseFill,
+	BsFillSunFill,
+	BsGithub,
+	BsInfoCircleFill,
+	BsMoonFill,
+} from 'react-icons/bs';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { RxHamburgerMenu } from 'react-icons/rx';
 
 class Header extends React.Component {
-	state = { 
+	state = {
 		menuVisible: null,
 		theme: 'light',
 	};
 
 	render() {
 		const theme = this.props.theme;
-    	const toggleTheme = this.props.toggleTheme;
+		const toggleTheme = this.props.toggleTheme;
 		const menuClass = { null: '', true: 'show', false: 'hide' };
 
 		return (
@@ -28,9 +34,9 @@ class Header extends React.Component {
 					</div>
 					<div id="right">
 						{theme === 'light' ? (
-  							<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" />
+							<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" />
 						) : (
-  							<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+							<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
 						)}
 					</div>
 				</div>
@@ -38,17 +44,20 @@ class Header extends React.Component {
 					<ul>
 						<li>
 							<Link to="/" onClick={this.toggleMenu}>
-								<BsFillHouseFill size={20} />&nbsp;&nbsp;Home
+								<BsFillHouseFill size={20} />
+								&nbsp;&nbsp;Home
 							</Link>
 						</li>
 						<li>
 							<Link to="/about" onClick={this.toggleMenu}>
-								<BsInfoCircleFill size={20} />&nbsp;&nbsp;About
+								<BsInfoCircleFill size={20} />
+								&nbsp;&nbsp;About
 							</Link>
 						</li>
 						<li>
 							<a href="https://github.com/RodrigoDLPontes/visualization-tool">
-								<BsGithub size={20} />&nbsp;&nbsp;Source Code
+								<BsGithub size={20} />
+								&nbsp;&nbsp;Source Code
 							</a>
 						</li>
 					</ul>

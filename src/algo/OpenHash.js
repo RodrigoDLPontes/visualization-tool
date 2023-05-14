@@ -75,7 +75,7 @@ export default class OpenHash extends Hash {
 				'Double Hashing: f(i) = i * hash2(elem)',
 			],
 			'Probing Type',
-			this.dropDownGroup
+			this.dropDownGroup,
 		);
 
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
@@ -85,14 +85,14 @@ export default class OpenHash extends Hash {
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
- 
+
 	checkProbeType() {
 		if (this.probeTypeDropDown.value === 'Linear Probing: f(i) = i') {
 			this.implementAction(this.changeProbeType.bind(this), 'linear');
 		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: f(i) = i * i') {
 			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
 		} else if (this.probeTypeDropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
-			this.implementAction(this.changeProbeType.bind(this), 'double')
+			this.implementAction(this.changeProbeType.bind(this), 'double');
 		}
 	}
 

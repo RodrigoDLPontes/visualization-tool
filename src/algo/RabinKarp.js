@@ -225,13 +225,7 @@ export default class RabinKarp extends Algorithm {
 			xpos = i * this.cellSize + ARRAY_START_X;
 			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
-			this.cmd(
-				act.createLabel,
-				this.nextIndex++,
-				i,
-				xpos,
-				ypos,
-			);
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
 		}
 
 		for (let i = 0; i < text.length; i++) {
@@ -369,9 +363,23 @@ export default class RabinKarp extends Algorithm {
 				this.unhighlight(6, 0);
 				this.highlight(7, 0);
 				xpos = i * this.cellSize + ARRAY_START_X;
-				this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', xpos, ARRAY_START_Y, this.cellSize / 2);
+				this.cmd(
+					act.createHighlightCircle,
+					iPointerID,
+					'#0000FF',
+					xpos,
+					ARRAY_START_Y,
+					this.cellSize / 2,
+				);
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', xpos, ypos, this.cellSize / 2);
+				this.cmd(
+					act.createHighlightCircle,
+					jPointerID,
+					'#0000FF',
+					xpos,
+					ypos,
+					this.cellSize / 2,
+				);
 				this.cmd(act.step);
 				this.unhighlight(7, 0);
 				this.highlight(8, 0);

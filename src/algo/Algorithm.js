@@ -79,11 +79,11 @@ export function addCheckboxToAlgorithmBar(boxLabel, checked, group) {
 }
 
 export function addDropDownGroupToAlgorithmBar(optionNames, groupName, group) {
-	const dropDown = document.createElement("select");
+	const dropDown = document.createElement('select');
 	dropDown.name = groupName;
 	for (let i = 0; i < optionNames.length; i++) {
-		const option = document.createElement("option");
-    	option.text = optionNames[i];
+		const option = document.createElement('option');
+		option.text = optionNames[i];
 		dropDown.add(option);
 	}
 
@@ -373,13 +373,13 @@ export default class Algorithm {
 
 export function controlKey(keyASCII) {
 	return (
-		keyASCII === 8 ||  // backspace
-		keyASCII === 9 ||  // tab
-		keyASCII === 37 || // % percent 
+		keyASCII === 8 || // backspace
+		keyASCII === 9 || // tab
+		keyASCII === 37 || // % percent
 		keyASCII === 38 || // & ampersand
 		keyASCII === 39 || // ' apostrophe
 		keyASCII === 40 || // ( left parenthesis
-		keyASCII === 46    // . period
+		keyASCII === 46 // . period
 	);
 }
 

@@ -25,9 +25,9 @@ class AlgoScreen extends React.Component {
 			algoName: algoName,
 			examplesEnabled: false,
 			width: 0,
-			theme: 'light'
+			theme: 'light',
 		};
-		ReactGA.send({ hitType: "pageview", page: algoName });
+		ReactGA.send({ hitType: 'pageview', page: algoName });
 	}
 
 	componentDidMount() {
@@ -54,7 +54,7 @@ class AlgoScreen extends React.Component {
 	render() {
 		const algoName = this.state.algoName;
 		const theme = this.props.theme;
-    	const toggleTheme = this.props.toggleTheme
+		const toggleTheme = this.props.toggleTheme;
 
 		if (!algoMap[algoName]) {
 			return (
@@ -83,9 +83,13 @@ class AlgoScreen extends React.Component {
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
 							<div id="toggle">
 								{theme === 'light' ? (
-  									<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" />
+									<BsFillSunFill
+										size={31}
+										onClick={toggleTheme}
+										color="#f9c333"
+									/>
 								) : (
-  									<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+									<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
 								)}
 							</div>
 						</h1>
@@ -131,7 +135,6 @@ class AlgoScreen extends React.Component {
 	}
 
 	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
-
 }
 
 AlgoScreen.propTypes = {

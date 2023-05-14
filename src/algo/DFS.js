@@ -186,9 +186,23 @@ export default class DFS extends Graph {
 		];
 
 		if (this.physicalStack) {
-			this.codeID = this.addCodeToCanvasBase(this.itCode, CODE_START_X, CODE_START_Y, undefined, undefined, 1);
+			this.codeID = this.addCodeToCanvasBase(
+				this.itCode,
+				CODE_START_X,
+				CODE_START_Y,
+				undefined,
+				undefined,
+				1,
+			);
 		} else {
-			this.codeID = this.addCodeToCanvasBase(this.recCode, CODE_START_X, CODE_START_Y, undefined, undefined, 1);
+			this.codeID = this.addCodeToCanvasBase(
+				this.recCode,
+				CODE_START_X,
+				CODE_START_Y,
+				undefined,
+				undefined,
+				1,
+			);
 		}
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);

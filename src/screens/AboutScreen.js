@@ -24,9 +24,9 @@ const AboutScreen = () => (
 			It also includes icons from{' '}
 			<a href="https://material.io/resources/icons/?style=baseline">
 				Google&#39;s Material Icons
-			</a>
-			{' '} and <a href="https://react-icons.github.io/react-icons">react-icons</a>
-			, and components from <a href="https://material-ui.com/">Material UI</a>.
+			</a>{' '}
+			and <a href="https://react-icons.github.io/react-icons">react-icons</a>, and components
+			from <a href="https://material-ui.com/">Material UI</a>.
 		</p>
 	</div>
 );

@@ -172,13 +172,7 @@ export default class BruteForce extends Algorithm {
 			xpos = i * this.cellSize + ARRAY_START_X;
 			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
-			this.cmd(
-				act.createLabel,
-				this.nextIndex++,
-				i,
-				xpos,
-				ypos,
-			);
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
 		}
 
 		for (let i = 0; i < text.length; i++) {

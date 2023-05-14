@@ -6,7 +6,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import React from 'react';
 
-const HomeScreen = ({theme, toggleTheme}) => (
+const HomeScreen = ({ theme, toggleTheme }) => (
 	<div className="container">
 		<Header theme={theme} toggleTheme={toggleTheme} />
 		<div className="content">

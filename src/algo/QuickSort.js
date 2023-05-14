@@ -487,11 +487,7 @@ export default class QuickSort extends Algorithm {
 		this.cmd(act.move, this.pPointerID, lXPos, ARRAY_START_Y);
 		this.cmd(act.move, lLabelID, pXPos, ARRAY_START_Y);
 		moveJ && this.cmd(act.move, this.jPointerID, pXPos, ARRAY_START_Y);
-		this.cmd(
-			act.setText,
-			this.swapCountID,
-			'Swap Count: ' + ++this.swapCount,
-		);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		// Set text in array, and delete temporary labels and pointer
 		this.cmd(act.setText, this.arrayID[other], this.displayData[pivot]);
@@ -521,11 +517,7 @@ export default class QuickSort extends Algorithm {
 		// Move labels
 		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
 		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
-		this.cmd(
-			act.setText,
-			this.swapCountID,
-			'Swap Count: ' + ++this.swapCount,
-		);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		// Set text in array and delete temporary labels
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);

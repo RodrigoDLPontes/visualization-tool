@@ -49,9 +49,9 @@ const SIZE_POS_Y = 100;
 const SIZE_LABEL_X = 230;
 const SIZE_LABEL_Y = 100;
 
-const QUEUE_LABEL_X = 50;
+const QUEUE_LABEL_X = 60;
 const QUEUE_LABEL_Y = 30;
-const QUEUE_ELEMENT_X = 120;
+const QUEUE_ELEMENT_X = 130;
 const QUEUE_ELEMENT_Y = 30;
 
 const RESIZE_ARRAY_START_X = 100;
@@ -150,6 +150,8 @@ export default class DequeArray extends Algorithm {
 		this.front = 0;
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
+		this.leftoverValID = this.nextIndex++;
+		this.formulaLabelID = this.nextIndex++;
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -196,7 +198,9 @@ export default class DequeArray extends Algorithm {
 			ARRAY_START_Y + FRONT_LABEL_OFFSET,
 		);
 
-		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, false);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, true);
+		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y, true);
+		this.cmd(act.createLabel, this.formulaLabelID, '', QUEUE_LABEL_X + 170, QUEUE_LABEL_Y + 30, true);
 
 		this.highlight1ID = this.nextIndex++;
 
@@ -278,9 +282,10 @@ export default class DequeArray extends Algorithm {
 		const labAddLastValID = this.nextIndex++;
 		const addIndex = (this.front + this.size) % this.arrayData.length;
 
-		this.arrayData[addIndex] = elemToAddLast;
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
+
+		this.arrayData[addIndex] = elemToAddLast;
 
 		this.cmd(act.createLabel, labAddLastID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labAddLastValID, elemToAddLast, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
@@ -290,7 +295,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(
 			act.setText,
-			this.leftoverLabelID,
+			this.formulaLabelID,
 			`Adding ${elemToAddLast} to back at index (${this.front} + ${this.size}) % ${this.arrayData.length}`,
 		);
 
@@ -316,8 +321,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labAddLastID);
-		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.setText, this.formulaLabelID, '');
 
 		this.nextIndex = this.nextIndex - 2;
 
@@ -330,6 +334,9 @@ export default class DequeArray extends Algorithm {
 		const labelAddID = this.nextIndex++;
 		const labelAddIDVal = this.nextIndex++;
 
+		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
+
 		const addIndex = (this.front - 1 + this.arrayData.length) % this.arrayData.length;
 
 		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -341,9 +348,6 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.createLabel, labelAddID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labelAddIDVal, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
-		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X + 100, QUEUE_LABEL_Y);
-
 		this.cmd(act.step);
 		this.cmd(
 			act.createHighlightCircle,
@@ -354,7 +358,7 @@ export default class DequeArray extends Algorithm {
 		);
 		this.cmd(
 			act.setText,
-			this.leftoverLabelID,
+			this.formulaLabelID,
 			`Adding ${elemToAdd} to front at index (${this.front} - 1) % ${this.arrayData.length}`,
 		);
 
@@ -402,8 +406,7 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.delete, labelAddID);
-		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.setText, this.formulaLabelID, '');
 		this.size++;
 
 		this.nextIndex = this.nextIndex - 2;
@@ -418,12 +421,12 @@ export default class DequeArray extends Algorithm {
 		const labremoveFirstValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(
 			act.createLabel,
 			labremoveFirstID,
-			'removeFirst Value: ',
+			'Removed Value: ',
 			QUEUE_LABEL_X,
 			QUEUE_LABEL_Y,
 		);
@@ -446,8 +449,8 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 
-		const removeFirstdVal = this.arrayData[this.front];
-		this.cmd(act.createLabel, labremoveFirstValID, removeFirstdVal, xpos, ypos);
+		const removeFirstVal = this.arrayData[this.front];
+		this.cmd(act.createLabel, labremoveFirstValID, removeFirstVal, xpos, ypos);
 		this.cmd(act.setText, this.arrayID[this.front], '');
 		this.cmd(act.move, labremoveFirstValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
@@ -470,7 +473,10 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
-		this.cmd(act.setText, this.leftoverLabelID, 'removeFirst Value: ' + removeFirstdVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
+		this.cmd(act.setText, this.leftoverValID, removeFirstVal);
+
+		this.cmd(act.setText, this.formulaLabelID, '');
 
 		this.cmd(act.delete, labremoveFirstID);
 		this.cmd(act.delete, labremoveFirstValID);
@@ -484,7 +490,6 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
-		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.nextIndex = this.nextIndex - 2;
 
@@ -500,7 +505,7 @@ export default class DequeArray extends Algorithm {
 			(this.front + this.size - 1 + this.arrayData.length) % this.arrayData.length;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(act.createLabel, remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
@@ -533,7 +538,10 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.move, remLabelValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
-		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ' + removedVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
+		this.cmd(act.setText, this.leftoverValID, removedVal);
+
+		this.cmd(act.setText, this.formulaLabelID, '');
 
 		this.cmd(act.delete, remLabelID);
 		this.cmd(act.delete, remLabelValID);
@@ -545,8 +553,6 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
-
-		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		this.size--;
 
@@ -755,7 +761,6 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.delete, labEnqueueID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
-		this.cmd(act.setPosition, this.leftoverLabelID, QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.size++;
 
 		this.nextIndex = this.nextIndex - this.size;
@@ -766,6 +771,7 @@ export default class DequeArray extends Algorithm {
 	clearAll() {
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		for (let i = 0; i < this.arrayData.length; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');

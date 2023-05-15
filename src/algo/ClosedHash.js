@@ -159,8 +159,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}
-				(Array Length too large for resize)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 			this.cmd(act.step);
 		} else {
@@ -630,7 +629,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}\n(Max Array Length)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 		}
 		this.cmd(act.step);

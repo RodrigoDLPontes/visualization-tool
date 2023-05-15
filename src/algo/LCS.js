@@ -27,8 +27,8 @@
 import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-const INFO_MSG_X = 20;
-const INFO_MSG_Y = 425;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
 const TABLE_ELEM_WIDTH = 40;
 const TABLE_ELEM_HEIGHT = 30;
@@ -36,8 +36,8 @@ const TABLE_ELEM_HEIGHT = 30;
 const TABLE_START_X = 645;
 const TABLE_START_Y = 80;
 
-const CODE_START_X = 20;
-const CODE_START_Y = 20;
+const CODE_START_X = 25;
+const CODE_START_Y = 50;
 
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
@@ -45,7 +45,7 @@ const LCS_CELL_COLOR = '#99CCFF';
 const MAX_SEQUENCE_LENGTH = 13;
 
 const SEQUENCE_START_X = 20;
-const SEQUENCE_START_Y = 480;
+const SEQUENCE_START_Y = 500;
 const SEQUENCE_DELTA_X = 10;
 
 export default class LCS extends Algorithm {
@@ -151,22 +151,27 @@ export default class LCS extends Algorithm {
 	reset() {
 		this.oldIDs = [];
 		this.nextIndex = this.initialIndex;
+		this.infoLabelID = this.nextIndex++;
 	}
 
 	runCallback() {
 		const string1 = this.S1Field.value;
 		const string2 = this.S2Field.value;
-		if (string1 !== '' && string2 !== '') {
-			this.S1Field.value = '';
-			this.S2Field.value = '';
-			this.implementAction(this.run.bind(this), string2, string1);
-		}
+		this.implementAction(this.run.bind(this), string2, string1);
 	}
 
 	run(str1, str2) {
 		this.commands = [];
 		this.clearOldIDs();
 
+		// User input validation
+		if (!str1 || !str2) {
+			this.cmd(act.setText, this.infoLabelID, 'S1 and S2 must be non-empty strings');
+			return this.commands;
+		}
+
+		this.S1Field.value = '';
+		this.S2Field.value = '';
 		this.buildTable(str1, str2);
 
 		const moveID = this.nextIndex++;
@@ -306,7 +311,7 @@ export default class LCS extends Algorithm {
 
 		this.unhighlight(24, 0);
 		this.highlight(25, 0);
-		this.cmd(act.setText, this.infoLabelID, 'Done');
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.step);
 		this.unhighlight(25, 0);
 
@@ -406,6 +411,7 @@ export default class LCS extends Algorithm {
 		}
 		this.oldIDs = [];
 		this.nextIndex = this.initialIndex;
+		this.cmd(act.setText, this.infoLabelID, '');
 	}
 
 	buildLCSFromTable(str1, str2) {
@@ -425,6 +431,11 @@ export default class LCS extends Algorithm {
 			0,
 		);
 		this.cmd(act.setForegroundColor, header, '#49AB40'); // sets text color
+
+		const lcsLength = this.nextIndex++;
+		this.oldIDs.push(lcsLength);
+		this.cmd(act.createLabel, lcsLength, '0', SEQUENCE_START_X + 180, SEQUENCE_START_Y - 25, 0);
+		this.cmd(act.setForegroundColor, lcsLength, '#FF0000'); // sets text color
 
 		for (let i = 1; i <= str1.length; i++) {
 			for (let j = 1; j <= str2.length; j++) {
@@ -527,6 +538,7 @@ export default class LCS extends Algorithm {
 					SEQUENCE_START_Y,
 				);
 				this.cmd(act.setForegroundColor, nextSequenceID, '#0000FF');
+				this.cmd(act.setText, lcsLength, sequence.length);
 
 				for (let i = sequence.length - 1; i >= 0; i--) {
 					this.cmd(

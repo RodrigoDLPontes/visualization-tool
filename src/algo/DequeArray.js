@@ -200,7 +200,14 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y, true);
 		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y, true);
-		this.cmd(act.createLabel, this.formulaLabelID, '', QUEUE_LABEL_X + 170, QUEUE_LABEL_Y + 30, true);
+		this.cmd(
+			act.createLabel,
+			this.formulaLabelID,
+			'',
+			QUEUE_LABEL_X + 170,
+			QUEUE_LABEL_Y + 30,
+			true,
+		);
 
 		this.highlight1ID = this.nextIndex++;
 

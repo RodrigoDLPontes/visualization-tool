@@ -124,7 +124,7 @@ export default class ClosedHash extends Hash {
 			`Load Factor: ${this.load_factor}`,
 			LOAD_LABEL_X,
 			LOAD_LABEL_Y,
-			false
+			false,
 		);
 		this.cmd(act.createLabel, this.ExplainLabel, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y, 0);
 		this.animationManager.startNewAnimation(this.commands);

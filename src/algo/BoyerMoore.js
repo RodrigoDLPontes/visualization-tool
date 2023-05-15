@@ -571,7 +571,7 @@ export default class BoyerMoore extends Algorithm {
 			this.cmd(act.setText, this.infoLabelID, 'Pattern must not be empty');
 			return this.commands;
 		}
-		
+
 		this.cellSize = 30;
 		this.buildLastTable(textLength, pattern);
 		return this.commands;

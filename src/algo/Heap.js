@@ -430,13 +430,25 @@ export default class Heap extends Algorithm {
 
 		// User input validation
 		if (!list.length) {
-			this.cmd(act.setText, this.infoLabelID, 'BuildHeap list must contain integers such as "3,1,2"');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'BuildHeap list must contain integers such as "3,1,2"',
+			);
 			return this.commands;
 		} else if (list.length > MAX_ARRAY_SIZE) {
-			this.cmd(act.setText, this.infoLabelID, 'BuildHeap list cannot contain more than 31 numbers (you put ' + list.length + ')');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'BuildHeap list cannot contain more than 31 numbers (you put ' + list.length + ')',
+			);
 			return this.commands;
 		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
-			this.cmd(act.setText, this.infoLabelID, 'BuildHeap list cannot contain non-numeric values or numbers >999');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'BuildHeap list cannot contain non-numeric values or numbers >999',
+			);
 			return this.commands;
 		}
 

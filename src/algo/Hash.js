@@ -35,6 +35,7 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 4;
 const MAX_LOAD_LENGTH = 3;
+const DEFAULT_LOAD_FACTOR = 0.67
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -50,6 +51,7 @@ const ELF_HASH_SHIFT = 10;
 const HASH_LABEL_X = 270;
 const HASH_LABEL_Y = 46;
 const HASH_LABEL_DELTA_X = 45;
+
 
 const HIGHLIGHT_COLOR = '#0000FF';
 
@@ -127,10 +129,7 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.loadFieldLabel = addLabelToAlgorithmBar(
-			'0.',
-			this.rightVerticalTop,
-		);
+		this.loadFieldLabel = addLabelToAlgorithmBar('0.', this.rightVerticalTop);
 
 		this.loadField = addControlToAlgorithmBar('Text', '');
 		this.loadField.setAttribute('placeholder', '67');
@@ -703,7 +702,9 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		const newLF = this.loadField.value ? this.loadField.value / Math.pow(10, this.loadField.value.toString().length) : .67;
+		const newLF = this.loadField.value
+			? this.loadField.value / Math.pow(10, this.loadField.value.toString().length)
+			: DEFAULT_LOAD_FACTOR;
 		this.loadField.value = '';
 		this.implementAction(this.changeLoadFactor.bind(this), newLF);
 	}

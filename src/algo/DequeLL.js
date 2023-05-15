@@ -416,14 +416,12 @@ export default class DequeLL extends Algorithm {
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
 
-
 		for (let i = index; i < this.size; i++) {
 			this.arrayData[i] = this.arrayData[i + 1];
 			this.linkedListElemID[i] = this.linkedListElemID[i + 1];
 		}
 		this.size = this.size - 1;
 		this.resetNodePositions();
-
 
 		return this.commands;
 	}

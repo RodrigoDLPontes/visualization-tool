@@ -210,7 +210,7 @@ export default class HeapSort extends Algorithm {
 		this.createHeap(this.arrayData);
 		this.cmd(act.step);
 
-		this.cmd(act.setText, this.infoLabelID, 'Buildheap the new array');
+		this.cmd(act.setText, this.infoLabelID, 'BuildHeap the new array');
 		//Buildheap the new heap
 		let nextElem = Math.floor(this.currentHeapSize / 2);
 		while (nextElem > 0) {

@@ -167,7 +167,7 @@ export default class Prims extends Graph {
 
 	doPrim(startValue) {
 		this.commands = [];
-		const startVertex = startValue.charCodeAt(0) - 65
+		const startVertex = startValue.charCodeAt(0) - 65;
 
 		// User input validation
 		if (startVertex < 0 || startVertex >= this.size) {

@@ -214,7 +214,7 @@ export default class Dijkstras extends Graph {
 
 	doDijkstra(startValue) {
 		this.commands = [];
-		let current = startValue.charCodeAt(0) - 65
+		let current = startValue.charCodeAt(0) - 65;
 
 		// User input validation
 		if (current < 0 || current >= this.size) {

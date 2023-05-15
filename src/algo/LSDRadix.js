@@ -35,8 +35,8 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
-const INFO_LABEL_X = 75;
-const INFO_LABEL_Y = 20;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
 const ARRAY_START_X = 485;
 const ARRAY_START_Y = 70;
@@ -119,7 +119,9 @@ export default class LSDRadix extends Algorithm {
 		this.bucketsDisplay = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+
 		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.code = [
 			['procedure LSDRadixSort(array):'],
@@ -170,17 +172,8 @@ export default class LSDRadix extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' && // if there are numbers to sort
-			list.length <= MAX_ARRAY_SIZE && // if there are <= 18 numbers to sort
-			list.map(x => Number(x.replace(',', '.'))).filter(x => Number.isNaN(x)).length <= 0 && // map each list item to a Number and if they are all numbers
-			(negativeNumbersEnabled || list.filter(x => x < 0).length <= 0) && // if negative numbers are enabled OR there are no negative numbers in the list
-			list.filter(x => Math.abs(x) > MAX_VALUE).length <= 0
-		) {
-			this.implementAction(this.clear.bind(this));
-			this.listField.value = '';
-			this.implementAction(this.sort.bind(this), list);
-		}
+		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.sort.bind(this), list);
 	}
 
 	clearCallback() {
@@ -210,6 +203,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):'); // dummy line to start animation
 
 		this.arrayData = [];
@@ -221,12 +215,43 @@ export default class LSDRadix extends Algorithm {
 		return this.commands;
 	}
 
-	sort(params) {
+	sort(list) {
 		this.highlight(0, 0);
 		this.commands = [];
 
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => Number.isNaN(x)).length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data cannot contain non-numeric values');
+			return this.commands;
+		} else if (list.filter(x => Math.abs(x) > MAX_VALUE).length > 0) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain numbers with more than 6 digits',
+			);
+			return this.commands;
+		} else if (!negativeNumbersEnabled && list.filter(x => x < 0).length > 0) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain negative numbers unless "Sort negative numbers" is enabled',
+			);
+			return this.commands;
+		}
+
+		this.listField.value = '';
 		this.arrayID = [];
-		this.arrayData = params
+		this.arrayData = list
 			.map(x => parseInt(x, 10))
 			.filter(x => !Number.isNaN(x))
 			.slice(0, MAX_ARRAY_SIZE);
@@ -315,14 +340,7 @@ export default class LSDRadix extends Algorithm {
 		}
 
 		// Find number of digits
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'Searching for number with greatest magnitude',
-			INFO_LABEL_X,
-			INFO_LABEL_Y,
-			0,
-		);
+		this.cmd(act.setText, this.infoLabelID, 'Searching for number with greatest magnitude');
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
@@ -568,8 +586,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
-		this.cmd(act.delete, this.infoLabelID);
-
+		this.cmd(act.setText, this.infoLabelID, '');
 		return this.commands;
 	}
 

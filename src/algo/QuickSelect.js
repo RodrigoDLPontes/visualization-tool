@@ -35,6 +35,9 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 475;
 const ARRAY_START_Y = 120;
 const ARRAY_ELEM_WIDTH = 50;
@@ -154,6 +157,9 @@ export default class QuickSelect extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.code = [
 			['procedure QuickSelect(array, left, right, k):'],
 			['  pivotIdx ← selected index within [left, right]'],
@@ -199,6 +205,7 @@ export default class QuickSelect extends Algorithm {
 		this.jPointerID = 0;
 		this.pPointerID = 0;
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 		this.swapCountID = this.nextIndex++;
 		this.swapCount = 0;
@@ -207,20 +214,9 @@ export default class QuickSelect extends Algorithm {
 
 	runCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' &&
-			this.kField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			const k = this.kField.value;
-			if (k > 0 && k <= list.length) {
-				this.implementAction(this.clear.bind(this));
-				this.listField.value = '';
-				this.kField.value = '';
-				this.implementAction(this.run.bind(this), list, k);
-			}
-		}
+		const k = this.kField.value;
+		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.run.bind(this), list, k);
 	}
 
 	clearCallback() {
@@ -237,6 +233,7 @@ export default class QuickSelect extends Algorithm {
 		this.displayData = [];
 		this.compCount = 0;
 		this.swapCount = 0;
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
@@ -245,8 +242,37 @@ export default class QuickSelect extends Algorithm {
 	run(list, k) {
 		this.commands = [];
 
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		} else if (k < 1 || k > list.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'kᵗʰ element to select must be an integer between 1 and ' + list.length,
+			);
+			return this.commands;
+		}
+
 		this.k = Number(k);
 
+		this.listField.value = '';
+		this.kField.value = '';
 		this.arrayID = [];
 		this.arrayData = list
 			.map(Number)

@@ -242,7 +242,7 @@ export default class DFS extends Graph {
 
 	doDFSStack(startValue) {
 		this.commands = [];
-		let vertex = startValue.charCodeAt(0) - 65
+		let vertex = startValue.charCodeAt(0) - 65;
 
 		// User input validation
 		if (vertex < 0 || vertex >= this.size) {
@@ -384,7 +384,7 @@ export default class DFS extends Graph {
 
 	doDFSRecursive(startValue) {
 		this.commands = [];
-		const vertex = startValue.charCodeAt(0) - 65
+		const vertex = startValue.charCodeAt(0) - 65;
 
 		// User input validation
 		if (vertex < 0 || vertex >= this.size) {

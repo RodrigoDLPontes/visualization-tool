@@ -175,7 +175,7 @@ export default class BFS extends Graph {
 
 	doBFS(startValue) {
 		this.commands = [];
-		let vertex = startValue.charCodeAt(0) - 65
+		let vertex = startValue.charCodeAt(0) - 65;
 
 		// User input validation
 		if (vertex < 0 || vertex >= this.size) {

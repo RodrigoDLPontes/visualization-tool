@@ -34,10 +34,11 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 15;
 
-const INFO_MSG_X = 20;
-const INFO_MSG_Y = 150;
-const CODE_START_X = 25;
-const CODE_START_Y = 35;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
+const CODE_START_X = 15;
+const CODE_START_Y = 100;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
@@ -160,8 +161,29 @@ export default class HeapSort extends Algorithm {
 	sort(list) {
 		this.commands = [];
 
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		}
+
 		this.highlight(0, 0);
 
+		this.listField.value = '';
 		this.arrayData = list
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
@@ -508,15 +530,8 @@ export default class HeapSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			this.implementAction(this.clear.bind(this));
-			this.listField.value = '';
-			this.implementAction(this.sort.bind(this), list);
-		}
+		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.sort.bind(this), list);
 	}
 
 	clearCallback() {

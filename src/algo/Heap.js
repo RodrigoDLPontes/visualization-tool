@@ -245,6 +245,7 @@ export default class Heap extends Algorithm {
 		}
 		this.cmd(act.setText, this.descriptLabel1, '');
 		this.cmd(act.setText, this.infoLabelID, '');
+		this.buildHeapField.value = '';
 		return this.commands;
 	}
 
@@ -440,7 +441,7 @@ export default class Heap extends Algorithm {
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'BuildHeap list cannot contain more than 31 numbers (you put ' + list.length + ')',
+				`BuildHeap list cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
 			);
 			return this.commands;
 		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {

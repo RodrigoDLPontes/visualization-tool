@@ -158,16 +158,22 @@ export default class Prims extends Graph {
 
 	startCallback() {
 		if (this.startField.value !== '') {
-			let startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size)
-				this.implementAction(this.doPrim.bind(this), startvalue);
+			startValue = startValue.toUpperCase();
+			this.implementAction(this.doPrim.bind(this), startValue);
 		}
 	}
 
-	doPrim(startVertex) {
+	doPrim(startValue) {
 		this.commands = [];
+		const startVertex = startValue.charCodeAt(0) - 65
+
+		// User input validation
+		if (startVertex < 0 || startVertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 

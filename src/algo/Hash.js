@@ -34,7 +34,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 4;
-const MAX_LOAD_LENGTH = 5;
+const MAX_LOAD_LENGTH = 3;
 
 const HASH_NUMBER_START_X = 200;
 const HASH_X_DIFF = 7;
@@ -127,12 +127,17 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		this.loadFieldLabel = addLabelToAlgorithmBar(
+			'0.',
+			this.rightVerticalTop,
+		);
+
 		this.loadField = addControlToAlgorithmBar('Text', '');
-		this.loadField.setAttribute('placeholder', 'LF/100');
+		this.loadField.setAttribute('placeholder', '67');
 		this.loadField.size = MAX_LOAD_LENGTH;
 		this.loadField.onkeydown = this.returnSubmit(
 			this.loadField,
-			this.changeLoadFactor.bind(this),
+			this.loadFactorCallBack.bind(this),
 			MAX_LOAD_LENGTH,
 			true,
 		);
@@ -698,11 +703,9 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		if (this.loadField.value !== '' && this.loadField.value < 100) {
-			const newLF = this.loadField.value / 100;
-			this.loadField.value = '';
-			this.implementAction(this.changeLoadFactor.bind(this), newLF);
-		}
+		const newLF = this.loadField.value ? this.loadField.value / Math.pow(10, this.loadField.value.toString().length) : .67;
+		this.loadField.value = '';
+		this.implementAction(this.changeLoadFactor.bind(this), newLF);
 	}
 
 	reset() {

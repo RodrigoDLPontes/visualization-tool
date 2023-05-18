@@ -520,6 +520,7 @@ export default class HeapSort extends Algorithm {
 		this.heapArrayData = [];
 		this.heapArrayID = [];
 		this.heapArrayLabelID = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 
 		return this.commands;
 	}

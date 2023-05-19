@@ -201,6 +201,7 @@ export default class StackArray extends Algorithm {
 	}
 
 	clearData() {
+		this.pushField.value = '';
 		this.commands = [];
 		this.clearAll();
 		return this.commands;

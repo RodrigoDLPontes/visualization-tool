@@ -137,6 +137,7 @@ export default class ClosedHash extends Hash {
 	}
 
 	resizeInitialTable() {
+		this.resetAll();
 		// Make command stack empty, and clear the elements of the list.
 		this.commands = [];
 		//Delete current hashTable

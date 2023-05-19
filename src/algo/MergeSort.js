@@ -205,6 +205,7 @@ export default class MergeSort extends Algorithm {
 		this.displayData = [];
 		this.arrayID = [];
 		this.compCount = 0;
+		this.listField.value = '';
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		return this.commands;

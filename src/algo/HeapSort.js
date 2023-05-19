@@ -515,6 +515,7 @@ export default class HeapSort extends Algorithm {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 
+		this.listField.value = '';
 		this.arrayData = [];
 		this.arrayID = [];
 		this.heapArrayData = [];

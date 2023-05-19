@@ -328,6 +328,8 @@ export default class BruteForce extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
+		this.textField.value = '';
+		this.patternField.value = '';
 		this.comparisonMatrixID = [];
 		this.removeCode(this.codeID);
 		this.codeID = [];

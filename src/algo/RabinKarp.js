@@ -508,6 +508,10 @@ export default class RabinKarp extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
+		
+		this.textField.value = '';
+		this.patternField.value = '';
+		this.baseField.value = '';
 		this.comparisonMatrixID = [];
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');

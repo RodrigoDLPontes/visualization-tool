@@ -956,6 +956,8 @@ export default class BoyerMoore extends Algorithm {
 		// 	this.cmd(act.delete, this.failureTableValueID[i]);
 		// }
 
+		this.textField.value = '';
+		this.patternField.value = '';
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
 		this.cmd(act.setText, this.periodLabelID, '');

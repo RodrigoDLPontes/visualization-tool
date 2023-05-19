@@ -706,6 +706,7 @@ export default class OpenHash extends Hash {
 	}
 
 	clear() {
+		this.resetAll();
 		this.commands = [];
 
 		for (let i = 0; i < this.table_size; i++) {

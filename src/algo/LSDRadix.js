@@ -203,6 +203,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
+		this.listField.value = '';
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):'); // dummy line to start animation
 

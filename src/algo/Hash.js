@@ -664,10 +664,12 @@ export default class Hash extends Algorithm {
 	}
 
 	resetAll() {
+		this.implementAction(this.changeLoadFactor.bind(this), DEFAULT_LOAD_FACTOR);
 		this.keyField.value = '';
 		this.valueField.value = '';
 		this.deleteField.value = '';
 		this.findField.value = '';
+		this.loadField.value = '';
 		return [];
 	}
 

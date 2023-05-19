@@ -178,6 +178,7 @@ export default class InsertionSort extends Algorithm {
 		this.displayData = [];
 		this.compCount = 0;
 		this.swapCount = 0;
+		this.listField.value = '';
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);

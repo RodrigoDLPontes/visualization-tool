@@ -776,6 +776,7 @@ export default class DequeArray extends Algorithm {
 	}
 
 	clearAll() {
+		this.addField.value = '';
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');

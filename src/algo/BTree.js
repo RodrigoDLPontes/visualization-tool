@@ -345,6 +345,9 @@ export default class BTree extends Algorithm {
 	}
 
 	clearTree() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.deleteTree(this.treeRoot);
 		this.treeRoot = null;

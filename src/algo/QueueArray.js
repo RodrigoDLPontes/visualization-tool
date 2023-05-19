@@ -563,6 +563,7 @@ export default class QueueArray extends Algorithm {
 	}
 
 	clearAll() {
+		this.enqueueField.value = '';
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 

@@ -237,6 +237,8 @@ export default class Heap extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.buildHeapField.value = '';
 		this.commands = [];
 		while (this.currentHeapSize > 0) {
 			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);

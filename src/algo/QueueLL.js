@@ -300,6 +300,7 @@ export default class QueueLL extends Algorithm {
 	}
 
 	clearAll() {
+		this.enqueueField.value = '';
 		this.commands = [];
 		for (let i = 0; i < this.top; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);

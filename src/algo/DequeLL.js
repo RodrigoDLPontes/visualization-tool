@@ -438,6 +438,7 @@ export default class DequeLL extends Algorithm {
 	}
 
 	clearAll() {
+		this.addField.value = '';
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);

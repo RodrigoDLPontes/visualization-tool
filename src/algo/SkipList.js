@@ -712,6 +712,11 @@ export default class SkipList extends Algorithm {
 	}
 
 	clearAll() {
+		this.addValueField.value = '';
+		this.removeField.value = '';
+		this.getField.value = '';
+		this.headsField.value = '';
+		this.addValueFieldRandom.value = '';
 		this.commands = [];
 
 		for (let col = 0; col < this.nodeID.length; col++) {

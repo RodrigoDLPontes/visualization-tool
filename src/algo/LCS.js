@@ -79,9 +79,16 @@ export default class LCS extends Algorithm {
 		);
 		this.controls.push(this.S2Field);
 
+		// Run button
 		this.tableButton = addControlToAlgorithmBar('Button', 'Run');
 		this.tableButton.onclick = this.runCallback.bind(this);
 		this.controls.push(this.tableButton);
+
+		// Clear button
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
+	
 	}
 
 	setup() {
@@ -154,7 +161,24 @@ export default class LCS extends Algorithm {
 		this.infoLabelID = this.nextIndex++;
 	}
 
+	clearCallback() {
+		this.implementAction(this.clear.bind(this));
+	}
+
+	clear(keepInput) {
+		this.commands = [];
+		
+		if (!keepInput) {
+			this.S1Field.value = '';
+			this.S2Field.value = '';
+		}
+
+		this.clearOldIDs();
+		return this.commands;
+	}
+
 	runCallback() {
+		this.implementAction(this.clear.bind(this), true);
 		const string1 = this.S1Field.value;
 		const string2 = this.S2Field.value;
 		this.implementAction(this.run.bind(this), string2, string1);
@@ -162,7 +186,6 @@ export default class LCS extends Algorithm {
 
 	run(str1, str2) {
 		this.commands = [];
-		this.clearOldIDs();
 
 		// User input validation
 		if (!str1 || !str2) {
@@ -170,8 +193,6 @@ export default class LCS extends Algorithm {
 			return this.commands;
 		}
 
-		this.S1Field.value = '';
-		this.S2Field.value = '';
 		this.buildTable(str1, str2);
 
 		const moveID = this.nextIndex++;

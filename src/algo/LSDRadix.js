@@ -172,7 +172,7 @@ export default class LSDRadix extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		this.implementAction(this.sort.bind(this), list);
 	}
 
@@ -192,7 +192,7 @@ export default class LSDRadix extends Algorithm {
 		}
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
@@ -203,7 +203,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
-		this.listField.value = '';
+		if (!keepInput) this.listField.value = '';
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):'); // dummy line to start animation
 
@@ -250,7 +250,6 @@ export default class LSDRadix extends Algorithm {
 			return this.commands;
 		}
 
-		this.listField.value = '';
 		this.arrayID = [];
 		this.arrayData = list
 			.map(x => parseInt(x, 10))

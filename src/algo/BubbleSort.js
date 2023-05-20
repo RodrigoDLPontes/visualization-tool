@@ -183,7 +183,7 @@ export default class BubbleSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		this.implementAction(this.sort.bind(this), list);
 	}
 
@@ -209,7 +209,7 @@ export default class BubbleSort extends Algorithm {
 		lastSwapEnabled = !lastSwapEnabled;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 
 		for (let i = 0; i < this.arrayID.length; i++) {
@@ -221,7 +221,7 @@ export default class BubbleSort extends Algorithm {
 		this.compCount = 0;
 		this.swapCount = 0;
 		this.displayData = [];
-		this.listField.value = '';
+		if (!keepInput) this.listField.value = '';
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
@@ -253,7 +253,6 @@ export default class BubbleSort extends Algorithm {
 
 		this.highlight(0, 0);
 
-		this.listField.value = '';
 		this.arrayID = [];
 		this.arrayData = list
 			.map(Number)

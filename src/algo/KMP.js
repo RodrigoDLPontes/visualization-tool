@@ -176,18 +176,15 @@ export default class KMP extends Algorithm {
 	}
 
 	findCallback() {
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		const text = this.textField.value;
 		const pattern = this.patternField.value;
-		this.textField.value = '';
-		this.patternField.value = '';
 		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
 	buildFailureTableCallback() {
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		const pattern = this.patternField.value;
-		this.patternField.value = '';
 		this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
 	}
 
@@ -669,7 +666,7 @@ export default class KMP extends Algorithm {
 		return failureTable;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
 			this.cmd(act.delete, this.textRowID[i]);
@@ -691,9 +688,12 @@ export default class KMP extends Algorithm {
 
 		this.removeCode(this.codeID);
 		this.codeID = [];
+
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+		}
 		
-		this.textField.value = '';
-		this.patternField.value = '';
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
 		this.cmd(act.setText, this.infoLabelID, '');

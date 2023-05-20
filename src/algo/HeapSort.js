@@ -183,7 +183,6 @@ export default class HeapSort extends Algorithm {
 
 		this.highlight(0, 0);
 
-		this.listField.value = '';
 		this.arrayData = list
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
@@ -508,14 +507,14 @@ export default class HeapSort extends Algorithm {
 		this.cmd(act.setHighlight, this.heapArrayID[index], highlightVal);
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 
-		this.listField.value = '';
+		if (!keepInput) this.listField.value = '';
 		this.arrayData = [];
 		this.arrayID = [];
 		this.heapArrayData = [];
@@ -532,7 +531,7 @@ export default class HeapSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		this.implementAction(this.sort.bind(this), list);
 	}
 

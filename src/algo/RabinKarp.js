@@ -178,11 +178,9 @@ export default class RabinKarp extends Algorithm {
 	}
 
 	findCallback() {
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		const text = this.textField.value;
 		const pattern = this.patternField.value;
-		this.textField.value = '';
-		this.patternField.value = '';
 		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
@@ -193,13 +191,14 @@ export default class RabinKarp extends Algorithm {
 
 	changeBase(val) {
 		// User input validation
+		this.commands = [];
 		if (!val || val === 0) {
-			this.commands = [];
 			this.cmd(act.setText, this.infoLabelID, 'Base must be a non-zero integer');
-			return this.commands;
+		} else {
+			this.cmd(act.setText, this.infoLabelID, 'Base set to ' + val);
+			this.baseValue = val;
 		}
-		this.baseField.value = '';
-		this.baseValue = val;
+		return this.commands;
 	}
 
 	clearCallback() {
@@ -489,7 +488,7 @@ export default class RabinKarp extends Algorithm {
 		return this.commands;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		if (this.textRowID.length !== 0) {
 			this.cmd(act.delete, this.baseLabelID);
@@ -508,10 +507,13 @@ export default class RabinKarp extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
-		
-		this.textField.value = '';
-		this.patternField.value = '';
-		this.baseField.value = '';
+
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+			this.baseField.value = '';
+		}
+
 		this.comparisonMatrixID = [];
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');

@@ -133,11 +133,9 @@ export default class BruteForce extends Algorithm {
 	}
 
 	findCallback() {
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		const text = this.textField.value;
 		const pattern = this.patternField.value;
-		this.textField.value = '';
-		this.patternField.value = '';
 		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
@@ -317,7 +315,7 @@ export default class BruteForce extends Algorithm {
 		return this.commands;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
 			this.cmd(act.delete, this.textRowID[i]);
@@ -328,8 +326,12 @@ export default class BruteForce extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
-		this.textField.value = '';
-		this.patternField.value = '';
+
+		if (!keepInput)  {
+			this.textField.value = '';
+			this.patternField.value = '';
+		}
+
 		this.comparisonMatrixID = [];
 		this.removeCode(this.codeID);
 		this.codeID = [];

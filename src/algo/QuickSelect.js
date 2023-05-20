@@ -215,7 +215,7 @@ export default class QuickSelect extends Algorithm {
 	runCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
 		const k = this.kField.value;
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		this.implementAction(this.run.bind(this), list, k);
 	}
 
@@ -223,7 +223,7 @@ export default class QuickSelect extends Algorithm {
 		this.implementAction(this.clear.bind(this));
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
@@ -233,8 +233,12 @@ export default class QuickSelect extends Algorithm {
 		this.displayData = [];
 		this.compCount = 0;
 		this.swapCount = 0;
-		this.listField.value = '';
-		this.kField.value = '';
+		
+		if (!keepInput) {
+			this.listField.value = '';
+			this.kField.value = '';
+		}
+		
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
@@ -273,8 +277,6 @@ export default class QuickSelect extends Algorithm {
 
 		this.k = Number(k);
 
-		this.listField.value = '';
-		this.kField.value = '';
 		this.arrayID = [];
 		this.arrayData = list
 			.map(Number)

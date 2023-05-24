@@ -231,7 +231,7 @@ export default class DequeArray extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
-		this.nextIndex = this.nextIndex + 7;
+		this.nextIndex = this.nextIndex + 9;
 	}
 
 	addLastCallback() {

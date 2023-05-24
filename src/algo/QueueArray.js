@@ -209,7 +209,7 @@ export default class QueueArray extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
-		this.nextIndex = this.nextIndex + 7;
+		this.nextIndex = this.nextIndex + 8;
 	}
 
 	enqueueCallback() {

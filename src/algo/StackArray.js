@@ -172,7 +172,7 @@ export default class StackArray extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
-		this.nextIndex = this.nextIndex + 3;
+		this.nextIndex = this.nextIndex + 4;
 		//^ To keep nextIndex in the same place relative to setup()
 		this.highlight1ID = this.nextIndex++;
 		this.highlight2ID = this.nextIndex++;

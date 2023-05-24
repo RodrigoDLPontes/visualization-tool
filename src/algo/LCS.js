@@ -49,7 +49,7 @@ const LCS_CELL_COLOR = '#99CCFF';
 const MAX_SEQUENCE_LENGTH = 13;
 
 const SEQUENCE_START_X = 20;
-const SEQUENCE_START_Y = 500;
+const SEQUENCE_START_Y = 475;
 const SEQUENCE_DELTA_X = 10;
 
 export default class LCS extends Algorithm {
@@ -163,7 +163,6 @@ export default class LCS extends Algorithm {
 	reset() {
 		this.oldIDs = [];
 		this.nextIndex = this.initialIndex;
-		this.infoLabelID = this.nextIndex++;
 	}
 
 	clearCallback() {
@@ -453,14 +452,26 @@ export default class LCS extends Algorithm {
 			header,
 			'Longest Common Subsequence:',
 			SEQUENCE_START_X,
-			SEQUENCE_START_Y - 25,
+			SEQUENCE_START_Y,
 			0,
 		);
 		this.cmd(act.setForegroundColor, header, '#49AB40'); // sets text color
 
+		const lengthHeader = this.nextIndex++;
+		this.oldIDs.push(lengthHeader);
+		this.cmd(
+			act.createLabel,
+			lengthHeader,
+			'Length of LCS:',
+			SEQUENCE_START_X,
+			SEQUENCE_START_Y + 25,
+			0,
+		);
+		this.cmd(act.setForegroundColor, lengthHeader, '#49AB40'); // sets text color
+
 		const lcsLength = this.nextIndex++;
 		this.oldIDs.push(lcsLength);
-		this.cmd(act.createLabel, lcsLength, '0', SEQUENCE_START_X + 180, SEQUENCE_START_Y - 25, 0);
+		this.cmd(act.createLabel, lcsLength, '0', SEQUENCE_START_X + 85, SEQUENCE_START_Y + 25, 0);
 		this.cmd(act.setForegroundColor, lcsLength, '#FF0000'); // sets text color
 
 		for (let i = 1; i <= str1.length; i++) {
@@ -560,8 +571,8 @@ export default class LCS extends Algorithm {
 					act.createLabel,
 					nextSequenceID,
 					str1.charAt(currX - 1),
-					SEQUENCE_START_X + (sequence.length - 1) * SEQUENCE_DELTA_X + 4,
-					SEQUENCE_START_Y,
+					SEQUENCE_START_X + (sequence.length - 1) * SEQUENCE_DELTA_X + 184,
+					SEQUENCE_START_Y + 6,
 				);
 				this.cmd(act.setForegroundColor, nextSequenceID, '#0000FF');
 				this.cmd(act.setText, lcsLength, sequence.length);
@@ -570,8 +581,8 @@ export default class LCS extends Algorithm {
 					this.cmd(
 						act.move,
 						sequence[i],
-						SEQUENCE_START_X + (sequence.length - 1 - i) * SEQUENCE_DELTA_X + 4,
-						SEQUENCE_START_Y,
+						SEQUENCE_START_X + (sequence.length - 1 - i) * SEQUENCE_DELTA_X + 184,
+						SEQUENCE_START_Y + 6,
 					);
 				}
 

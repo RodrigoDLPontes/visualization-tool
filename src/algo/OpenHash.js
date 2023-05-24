@@ -706,8 +706,8 @@ export default class OpenHash extends Hash {
 	}
 
 	clear() {
-		this.resetAll();
 		this.commands = [];
+		this.resetAll();
 
 		for (let i = 0; i < this.table_size; i++) {
 			this.cmd(act.delete, this.hashTableVisual[i]);

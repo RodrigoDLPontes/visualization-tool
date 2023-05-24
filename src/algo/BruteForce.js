@@ -327,7 +327,7 @@ export default class BruteForce extends Algorithm {
 			}
 		}
 
-		if (!keepInput)  {
+		if (!keepInput) {
 			this.textField.value = '';
 			this.patternField.value = '';
 		}

@@ -693,7 +693,7 @@ export default class KMP extends Algorithm {
 			this.textField.value = '';
 			this.patternField.value = '';
 		}
-		
+
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
 		this.cmd(act.setText, this.infoLabelID, '');

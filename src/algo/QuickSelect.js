@@ -233,12 +233,12 @@ export default class QuickSelect extends Algorithm {
 		this.displayData = [];
 		this.compCount = 0;
 		this.swapCount = 0;
-		
+
 		if (!keepInput) {
 			this.listField.value = '';
 			this.kField.value = '';
 		}
-		
+
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);

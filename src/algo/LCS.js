@@ -24,7 +24,11 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
 const INFO_MSG_X = 25;
@@ -84,11 +88,12 @@ export default class LCS extends Algorithm {
 		this.tableButton.onclick = this.runCallback.bind(this);
 		this.controls.push(this.tableButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
-	
 	}
 
 	setup() {
@@ -167,7 +172,7 @@ export default class LCS extends Algorithm {
 
 	clear(keepInput) {
 		this.commands = [];
-		
+
 		if (!keepInput) {
 			this.S1Field.value = '';
 			this.S2Field.value = '';

@@ -43,10 +43,10 @@ const LINKED_LIST_ELEMS_PER_LINE = 8;
 const LINKED_LIST_ELEM_SPACING = 150;
 const LINKED_LIST_LINE_SPACING = 100;
 
-const PUSH_LABEL_X = 50;
-const PUSH_LABEL_Y = 30;
-const PUSH_ELEMENT_X = 120;
-const PUSH_ELEMENT_Y = 30;
+const QUEUE_LABEL_X = 60;
+const QUEUE_LABEL_Y = 30;
+const QUEUE_ELEMENT_X = 130;
+const QUEUE_ELEMENT_Y = 30;
 
 const HEAD_POS_X = 180;
 const HEAD_POS_Y = 100;
@@ -140,6 +140,7 @@ export default class DequeLL extends Algorithm {
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
+		this.leftoverValID = this.nextIndex++;
 
 		this.cmd(act.createLabel, this.headLabelID, 'Head', POINTER_LABEL_X, HEAD_LABEL_Y);
 		this.cmd(
@@ -166,7 +167,8 @@ export default class DequeLL extends Algorithm {
 		this.cmd(act.setNull, this.headID, 1);
 		this.cmd(act.setNull, this.tailID, 1);
 
-		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -232,6 +234,7 @@ export default class DequeLL extends Algorithm {
 		this.linkedListElemID[index] = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(
 			act.createDoublyLinkedListNode,
@@ -244,8 +247,8 @@ export default class DequeLL extends Algorithm {
 			0.25,
 		);
 
-		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
-		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.createLabel, labPushID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, labPushValID, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.cmd(act.step);
 
@@ -343,12 +346,13 @@ export default class DequeLL extends Algorithm {
 		const labPopValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
-		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
+		this.cmd(act.createLabel, labPopID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
-		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.move, labPopValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
 		if (this.size !== 1) {
@@ -402,6 +406,13 @@ export default class DequeLL extends Algorithm {
 			this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
 			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 		}
+
+		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
+		this.cmd(act.setText, this.leftoverValID, this.arrayData[index]);
+
+		this.cmd(act.delete, labPopValID);
+		this.cmd(act.delete, labPopID);
+
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
 
@@ -411,9 +422,6 @@ export default class DequeLL extends Algorithm {
 		}
 		this.size = this.size - 1;
 		this.resetNodePositions();
-
-		this.cmd(act.delete, labPopValID);
-		this.cmd(act.delete, labPopID);
 
 		return this.commands;
 	}
@@ -430,6 +438,7 @@ export default class DequeLL extends Algorithm {
 	}
 
 	clearAll() {
+		this.addField.value = '';
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);
@@ -437,6 +446,8 @@ export default class DequeLL extends Algorithm {
 		this.size = 0;
 		this.cmd(act.setNull, this.headID, 1);
 		this.cmd(act.setNull, this.tailID, 1);
+		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 		return this.commands;
 	}
 }

@@ -166,17 +166,22 @@ export default class BFS extends Graph {
 
 	startCallback() {
 		if (this.startField.value !== '') {
-			let startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size) {
-				this.implementAction(this.doBFS.bind(this), startvalue);
-			}
+			startValue = startValue.toUpperCase();
+			this.implementAction(this.doBFS.bind(this), startValue);
 		}
 	}
 
-	doBFS(startVetex) {
+	doBFS(startValue) {
 		this.commands = [];
+		let vertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (vertex < 0 || vertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 
@@ -187,7 +192,6 @@ export default class BFS extends Graph {
 
 		this.rebuildEdges();
 
-		let vertex = startVetex;
 		this.cmd(
 			act.setText,
 			this.infoLabelID,

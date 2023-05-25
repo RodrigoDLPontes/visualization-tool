@@ -229,21 +229,26 @@ export default class DFS extends Graph {
 
 	startCallback() {
 		if (this.startField.value !== '') {
-			let startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size) {
-				if (this.physicalStack) {
-					this.implementAction(this.doDFSStack.bind(this), startvalue);
-				} else {
-					this.implementAction(this.doDFSRecursive.bind(this), startvalue);
-				}
+			startValue = startValue.toUpperCase();
+			if (this.physicalStack) {
+				this.implementAction(this.doDFSStack.bind(this), startValue);
+			} else {
+				this.implementAction(this.doDFSRecursive.bind(this), startValue);
 			}
 		}
 	}
 
-	doDFSStack(startVertex) {
+	doDFSStack(startValue) {
 		this.commands = [];
+		let vertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (vertex < 0 || vertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 
@@ -257,7 +262,6 @@ export default class DFS extends Graph {
 
 		this.rebuildEdges();
 
-		let vertex = startVertex;
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
@@ -378,8 +382,15 @@ export default class DFS extends Graph {
 		return this.commands;
 	}
 
-	doDFSRecursive(startVertex) {
+	doDFSRecursive(startValue) {
 		this.commands = [];
+		const vertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (vertex < 0 || vertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 
@@ -400,12 +411,10 @@ export default class DFS extends Graph {
 
 		this.cmd(act.setText, this.infoLabelID, '');
 
-		const vertex = startVertex;
-
 		this.cmd(act.createLabel, this.currentID, '', CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
 		this.cmd(act.setTextColor, this.currentID, DFS_STACK_TOP_COLOR);
 
-		this.cmd(act.setText, this.infoLabelID, 'About to recurse to ' + this.toStr(startVertex));
+		this.cmd(act.setText, this.infoLabelID, 'About to recurse to ' + this.toStr(startValue));
 		this.cmd(act.step);
 
 		this.visitVertex(vertex);

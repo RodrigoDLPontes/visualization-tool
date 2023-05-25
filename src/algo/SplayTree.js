@@ -266,6 +266,9 @@ export default class SplayTree extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.recClear(this.treeRoot);
 		this.treeRoot = null;

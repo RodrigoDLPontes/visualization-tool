@@ -31,6 +31,9 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 60;
 
@@ -112,6 +115,9 @@ export default class KMP extends Algorithm {
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.failureTableCode = [
 			['procedure KMPFailureTable(pattern):'],
 			['  m ← length of pattern'],
@@ -165,31 +171,21 @@ export default class KMP extends Algorithm {
 		this.failureTableValueID = [];
 		this.codeID = [];
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 	}
 
 	findCallback() {
-		if (
-			this.textField.value !== '' &&
-			this.patternField.value !== '' &&
-			this.textField.value.length >= this.patternField.value.length
-		) {
-			this.implementAction(this.clear.bind(this));
-			const text = this.textField.value;
-			const pattern = this.patternField.value;
-			this.textField.value = '';
-			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const text = this.textField.value;
+		const pattern = this.patternField.value;
+		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
 	buildFailureTableCallback() {
-		if (this.patternField.value !== '') {
-			this.implementAction(this.clear.bind(this));
-			const pattern = this.patternField.value;
-			this.patternField.value = '';
-			this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const pattern = this.patternField.value;
+		this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
 	}
 
 	clearCallback() {
@@ -198,6 +194,19 @@ export default class KMP extends Algorithm {
 
 	find(text, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!text || !pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
+			return this.commands;
+		} else if (text.length < pattern.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Pattern is longer than text, no matches exist',
+			);
+			return this.commands;
+		}
 
 		const maxRows = this.getMaxRows(text, pattern);
 		if (maxRows <= 14) {
@@ -483,6 +492,13 @@ export default class KMP extends Algorithm {
 
 	onlyBuildFailureTable(textLength, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Pattern must not be empty');
+			return this.commands;
+		}
+
 		this.cellSize = 30;
 		this.buildFailureTable(textLength, pattern);
 		return this.commands;
@@ -650,7 +666,7 @@ export default class KMP extends Algorithm {
 		return failureTable;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
 			this.cmd(act.delete, this.textRowID[i]);
@@ -673,8 +689,14 @@ export default class KMP extends Algorithm {
 		this.removeCode(this.codeID);
 		this.codeID = [];
 
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+		}
+
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
 		return this.commands;

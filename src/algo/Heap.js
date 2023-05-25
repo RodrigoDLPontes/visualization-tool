@@ -33,6 +33,9 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const MAX_SIZE = 32;
 const LENGTH = 8;
 
@@ -184,9 +187,11 @@ export default class Heap extends Algorithm {
 		this.descriptLabel2 = this.nextIndex++;
 		this.descriptLabel3 = this.nextIndex++;
 		this.resetIndex = this.nextIndex;
+		this.infoLabelID = this.nextIndex++;
 		this.createArray();
 		this.cmd(act.createLabel, this.descriptLabel1, '', 20, 10, 0);
 		this.cmd(act.createLabel, this.descriptLabel3, '', 300, 10, 0);
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -211,15 +216,8 @@ export default class Heap extends Algorithm {
 
 	buildHeapCallback() {
 		const list = this.buildHeapField.value.split(',').filter(x => x !== '');
-		if (
-			this.buildHeapField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			this.buildHeapField.value = '';
-			this.implementAction(this.clear.bind(this));
-			this.implementAction(this.buildHeap.bind(this), list);
-		}
+		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.buildHeap.bind(this), list);
 	}
 
 	minHeapCallback() {
@@ -239,6 +237,8 @@ export default class Heap extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.buildHeapField.value = '';
 		this.commands = [];
 		while (this.currentHeapSize > 0) {
 			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
@@ -246,6 +246,8 @@ export default class Heap extends Algorithm {
 			this.currentHeapSize--;
 		}
 		this.cmd(act.setText, this.descriptLabel1, '');
+		this.cmd(act.setText, this.infoLabelID, '');
+		this.buildHeapField.value = '';
 		return this.commands;
 	}
 
@@ -254,6 +256,7 @@ export default class Heap extends Algorithm {
 		this.array_size = LENGTH;
 
 		this.nextIndex = this.resetIndex;
+		this.infoLabelID = this.nextIndex++;
 
 		this.arrayData = new Array(this.array_size);
 		this.arrayLabels = new Array(this.array_size);
@@ -425,10 +428,35 @@ export default class Heap extends Algorithm {
 		return this.commands;
 	}
 
-	buildHeap(params) {
+	buildHeap(list) {
 		this.commands = [];
 
-		this.arrayData = params
+		// User input validation
+		if (!list.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'BuildHeap list must contain integers such as "3,1,2"',
+			);
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`BuildHeap list cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'BuildHeap list cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		}
+
+		this.buildHeapField.value = '';
+		this.arrayData = list
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
 			.slice(0, MAX_ARRAY_SIZE); // Get first 31 numbers
@@ -465,7 +493,7 @@ export default class Heap extends Algorithm {
 			nextElem = nextElem - 1;
 		}
 		this.cmd(act.step);
-		this.cmd(act.setText, this.descriptLabel1, 'Buildheap complete!');
+		this.cmd(act.setText, this.descriptLabel1, 'BuildHeap complete!');
 		return this.commands;
 	}
 

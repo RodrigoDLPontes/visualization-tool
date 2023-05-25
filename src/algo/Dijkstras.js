@@ -204,21 +204,24 @@ export default class Dijkstras extends Graph {
 	}
 
 	startCallback() {
-		let startvalue;
-
 		if (this.startField.value !== '') {
-			startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size)
-				this.implementAction(this.doDijkstra.bind(this), startvalue);
+			startValue = startValue.toUpperCase();
+			this.implementAction(this.doDijkstra.bind(this), startValue);
 		}
 	}
 
-	doDijkstra(startVertex) {
+	doDijkstra(startValue) {
 		this.commands = [];
+		let current = startValue.charCodeAt(0) - 65;
 
-		let current = startVertex;
+		// User input validation
+		if (current < 0 || current >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
+
 		let currentID = this.nextIndex++;
 
 		this.clear();

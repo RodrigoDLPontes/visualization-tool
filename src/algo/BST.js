@@ -902,6 +902,9 @@ export default class BST extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.clearOldObjects();
 

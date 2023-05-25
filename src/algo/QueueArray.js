@@ -137,6 +137,7 @@ export default class QueueArray extends Algorithm {
 		this.front = 0;
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
+		this.leftoverValID = this.nextIndex++;
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -184,6 +185,7 @@ export default class QueueArray extends Algorithm {
 		);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
+		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.highlight1ID = this.nextIndex++;
 
@@ -207,7 +209,7 @@ export default class QueueArray extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 
-		this.nextIndex = this.nextIndex + 7;
+		this.nextIndex = this.nextIndex + 8;
 	}
 
 	enqueueCallback() {
@@ -247,6 +249,7 @@ export default class QueueArray extends Algorithm {
 		const newTail = (this.front + this.size) % this.arrayData.length;
 		this.arrayData[newTail] = elemToEnqueue;
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
@@ -305,6 +308,7 @@ export default class QueueArray extends Algorithm {
 		const labDequeueValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.setText, this.leftoverValID, '');
 
 		this.cmd(act.createLabel, labDequeueID, 'Dequeued Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 
@@ -349,7 +353,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
-		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ' + dequeuedVal);
+		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ');
+		this.cmd(act.setText, this.leftoverValID, dequeuedVal);
 
 		this.cmd(act.delete, labDequeueID);
 		this.cmd(act.delete, labDequeueValID);
@@ -558,6 +563,7 @@ export default class QueueArray extends Algorithm {
 	}
 
 	clearAll() {
+		this.enqueueField.value = '';
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 

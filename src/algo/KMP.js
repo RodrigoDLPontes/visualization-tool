@@ -81,6 +81,11 @@ export default class KMP extends Algorithm {
 		);
 		this.controls.push(this.patternField);
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Find button
 		this.findButton = addControlToAlgorithmBar('Button', 'Find');
 		this.findButton.onclick = this.findCallback.bind(this);
@@ -180,6 +185,37 @@ export default class KMP extends Algorithm {
 		const text = this.textField.value;
 		const pattern = this.patternField.value;
 		this.implementAction(this.find.bind(this), text, pattern);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const textValues = [
+			'THIS IS A TEST TEXT',
+			'ABABABABABABABABABABABABAB',
+			'GGACTGA',
+			'BBBBAABBBAB',
+			'Machine Learning',
+			'Sphinx of black quartz, judge my vow',
+			'BBBBBBBBBBBBBBBBBBBBA',
+			'AAAAABAAABA',
+			'AABCCAADDEE',
+		];
+		const patternValues = [
+			'TEST',
+			'ABABAB',
+			'ACT',
+			'BAB',
+			'in',
+			'quartz',
+			'BBBBBA',
+			'AAAA',
+			'FAA',
+		];
+
+		const randomIndex = Math.floor(Math.random() * textValues.length);
+
+		this.textField.value = textValues[randomIndex];
+		this.patternField.value = patternValues[randomIndex];
 	}
 
 	buildFailureTableCallback() {

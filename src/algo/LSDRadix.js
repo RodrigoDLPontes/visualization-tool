@@ -94,15 +94,17 @@ export default class LSDRadix extends Algorithm {
 		this.sortButton.onclick = this.sortCallback.bind(this);
 		this.controls.push(this.sortButton);
 
+		addDivisorToAlgorithmBar();
+
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
 		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', horizontalGroup);
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 
-		addDivisorToAlgorithmBar();
-
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
@@ -184,8 +186,11 @@ export default class LSDRadix extends Algorithm {
 	randomCallback() {
 		//Generate between 5 and 15 random values
 		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
-		const MIN_DATA_VALUE = 1;
-		const MAX_DATA_VALUE = 14;
+		let MIN_DATA_VALUE = 1;
+		if (negativeNumbersEnabled) {
+			MIN_DATA_VALUE = -500;
+		}
+		const MAX_DATA_VALUE = 500;
 		let values = '';
 		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
 			values += (

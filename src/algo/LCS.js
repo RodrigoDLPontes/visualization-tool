@@ -88,6 +88,8 @@ export default class LCS extends Algorithm {
 		this.tableButton.onclick = this.runCallback.bind(this);
 		this.controls.push(this.tableButton);
 
+		addDivisorToAlgorithmBar();
+
 		// Random data button
 		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
 		this.randomButton.onclick = this.randomCallback.bind(this);

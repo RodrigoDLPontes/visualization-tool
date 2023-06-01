@@ -79,11 +79,6 @@ export default class QuickSelect extends Algorithm {
 		);
 		this.controls.push(this.listField);
 
-		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', horizontalGroup);
-		this.randomButton.onclick = this.randomCallback.bind(this);
-		this.controls.push(this.randomButton);
-
 		addLabelToAlgorithmBar('kᵗʰ element (1 indexed)', horizontalGroup);
 
 		// k text field
@@ -104,8 +99,15 @@ export default class QuickSelect extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 

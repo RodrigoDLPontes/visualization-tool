@@ -86,11 +86,6 @@ export default class RabinKarp extends Algorithm {
 		);
 		this.controls.push(this.patternField);
 
-		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
-		this.randomButton.onclick = this.randomCallback.bind(this);
-		this.controls.push(this.randomButton);
-
 		// Find button
 		this.findButton = addControlToAlgorithmBar('Button', 'Find');
 		this.findButton.onclick = this.findCallback.bind(this);
@@ -111,6 +106,13 @@ export default class RabinKarp extends Algorithm {
 		this.baseButton = addControlToAlgorithmBar('Button', 'Change Base');
 		this.baseButton.onclick = this.baseCallback.bind(this);
 		this.controls.push(this.baseButton);
+
+		addDivisorToAlgorithmBar();
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 
 		addDivisorToAlgorithmBar();
 

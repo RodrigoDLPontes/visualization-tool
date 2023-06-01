@@ -86,15 +86,17 @@ export default class BubbleSort extends Algorithm {
 		this.sortButton.onclick = this.sortCallback.bind(this);
 		this.controls.push(this.sortButton);
 
+		addDivisorToAlgorithmBar();
+
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
 		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', horizontalGroup);
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 
-		addDivisorToAlgorithmBar();
-
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 

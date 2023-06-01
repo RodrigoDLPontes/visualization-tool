@@ -147,12 +147,12 @@ export default class BruteForce extends Algorithm {
 	randomCallback() {
 		// The array indices correspond to each other
 		const textValues = [
-			'THIS IS A TEST TEXT',
-			'ABABABABABABABABABABABABAB',
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
 			'GGACTGA',
 			'BBBBAABBBAB',
 			'Machine Learning',
-			'Sphinx of black quartz, judge my vow',
+			'Sphinxofblackquartz',
 			'BBBBBBBBBBBBBBBBBBBBA',
 			'AAAAABAAABA',
 			'AABCCAADDEE',

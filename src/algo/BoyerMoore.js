@@ -90,7 +90,7 @@ export default class BoyerMoore extends Algorithm {
 		this.controls.push(this.patternField);
 
 		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random Input');
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 
@@ -259,12 +259,12 @@ export default class BoyerMoore extends Algorithm {
 	randomCallback() {
 		// The array indices correspond to each other
 		const textValues = [
-			'THIS IS A TEST TEXT',
-			'ABABABABABABABABABABABABAB',
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
 			'GGACTGA',
 			'BBBBAABBBAB',
 			'Machine Learning',
-			'Sphinx of black quartz, judge my vow',
+			'Sphinxofblackquartz',
 			'BBBBBBBBBBBBBBBBBBBBA',
 			'AAAAABAAABA',
 			'AABCCAADDEE',

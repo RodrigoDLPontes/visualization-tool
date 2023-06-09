@@ -88,8 +88,15 @@ export default class BubbleSort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
@@ -179,6 +186,24 @@ export default class BubbleSort extends Algorithm {
 			this.cmd(act.setText, this.codeID[9][0], '                sorted ← false');
 			this.cmd(act.setText, this.codeID[12][0], '      end ← end - 1');
 		}
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+
+		this.listField.value = values;
 	}
 
 	sortCallback() {

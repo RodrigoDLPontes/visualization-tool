@@ -90,6 +90,13 @@ export default class LCS extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -186,6 +193,39 @@ export default class LCS extends Algorithm {
 		const string1 = this.S1Field.value;
 		const string2 = this.S2Field.value;
 		this.implementAction(this.run.bind(this), string2, string1);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const S1values = [
+			'ABCBDAB',
+			'XMJYAUZ',
+			'AGGTAB',
+			'ABCDEFG',
+			'1234567890',
+			'HUMAN',
+			'KITTEN',
+			'SOFTWARE',
+			'COMPUTER',
+			'SUPERMAN',
+		];
+		const S2values = [
+			'BDCAB',
+			'MZJAWXU',
+			'GXTXAYB',
+			'ACDFG',
+			'102030405060708090',
+			'CHIMPANZEE',
+			'SITTING',
+			'HARDWARE',
+			'COMMUTER',
+			'SPIDERMAN',
+		];
+
+		const randomIndex = Math.floor(Math.random() * S1values.length);
+
+		this.S1Field.value = S1values[randomIndex];
+		this.S2Field.value = S2values[randomIndex];
 	}
 
 	run(str1, str2) {

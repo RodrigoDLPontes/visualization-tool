@@ -103,6 +103,13 @@ export default class BoyerMoore extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -249,6 +256,37 @@ export default class BoyerMoore extends Algorithm {
 		const text = this.textField.value;
 		const pattern = this.patternField.value;
 		this.implementAction(this.find.bind(this), text, pattern);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const textValues = [
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
+			'GGACTGA',
+			'BBBBAABBBAB',
+			'Machine Learning',
+			'Sphinxofblackquartz',
+			'BBBBBBBBBBBBBBBBBBBBA',
+			'AAAAABAAABA',
+			'AABCCAADDEE',
+		];
+		const patternValues = [
+			'TEST',
+			'ABABAB',
+			'ACT',
+			'BAB',
+			'in',
+			'quartz',
+			'BBBBBA',
+			'AAAA',
+			'FAA',
+		];
+
+		const randomIndex = Math.floor(Math.random() * textValues.length);
+
+		this.textField.value = textValues[randomIndex];
+		this.patternField.value = patternValues[randomIndex];
 	}
 
 	buildLastOccurrenceTableCallback() {

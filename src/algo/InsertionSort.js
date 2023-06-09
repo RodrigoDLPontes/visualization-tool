@@ -85,8 +85,15 @@ export default class InsertionSort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 	}
@@ -156,6 +163,23 @@ export default class InsertionSort extends Algorithm {
 		this.compCount = 0;
 		this.swapCount = 0;
 		this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+		this.listField.value = values;
 	}
 
 	sortCallback() {

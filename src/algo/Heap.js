@@ -109,7 +109,7 @@ export default class Heap extends Algorithm {
 		this.buildHeapField.onkeydown = this.returnSubmit(
 			this.buildHeapField,
 			this.buildHeapCallback.bind(this),
-			60,
+			50,
 			false,
 		);
 		this.controls.push(this.buildHeapField);
@@ -117,6 +117,11 @@ export default class Heap extends Algorithm {
 		this.buildHeapButton = addControlToAlgorithmBar('Button', 'BuildHeap', horizontalGroup);
 		this.buildHeapButton.onclick = this.buildHeapCallback.bind(this);
 		this.controls.push(this.buildHeapButton);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', horizontalGroup);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -218,6 +223,23 @@ export default class Heap extends Algorithm {
 		const list = this.buildHeapField.value.split(',').filter(x => x !== '');
 		this.implementAction(this.clear.bind(this));
 		this.implementAction(this.buildHeap.bind(this), list);
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 14) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+		this.buildHeapField.value = values;
 	}
 
 	minHeapCallback() {

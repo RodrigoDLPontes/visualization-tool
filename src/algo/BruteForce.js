@@ -31,8 +31,11 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -83,6 +86,13 @@ export default class BruteForce extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -97,18 +107,20 @@ export default class BruteForce extends Algorithm {
 
 		this.code = [
 			['procedure BruteForce(text, pattern)'],
-			['     n <- text.length, m <- pattern.length'],
-			['     for i <- 0, n - m'],
-			['          j <- 0'],
-			['          while j < m and pattern[j] = text[i + j]'],
-			['               j <- j + 1'],
-			['          if j = m'],
-			['               match found at i'],
+			['  n ← text.length, m ← pattern.length'],
+			['  for i ← 0, n - m'],
+			['    j ← 0'],
+			['    while j < m and pattern[j] = text[i + j]'],
+			['      j ← j + 1'],
+			['    if j = m'],
+			['      match found at i'],
 			['end procedure'],
 		];
 
-		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0, 0);
 
+		this.comparisonCountID = this.nextIndex++;
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
@@ -122,23 +134,47 @@ export default class BruteForce extends Algorithm {
 		this.textRowID = [];
 		this.comparisonMatrixID = [];
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 		this.codeID = [];
 	}
 
 	findCallback() {
-		if (
-			this.textField.value !== '' &&
-			this.patternField.value !== '' &&
-			this.textField.value.length >= this.patternField.value.length
-		) {
-			this.implementAction(this.clear.bind(this));
-			const text = this.textField.value;
-			const pattern = this.patternField.value;
-			this.textField.value = '';
-			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const text = this.textField.value;
+		const pattern = this.patternField.value;
+		this.implementAction(this.find.bind(this), text, pattern);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const textValues = [
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
+			'GGACTGA',
+			'BBBBAABBBAB',
+			'Machine Learning',
+			'Sphinxofblackquartz',
+			'BBBBBBBBBBBBBBBBBBBBA',
+			'AAAAABAAABA',
+			'AABCCAADDEE',
+		];
+		const patternValues = [
+			'TEST',
+			'ABABAB',
+			'ACT',
+			'BAB',
+			'in',
+			'quartz',
+			'BBBBBA',
+			'AAAA',
+			'FAA',
+		];
+
+		const randomIndex = Math.floor(Math.random() * textValues.length);
+
+		this.textField.value = textValues[randomIndex];
+		this.patternField.value = patternValues[randomIndex];
 	}
 
 	clearCallback() {
@@ -147,6 +183,19 @@ export default class BruteForce extends Algorithm {
 
 	find(text, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!text || !pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
+			return this.commands;
+		} else if (text.length < pattern.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Pattern is longer than text, no matches exist',
+			);
+			return this.commands;
+		}
 
 		const maxRows = text.length - pattern.length + 1;
 		if (maxRows <= 14) {
@@ -170,8 +219,15 @@ export default class BruteForce extends Algorithm {
 
 		for (let i = 0; i < text.length; i++) {
 			xpos = i * this.cellSize + ARRAY_START_X;
-			ypos = ARRAY_START_Y;
+			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
+		}
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,
@@ -297,7 +353,7 @@ export default class BruteForce extends Algorithm {
 		return this.commands;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
 			this.cmd(act.delete, this.textRowID[i]);
@@ -308,11 +364,19 @@ export default class BruteForce extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
+
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+		}
+
 		this.comparisonMatrixID = [];
 		this.removeCode(this.codeID);
 		this.codeID = [];
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.infoLabelID, '');
+
 		return this.commands;
 	}
 

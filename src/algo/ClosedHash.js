@@ -43,7 +43,7 @@ const LINKED_ITEM_HEIGHT = 20;
 const LINKED_ITEM_INITIAL_X = 60;
 const LINKED_ITEM_INITIAL_Y = 40;
 const LINKED_ITEM_X_DELTA_INIT = 85;
-const LINKED_ITEM_X_DELTA = 100;
+const LINKED_ITEM_X_DELTA = 130;
 
 const EXPLAIN_LABEL_X = 550;
 const EXPLAIN_LABEL_Y = 15;
@@ -52,8 +52,8 @@ const HASH_TABLE_SIZE = 7;
 
 const DEFAULT_LOAD_FACTOR = 0.67;
 
-const LOAD_LABEL_X = 60;
-const LOAD_LABEL_Y = 20;
+const LOAD_LABEL_X = 15;
+const LOAD_LABEL_Y = 15;
 
 const MAX_SIZE = 30;
 
@@ -124,6 +124,7 @@ export default class ClosedHash extends Hash {
 			`Load Factor: ${this.load_factor}`,
 			LOAD_LABEL_X,
 			LOAD_LABEL_Y,
+			false,
 		);
 		this.cmd(act.createLabel, this.ExplainLabel, '', EXPLAIN_LABEL_X, EXPLAIN_LABEL_Y, 0);
 		this.animationManager.startNewAnimation(this.commands);
@@ -138,6 +139,7 @@ export default class ClosedHash extends Hash {
 	resizeInitialTable() {
 		// Make command stack empty, and clear the elements of the list.
 		this.commands = [];
+		this.resetAll();
 		//Delete current hashTable
 		this.oldHashTableVisual = this.hashTableVisual;
 		this.oldHashTableIndices = this.hashTableIndices;
@@ -158,8 +160,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}
-				(Array Length too large for resize)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 			this.cmd(act.step);
 		} else {
@@ -264,7 +265,7 @@ export default class ClosedHash extends Hash {
 			while (tmp != null && !found) {
 				this.cmd(act.setHighlight, tmp.graphicID, 1);
 				if (tmp.key === key) {
-					this.cmd(act.setText, compareIndex, tmp.key + '==' + key);
+					this.cmd(act.setText, compareIndex, tmp.key + ' == ' + key);
 					old = tmp;
 					found = true;
 					this.cmd(act.step);
@@ -629,8 +630,7 @@ export default class ClosedHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}
-			(Max Array Length)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 		}
 		this.cmd(act.step);

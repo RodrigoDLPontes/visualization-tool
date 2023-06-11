@@ -24,21 +24,24 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import Algorithm, { addControlToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import Algorithm, {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
-const INFO_MSG_X = 20;
-const INFO_MSG_Y = 400;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
 const TABLE_ELEM_WIDTH = 40;
 const TABLE_ELEM_HEIGHT = 30;
 
-const TABLE_START_X = 500;
+const TABLE_START_X = 645;
 const TABLE_START_Y = 80;
 
-const CODE_START_X = 20;
-const CODE_START_Y = 20;
-const CODE_LINE_HEIGHT = 14;
+const CODE_START_X = 25;
+const CODE_START_Y = 50;
 
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
@@ -46,7 +49,7 @@ const LCS_CELL_COLOR = '#99CCFF';
 const MAX_SEQUENCE_LENGTH = 13;
 
 const SEQUENCE_START_X = 20;
-const SEQUENCE_START_Y = 450;
+const SEQUENCE_START_Y = 475;
 const SEQUENCE_DELTA_X = 10;
 
 export default class LCS extends Algorithm {
@@ -80,9 +83,24 @@ export default class LCS extends Algorithm {
 		);
 		this.controls.push(this.S2Field);
 
+		// Run button
 		this.tableButton = addControlToAlgorithmBar('Button', 'Run');
 		this.tableButton.onclick = this.runCallback.bind(this);
 		this.controls.push(this.tableButton);
+
+		addDivisorToAlgorithmBar();
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
+		// Clear button
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.controls.push(this.clearButton);
 	}
 
 	setup() {
@@ -91,59 +109,55 @@ export default class LCS extends Algorithm {
 
 		this.code = [
 			['procedure ', 'LCS(S1, S2, matrix)'],
-			['     matrix <- create new 2D array of length S1.length by S2.length'],
-			['     for y <- 1, to S1.length, loop'],
-			['          for x <- 1 to S2.length, loop'],
-			['               if ', '(S1[y] == S2[x])'],
-			['                    matrix[y][x] = 1 + ', 'matrix[y - 1][x - 1]'],
-			['               else'],
-			[
-				'                    matrix[y][x] = max(',
-				'matrix[y - 1][x]',
-				',',
-				' matrix[y][x - 1]',
-				')',
-			],
-			['          end for'],
-			['     end for'],
-			['     currY <- S1.length'],
-			['     currX <- S2.length'],
-			['     list <- create new List()'],
-			['     while currY > 0 and currX > 0, loop:'],
-			[['          if '], ['matrix[currY - 1][currX] == matrix[currY][currX - 1] ']],
-			[['           and '], ['matrix[currY][currX] != matrix [currY - 1][currX - 1]']],
-			['               list.addFront(S1[currY])'],
-			['               currX--'],
-			['               currY--'],
-			['          else'],
-			[['               if '], ['matrix[currY - 1][currX] > matrix[currY][currX - 1]']],
-			['                    currX--'],
-			['               else'],
-			['                    currY--'],
-			['     end while'],
+			['  matrix ← create new 2D array of length S1.length by S2.length'],
+			['  for y ← 1, to S1.length, loop'],
+			['    for x ← 1 to S2.length, loop'],
+			['      if ', '(S1[y] == S2[x])'],
+			['        matrix[y][x] = 1 + ', 'matrix[y - 1][x - 1]'],
+			['      else'],
+			['        matrix[y][x] = max(', 'matrix[y - 1][x]', ',', ' matrix[y][x - 1]', ')'],
+			['    end for'],
+			['  end for'],
+			['  currY ← S1.length'],
+			['  currX ← S2.length'],
+			['  list ← create new List()'],
+			['  while currY > 0 and currX > 0, loop:'],
+			[['   if '], ['matrix[currY - 1][currX] == matrix[currY][currX - 1] ']],
+			[['      and '], ['matrix[currY][currX] != matrix [currY - 1][currX - 1]']],
+			['        list.addFront(S1[currY])'],
+			['        currX--'],
+			['        currY--'],
+			['   else'],
+			[['     if '], ['matrix[currY - 1][currX] > matrix[currY][currX - 1]']],
+			['       currX--'],
+			['      else'],
+			['        currY--'],
+			['  end while'],
 			['end procedure'],
 		];
 
-		this.codeID = Array(this.code.length);
-		let i, j;
-		for (i = 0; i < this.code.length; i++) {
-			this.codeID[i] = new Array(this.code[i].length);
-			for (j = 0; j < this.code[i].length; j++) {
-				this.codeID[i][j] = this.nextIndex++;
-				this.cmd(
-					act.createLabel,
-					this.codeID[i][j],
-					this.code[i][j],
-					CODE_START_X,
-					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0,
-				);
-				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-				if (j > 0) {
-					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-				}
-			}
-		}
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		// this.codeID = Array(this.code.length);
+		// let i, j;
+		// for (i = 0; i < this.code.length; i++) {
+		// 	this.codeID[i] = new Array(this.code[i].length);
+		// 	for (j = 0; j < this.code[i].length; j++) {
+		// 		this.codeID[i][j] = this.nextIndex++;
+		// 		this.cmd(
+		// 			act.createLabel,
+		// 			this.codeID[i][j],
+		// 			this.code[i][j],
+		// 			CODE_START_X,
+		// 			CODE_START_Y + i * CODE_LINE_HEIGHT,
+		// 			0,
+		// 		);
+		// 		this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+		// 		if (j > 0) {
+		// 			this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+		// 		}
+		// 	}
+		// }
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -158,19 +172,70 @@ export default class LCS extends Algorithm {
 		this.nextIndex = this.initialIndex;
 	}
 
-	runCallback() {
-		const string1 = this.S1Field.value;
-		const string2 = this.S2Field.value;
-		if (string1 !== '' && string2 !== '') {
+	clearCallback() {
+		this.implementAction(this.clear.bind(this));
+	}
+
+	clear(keepInput) {
+		this.commands = [];
+
+		if (!keepInput) {
 			this.S1Field.value = '';
 			this.S2Field.value = '';
-			this.implementAction(this.run.bind(this), string1, string2);
 		}
+
+		this.clearOldIDs();
+		return this.commands;
+	}
+
+	runCallback() {
+		this.implementAction(this.clear.bind(this), true);
+		const string1 = this.S1Field.value;
+		const string2 = this.S2Field.value;
+		this.implementAction(this.run.bind(this), string2, string1);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const S1values = [
+			'ABCBDAB',
+			'XMJYAUZ',
+			'AGGTAB',
+			'ABCDEFG',
+			'1234567890',
+			'HUMAN',
+			'KITTEN',
+			'SOFTWARE',
+			'COMPUTER',
+			'SUPERMAN',
+		];
+		const S2values = [
+			'BDCAB',
+			'MZJAWXU',
+			'GXTXAYB',
+			'ACDFG',
+			'102030405060708090',
+			'CHIMPANZEE',
+			'SITTING',
+			'HARDWARE',
+			'COMMUTER',
+			'SPIDERMAN',
+		];
+
+		const randomIndex = Math.floor(Math.random() * S1values.length);
+
+		this.S1Field.value = S1values[randomIndex];
+		this.S2Field.value = S2values[randomIndex];
 	}
 
 	run(str1, str2) {
 		this.commands = [];
-		this.clearOldIDs();
+
+		// User input validation
+		if (!str1 || !str2) {
+			this.cmd(act.setText, this.infoLabelID, 'S1 and S2 must be non-empty strings');
+			return this.commands;
+		}
 
 		this.buildTable(str1, str2);
 
@@ -311,7 +376,7 @@ export default class LCS extends Algorithm {
 
 		this.unhighlight(24, 0);
 		this.highlight(25, 0);
-		this.cmd(act.setText, this.infoLabelID, 'Done');
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.step);
 		this.unhighlight(25, 0);
 
@@ -411,6 +476,7 @@ export default class LCS extends Algorithm {
 		}
 		this.oldIDs = [];
 		this.nextIndex = this.initialIndex;
+		this.cmd(act.setText, this.infoLabelID, '');
 	}
 
 	buildLCSFromTable(str1, str2) {
@@ -426,10 +492,27 @@ export default class LCS extends Algorithm {
 			header,
 			'Longest Common Subsequence:',
 			SEQUENCE_START_X,
-			SEQUENCE_START_Y - 25,
+			SEQUENCE_START_Y,
 			0,
 		);
-		this.cmd(act.setForegroundColor, header, '#003300');
+		this.cmd(act.setForegroundColor, header, '#49AB40'); // sets text color
+
+		const lengthHeader = this.nextIndex++;
+		this.oldIDs.push(lengthHeader);
+		this.cmd(
+			act.createLabel,
+			lengthHeader,
+			'Length of LCS:',
+			SEQUENCE_START_X,
+			SEQUENCE_START_Y + 25,
+			0,
+		);
+		this.cmd(act.setForegroundColor, lengthHeader, '#49AB40'); // sets text color
+
+		const lcsLength = this.nextIndex++;
+		this.oldIDs.push(lcsLength);
+		this.cmd(act.createLabel, lcsLength, '0', SEQUENCE_START_X + 85, SEQUENCE_START_Y + 25, 0);
+		this.cmd(act.setForegroundColor, lcsLength, '#FF0000'); // sets text color
 
 		for (let i = 1; i <= str1.length; i++) {
 			for (let j = 1; j <= str2.length; j++) {
@@ -528,17 +611,18 @@ export default class LCS extends Algorithm {
 					act.createLabel,
 					nextSequenceID,
 					str1.charAt(currX - 1),
-					SEQUENCE_START_X + (sequence.length - 1) * SEQUENCE_DELTA_X + 4,
-					SEQUENCE_START_Y,
+					SEQUENCE_START_X + (sequence.length - 1) * SEQUENCE_DELTA_X + 184,
+					SEQUENCE_START_Y + 6,
 				);
 				this.cmd(act.setForegroundColor, nextSequenceID, '#0000FF');
+				this.cmd(act.setText, lcsLength, sequence.length);
 
 				for (let i = sequence.length - 1; i >= 0; i--) {
 					this.cmd(
 						act.move,
 						sequence[i],
-						SEQUENCE_START_X + (sequence.length - 1 - i) * SEQUENCE_DELTA_X + 4,
-						SEQUENCE_START_Y,
+						SEQUENCE_START_X + (sequence.length - 1 - i) * SEQUENCE_DELTA_X + 184,
+						SEQUENCE_START_Y + 6,
 					);
 				}
 

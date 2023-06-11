@@ -1,6 +1,6 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
-import 'react-hook-theme/dist/styles/style.css';
+import { BsFillSunFill, BsMoonFill } from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -10,10 +10,8 @@ import { MdMenuBook } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactGA from 'react-ga4';
-import { Toggle } from 'react-hook-theme';
 import { algoMap } from '../AlgoList';
 import modals from '../examples/ExampleModals';
-
 
 class AlgoScreen extends React.Component {
 	constructor(props) {
@@ -27,8 +25,9 @@ class AlgoScreen extends React.Component {
 			algoName: algoName,
 			examplesEnabled: false,
 			width: 0,
+			theme: 'light',
 		};
-		ReactGA.send({ hitType: "pageview", page: algoName });
+		ReactGA.send({ hitType: 'pageview', page: algoName });
 	}
 
 	componentDidMount() {
@@ -54,6 +53,9 @@ class AlgoScreen extends React.Component {
 
 	render() {
 		const algoName = this.state.algoName;
+		const theme = this.props.theme;
+		const toggleTheme = this.props.toggleTheme;
+
 		if (!algoMap[algoName]) {
 			return (
 				<div className="container">
@@ -80,7 +82,15 @@ class AlgoScreen extends React.Component {
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
 							<div id="toggle">
-								<Toggle />
+								{theme === 'light' ? (
+									<BsFillSunFill
+										size={31}
+										onClick={toggleTheme}
+										color="#f9c333"
+									/>
+								) : (
+									<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+								)}
 							</div>
 						</h1>
 					</div>

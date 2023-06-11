@@ -1,15 +1,11 @@
 import React from 'react';
 
 // Include the ClassName of algorithms that should have an example modal
-export default {
+const Modals = {
 	ArrayList: (
 		<ul>
-			<li>
-				ArrayLists must be contigous so you cannot add at an index greater than size.
-			</li>
-			<li>
-				Likewise, you cannot remove at an index greater than or equal to size.
-			</li>
+			<li>ArrayLists must be contigous so you cannot add at an index greater than size.</li>
+			<li>Likewise, you cannot remove at an index greater than or equal to size.</li>
 		</ul>
 	),
 	AVL: (
@@ -31,9 +27,9 @@ export default {
 			<li>
 				When incorporating the Galil Rule, we can use logic similar to that of KMP to
 				optimize our shifts. After finding a full match, instead of shifting by 1 we shift
-				by the period <i>k = m - ft[m - 1]</i>. After that shift, we don't need to compare the first{' '}
-				<i>k</i> characters in the pattern because we've already compared them and know that
-				they match!
+				by the period <i>k = m - ft[m - 1]</i>. After that shift, we don't need to compare
+				the first <i>k</i> characters in the pattern because we've already compared them and
+				know that they match!
 			</li>
 		</ul>
 	),
@@ -58,7 +54,8 @@ export default {
 	BTree: (
 		<ul>
 			<li>
-				When performing a transfer, the left sibling data will be considered before the right sibling data 
+				When performing a transfer, the left sibling data will be considered before the
+				right sibling data
 			</li>
 			<li>
 				To cause overflow and trigger a promotion, add more than 3 data (for example 1, 2, 3
@@ -92,38 +89,30 @@ export default {
 	),
 	CircularlyLinkedList: (
 		<ul>
+			<li>This is a singly circular LinkedList with no tail.</li>
 			<li>
-				This is a singly circular LinkedList with no tail.
+				Adding to the front, adding to the back, and removing from the front can all be done
+				in <text className="equation">O(1)</text> using data movement tricks and pointer
+				manipulation.
 			</li>
 			<li>
-				Adding to the front, adding to the back, and removing from the front can all be done in {' '}
-				<text className="equation">
-					O(1)
-				</text>
-				{' '} using data movement tricks and pointer manipulation.
-			</li>
-			<li>
-				Removing from the back requires a traversal to the node before the last node making it {' '}
-				<text className="equation">
-					O(n)
-				</text>
+				Removing from the back requires a traversal to the node before the last node making
+				it <text className="equation">O(n)</text>
 			</li>
 		</ul>
 	),
 	ClosedHash: (
 		<ul>
+			<li>The Hash Integers option uses the integer key itself as a hashcode.</li>
 			<li>
-				The Hash Integers option uses the integer key itself as a hashcode.
+				This Hash Strings option hashes the string key using the sum of the key's ASCII
+				values and the XOR operator.
 			</li>
 			<li>
-				This Hash Strings option hashes the string key using the sum of the key's ASCII values and the XOR operator.
+				The True Hash option generates a Java-like hashcode for both integer and string
+				keys.
 			</li>
-			<li>
-				The True Hash option generates a Java-like hashcode for both integer and string keys.
-			</li>
-			<li>
-				Integer keys must be positive for these visualizations.
-			</li>
+			<li>Integer keys must be positive for these visualizations.</li>
 		</ul>
 	),
 	CocktailSort: (
@@ -147,13 +136,13 @@ export default {
 	DoublyLinkedList: (
 		<ul>
 			<li>
-				The visualization may make it appear as if the head and tail are a separate nodes. But keep in mind the head and tail are just references to the first node and last nodes. So the head/tail points to and effectively is the first/last node.
+				The visualization may make it appear as if the head and tail are a separate nodes.
+				But keep in mind the head and tail are just references to the first node and last
+				nodes. So the head/tail points to and effectively is the first/last node.
 			</li>
 			<li>
-				Since this is a DLL with a tail, all operations acting at the front and back of the list are {' '}
-				<text className="equation">
-					O(1)
-				</text>
+				Since this is a DLL with a tail, all operations acting at the front and back of the
+				list are <text className="equation">O(1)</text>
 			</li>
 		</ul>
 	),
@@ -189,30 +178,35 @@ export default {
 	LinkedList: (
 		<ul>
 			<li>
-				The visualization may make it appear as if the head is a separate node. But keep in mind the head is just a reference to first node. So the head points to and effectively is the first node.
+				The visualization may make it appear as if the head and tail are a separate nodes.
+				But keep in mind the head and tail are just a references to first and last nodes. So
+				the head points to and effectively is the first node, and the tail points to and
+				effectively is the last node.
 			</li>
 			<li>
-				LinkedLists are designed to operate at the head. So all operations acting at the front are {' '}
-				<text className="equation">
-					O(1)
-				</text> 
+				LinkedLists are designed to operate at the head. So all operations acting at the
+				front are <text className="equation">O(1).</text>
 			</li>
 			<li>
-				This SLL has no tail. So removing from the back is {' '} 
-				<text className="equation">
-					O(n)
-				</text>
-				{' '} since we must traverse to the node before the last the node.
+				Without the tail, adding to the back is <text className="equation">O(n)</text> since
+				we must traverse from the head to the last node.
+			</li>
+			<li>
+				With the tail, adding to the back becomes <text className="equation">O(1)</text>{' '}
+				since we can set the next pointer of the tail to the new node and then have the tail
+				point to the new node.
 			</li>
 		</ul>
 	),
 	LSDRadix: (
 		<ul>
 			<li>
-				The range of sortable numbers for this visualization is [-99999, 999999]. Any numbers outside this range will not be sorted.
+				The range of sortable numbers for this visualization is [-99999, 999999]. Any
+				numbers outside this range will not be sorted.
 			</li>
 			<li>
-				When sorting negative numbers, a larger buckets array with indices -9 to 9 is needed.
+				When sorting negative numbers, a larger buckets array with indices -9 to 9 is
+				needed.
 			</li>
 		</ul>
 	),
@@ -226,38 +220,32 @@ export default {
 	),
 	OpenHash: (
 		<ul>
+			<li>The Hash Integers option uses the integer key itself as a hashcode.</li>
 			<li>
-				The Hash Integers option uses the integer key itself as a hashcode.
-			</li>
-			<li>
-				This Hash Strings option hashes the string key using the sum of the key's ASCII values and the XOR operator.
+				This Hash Strings option hashes the string key using the sum of the key's ASCII
+				values and the XOR operator.
 			</li>
 			<li>
 				The True Hash option generates a Java-like hashcode for integer and string keys.
 			</li>
-			<li>
-				Integer keys must be positive for these visualizations.
-			</li>
+			<li>Integer keys must be positive for these visualizations.</li>
 		</ul>
 	),
 	SelectionSort: (
 		<ul>
-			<li>
-				The minimum option selects the smallest number to swap with.
-			</li>
-			<li>
-				The maximum option selects the largest number to swap with.
-			</li>
+			<li>The minimum option selects the smallest number to swap with.</li>
+			<li>The maximum option selects the largest number to swap with.</li>
 		</ul>
 	),
 	RabinKarp: (
 		<ul>
+			<li>The base value is initially set to 1.</li>
 			<li>
-				The base value is initially set to 1.
-			</li>
-			<li>
-				To reduce to liklihood of pattern/text hash collisions, a large prime number should be used for the base.
+				To reduce to liklihood of pattern/text hash collisions, a large prime number should
+				be used for the base.
 			</li>
 		</ul>
-	)
+	),
 };
+
+export default Modals;

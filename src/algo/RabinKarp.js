@@ -31,8 +31,11 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -106,6 +109,13 @@ export default class RabinKarp extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -130,22 +140,25 @@ export default class RabinKarp extends Algorithm {
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.code = [
 			['procedure RabinKarp(text, pattern)'],
-			['     m <- length of pattern, n <- length of text'],
-			['     patternHash ← rolling hash of pattern'],
-			['     textHash ← rolling hash of first m characters of text'],
-			['     i <- 0'],
-			['     while i <= n - m'],
-			['          if patternHash = textHash'],
-			['               j <- 0'],
-			['               while j < m and text[i + j] = pattern[j]'],
-			['                    j <- j + 1'],
-			['               if j = m'],
-			['                    match found at i'],
-			['          i <- i + 1'],
-			['          if i <= n - m'],
-			['               textHash <- new hash of text, from i to i + m'],
+			['  m ← length of pattern, n ← length of text'],
+			['  patternHash ← rolling hash of pattern'],
+			['  textHash ← rolling hash of first m characters of text'],
+			['  i ← 0'],
+			['  while i <= n - m'],
+			['    if patternHash = textHash'],
+			['      j ← 0'],
+			['      while j < m and text[i + j] = pattern[j]'],
+			['        j ← j + 1'],
+			['      if j = m'],
+			['        match found at i'],
+			['    i ← i + 1'],
+			['    if i <= n - m'],
+			['      textHash ← rolled hash of text, from i to i + m'],
 			['end procedure'],
 		];
 		this.codeID = [];
@@ -166,31 +179,64 @@ export default class RabinKarp extends Algorithm {
 		this.patternHashLabelID = this.nextIndex++;
 		this.patternHashCalculationID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 		this.codeID = [];
 	}
 
 	findCallback() {
-		if (
-			this.textField.value !== '' &&
-			this.patternField.value !== '' &&
-			this.textField.value.length >= this.patternField.value.length
-		) {
-			this.implementAction(this.clear.bind(this));
-			const text = this.textField.value;
-			const pattern = this.patternField.value;
-			this.textField.value = '';
-			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const text = this.textField.value;
+		const pattern = this.patternField.value;
+		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
 	baseCallback() {
 		const val = parseInt(this.baseField.value);
-		if (this.baseField.value !== '' && val !== 0) {
-			this.baseField.value = '';
+		this.implementAction(this.changeBase.bind(this), val);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const textValues = [
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
+			'GGACTGA',
+			'BBBBAABBBAB',
+			'Machine Learning',
+			'Sphinxofblackquartz',
+			'BBBBBBBBBBBBBBBBBBBBA',
+			'AAAAABAAABA',
+			'AABCCAADDEE',
+		];
+		const patternValues = [
+			'TEST',
+			'ABABAB',
+			'ACT',
+			'BAB',
+			'in',
+			'quartz',
+			'BBBBBA',
+			'AAAA',
+			'FAA',
+		];
+
+		const randomIndex = Math.floor(Math.random() * textValues.length);
+
+		this.textField.value = textValues[randomIndex];
+		this.patternField.value = patternValues[randomIndex];
+	}
+
+	changeBase(val) {
+		// User input validation
+		this.commands = [];
+		if (!val || val === 0) {
+			this.cmd(act.setText, this.infoLabelID, 'Base must be a non-zero integer');
+		} else {
+			this.cmd(act.setText, this.infoLabelID, 'Base set to ' + val);
 			this.baseValue = val;
 		}
+		return this.commands;
 	}
 
 	clearCallback() {
@@ -203,6 +249,19 @@ export default class RabinKarp extends Algorithm {
 		// Filter non-letters from string and make lower case
 		text = text.replace(/[^a-zA-Z]/g, '').toLowerCase();
 		pattern = pattern.replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+		// User input validation
+		if (!text || !pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must be lowercase letters');
+			return this.commands;
+		} else if (text.length < pattern.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Pattern is longer than text, no matches exist',
+			);
+			return this.commands;
+		}
 
 		const maxRows = text.length - pattern.length + 1;
 		if (maxRows <= 14) {
@@ -223,8 +282,15 @@ export default class RabinKarp extends Algorithm {
 
 		for (let i = 0; i < text.length; i++) {
 			xpos = i * this.cellSize + ARRAY_START_X;
-			ypos = ARRAY_START_Y;
+			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
+		}
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,
@@ -356,9 +422,23 @@ export default class RabinKarp extends Algorithm {
 				this.unhighlight(6, 0);
 				this.highlight(7, 0);
 				xpos = i * this.cellSize + ARRAY_START_X;
-				this.cmd(act.createHighlightCircle, iPointerID, '#0000FF', xpos, ARRAY_START_Y);
+				this.cmd(
+					act.createHighlightCircle,
+					iPointerID,
+					'#0000FF',
+					xpos,
+					ARRAY_START_Y,
+					this.cellSize / 2,
+				);
 				ypos = (row + 1) * this.cellSize + ARRAY_START_Y;
-				this.cmd(act.createHighlightCircle, jPointerID, '#0000FF', xpos, ypos);
+				this.cmd(
+					act.createHighlightCircle,
+					jPointerID,
+					'#0000FF',
+					xpos,
+					ypos,
+					this.cellSize / 2,
+				);
 				this.cmd(act.step);
 				this.unhighlight(7, 0);
 				this.highlight(8, 0);
@@ -446,7 +526,7 @@ export default class RabinKarp extends Algorithm {
 		return this.commands;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		if (this.textRowID.length !== 0) {
 			this.cmd(act.delete, this.baseLabelID);
@@ -465,9 +545,17 @@ export default class RabinKarp extends Algorithm {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
+
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+			this.baseField.value = '';
+		}
+
 		this.comparisonMatrixID = [];
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.removeCode(this.codeID);
 		this.codeID = [];
 

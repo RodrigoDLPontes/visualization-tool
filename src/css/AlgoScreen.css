@@ -6,6 +6,7 @@
 	--header: #012f57;
 	--filter: brightness(85%);
 	--shadow: rgba(0, 0, 0, 0.75);
+	--slider: #f9c333;
 }
 
 [data-theme='dark'] {
@@ -16,6 +17,7 @@
 	--header: #282828;
 	--filter: brightness(185%);
 	--shadow: rgba(242, 242, 242, 0.1);
+	--slider: #d4f1f1;
 }
 
 * {
@@ -39,8 +41,16 @@
 }
 
 .VisualizationMainPage #toggle {
-	margin-right: 16px;
+	margin-top: 5px;
+	margin-right: 25px;
 	float: right;
+	position: relative;
+	transition: 0.2s ease-out;
+}
+
+.VisualizationMainPage #toggle:hover {
+	transition: 0.4s ease-in;
+	transform: scale(1.15);
 }
 
 .VisualizationMainPage #algoControlSection {
@@ -77,7 +87,7 @@
 
 .VisualizationMainPage #header {
 	background: var(--header);
-	border-bottom: 1px var(--border) solid;
+	border-bottom: 1.5px var(--border) solid;
 	color: #fffff0;
 	padding: 0 10px 0 5px;
 	transition: all 0.4s ease 0s;
@@ -139,7 +149,8 @@
 .VisualizationMainPage #footer {
 	padding: 0 10px;
 	background: var(--header);
-	border-top: 1px var(--border) solid;
+	border-top: 1.5px var(--border) solid;
+	border-bottom: 1.5px var(--border) solid;
 	color: #f7c245;
 }
 
@@ -169,7 +180,7 @@ em {
 	right: 20px;
 	top: 10px;
 	width: 350px;
-	height: 460px;
+	height: 500px;
 }
 
 .VisualizationMainPage .modal-content {
@@ -195,7 +206,6 @@ em {
 	font-style: italic;
 	text-align: center;
 	margin: -5px 0px 5px 0px;
-	
 }
 
 .VisualizationMainPage .inline-eq {
@@ -275,23 +285,35 @@ em {
 	cursor: pointer;
 }
 
-input[type="radio"] {
+.txt-node {
+	color: var(--primary);
+}
+
+.slider .MuiSlider-root {
+	color: var(--slider);
+}
+
+input[type='radio'] {
 	appearance: radio;
 	-moz-appearance: radio;
-    -webkit-appearance: radio;
+	-webkit-appearance: radio;
 	margin-right: 2px;
 }
 
-input[type="radio"]:checked + label {
+input[type='radio'] + label {
+	color: var(--primary);
+}
+
+input[type='radio']:checked + label {
 	padding: 1px 3px 1px 1px;
 	background-color: rgba(176, 179, 184, 0.8);
-	box-shadow: 0px 2px 5px rgba(0, 0, 0, .4);
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
 	border-radius: 5px;
 	color: #ffffff;
 	font-size: 17px;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
 	appearance: checkbox;
 	-moz-appearance: checkbox;
 	-webkit-appearance: checkbox;

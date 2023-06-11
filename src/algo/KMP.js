@@ -31,8 +31,11 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 30;
+const ARRAY_START_Y = 60;
 
 const MAX_LENGTH = 22;
 
@@ -92,6 +95,13 @@ export default class KMP extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		// Clear button
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
@@ -112,42 +122,45 @@ export default class KMP extends Algorithm {
 		this.compCount = 0;
 		this.cmd(act.createLabel, this.comparisonCountID, '', COMP_COUNT_X, COMP_COUNT_Y, 0);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.failureTableCode = [
 			['procedure KMPFailureTable(pattern):'],
-			['     m <- length of pattern'],
-			['     failureTable <- array of length m'],
-			['     i <- 0, j <- 1'],
-			['     failureTable[0] <- 0'],
-			['     while j < m'],
-			['          if pattern[i] = pattern[j]'],
-			['               failureTable[j] <- i + 1'],
-			['               i < i + 1, j <- j + 1'],
-			['          else'],
-			['               if i = 0'],
-			['                    failureTable[j] <- 0'],
-			['                    j <- j + 1'],
-			['               else'],
-			['                    i <- failureTable[i - 1]'],
-			['     return failureTable'],
+			['  m ← length of pattern'],
+			['  failureTable ← array of length m'],
+			['  i ← 0, j ← 1'],
+			['  failureTable[0] ← 0'],
+			['  while j < m'],
+			['    if pattern[i] = pattern[j]'],
+			['      failureTable[j] ← i + 1'],
+			['      i ← i + 1, j ← j + 1'],
+			['    else'],
+			['      if i = 0'],
+			['        failureTable[j] ← 0'],
+			['        j ← j + 1'],
+			['      else'],
+			['        i ← failureTable[i - 1]'],
+			['  return failureTable'],
 			['end procedure'],
 		];
 
 		this.KMPCode = [
 			['procedure KMP(text, pattern):'],
-			['     initialize failureTable'],
-			['     m <- length of pattern, n <- length of text'],
-			['     i <- 0, j <- 0'],
-			['     while i <= n - m'],
-			['          while j < m and text[i + j] = pattern[j]'],
-			['               j -> j + 1'],
-			['          if j = 0'],
-			['               i <- i + 1'],
-			['          else'],
-			['               if j = m'],
-			['                    match found at i'],
-			['               shift <- failureTable[j - 1]'],
-			['               i <- i + j - shift'],
-			['               j <- shift'],
+			['  initialize failureTable'],
+			['  m ← length of pattern, n ← length of text'],
+			['  i ← 0, j ← 0'],
+			['  while i <= n - m'],
+			['    while j < m and text[i + j] = pattern[j]'],
+			['      j -> j + 1'],
+			['    if j = 0'],
+			['      i ← i + 1'],
+			['    else'],
+			['      if j = m'],
+			['        match found at i'],
+			['      shift ← failureTable[j - 1]'],
+			['      i ← i + j - shift'],
+			['      j ← shift'],
 			['end procedure'],
 		];
 
@@ -165,31 +178,52 @@ export default class KMP extends Algorithm {
 		this.failureTableValueID = [];
 		this.codeID = [];
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 	}
 
 	findCallback() {
-		if (
-			this.textField.value !== '' &&
-			this.patternField.value !== '' &&
-			this.textField.value.length >= this.patternField.value.length
-		) {
-			this.implementAction(this.clear.bind(this));
-			const text = this.textField.value;
-			const pattern = this.patternField.value;
-			this.textField.value = '';
-			this.patternField.value = '';
-			this.implementAction(this.find.bind(this), text, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const text = this.textField.value;
+		const pattern = this.patternField.value;
+		this.implementAction(this.find.bind(this), text, pattern);
+	}
+
+	randomCallback() {
+		// The array indices correspond to each other
+		const textValues = [
+			'THISISATESTTEXT',
+			'ABABABABABABABABABABA',
+			'GGACTGA',
+			'BBBBAABBBAB',
+			'Machine Learning',
+			'Sphinxofblackquartz',
+			'BBBBBBBBBBBBBBBBBBBBA',
+			'AAAAABAAABA',
+			'AABCCAADDEE',
+		];
+		const patternValues = [
+			'TEST',
+			'ABABAB',
+			'ACT',
+			'BAB',
+			'in',
+			'quartz',
+			'BBBBBA',
+			'AAAA',
+			'FAA',
+		];
+
+		const randomIndex = Math.floor(Math.random() * textValues.length);
+
+		this.textField.value = textValues[randomIndex];
+		this.patternField.value = patternValues[randomIndex];
 	}
 
 	buildFailureTableCallback() {
-		if (this.patternField.value !== '') {
-			this.implementAction(this.clear.bind(this));
-			const pattern = this.patternField.value;
-			this.patternField.value = '';
-			this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		const pattern = this.patternField.value;
+		this.implementAction(this.onlyBuildFailureTable.bind(this), 0, pattern);
 	}
 
 	clearCallback() {
@@ -198,6 +232,19 @@ export default class KMP extends Algorithm {
 
 	find(text, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!text || !pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
+			return this.commands;
+		} else if (text.length < pattern.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Pattern is longer than text, no matches exist',
+			);
+			return this.commands;
+		}
 
 		const maxRows = this.getMaxRows(text, pattern);
 		if (maxRows <= 14) {
@@ -215,10 +262,18 @@ export default class KMP extends Algorithm {
 		}
 
 		let xpos, ypos;
+
+		for (let i = 0; i < text.length; i++) {
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y - 25;
+			this.textRowID[i] = this.nextIndex;
+			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
+		}
+
 		for (let i = 0; i < text.length; i++) {
 			xpos = i * this.cellSize + ARRAY_START_X;
 			ypos = ARRAY_START_Y;
-			this.textRowID[i] = this.nextIndex;
+			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
 				this.nextIndex,
@@ -475,6 +530,13 @@ export default class KMP extends Algorithm {
 
 	onlyBuildFailureTable(textLength, pattern) {
 		this.commands = [];
+
+		// User input validation
+		if (!pattern) {
+			this.cmd(act.setText, this.infoLabelID, 'Pattern must not be empty');
+			return this.commands;
+		}
+
 		this.cellSize = 30;
 		this.buildFailureTable(textLength, pattern);
 		return this.commands;
@@ -642,7 +704,7 @@ export default class KMP extends Algorithm {
 		return failureTable;
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.textRowID.length; i++) {
 			this.cmd(act.delete, this.textRowID[i]);
@@ -665,8 +727,14 @@ export default class KMP extends Algorithm {
 		this.removeCode(this.codeID);
 		this.codeID = [];
 
+		if (!keepInput) {
+			this.textField.value = '';
+			this.patternField.value = '';
+		}
+
 		this.compCount = 0;
 		this.cmd(act.setText, this.comparisonCountID, '');
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.failureTableCharacterID = [];
 		this.failureTableValueID = [];
 		return this.commands;

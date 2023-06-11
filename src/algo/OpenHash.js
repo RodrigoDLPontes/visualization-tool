@@ -41,8 +41,8 @@ const ARRAY_ELEM_START_X = 100;
 const ARRAY_RESIZE_ELEM_START_Y = 240;
 const ELEMS_PER_ROW = 14;
 
-const LOAD_LABEL_X = 60;
-const LOAD_LABEL_Y = 20;
+const LOAD_LABEL_X = 15;
+const LOAD_LABEL_Y = 15;
 
 const HASH2_LABEL_X = 270;
 const HASH2_LABEL_Y = 70;
@@ -75,7 +75,7 @@ export default class OpenHash extends Hash {
 				'Double Hashing: f(i) = i * hash2(elem)',
 			],
 			'Probing Type',
-			this.dropDownGroup
+			this.dropDownGroup,
 		);
 
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
@@ -85,14 +85,14 @@ export default class OpenHash extends Hash {
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
 		// Add new controls
 	}
- 
+
 	checkProbeType() {
 		if (this.probeTypeDropDown.value === 'Linear Probing: f(i) = i') {
 			this.implementAction(this.changeProbeType.bind(this), 'linear');
 		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: f(i) = i * i') {
 			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
 		} else if (this.probeTypeDropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
-			this.implementAction(this.changeProbeType.bind(this), 'double')
+			this.implementAction(this.changeProbeType.bind(this), 'double');
 		}
 	}
 
@@ -433,8 +433,8 @@ export default class OpenHash extends Hash {
 
 		if (this.table_size * 2 + 1 > MAX_SIZE) {
 			this.load_factor = 0.99;
-			this.cmd(act.setText, this.loadFactorID, `Load Factor:n ${this.load_factor}`);
-			this.loadButton.setAttribute('style', 'pointer-events: none; color: grey');
+			this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
+			// this.loadButton.setAttribute('style', 'pointer-events: none; color: grey'); // removed for consistency, might revisit later
 		}
 
 		this.cmd(act.step);
@@ -571,8 +571,7 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}
-			(Array Length too large for resize)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 		}
 		this.cmd(act.step);
@@ -650,6 +649,7 @@ export default class OpenHash extends Hash {
 			`Load Factor: ${this.load_factor}`,
 			LOAD_LABEL_X,
 			LOAD_LABEL_Y,
+			false,
 		);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -707,6 +707,7 @@ export default class OpenHash extends Hash {
 
 	clear() {
 		this.commands = [];
+		this.resetAll();
 
 		for (let i = 0; i < this.table_size; i++) {
 			this.cmd(act.delete, this.hashTableVisual[i]);
@@ -722,8 +723,7 @@ export default class OpenHash extends Hash {
 			this.cmd(
 				act.setText,
 				this.loadFactorID,
-				`Load Factor: ${this.load_factor}
-				(Max Array Length)`,
+				`Load Factor: ${this.load_factor}\n(Array length too large for resize)`,
 			);
 			this.cmd(act.step);
 		} else {

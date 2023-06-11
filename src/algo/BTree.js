@@ -345,6 +345,9 @@ export default class BTree extends Algorithm {
 	}
 
 	clearTree() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.deleteTree(this.treeRoot);
 		this.treeRoot = null;
@@ -609,7 +612,11 @@ export default class BTree extends Algorithm {
 	}
 
 	split(tree) {
-		this.cmd(act.setText, this.messageID, 'Node now contains too many keys.  Splittig ...');
+		this.cmd(
+			act.setText,
+			this.messageID,
+			'Node now contains too many elements.  Splitting ...',
+		);
 		this.cmd(act.setHighlight, tree.graphicID, 1);
 		this.cmd(act.step);
 		this.cmd(act.setHighlight, tree.graphicID, 0);

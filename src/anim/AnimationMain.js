@@ -56,7 +56,7 @@ import {
 import EventListener from './CustomEvents.js';
 import ObjectManager from './ObjectManager.js';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import SingleAnimation from './SingleAnimation.js';
 import { Slider } from '@mui/material';
 import { UndoConnect } from './AnimatedLine.js';
@@ -253,8 +253,7 @@ export default class AnimationManager extends EventListener {
 
 		const slider = (
 			<Slider
-				style={{ color: "f9c333", padding: '13px 0', height: 2 }}
-				track
+				style={{ padding: '13px 0', height: 2 }}
 				defaultValue={speed}
 				onChange={(e, val) => {
 					this.setSpeed(val);
@@ -271,8 +270,12 @@ export default class AnimationManager extends EventListener {
 
 		let midLevel = document.createElement('tr');
 		let bottomLevel = document.createElement('td');
+		bottomLevel.classList.add('slider');
 		midLevel.appendChild(bottomLevel);
-		ReactDOM.render(slider, bottomLevel);
+
+		const root = ReactDOM.createRoot(bottomLevel);
+		root.render(slider);
+
 		newTable.appendChild(midLevel);
 
 		midLevel = document.createElement('tr');
@@ -280,6 +283,7 @@ export default class AnimationManager extends EventListener {
 		bottomLevel.align = 'center';
 		let txtNode = document.createTextNode('Animation Speed');
 		midLevel.appendChild(bottomLevel);
+		bottomLevel.classList.add('txt-node');
 		bottomLevel.appendChild(txtNode);
 		newTable.appendChild(midLevel);
 
@@ -298,13 +302,14 @@ export default class AnimationManager extends EventListener {
 		width = width == null || width === '' ? 1500 : parseInt(width);
 
 		let height = getCookie('VisualizationHeight');
-		height = height == null || height === '' ? 505 : parseInt(height);
+		height = height == null || height === '' ? 555 : parseInt(height);
 
 		canvas.width = width;
 		canvas.height = height;
 
 		tableEntry = document.createElement('td');
 		txtNode = document.createTextNode('Canvas height:');
+		tableEntry.classList.add('txt-node');
 		tableEntry.appendChild(txtNode);
 		controlBar.appendChild(tableEntry);
 
@@ -916,11 +921,11 @@ export const act = {
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},
 	createLabel(params) {
-		// id, label | x, y, centered
+		// id, label | x, y, centered, isCode
 		params[2] = params[2] || 0;
 		params[3] = params[3] || 0;
 		params[4] = params[4] !== false && params[4] !== 0;
-		this.animatedObjects.addLabelObject(params[0], String(params[1]), params[4]);
+		this.animatedObjects.addLabelObject(params[0], String(params[1]), params[4], params[5]);
 		this.animatedObjects.setNodePosition(params[0], params[2], params[3]);
 		this.undoBlock.push(new UndoCreate(params[0]));
 	},

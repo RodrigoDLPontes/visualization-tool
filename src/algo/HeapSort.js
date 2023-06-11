@@ -34,11 +34,11 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 15;
 
-const INFO_MSG_X = 20;
-const INFO_MSG_Y = 150;
-const CODE_START_X = 25;
-const CODE_START_Y = 35;
-const CODE_LINE_HEIGHT = 14;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
+const CODE_START_X = 15;
+const CODE_START_Y = 100;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
@@ -100,8 +100,15 @@ export default class HeapSort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 	}
@@ -123,33 +130,35 @@ export default class HeapSort extends Algorithm {
 
 		this.code = [
 			['procedure heapSort(array)'],
-			['     heap <- create new PriorityQueue(array)'],
-			['     for i <- 0, array.length - 1, loop:'],
-			['          add ', 'heap.remove()', ' to data[i]'],
-			['     end for'],
+			['  heap ← create new PriorityQueue(array)'],
+			['  for i ← 0, array.length - 1, loop:'],
+			['    add ', 'heap.remove()', ' to data[i]'],
+			['  end for'],
 			['end procedure'],
 		];
 
-		this.codeID = Array(this.code.length);
-		let i, j;
-		for (i = 0; i < this.code.length; i++) {
-			this.codeID[i] = new Array(this.code[i].length);
-			for (j = 0; j < this.code[i].length; j++) {
-				this.codeID[i][j] = this.nextIndex++;
-				this.cmd(
-					act.createLabel,
-					this.codeID[i][j],
-					this.code[i][j],
-					CODE_START_X,
-					CODE_START_Y + i * CODE_LINE_HEIGHT,
-					0,
-				);
-				this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-				if (j > 0) {
-					this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-				}
-			}
-		}
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+
+		// this.codeID = Array(this.code.length);
+		// let i, j;
+		// for (i = 0; i < this.code.length; i++) {
+		// 	this.codeID[i] = new Array(this.code[i].length);
+		// 	for (j = 0; j < this.code[i].length; j++) {
+		// 		this.codeID[i][j] = this.nextIndex++;
+		// 		this.cmd(
+		// 			act.createLabel,
+		// 			this.codeID[i][j],
+		// 			this.code[i][j],
+		// 			CODE_START_X,
+		// 			CODE_START_Y + i * CODE_LINE_HEIGHT,
+		// 			0,
+		// 		);
+		// 		this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
+		// 		if (j > 0) {
+		// 			this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
+		// 		}
+		// 	}
+		// }
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -158,6 +167,26 @@ export default class HeapSort extends Algorithm {
 
 	sort(list) {
 		this.commands = [];
+
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		}
 
 		this.highlight(0, 0);
 
@@ -209,7 +238,7 @@ export default class HeapSort extends Algorithm {
 		this.createHeap(this.arrayData);
 		this.cmd(act.step);
 
-		this.cmd(act.setText, this.infoLabelID, 'Buildheap the new array');
+		this.cmd(act.setText, this.infoLabelID, 'BuildHeap the new array');
 		//Buildheap the new heap
 		let nextElem = Math.floor(this.currentHeapSize / 2);
 		while (nextElem > 0) {
@@ -244,6 +273,23 @@ export default class HeapSort extends Algorithm {
 		this.unhighlight(5, 0);
 
 		return this.commands;
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+		this.listField.value = values;
 	}
 
 	createHeap(arrayData) {
@@ -330,7 +376,9 @@ export default class HeapSort extends Algorithm {
 		);
 		this.cmd(act.step);
 
+		this.cmd(act.setBackgroundColor, this.arrayID[index], '#2ECC71');
 		this.arrayData[index] = remData;
+
 		this.cmd(act.setText, this.arrayID[index], remData);
 		this.cmd(act.delete, removedElementID);
 		this.cmd(act.step);
@@ -483,18 +531,20 @@ export default class HeapSort extends Algorithm {
 		this.cmd(act.setHighlight, this.heapArrayID[index], highlightVal);
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 		}
 
+		if (!keepInput) this.listField.value = '';
 		this.arrayData = [];
 		this.arrayID = [];
 		this.heapArrayData = [];
 		this.heapArrayID = [];
 		this.heapArrayLabelID = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 
 		return this.commands;
 	}
@@ -505,15 +555,8 @@ export default class HeapSort extends Algorithm {
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			this.implementAction(this.clear.bind(this));
-			this.listField.value = '';
-			this.implementAction(this.sort.bind(this), list);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		this.implementAction(this.sort.bind(this), list);
 	}
 
 	clearCallback() {

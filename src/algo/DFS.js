@@ -68,8 +68,8 @@ const LARGE_RECURSION_SPACING_X = 10;
 const SMALL_RECURSION_SPACING_Y = 20;
 const LARGE_RECURSION_SPACING_Y = 15;
 
-const CODE_START_X = 250;
-const CODE_START_Y = 170;
+const CODE_START_X = 1000;
+const CODE_START_Y = 50;
 
 export default class DFS extends Graph {
 	constructor(am, w, h) {
@@ -167,28 +167,42 @@ export default class DFS extends Graph {
 
 		this.recCode = [
 			['Procedure DFS(Vertex s, Set VS, List L):'],
-			['     add s to VS, L'],
-			['     for all v adjacent to s'],
-			['          if v not in VS'],
-			['               do DFS(v, VS, L)'],
+			['  add s to VS, L'],
+			['  for all v adjacent to s'],
+			['    if v not in VS'],
+			['      do DFS(v, VS, L)'],
 		];
 
 		this.itCode = [
 			['Procedure DFS(Vertex s, Set VS, List L):'],
-			['     Initialize Stack K'],
-			['     add s to K, VS'],
-			['     while K not empty'],
-			['          v <- remove from K'],
-			['          add v to L'],
-			['          for all w adjacent to v'],
-			['               if w not in VS'],
-			['                    add w to K, VS'],
+			['  Initialize Stack K'],
+			['  add s to K, VS'],
+			['  while K not empty'],
+			['    v ← remove from K'],
+			['    add v to L'],
+			['    for all w adjacent to v'],
+			['      if w not in VS'],
+			['        add w to K, VS'],
 		];
 
 		if (this.physicalStack) {
-			this.codeID = this.addCodeToCanvasBase(this.itCode, CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBase(
+				this.itCode,
+				CODE_START_X,
+				CODE_START_Y,
+				undefined,
+				undefined,
+				1,
+			);
 		} else {
-			this.codeID = this.addCodeToCanvasBase(this.recCode, CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBase(
+				this.recCode,
+				CODE_START_X,
+				CODE_START_Y,
+				undefined,
+				undefined,
+				1,
+			);
 		}
 
 		this.animationManager.setAllLayers([0, this.currentLayer]);
@@ -215,21 +229,26 @@ export default class DFS extends Graph {
 
 	startCallback() {
 		if (this.startField.value !== '') {
-			let startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size) {
-				if (this.physicalStack) {
-					this.implementAction(this.doDFSStack.bind(this), startvalue);
-				} else {
-					this.implementAction(this.doDFSRecursive.bind(this), startvalue);
-				}
+			startValue = startValue.toUpperCase();
+			if (this.physicalStack) {
+				this.implementAction(this.doDFSStack.bind(this), startValue);
+			} else {
+				this.implementAction(this.doDFSRecursive.bind(this), startValue);
 			}
 		}
 	}
 
-	doDFSStack(startVertex) {
+	doDFSStack(startValue) {
 		this.commands = [];
+		let vertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (vertex < 0 || vertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 
@@ -243,7 +262,6 @@ export default class DFS extends Graph {
 
 		this.rebuildEdges();
 
-		let vertex = startVertex;
 		this.cmd(
 			act.setText,
 			this.infoLabelID,
@@ -364,8 +382,15 @@ export default class DFS extends Graph {
 		return this.commands;
 	}
 
-	doDFSRecursive(startVertex) {
+	doDFSRecursive(startValue) {
 		this.commands = [];
+		const vertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (vertex < 0 || vertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 
@@ -386,12 +411,10 @@ export default class DFS extends Graph {
 
 		this.cmd(act.setText, this.infoLabelID, '');
 
-		const vertex = startVertex;
-
 		this.cmd(act.createLabel, this.currentID, '', CURRENT_VERTEX_X, CURRENT_VERTEX_Y);
 		this.cmd(act.setTextColor, this.currentID, DFS_STACK_TOP_COLOR);
 
-		this.cmd(act.setText, this.infoLabelID, 'About to recurse to ' + this.toStr(startVertex));
+		this.cmd(act.setText, this.infoLabelID, 'About to recurse to ' + this.toStr(startValue));
 		this.cmd(act.step);
 
 		this.visitVertex(vertex);

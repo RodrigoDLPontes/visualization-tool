@@ -35,6 +35,9 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 130;
 const ARRAY_ELEM_WIDTH = 50;
@@ -98,15 +101,25 @@ export default class SelectionSort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
 		//Min & Max selection button
 		addDivisorToAlgorithmBar();
 
-		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(['Minimum', 'Maximum'], 'Min/Max');
+		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
+			['Minimum', 'Maximum'],
+			'Min/Max',
+		);
 
 		this.minButton = minMaxButtonList[0];
 		this.minButton.onclick = this.minCallback.bind(this);
@@ -136,18 +149,31 @@ export default class SelectionSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		);
+
 		this.code = [
 			['procedure SelectionSort(array):'],
-			['     length <- length of array'],
-			['     for i <- 0, length do'],
-			['          min <- i'],
-			['          for j <- i + 1, length do'],
-			['               if array[j] < array[min]'],
-			['                    min <- j'],
-			['               end if'],
-			['          end for'],
-			['          swap array[min], array[i]'],
-			['     end for'],
+			['  length ← length of array'],
+			['  for i ← 0, length do'],
+			['    min ← i'],
+			['    for j ← i + 1, length do'],
+			['      if array[j] < array[min]'],
+			['        min ← j'],
+			['      end if'],
+			['    end for'],
+			['    swap array[min], array[i]'],
+			['  end for'],
 			['end procedure'],
 		];
 
@@ -167,27 +193,48 @@ export default class SelectionSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (!this.isMin) {
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[5][0], '                    max <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i ← length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '    max ← i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j ← i - 1, 0 do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[5][0], '        max ← j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
 		}
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+
+		this.listField.value = values;
 	}
 
 	minCallback() {
 		if (!this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- 0, length do');
-			this.cmd(act.setText, this.codeID[3][0], '          min <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i + 1, length do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] < array[min]');
-			this.cmd(act.setText, this.codeID[6][0], '                    min <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[min], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i ← 0, length do');
+			this.cmd(act.setText, this.codeID[3][0], '    min ← i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j ← i + 1, length do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] < array[min]');
+			this.cmd(act.setText, this.codeID[6][0], '        min ← j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[min], array[i]');
 			this.isMin = true;
 		}
 	}
@@ -195,34 +242,27 @@ export default class SelectionSort extends Algorithm {
 	maxCallback() {
 		if (this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '     for i <- length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '          max <- i');
-			this.cmd(act.setText, this.codeID[4][0], '          for j <- i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '               if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[6][0], '                    max <- j');
-			this.cmd(act.setText, this.codeID[9][0], '          swap array[max], array[i]');
+			this.cmd(act.setText, this.codeID[2][0], '  for i ← length - 1, 0 do');
+			this.cmd(act.setText, this.codeID[3][0], '    max ← i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j ← i - 1, 0 do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
+			this.cmd(act.setText, this.codeID[6][0], '        max ← j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
 			this.isMin = false;
 		}
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			this.implementAction(this.clear.bind(this));
-			this.listField.value = '';
-			this.implementAction(this.sort.bind(this), list);
-		}
+		this.implementAction(this.clear.bind(this), true);
+		this.implementAction(this.sort.bind(this), list);
 	}
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 
 		for (let i = 0; i < this.arrayID.length; i++) {
@@ -232,17 +272,42 @@ export default class SelectionSort extends Algorithm {
 		this.arrayData = [];
 		this.arrayID = [];
 		this.compCount = 0;
+		this.swapCount = 0;
 		this.displayData = [];
+		if (!keepInput) this.listField.value = '';
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
-	sort(params) {
+	sort(list) {
 		this.commands = [];
+
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		}
+
 		this.highlight(0, 0);
 
 		this.arrayID = [];
-		this.arrayData = params
+		this.arrayData = list
 			.map(Number)
 			.filter(x => !Number.isNaN(x))
 			.slice(0, MAX_ARRAY_SIZE);
@@ -401,6 +466,7 @@ export default class SelectionSort extends Algorithm {
 		this.cmd(act.setText, this.arrayID[j], '');
 		this.cmd(act.move, iLabelID, jXPos, jYPos);
 		this.cmd(act.move, jLabelID, iXPos, iYPos);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);
 		this.cmd(act.setText, this.arrayID[j], this.displayData[i]);

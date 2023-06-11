@@ -35,24 +35,24 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
-const INFO_LABEL_X = 75;
-const INFO_LABEL_Y = 20;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
 
-const ARRAY_START_X = 475;
+const ARRAY_START_X = 485;
 const ARRAY_START_Y = 70;
 
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
-const BUCKETS_START_X = 475;
-const NEGATIVE_BUCKETS_START_X = 925;
+const BUCKETS_START_X = 485;
+const NEGATIVE_BUCKETS_START_X = 935;
 const BUCKETS_START_Y = 140;
 
 const BUCKET_ELEM_WIDTH = 50;
 const BUCKET_ELEM_HEIGHT = 20;
 const BUCKET_ELEM_SPACING = 15;
 
-const CODE_START_X = 50;
+const CODE_START_X = 15;
 const CODE_START_Y = 100;
 
 const MAX_VALUE = 999999;
@@ -96,8 +96,15 @@ export default class LSDRadix extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
@@ -119,26 +126,28 @@ export default class LSDRadix extends Algorithm {
 		this.bucketsDisplay = [];
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
+
 		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.code = [
 			['procedure LSDRadixSort(array):'],
-			['     buckets <- array of 10 lists'],
-			['     iterations <- length of largest number by magnitude'],
-			['     length <- length of array'],
-			['     for i <- 1, iterations do'],
-			['          for j <- 0, length - 1 do'],
-			['               bucket <- ith digit of array[j]'],
-			['               add array[j] to buckets[bucket]'],
-			['          end for'],
-			['          index <- 0'],
-			['          for bucket <- 0, 9 do'],
-			["               while buckets[bucket] isn't empty"],
-			['                    array[index] <- remove first from buckets[bucket]'],
-			['                    index <- index + 1'],
-			['               end while'],
-			['          end for'],
-			['     end for'],
+			['  buckets ← array of 10 lists'],
+			['  iterations ← length of largest number by magnitude'],
+			['  length ← length of array'],
+			['  for i ← 1, iterations do'],
+			['    for j ← 0, length - 1 do'],
+			['      bucket ← ith digit of array[j]'],
+			['      add array[j] to buckets[bucket]'],
+			['    end for'],
+			['    index ← 0'],
+			['    for bucket ← 0, 9 do'],
+			["      while buckets[bucket] isn't empty"],
+			['        array[index] ← remove first from buckets[bucket]'],
+			['        index ← index + 1'],
+			['      end while'],
+			['    end for'],
+			['  end for'],
 			['end procedure'],
 		];
 
@@ -163,24 +172,35 @@ export default class LSDRadix extends Algorithm {
 		this.infoLabelID = this.nextIndex++;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 		if (negativeNumbersEnabled) {
-			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
-			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
+			this.cmd(act.setText, this.codeID[1][0], '     buckets ← array of 19 lists');
+			this.cmd(act.setText, this.codeID[10][0], '          for bucket ← -9, 9 do');
 		}
 	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' && // if there are numbers to sort
-			list.length <= MAX_ARRAY_SIZE && // if there are <= 18 numbers to sort
-			list.map(x => Number(x.replace(',', '.'))).filter(x => Number.isNaN(x)).length <= 0 && // map each list item to a Number and if they are all numbers
-			(negativeNumbersEnabled || list.filter(x => x < 0).length <= 0) && // if negative numbers are enabled OR there are no negative numbers in the list
-			list.filter(x => Math.abs(x) > MAX_VALUE).length <= 0
-		) {
-			this.implementAction(this.clear.bind(this));
-			this.listField.value = '';
-			this.implementAction(this.sort.bind(this), list);
+		this.implementAction(this.clear.bind(this), true);
+		this.implementAction(this.sort.bind(this), list);
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		let MIN_DATA_VALUE = 1;
+		if (negativeNumbersEnabled) {
+			MIN_DATA_VALUE = -500;
 		}
+		const MAX_DATA_VALUE = 500;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
+			}
+		}
+		this.listField.value = values;
 	}
 
 	clearCallback() {
@@ -191,15 +211,15 @@ export default class LSDRadix extends Algorithm {
 		negativeNumbersEnabled = !negativeNumbersEnabled;
 		this.implementAction(this.clear.bind(this));
 		if (negativeNumbersEnabled) {
-			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 19 lists');
-			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- -9, 9 do');
+			this.cmd(act.setText, this.codeID[1][0], '  buckets ← array of 19 lists');
+			this.cmd(act.setText, this.codeID[10][0], '    for bucket ← -9, 9 do');
 		} else {
-			this.cmd(act.setText, this.codeID[1][0], '     buckets <- array of 10 lists');
-			this.cmd(act.setText, this.codeID[10][0], '          for bucket <- 0, 9 do');
+			this.cmd(act.setText, this.codeID[1][0], '  buckets ← array of 10 lists');
+			this.cmd(act.setText, this.codeID[10][0], '    for bucket ← 0, 9 do');
 		}
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
@@ -210,6 +230,8 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
+		if (!keepInput) this.listField.value = '';
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.codeID[0][0], 'procedure LSDRadixSort(array):'); // dummy line to start animation
 
 		this.arrayData = [];
@@ -221,12 +243,42 @@ export default class LSDRadix extends Algorithm {
 		return this.commands;
 	}
 
-	sort(params) {
+	sort(list) {
 		this.highlight(0, 0);
 		this.commands = [];
 
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => Number.isNaN(x)).length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data cannot contain non-numeric values');
+			return this.commands;
+		} else if (list.filter(x => Math.abs(x) > MAX_VALUE).length > 0) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain numbers with more than 6 digits',
+			);
+			return this.commands;
+		} else if (!negativeNumbersEnabled && list.filter(x => x < 0).length > 0) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain negative numbers unless "Sort negative numbers" is enabled',
+			);
+			return this.commands;
+		}
+
 		this.arrayID = [];
-		this.arrayData = params
+		this.arrayData = list
 			.map(x => parseInt(x, 10))
 			.filter(x => !Number.isNaN(x))
 			.slice(0, MAX_ARRAY_SIZE);
@@ -315,21 +367,14 @@ export default class LSDRadix extends Algorithm {
 		}
 
 		// Find number of digits
-		this.cmd(
-			act.createLabel,
-			this.infoLabelID,
-			'Searching for number with greatest magnitude',
-			INFO_LABEL_X,
-			INFO_LABEL_Y,
-			0,
-		);
+		this.cmd(act.setText, this.infoLabelID, 'Searching for number with greatest magnitude');
 		this.cmd(
 			act.createHighlightCircle,
 			this.iPointerID,
 			'#FF0000',
 			ARRAY_START_X,
 			ARRAY_START_Y,
-			21.5
+			21.5,
 		);
 		this.cmd(act.setHighlight, this.iPointerID, 1);
 		this.cmd(
@@ -338,7 +383,7 @@ export default class LSDRadix extends Algorithm {
 			'#0000FF',
 			ARRAY_START_X + ARRAY_ELEM_WIDTH,
 			ARRAY_START_Y,
-			21.5
+			21.5,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
 
@@ -374,14 +419,18 @@ export default class LSDRadix extends Algorithm {
 
 		// Run algorithm
 		for (let i = 0; i < digits; i++) {
-			this.cmd(act.setText, this.infoLabelID, 'Getting digits at index ' + i + ' (0-aligned)');
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Getting digits at index ' + i + ' (0-aligned)',
+			);
 			this.cmd(
 				act.createHighlightCircle,
 				this.iPointerID,
 				'#0000FF',
 				ARRAY_START_X,
 				ARRAY_START_Y,
-				21.5
+				21.5,
 			);
 			this.cmd(act.setHighlight, this.iPointerID, 1);
 			this.cmd(act.step);
@@ -564,8 +613,7 @@ export default class LSDRadix extends Algorithm {
 			}
 		}
 
-		this.cmd(act.delete, this.infoLabelID);
-
+		this.cmd(act.setText, this.infoLabelID, '');
 		return this.commands;
 	}
 

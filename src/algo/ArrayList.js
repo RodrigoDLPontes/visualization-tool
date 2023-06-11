@@ -614,6 +614,9 @@ export default class ArrayList extends Algorithm {
 	}
 
 	clearAll() {
+		this.addValueField.value = '';
+		this.addIndexField.value = '';
+		this.removeField.value = '';
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');

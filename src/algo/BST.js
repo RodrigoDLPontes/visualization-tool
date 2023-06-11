@@ -42,39 +42,39 @@ const QUEUE_SPACING = 40;
 
 const PRE_CODE = [
 	['procedure preOrder(Node node)'],
-	['     if node is not null:'],
-	['          look at data in the node'],
-	['          recurse left'],
-	['          recurse right'],
+	['  if node is not null:'],
+	['    look at data in the node'],
+	['    recurse left'],
+	['    recurse right'],
 	['end procedure'],
 ];
 const IN_CODE = [
 	['procedure inOrder(Node node)'],
-	['     if node is not null:'],
-	['          recurse left'],
-	['          look at data in the node'],
-	['          recurse right'],
+	['  if node is not null:'],
+	['    recurse left'],
+	['    look at data in the node'],
+	['    recurse right'],
 	['end procedure'],
 ];
 const POST_CODE = [
 	['procedure postOrder(Node node)'],
-	['     if node is not null:'],
-	['          recurse left'],
-	['          recurse right'],
-	['          look at data in the node'],
+	['  if node is not null:'],
+	['    recurse left'],
+	['    recurse right'],
+	['    look at data in the node'],
 	['end procedure'],
 ];
 const LEVEL_CODE = [
 	['procedure levelOrder()'],
-	['     create Queue q'],
-	['     add root to q'],
-	['     while q is not empty'],
-	['          Node curr <- remove from q'],
-	['          record data from curr'],
-	['          if curr.left is not null:'],
-	['               add curr.left to q'],
-	['          if curr.right is not null:'],
-	['               add curr.right to q'],
+	['  create Queue q'],
+	['  add root to q'],
+	['  while q is not empty'],
+	['    Node curr ← remove from q'],
+	['    record data from curr'],
+	['    if curr.left is not null:'],
+	['      add curr.left to q'],
+	['    if curr.right is not null:'],
+	['      add curr.right to q'],
 	['end procedure'],
 ];
 
@@ -902,6 +902,9 @@ export default class BST extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.clearOldObjects();
 

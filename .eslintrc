@@ -1,8 +1,13 @@
 {
 	"extends": ["react-app"],
+	"parser": "@babel/eslint-parser",
 	"parserOptions": {
 		"ecmaVersion": 6,
-		"sourceType": "module"
+		"sourceType": "module",
+		"requireConfigFile": false,
+		"babelOptions": {
+			"presets": ["@babel/preset-react"]
+		 }
 	},
 	"env": {
 		"browser": true,

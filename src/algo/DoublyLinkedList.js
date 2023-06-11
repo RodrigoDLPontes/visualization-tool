@@ -577,6 +577,9 @@ export default class DoublyLinkedList extends Algorithm {
 	}
 
 	clearAll() {
+		this.addValueField.value = '';
+		this.addIndexField.value = '';
+		this.removeField.value = '';
 		this.commands = [];
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);

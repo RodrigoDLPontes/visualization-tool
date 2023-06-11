@@ -64,8 +64,8 @@ const LARGE_TABLE_ENTRY_HEIGHT = 17;
 const TABLE_START_X = 50;
 const TABLE_START_Y = 180;
 
-const CODE_START_X = 1100;
-const CODE_START_Y = 50;
+const CODE_START_X = 1015;
+const CODE_START_Y = 190;
 
 export default class Dijkstras extends Graph {
 	constructor(am, w, h) {
@@ -116,17 +116,24 @@ export default class Dijkstras extends Graph {
 			['initialize distanceMap, DM'],
 			['initialize PriorityQueue, PQ'],
 			['for all v in G, initialize distance of v to INF'],
-			['PQ.enqueue((s, 0))'],
+			['PQ.enqueue((s, 0)), DM.put(s, 0)'],
 			['while PQ is not empty and VS is not full'],
-			['    (u, d) <- PQ.dequeue()'],
-			['    if u is not visited in VS'],
-			['        mark u as visited in VS'],
-			['    for all (w, d2) adjacent to u and not visited in VS'],
-			['        update DM for d2'],
-			['        PQ.enqueue((w, d + d2))'],
+			['  (u, d1) ← PQ.dequeue()'],
+			['  if u is not visited in VS'],
+			['    mark u as visited in VS'],
+			['    for all (w, d2) adjacent to u and not visited'],
+			['      update DM for w'],
+			['      PQ.enqueue((w, d1 + d2))'],
 		];
 
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBase(
+			this.code,
+			CODE_START_X,
+			CODE_START_Y,
+			undefined,
+			undefined,
+			1,
+		);
 
 		this.tableEntryHeight = this.isLarge ? LARGE_TABLE_ENTRY_HEIGHT : SMALL_TABLE_ENTRY_HEIGHT;
 		for (let i = 0; i < this.size; i++) {
@@ -197,21 +204,24 @@ export default class Dijkstras extends Graph {
 	}
 
 	startCallback() {
-		let startvalue;
-
 		if (this.startField.value !== '') {
-			startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size)
-				this.implementAction(this.doDijkstra.bind(this), startvalue);
+			startValue = startValue.toUpperCase();
+			this.implementAction(this.doDijkstra.bind(this), startValue);
 		}
 	}
 
-	doDijkstra(startVertex) {
+	doDijkstra(startValue) {
 		this.commands = [];
+		let current = startValue.charCodeAt(0) - 65;
 
-		let current = startVertex;
+		// User input validation
+		if (current < 0 || current >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
+
 		let currentID = this.nextIndex++;
 
 		this.clear();

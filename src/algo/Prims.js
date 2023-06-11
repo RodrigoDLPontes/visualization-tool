@@ -108,12 +108,12 @@ export default class Prims extends Graph {
 			['mark s as visited in VS'],
 			['for each edge(s, v) in G, PQ.enqueue(edge(s, v))'],
 			['while PQ is not empty and VS is not full'],
-			['    edge(u, w) <- PQ.dequeue()'],
-			['    if w is not visited in VS'],
-			['        add edge(u, w) to MST'],
-			['        mark w as visited in VS'],
-			['        for each edge(w, x) such that x is not visited'],
-			['            PQ.enqueue(edge(w, x))'],
+			['  edge(u, w) ← PQ.dequeue()'],
+			['  if w is not visited in VS'],
+			['    add edge(u, w) to MST'],
+			['    mark w as visited in VS'],
+			['    for each edge(w, x) such that x is not visited'],
+			['      PQ.enqueue(edge(w, x))'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
@@ -158,16 +158,22 @@ export default class Prims extends Graph {
 
 	startCallback() {
 		if (this.startField.value !== '') {
-			let startvalue = this.startField.value;
+			let startValue = this.startField.value;
 			this.startField.value = '';
-			startvalue = startvalue.toUpperCase().charCodeAt(0) - 65;
-			if (startvalue >= 0 && startvalue < this.size)
-				this.implementAction(this.doPrim.bind(this), startvalue);
+			startValue = startValue.toUpperCase();
+			this.implementAction(this.doPrim.bind(this), startValue);
 		}
 	}
 
-	doPrim(startVertex) {
+	doPrim(startValue) {
 		this.commands = [];
+		const startVertex = startValue.charCodeAt(0) - 65;
+
+		// User input validation
+		if (startVertex < 0 || startVertex >= this.size) {
+			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
+			return this.commands;
+		}
 
 		this.clear();
 

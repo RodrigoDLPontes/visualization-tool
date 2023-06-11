@@ -35,7 +35,10 @@ import { act } from '../anim/AnimationMain';
 
 const MAX_ARRAY_SIZE = 18;
 
-const ARRAY_START_X = 350;
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
+const ARRAY_START_X = 475;
 const ARRAY_START_Y = 120;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
@@ -96,8 +99,15 @@ export default class QuickSelect extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
@@ -144,31 +154,44 @@ export default class QuickSelect extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.cmd(
+			act.createLabel,
+			this.swapCountID,
+			'Swap Count: ' + this.swapCount,
+			COMP_COUNT_X + 250,
+			COMP_COUNT_Y,
+		);
+
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.code = [
 			['procedure QuickSelect(array, left, right, k):'],
-			['     pivotIdx <- random index within [left, right]'],
-			['     pivot <- array[pivotIdx]'],
-			['     swap array[left] and array[pivotIdx]'],
-			['     i <- left + 1, j <- right - 1'],
-			['     while i <= j do'],
-			['          while ', 'i <= j', ' and ', 'array[i] <= pivot'],
-			['               i <- i + 1'],
-			['          end while'],
-			['          while ', 'i <= j', ' and ', 'array[j] >= pivot'],
-			['               j <- j - 1'],
-			['          end while'],
-			['          if i <= j then'],
-			['               swap array[i] and array[j]'],
-			['               i <- i + 1, j <- j - 1'],
-			['          end if'],
-			['     end while'],
-			['     swap pivot and array[j]'],
-			['     if j equals k - 1 then'],
-			['          return array[j]'],
-			['     if j > k - 1 then'],
-			['          QuickSelect on array, left, j - 1, k'],
-			['     else'],
-			['          QuickSelect on array, j + 1, right, k'],
+			['  pivotIdx ← selected index within [left, right]'],
+			['  pivot ← array[pivotIdx]'],
+			['  swap array[left] and array[pivotIdx]'],
+			['  i ← left + 1, j ← right'],
+			['  while i <= j do'],
+			['    while ', 'i <= j', ' and ', 'array[i] <= pivot'],
+			['      i ← i + 1'],
+			['    end while'],
+			['    while ', 'i <= j', ' and ', 'array[j] >= pivot'],
+			['      j ← j - 1'],
+			['    end while'],
+			['    if i <= j then'],
+			['      swap array[i] and array[j]'],
+			['      i ← i + 1, j ← j - 1'],
+			['    end if'],
+			['  end while'],
+			['  swap pivot and array[j]'],
+			['  if j equals k - 1 then'],
+			['    return array[j]'],
+			['  if j > k - 1 then'],
+			['    QuickSelect on array, left, j - 1, k'],
+			['  else'],
+			['    QuickSelect on array, j + 1, right, k'],
 			['end procedure'],
 		];
 
@@ -189,33 +212,42 @@ export default class QuickSelect extends Algorithm {
 		this.jPointerID = 0;
 		this.pPointerID = 0;
 		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	runCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');
-		if (
-			this.listField.value !== '' &&
-			this.kField.value !== '' &&
-			list.length <= MAX_ARRAY_SIZE &&
-			list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length <= 0
-		) {
-			const k = this.kField.value;
-			if (k > 0 && k <= list.length) {
-				this.implementAction(this.clear.bind(this));
-				this.listField.value = '';
-				this.kField.value = '';
-				this.implementAction(this.run.bind(this), list, k);
+		const k = this.kField.value;
+		this.implementAction(this.clear.bind(this), true);
+		this.implementAction(this.run.bind(this), list, k);
+	}
+
+	randomCallback() {
+		//Generate between 5 and 15 random values
+		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+		const MIN_DATA_VALUE = 1;
+		const MAX_DATA_VALUE = 14;
+		let values = '';
+		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+			values += (
+				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+			).toString();
+			if (i < RANDOM_ARRAY_SIZE - 1) {
+				values += ',';
 			}
 		}
+		this.listField.value = values;
 	}
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
 
-	clear() {
+	clear(keepInput) {
 		this.commands = [];
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
@@ -224,12 +256,48 @@ export default class QuickSelect extends Algorithm {
 		this.arrayID = [];
 		this.displayData = [];
 		this.compCount = 0;
+		this.swapCount = 0;
+
+		if (!keepInput) {
+			this.listField.value = '';
+			this.kField.value = '';
+		}
+
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + this.swapCount);
 		return this.commands;
 	}
 
 	run(list, k) {
 		this.commands = [];
+
+		// User input validation
+		if (!list.length) {
+			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
+			return this.commands;
+		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				`Data cannot contain more than ${MAX_ARRAY_SIZE} numbers (you put ${list.length})`,
+			);
+			return this.commands;
+		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'Data cannot contain non-numeric values or numbers >999',
+			);
+			return this.commands;
+		} else if (k < 1 || k > list.length) {
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				'kᵗʰ element to select must be an integer between 1 and ' + list.length,
+			);
+			return this.commands;
+		}
 
 		this.k = Number(k);
 
@@ -508,6 +576,7 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.move, this.pPointerID, lXPos, ARRAY_START_Y);
 		this.cmd(act.move, lLabelID, pXPos, ARRAY_START_Y);
 		moveJ && this.cmd(act.move, this.jPointerID, pXPos, ARRAY_START_Y);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		// Set text in array, and delete temporary labels and pointer
 		this.cmd(act.setText, this.arrayID[other], this.displayData[pivot]);
@@ -537,6 +606,7 @@ export default class QuickSelect extends Algorithm {
 		// Move labels
 		this.cmd(act.move, iLabelID, jXPos, ARRAY_START_Y);
 		this.cmd(act.move, jLabelID, iXPos, ARRAY_START_Y);
+		this.cmd(act.setText, this.swapCountID, 'Swap Count: ' + ++this.swapCount);
 		this.cmd(act.step);
 		// Set text in array and delete temporary labels
 		this.cmd(act.setText, this.arrayID[i], this.displayData[j]);

@@ -771,6 +771,9 @@ export default class AVL extends Algorithm {
 	}
 
 	clear() {
+		this.insertField.value = '';
+		this.deleteField.value = '';
+		this.findField.value = '';
 		this.commands = [];
 		this.recClear(this.treeRoot);
 		this.treeRoot = null;
@@ -841,7 +844,7 @@ AVL.HIGHLIGHT_COLOR = '#007700';
 AVL.HEIGHT_LABEL_COLOR = '#000000';
 
 AVL.LINK_COLOR = '#000000';
-AVL.LINK_OPACITY = 0.20;
+AVL.LINK_OPACITY = 0.2;
 AVL.HIGHLIGHT_CIRCLE_COLOR = '#007700';
 AVL.FOREGROUND_COLOR = '#000000';
 AVL.BACKGROUND_COLOR = '#FFFFFF';

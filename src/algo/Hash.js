@@ -717,12 +717,14 @@ export default class Hash extends Algorithm {
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = true;
+			this.restartButton.disabled = true;
 		}
 	}
 
 	enableUI() {
 		for (let i = 0; i < this.controls.length; i++) {
 			this.controls[i].disabled = false;
+			this.restartButton.disabled = false;
 		}
 	}
 }

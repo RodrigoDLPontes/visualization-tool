@@ -116,6 +116,15 @@
 				"bug",
 				"code"
 			]
+		},
+		{
+			"login": "shmultomer",
+			"name": "Tomer Shmul",
+			"avatar_url": "https://avatars.githubusercontent.com/u/45541706?v=4",
+			"profile": "https://github.com/ShmulTomer",
+			"contributions": [
+				"code"
+			]
 		}
 	],
 	"contributorsPerLine": 7

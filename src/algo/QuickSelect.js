@@ -79,7 +79,9 @@ export default class QuickSelect extends Algorithm {
 		);
 		this.controls.push(this.listField);
 
-		addLabelToAlgorithmBar('kᵗʰ element (1 indexed)', horizontalGroup);
+		
+
+		addLabelToAlgorithmBar('kₜₕ element (1 indexed)', horizontalGroup);
 
 		// k text field
 		this.kField = addControlToAlgorithmBar('Text', '', horizontalGroup);

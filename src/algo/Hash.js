@@ -34,7 +34,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const MAX_HASH_LENGTH = 4;
-const MAX_LOAD_LENGTH = 3;
+const MAX_LOAD_LENGTH = 2;
 const DEFAULT_LOAD_FACTOR = 0.67;
 
 const HASH_NUMBER_START_X = 200;
@@ -128,10 +128,11 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.loadFieldLabel = addLabelToAlgorithmBar('0.', this.rightVerticalTop);
 
 		this.loadField = addControlToAlgorithmBar('Text', '');
 		this.loadField.setAttribute('placeholder', '67');
+		this.loadFieldLabel = addLabelToAlgorithmBar('%', this.rightVerticalTop);
+
 		this.loadField.size = MAX_LOAD_LENGTH;
 		this.loadField.onkeydown = this.returnSubmit(
 			this.loadField,
@@ -703,10 +704,10 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		const newLF = this.loadField.value
-			? this.loadField.value / Math.pow(10, this.loadField.value.toString().length)
+		const newLF = (this.loadField.value && this.loadField.value > 0)
+			? parseInt(this.loadField.value) / 100
 			: DEFAULT_LOAD_FACTOR;
-		this.loadField.value = '';
+		this.loadField.value = (newLF * 100).toFixed(0);
 		this.implementAction(this.changeLoadFactor.bind(this), newLF);
 	}
 

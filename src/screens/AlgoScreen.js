@@ -74,7 +74,7 @@ class AlgoScreen extends React.Component {
 			);
 		}
 
-		let isQuickSelect = algoMap[algoName][0] == 'QuickSelect / kᵗʰ Select';
+		const isQuickSelect = algoMap[algoName][0] === 'QuickSelect / kᵗʰ Select';
 
 		const header = algoMap[algoName][2] ? algoMap[algoName][2] : algoMap[algoName][0];
 

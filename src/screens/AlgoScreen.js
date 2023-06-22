@@ -74,13 +74,23 @@ class AlgoScreen extends React.Component {
 			);
 		}
 
+		let isQuickSelect = algoMap[algoName][0] == 'QuickSelect / kᵗʰ Select';
+
 		const header = algoMap[algoName][2] ? algoMap[algoName][2] : algoMap[algoName][0];
+
 		return (
 			<div className="VisualizationMainPage">
 				<div id="container">
 					<div id="header">
 						<h1>
-							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;{header}
+							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;
+							{isQuickSelect ? (
+								<>
+									QuickSelect / k<sup>th</sup> Select
+								</>
+							) : (
+								<>{header}</>
+							)}
 							<div id="toggle">
 								{theme === 'light' ? (
 									<BsFillSunFill

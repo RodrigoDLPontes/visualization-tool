@@ -182,8 +182,15 @@ export default class ArrayList extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 	}
@@ -288,6 +295,34 @@ export default class ArrayList extends Algorithm {
 				this.implementAction(this.add.bind(this), addVal, this.size);
 			}
 		}
+	}
+
+	randomCallback() {
+		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.random.bind(this));
+
+	}
+
+	random() {
+		this.commands = [];
+
+		const randomLength = Math.floor((Math.random() * (this.length - this.length / 2)) + this.length / 2);
+
+		for (let i = 0; i < randomLength; i++) {
+			this.arrayData[i] = Math.floor(Math.random() * 100);
+		}
+
+		for (let i = 0; i < randomLength; i++) {
+			this.cmd(act.setText, this.arrayID[i], this.arrayData[i]);
+			this.cmd(act.setText, this.arrayLabelID[i], i);
+			this.cmd(act.setHighlight, this.arrayID[i], 0);
+			this.cmd(act.setHighlight, this.arrayLabelID[i], 0);
+			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
+		}
+
+		this.size = randomLength;
+
+		return this.commands;
 	}
 
 	removeIndexCallback() {

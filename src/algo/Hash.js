@@ -128,7 +128,6 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-
 		this.loadField = addControlToAlgorithmBar('Text', '');
 		this.loadField.setAttribute('placeholder', '67');
 		this.loadFieldLabel = addLabelToAlgorithmBar('%', this.rightVerticalTop);
@@ -704,9 +703,10 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		const newLF = (this.loadField.value && this.loadField.value > 0)
-			? parseInt(this.loadField.value) / 100
-			: DEFAULT_LOAD_FACTOR;
+		const newLF =
+			this.loadField.value && this.loadField.value > 0
+				? parseInt(this.loadField.value) / 100
+				: DEFAULT_LOAD_FACTOR;
 		this.loadField.value = (newLF * 100).toFixed(0);
 		this.implementAction(this.changeLoadFactor.bind(this), newLF);
 	}

@@ -298,31 +298,23 @@ export default class ArrayList extends Algorithm {
 	}
 
 	randomCallback() {
-		this.implementAction(this.clear.bind(this));
-		this.implementAction(this.random.bind(this));
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.length - 1;
+		const MIN_SIZE = 3;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
 
-	}
+		this.implementAction(this.clearAll.bind(this));
 
-	random() {
-		this.commands = [];
-
-		const randomLength = Math.floor((Math.random() * (this.length - this.length / 2)) + this.length / 2);
-
-		for (let i = 0; i < randomLength; i++) {
-			this.arrayData[i] = Math.floor(Math.random() * 100);
+		for (let i = 0; i < randomSize; i++) {
+			this.implementAction(
+				this.add.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+				0,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
-
-		for (let i = 0; i < randomLength; i++) {
-			this.cmd(act.setText, this.arrayID[i], this.arrayData[i]);
-			this.cmd(act.setText, this.arrayLabelID[i], i);
-			this.cmd(act.setHighlight, this.arrayID[i], 0);
-			this.cmd(act.setHighlight, this.arrayLabelID[i], 0);
-			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
-		}
-
-		this.size = randomLength;
-
-		return this.commands;
 	}
 
 	removeIndexCallback() {

@@ -202,8 +202,15 @@ export default class LinkedList extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
 		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 	}
@@ -341,6 +348,26 @@ export default class LinkedList extends Algorithm {
 	removeBackCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
+		}
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = 8;
+		const MIN_SIZE = 4;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clearAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			this.implementAction(
+				this.add.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+				0,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
 	}
 

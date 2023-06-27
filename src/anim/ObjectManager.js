@@ -462,9 +462,15 @@ export default class ObjectManager {
 		return this.nodes[nodeID].x;
 	}
 
-	getTextWidth(text, isCode) {
+	getTextWidth(text, isCode, isPointer) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
-		this.ctx.font = isCode ? '13px Source Code Pro' : '12px Arial';
+		if (isCode) {
+			this.ctx.font = '13px Source Code Pro';
+		} else if (isPointer) {
+			this.ctx.font = '16px Arial';
+		} else {
+			this.ctx.font = '12px Arial';
+		}
 		const strList = text.split('\n');
 		let width = 0;
 		if (strList.length === 1) {
@@ -727,7 +733,7 @@ export default class ObjectManager {
 		}
 	}
 
-	addLabelObject(objectID, objectLabel, centering, isCode) {
+	addLabelObject(objectID, objectLabel, centering, isCode, isPointer) {
 		if (this.nodes[objectID] != null && this.nodes[objectID] !== undefined) {
 			throw new Error('addLabelObject: object already exists!');
 		}
@@ -736,8 +742,9 @@ export default class ObjectManager {
 			objectID,
 			objectLabel,
 			centering,
-			this.getTextWidth(objectLabel, isCode),
+			this.getTextWidth(objectLabel, isCode, isPointer),
 			isCode,
+			isPointer
 		);
 		this.nodes[objectID] = newLabel;
 	}

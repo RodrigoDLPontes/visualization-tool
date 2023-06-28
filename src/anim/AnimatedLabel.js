@@ -312,6 +312,7 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlighted,
 			this.highlightColor,
 			this.isCode,
+			this.isPointer
 		);
 	}
 }

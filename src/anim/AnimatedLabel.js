@@ -28,7 +28,7 @@ import AnimatedObject from './AnimatedObject.js';
 import { UndoBlock } from './UndoFunctions.js';
 
 export default class AnimatedLabel extends AnimatedObject {
-	constructor(objectID, label, centered, initialWidth, isCode) {
+	constructor(objectID, label, centered, initialWidth, isCode, isPointer) {
 		super();
 
 		this.objectID = objectID;
@@ -40,6 +40,7 @@ export default class AnimatedLabel extends AnimatedObject {
 		this.highlighted = false;
 		this.centered = centered;
 		this.isCode = isCode;
+		this.isPointer = isPointer;
 
 		this.leftWidth = -1;
 		this.centerWidth = -1;
@@ -65,6 +66,8 @@ export default class AnimatedLabel extends AnimatedObject {
 
 		if (this.isCode) {
 			context.font = '13px "Source Code Pro", monospace';
+		} else if (this.isPointer) {
+			context.font = '16px Arial';
 		} else {
 			context.font = '12px Arial';
 		}
@@ -309,6 +312,7 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlighted,
 			this.highlightColor,
 			this.isCode,
+			this.isPointer
 		);
 	}
 }
@@ -326,6 +330,7 @@ class UndoDeleteLabel extends UndoBlock {
 		highlighted,
 		highlightColor,
 		isCode,
+		isPointer
 	) {
 		super();
 		this.objectID = objectID;
@@ -339,10 +344,11 @@ class UndoDeleteLabel extends UndoBlock {
 		this.highlighted = highlighted;
 		this.highlightColor = highlightColor;
 		this.isCode = isCode;
+		this.isPointer = isPointer;
 	}
 
 	undoInitialStep(world) {
-		world.addLabelObject(this.objectID, this.label, this.centered, this.isCode);
+		world.addLabelObject(this.objectID, this.label, this.centered, this.isCode, this.isPointer);
 		world.setNodePosition(this.objectID, this.x, this.y);
 		world.setForegroundColor(this.objectID, this.labelColor);
 		world.setLayer(this.objectID, this.layer);

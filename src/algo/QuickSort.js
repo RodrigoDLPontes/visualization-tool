@@ -133,6 +133,8 @@ export default class QuickSort extends Algorithm {
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.pPointerID = 0;
+		this.iLabel = 0;
+		this.jLabel = 0;
 		this.comparisonCountID = this.nextIndex++;
 
 		this.compCount = 0;
@@ -196,6 +198,8 @@ export default class QuickSort extends Algorithm {
 		this.removeCode(this.codeID);
 		this.iPointerID = 0;
 		this.jPointerID = 0;
+		this.iLabel = 0;
+		this.jLabel = 0;
 		this.pPointerID = 0;
 		this.comparisonCountID = this.nextIndex++;
 		this.infoLabelID = this.nextIndex++;
@@ -317,6 +321,8 @@ export default class QuickSort extends Algorithm {
 		this.iPointerID = this.nextIndex++;
 		this.jPointerID = this.nextIndex++;
 		this.pPointerID = this.nextIndex++;
+		this.iLabel = this.nextIndex++;
+		this.jLabel = this.nextIndex++;
 		this.helper(0, this.arrayData.length - 1);
 
 		return this.commands;
@@ -381,9 +387,19 @@ export default class QuickSort extends Algorithm {
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
 		this.cmd(act.createHighlightCircle, this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
+		this.cmd(act.createLabel, this.iLabel, 'i', iXPos, ARRAY_START_Y - 40, undefined, false, true);
+		this.cmd(act.createLabel, this.jLabel, 'j', jXPos, ARRAY_START_Y - 40, undefined, false, true);
+		if (i === j) {
+			this.cmd(act.setText, this.iLabel, '');
+			this.cmd(act.setText, this.jLabel, 'i, j');
+		} else {
+			this.cmd(act.setText, this.iLabel, 'i');
+			this.cmd(act.setText, this.jLabel, 'j');
+		}
 		this.cmd(act.step);
 		this.unhighlight(4, 0);
 		this.highlight(5, 0);
+
 		while (i <= j) {
 			this.cmd(act.step);
 			this.highlight(6, 0);
@@ -487,6 +503,8 @@ export default class QuickSort extends Algorithm {
 		this.cmd(act.delete, this.iPointerID);
 		this.cmd(act.delete, this.jPointerID);
 		this.cmd(act.delete, this.pPointerID);
+		this.cmd(act.delete, this.iLabel);
+		this.cmd(act.delete, this.jLabel);
 		this.cmd(act.step);
 
 		// Un-hightlight cells in sub-array and set pivot cell to green
@@ -512,8 +530,17 @@ export default class QuickSort extends Algorithm {
 	movePointers(i, j) {
 		const iXPos = i * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		this.cmd(act.move, this.iPointerID, iXPos, ARRAY_START_Y);
+		this.cmd(act.move, this.iLabel, iXPos, ARRAY_START_Y - 40);
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		this.cmd(act.move, this.jPointerID, jXPos, ARRAY_START_Y);
+		this.cmd(act.move, this.jLabel, jXPos, ARRAY_START_Y - 40);
+		if (i === j) {
+			this.cmd(act.setText, this.iLabel, '');
+			this.cmd(act.setText, this.jLabel, 'i, j');
+		} else {
+			this.cmd(act.setText, this.iLabel, 'i');
+			this.cmd(act.setText, this.jLabel, 'j');
+		}
 		this.cmd(act.step);
 	}
 

@@ -154,12 +154,12 @@ export default class OpenHash extends Hash {
 				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			} else if (this.hashType === 'strings') {
-				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
 				key = letter;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			} else if (this.hashType === 'true') {
-				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;:/?=+=_-*&^%$#@!';
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;:/?=+=_-*&^%$#@!';
 				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
 				key = letter;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;

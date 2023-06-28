@@ -288,13 +288,13 @@ export default class Hash extends Algorithm {
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			} else if (this.hashType === 'strings') {
 				// generate a random string using letters A-Z
-				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
 				key = letter;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			} else if (this.hashType === 'true') {
 				// generate a random string using letters A-Z
-				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
 				key = letter;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;

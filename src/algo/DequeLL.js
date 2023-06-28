@@ -110,7 +110,12 @@ export default class DequeLL extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		// Clear button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
@@ -205,6 +210,26 @@ export default class DequeLL extends Algorithm {
 	removeLastCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
+		}
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = 5;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clearAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			this.implementAction(
+				this.add.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+				0,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
 	}
 

@@ -26,6 +26,7 @@
 
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
+import { addControlToAlgorithmBar } from './Algorithm.js';
 
 const POINTER_ARRAY_ELEM_WIDTH = 50;
 const POINTER_ARRAY_ELEM_HEIGHT = 25;
@@ -70,6 +71,11 @@ export default class ClosedHash extends Hash {
 	addControls() {
 		super.addControls();
 		this.restartButton.onclick = this.resizeInitialTableCall.bind(this);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.dropDownGroup);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 	}
 
 	setup() {
@@ -130,6 +136,38 @@ export default class ClosedHash extends Hash {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.table_size * this.load_factor - 1;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.resetAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[];',./{}|:<>?=+=_-)(*&^%$#@!";
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
 	}
 
 	resizeInitialTableCall() {

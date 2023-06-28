@@ -27,6 +27,7 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
@@ -142,8 +143,16 @@ export default class BTree extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		// Clear button
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
+		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 
 		addDivisorToAlgorithmBar();
@@ -237,6 +246,25 @@ export default class BTree extends Algorithm {
 			deletedValue = this.normalizeNumber(this.deleteField.value, 4);
 			this.deleteField.value = '';
 			this.implementAction(this.deleteElement.bind(this), parseInt(deletedValue));
+		}
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = 20;
+		const MIN_SIZE = 4;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clearTree.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			this.implementAction(
+				this.insertElement.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
 	}
 

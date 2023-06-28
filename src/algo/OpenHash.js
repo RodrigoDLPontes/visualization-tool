@@ -24,9 +24,9 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { addControlToAlgorithmBar, addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
-import { addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 
 const ARRAY_ELEM_WIDTH = 85;
 const ARRAY_ELEM_HEIGHT = 30;
@@ -77,6 +77,11 @@ export default class OpenHash extends Hash {
 			'Probing Type',
 			this.dropDownGroup,
 		);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.dropDownGroup);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
@@ -132,6 +137,38 @@ export default class OpenHash extends Hash {
 	// 		this.implementAction(this.changeProbeType.bind(this), 'linear');
 	// 	}
 	// }
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.table_size * this.load_factor - 1;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.resetAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;:/?=+=_-*&^%$#@!';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
+	}
 
 	insertElement(key, value) {
 		const entry = new MapEntry(key, value);

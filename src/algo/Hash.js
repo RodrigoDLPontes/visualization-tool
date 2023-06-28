@@ -271,6 +271,40 @@ export default class Hash extends Algorithm {
 		return this.resetAll();
 	}
 
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = 12;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clear.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				// generate a random string using letters A-Z
+				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				// generate a random string using letters A-Z
+				let letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
+	}
+
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}

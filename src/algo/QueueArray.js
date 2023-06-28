@@ -101,6 +101,12 @@ export default class QueueArray extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
+		addDivisorToAlgorithmBar();
+
 		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
@@ -231,6 +237,25 @@ export default class QueueArray extends Algorithm {
 	dequeueCallback() {
 		if (this.size !== 0) {
 			this.implementAction(this.dequeue.bind(this));
+		}
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.arrayData.length - 1;
+		const MIN_SIZE = 3;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clearAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			this.implementAction(
+				this.enqueue.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
 	}
 

@@ -24,9 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+
 import Hash from './Hash.js';
+
 import { act } from '../anim/AnimationMain';
-import { addControlToAlgorithmBar } from './Algorithm.js';
+
 
 const POINTER_ARRAY_ELEM_WIDTH = 50;
 const POINTER_ARRAY_ELEM_HEIGHT = 25;
@@ -72,8 +75,23 @@ export default class ClosedHash extends Hash {
 		super.addControls();
 		this.restartButton.onclick = this.resizeInitialTableCall.bind(this);
 
+		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.dropDownLabelGroup);
+		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
+			['Hash Integers', 'Hash Strings', 'True Hash Function'],
+			'Hash Type',
+			this.dropDownParentGroup,
+		);
+
+		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
+
+		this.hashType = 'integers';
+
+		addDivisorToAlgorithmBar();
+		
+		this.randomGroup = addGroupToAlgorithmBar(false);
+
 		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.dropDownGroup);
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.randomGroup);
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 	}

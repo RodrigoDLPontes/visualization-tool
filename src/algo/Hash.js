@@ -65,8 +65,12 @@ export default class Hash extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Key: ');
-		this.keyField = addControlToAlgorithmBar('Text', '');
+		const putVerticalGroup = addGroupToAlgorithmBar(false);
+		const putTopHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
+		const putBottomHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
+
+		addLabelToAlgorithmBar(`Key: ${"\u00A0".repeat(2)}`, putTopHorizontalGroup);
+		this.keyField = addControlToAlgorithmBar('Text', '', putTopHorizontalGroup);
 		this.keyField.size = MAX_HASH_LENGTH;
 		this.keyField.onkeydown = this.returnSubmit(
 			this.keyField,
@@ -75,10 +79,9 @@ export default class Hash extends Algorithm {
 			true,
 		);
 		this.controls.push(this.keyField);
-
-		//I'm allowing any type of data be inserted for the value, should it be restricted?
-		addLabelToAlgorithmBar('Value: ');
-		this.valueField = addControlToAlgorithmBar('Text', '');
+		
+		addLabelToAlgorithmBar('Value: ', putBottomHorizontalGroup);
+		this.valueField = addControlToAlgorithmBar('Text', '', putBottomHorizontalGroup);
 		this.valueField.size = MAX_HASH_LENGTH;
 		this.valueField.onkeydown = this.returnSubmit(
 			this.valueField,
@@ -128,9 +131,14 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.loadField = addControlToAlgorithmBar('Text', '');
+		const loadVerticalGroup = addGroupToAlgorithmBar(false);
+		const loadVerticalTop = addGroupToAlgorithmBar(true, loadVerticalGroup);
+		const loadPercentGroup = addGroupToAlgorithmBar(true, loadVerticalTop)
+		const loadVerticalBottom = addGroupToAlgorithmBar(true, loadVerticalGroup);
+
+		this.loadField = addControlToAlgorithmBar('Text', '', loadPercentGroup);
 		this.loadField.setAttribute('placeholder', '67');
-		this.loadFieldLabel = addLabelToAlgorithmBar('%', this.rightVerticalTop);
+		this.loadFieldLabel = addLabelToAlgorithmBar('%', loadPercentGroup);
 
 		this.loadField.size = MAX_LOAD_LENGTH;
 		this.loadField.onkeydown = this.returnSubmit(
@@ -141,8 +149,8 @@ export default class Hash extends Algorithm {
 		);
 
 		this.controls.push(this.loadField);
-
-		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor');
+		
+		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor', loadVerticalBottom);
 		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
 		this.controls.push(this.loadButton);
 
@@ -179,17 +187,9 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.dropDownGroup = addGroupToAlgorithmBar(false);
-
-		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			['Hash Integers', 'Hash Strings', 'True Hash Function'],
-			'Hash Type',
-			this.dropDownGroup,
-		);
-
-		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
-
-		this.hashType = 'integers';
+		this.dropDownParentGroup = addGroupToAlgorithmBar(false);
+		this.dropDownLabelGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup);
+		this.dropDownGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup)
 	}
 
 	checkHashType() {

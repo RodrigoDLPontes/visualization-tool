@@ -24,7 +24,7 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addDropDownGroupToAlgorithmBar } from './Algorithm.js';
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
 
@@ -68,18 +68,36 @@ export default class OpenHash extends Hash {
 	addControls() {
 		super.addControls();
 
+		this.probeTypeLabel = addLabelToAlgorithmBar('Probe Type:', this.dropDownLabelGroup);
 		this.probeTypeDropDown = addDropDownGroupToAlgorithmBar(
 			[
-				'Linear Probing: f(i) = i',
-				'Quadratic Probing: f(i) = i * i',
-				'Double Hashing: f(i) = i * hash2(elem)',
+				'Linear Probing: i++',
+				'Quadratic Probing: i = i * i',
+				'Double Hashing: i = i * hash2(elem)',
 			],
 			'Probing Type',
 			this.dropDownGroup,
 		);
 
+		addDivisorToAlgorithmBar();
+
+		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
+		this.hashTypeLabelGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup);
+		this.hashTypedropDownGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup)
+
+
+		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
+
+		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
+			['Hash Integers', 'Hash Strings', 'True Hash Function'],
+			'Hash Type',
+			this.hashTypedropDownGroup,
+		);
+
+		addDivisorToAlgorithmBar();
+
 		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.dropDownGroup);
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.randomGroup);
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 

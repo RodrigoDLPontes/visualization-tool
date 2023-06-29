@@ -78,6 +78,7 @@ export default class OpenHash extends Hash {
 			'Probing Type',
 			this.dropDownGroup,
 		);
+		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
 		addDivisorToAlgorithmBar();
 
@@ -85,14 +86,13 @@ export default class OpenHash extends Hash {
 		this.hashTypeLabelGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup);
 		this.hashTypedropDownGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup)
 
-
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
-
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
 			['Hash Integers', 'Hash Strings', 'True Hash Function'],
 			'Hash Type',
 			this.hashTypedropDownGroup,
 		);
+		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
 
 		addDivisorToAlgorithmBar();
 
@@ -101,20 +101,17 @@ export default class OpenHash extends Hash {
 		this.randomButton.onclick = this.randomCallback.bind(this);
 		this.controls.push(this.randomButton);
 
-		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
-
 		this.currentProbeType = 'linear';
 
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
-		// Add new controls
 	}
 
 	checkProbeType() {
-		if (this.probeTypeDropDown.value === 'Linear Probing: f(i) = i') {
+		if (this.probeTypeDropDown.value === 'Linear Probing: i++') {
 			this.implementAction(this.changeProbeType.bind(this), 'linear');
-		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: f(i) = i * i') {
+		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: i = i * i') {
 			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
-		} else if (this.probeTypeDropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
+		} else if (this.probeTypeDropDown.value === 'Double Hashing: i = i * hash2(elem)') {
 			this.implementAction(this.changeProbeType.bind(this), 'double');
 		}
 	}

@@ -178,9 +178,16 @@ export default class SkipList extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const verticalGroup2 = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
+
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
-		this.clearButton.onclick = this.clearCallback.bind(this);
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
+		this.clearButton.onclick = () => this.clearCallback();
 		this.controls.push(this.clearButton);
 	}
 
@@ -271,6 +278,28 @@ export default class SkipList extends Algorithm {
 			const value = parseInt(this.getField.value);
 			this.getField.value = '';
 			this.implementAction(this.get.bind(this), value);
+		}
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 50;
+		const MAX_SIZE = 8;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clearAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			// generate a random number from 0 to 4
+			const heads = Math.floor(Math.random() * (4 - 0 + 1)) + 0;
+			this.implementAction(
+				this.add.bind(this),
+				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
+				heads,
+			);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
 		}
 	}
 

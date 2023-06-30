@@ -24,8 +24,12 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+
 import Hash from './Hash.js';
+
 import { act } from '../anim/AnimationMain';
+
 
 const POINTER_ARRAY_ELEM_WIDTH = 50;
 const POINTER_ARRAY_ELEM_HEIGHT = 25;
@@ -70,6 +74,26 @@ export default class ClosedHash extends Hash {
 	addControls() {
 		super.addControls();
 		this.restartButton.onclick = this.resizeInitialTableCall.bind(this);
+
+		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.dropDownLabelGroup);
+		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
+			['Hash Integers', 'Hash Strings', 'True Hash Function'],
+			'Hash Type',
+			this.dropDownParentGroup,
+		);
+
+		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
+
+		this.hashType = 'integers';
+
+		addDivisorToAlgorithmBar();
+		
+		this.randomGroup = addGroupToAlgorithmBar(false);
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.randomGroup);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 	}
 
 	setup() {
@@ -130,6 +154,38 @@ export default class ClosedHash extends Hash {
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.table_size * this.load_factor - 1;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.resetAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ[];',./{}|:<>?=+=_-)(*&^%$#@!";
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
 	}
 
 	resizeInitialTableCall() {

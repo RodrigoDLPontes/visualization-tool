@@ -27,7 +27,6 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
-	addDropDownGroupToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
@@ -65,8 +64,12 @@ export default class Hash extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Key: ');
-		this.keyField = addControlToAlgorithmBar('Text', '');
+		const putVerticalGroup = addGroupToAlgorithmBar(false);
+		const putTopHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
+		const putBottomHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
+
+		addLabelToAlgorithmBar(`Key: ${"\u00A0".repeat(2)}`, putTopHorizontalGroup);
+		this.keyField = addControlToAlgorithmBar('Text', '', putTopHorizontalGroup);
 		this.keyField.size = MAX_HASH_LENGTH;
 		this.keyField.onkeydown = this.returnSubmit(
 			this.keyField,
@@ -75,10 +78,9 @@ export default class Hash extends Algorithm {
 			true,
 		);
 		this.controls.push(this.keyField);
-
-		//I'm allowing any type of data be inserted for the value, should it be restricted?
-		addLabelToAlgorithmBar('Value: ');
-		this.valueField = addControlToAlgorithmBar('Text', '');
+		
+		addLabelToAlgorithmBar('Value: ', putBottomHorizontalGroup);
+		this.valueField = addControlToAlgorithmBar('Text', '', putBottomHorizontalGroup);
 		this.valueField.size = MAX_HASH_LENGTH;
 		this.valueField.onkeydown = this.returnSubmit(
 			this.valueField,
@@ -128,10 +130,14 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
+		const loadVerticalGroup = addGroupToAlgorithmBar(false);
+		const loadVerticalTop = addGroupToAlgorithmBar(true, loadVerticalGroup);
+		const loadPercentGroup = addGroupToAlgorithmBar(true, loadVerticalTop)
+		const loadVerticalBottom = addGroupToAlgorithmBar(true, loadVerticalGroup);
 
-		this.loadField = addControlToAlgorithmBar('Text', '');
+		this.loadField = addControlToAlgorithmBar('Text', '', loadPercentGroup);
 		this.loadField.setAttribute('placeholder', '67');
-		this.loadFieldLabel = addLabelToAlgorithmBar('%', this.rightVerticalTop);
+		this.loadFieldLabel = addLabelToAlgorithmBar('%', loadPercentGroup);
 
 		this.loadField.size = MAX_LOAD_LENGTH;
 		this.loadField.onkeydown = this.returnSubmit(
@@ -142,8 +148,8 @@ export default class Hash extends Algorithm {
 		);
 
 		this.controls.push(this.loadField);
-
-		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor');
+		
+		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor', loadVerticalBottom);
 		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
 		this.controls.push(this.loadButton);
 
@@ -180,17 +186,9 @@ export default class Hash extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		this.dropDownGroup = addGroupToAlgorithmBar(false);
-
-		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			['Hash Integers', 'Hash Strings', 'True Hash Function'],
-			'Hash Type',
-			this.dropDownGroup,
-		);
-
-		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
-
-		this.hashType = 'integers';
+		this.dropDownParentGroup = addGroupToAlgorithmBar(false);
+		this.dropDownLabelGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup);
+		this.dropDownGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup)
 	}
 
 	checkHashType() {
@@ -270,6 +268,40 @@ export default class Hash extends Algorithm {
 			}
 		}
 		return this.resetAll();
+	}
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = 12;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.clear.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				// generate a random string using letters A-Z
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				// generate a random string using letters A-Z
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
 	}
 
 	clearCallback() {
@@ -704,9 +736,10 @@ export default class Hash extends Algorithm {
 	}
 
 	loadFactorCallBack() {
-		const newLF = (this.loadField.value && this.loadField.value > 0)
-			? parseInt(this.loadField.value) / 100
-			: DEFAULT_LOAD_FACTOR;
+		const newLF =
+			this.loadField.value && this.loadField.value > 0
+				? parseInt(this.loadField.value) / 100
+				: DEFAULT_LOAD_FACTOR;
 		this.loadField.value = (newLF * 100).toFixed(0);
 		this.implementAction(this.changeLoadFactor.bind(this), newLF);
 	}

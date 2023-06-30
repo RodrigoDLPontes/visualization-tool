@@ -24,9 +24,9 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
+import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
-import { addDropDownGroupToAlgorithmBar } from './Algorithm.js';
 
 const ARRAY_ELEM_WIDTH = 85;
 const ARRAY_ELEM_HEIGHT = 30;
@@ -68,30 +68,50 @@ export default class OpenHash extends Hash {
 	addControls() {
 		super.addControls();
 
+		this.probeTypeLabel = addLabelToAlgorithmBar('Probe Type:', this.dropDownLabelGroup);
 		this.probeTypeDropDown = addDropDownGroupToAlgorithmBar(
 			[
-				'Linear Probing: f(i) = i',
-				'Quadratic Probing: f(i) = i * i',
-				'Double Hashing: f(i) = i * hash2(elem)',
+				'Linear Probing: i++',
+				'Quadratic Probing: i = i * i',
+				'Double Hashing: i = i * hash2(elem)',
 			],
 			'Probing Type',
 			this.dropDownGroup,
 		);
-
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
+		this.hashTypeLabelGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup);
+		this.hashTypedropDownGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup)
+
+		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
+		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
+			['Hash Integers', 'Hash Strings', 'True Hash Function'],
+			'Hash Type',
+			this.hashTypedropDownGroup,
+		);
+		this.hashTypeDropDown.onchange = this.checkHashType.bind(this);
+
+		addDivisorToAlgorithmBar();
+
+		// Random data button
+		this.randomButton = addControlToAlgorithmBar('Button', 'Random', this.randomGroup);
+		this.randomButton.onclick = this.randomCallback.bind(this);
+		this.controls.push(this.randomButton);
 
 		this.currentProbeType = 'linear';
 
 		this.initialCapacityField.value = CLOSED_HASH_TABLE_SIZE;
-		// Add new controls
 	}
 
 	checkProbeType() {
-		if (this.probeTypeDropDown.value === 'Linear Probing: f(i) = i') {
+		if (this.probeTypeDropDown.value === 'Linear Probing: i++') {
 			this.implementAction(this.changeProbeType.bind(this), 'linear');
-		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: f(i) = i * i') {
+		} else if (this.probeTypeDropDown.value === 'Quadratic Probing: i = i * i') {
 			this.implementAction(this.changeProbeType.bind(this), 'quadratic');
-		} else if (this.probeTypeDropDown.value === 'Double Hashing: f(i) = i * hash2(elem)') {
+		} else if (this.probeTypeDropDown.value === 'Double Hashing: i = i * hash2(elem)') {
 			this.implementAction(this.changeProbeType.bind(this), 'double');
 		}
 	}
@@ -132,6 +152,38 @@ export default class OpenHash extends Hash {
 	// 		this.implementAction(this.changeProbeType.bind(this), 'linear');
 	// 	}
 	// }
+
+	randomCallback() {
+		const LOWER_BOUND = 0;
+		const UPPER_BOUND = 16;
+		const MAX_SIZE = this.table_size * this.load_factor - 1;
+		const MIN_SIZE = 2;
+		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+
+		this.implementAction(this.resetAll.bind(this));
+
+		for (let i = 0; i < randomSize; i++) {
+			let key;
+			let value;
+			if (this.hashType === 'integers') {
+				key = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'strings') {
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			} else if (this.hashType === 'true') {
+				const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;:/?=+=_-*&^%$#@!';
+				const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+				key = letter;
+				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			}
+			this.implementAction(this.insertElement.bind(this), key, value);
+			this.animationManager.skipForward();
+			this.animationManager.clearHistory();
+		}
+	}
 
 	insertElement(key, value) {
 		const entry = new MapEntry(key, value);

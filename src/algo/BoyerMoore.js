@@ -148,7 +148,7 @@ export default class BoyerMoore extends Algorithm {
 		this.lastTableCode = [
 			['procedure BoyerMooreLastTable(pattern):'],
 			['  lastTable ← map from character to integer'],
-			['  for i < 0, length of pattern'],
+			['  for i ← 0, length of pattern'],
 			['    lastTable[pattern[i]] ← i'],
 			['  return lastTable'],
 			['end procedure'],

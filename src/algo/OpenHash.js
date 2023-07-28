@@ -179,7 +179,7 @@ export default class OpenHash extends Hash {
 				key = letter;
 				value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			}
-			this.implementAction(this.insertElement.bind(this), key, value);
+			this.implementAction(this.insertElement.bind(this), key.toString(), value);
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}

@@ -30,7 +30,7 @@ class Header extends React.Component {
 						</IconContext.Provider>
 					</div>
 					<div id="center">
-						<h1>CS 1332 Data Structures and Algorithms Visualizations</h1>
+						<h1>CS 1332 Data Structures and Algorithms Visualization Tool</h1>
 					</div>
 					<div id="right">
 						{theme === 'light' ? (

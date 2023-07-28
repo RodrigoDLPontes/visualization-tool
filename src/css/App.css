@@ -28,20 +28,16 @@
 #left {
 	float: left;
 	width: 100px;
+	margin-top: 3px;
 }
 
 #right {
 	float: right;
 	width: 100px;
-	margin-top: 14px;
+	margin-top: 18px;
 	margin-right: 0px;
 	position: relative;
 	transition: 0.2s ease-out;
-}
-
-#right:hover {
-	transition: 0.4s ease-in;
-	transform: scale(1.15);
 }
 
 #center {
@@ -50,7 +46,7 @@
 }
 
 body {
-	font: 100% 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+	font: 100% 'Cabin', 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
 	background-color: var(--background);
@@ -97,7 +93,7 @@ body {
 
 .menu a {
 	font-size: 1.4em;
-	font-weight: bold;
+	font-weight: 700;
 	text-decoration: none;
 	color: var(--primary);
 	transition: all 0.4s ease 0s;
@@ -158,7 +154,7 @@ body {
 .header {
 	position: fixed;
 	width: 100%;
-	height: 60px;
+	height: 65px;
 	z-index: 1;
 	display: flex;
 	flex-direction: row;
@@ -226,9 +222,9 @@ div.content {
 }
 
 .inner-flex input.button {
-	font-family: Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
-	font-weight: bold;
+	font-weight: 700;
 	color: var(--text);
 	background: var(--buttons);
 	width: 90%;
@@ -312,7 +308,8 @@ div.content {
 
 @media screen and (min-width: 1000px) {
 	.header h1 {
-		font-size: 30px;
+		font-size: 32px;
+		font-weight: 500;
 	}
 }
 

@@ -62,7 +62,7 @@ export default class RabinKarp extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Text');
+		addLabelToAlgorithmBar('Text:');
 
 		// Text text field
 		this.textField = addControlToAlgorithmBar('Text', '');

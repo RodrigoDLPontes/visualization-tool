@@ -32,6 +32,7 @@
 .VisualizationMainPage #mainContent {
 	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
 	background: #ffffff;
+	font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
 }
 
 .VisualizationMainPage #container {
@@ -91,6 +92,8 @@
 	color: #fffff0;
 	padding: 0 10px 0 5px;
 	transition: all 0.4s ease 0s;
+	font-family: 'Cabin', 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-weight: 400;
 }
 
 .VisualizationMainPage #header a:visited {

@@ -57,7 +57,7 @@ export default class KMP extends Algorithm {
 	addControls() {
 		this.controls = [];
 
-		addLabelToAlgorithmBar('Text');
+		addLabelToAlgorithmBar('Text:');
 
 		// Text text field
 		this.textField = addControlToAlgorithmBar('Text', '');
@@ -69,7 +69,7 @@ export default class KMP extends Algorithm {
 		);
 		this.controls.push(this.textField);
 
-		addLabelToAlgorithmBar('Pattern');
+		addLabelToAlgorithmBar('Pattern:');
 
 		// Pattern text field
 		this.patternField = addControlToAlgorithmBar('Text', '');

@@ -34,7 +34,7 @@ class Header extends React.Component {
 					</div>
 					<div id="right">
 						{theme === 'light' ? (
-							<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" />
+							<BsFillSunFill size={31} onClick={toggleTheme} color="#f9c333" className='rotate-effect' />
 						) : (
 							<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
 						)}

@@ -40,6 +40,18 @@
 	transition: 0.2s ease-out;
 }
 
+#right:hover {
+	cursor: pointer;
+}
+
+.rotate-effect {
+	transition: transform 1.5s ease;
+}
+  
+.rotate-effect:hover {
+	transform: rotate(360deg);
+}
+
 #center {
 	margin: 0 auto;
 	width: 100px;

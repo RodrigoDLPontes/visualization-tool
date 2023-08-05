@@ -443,12 +443,12 @@ export default class OpenHash extends Hash {
 		this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key);
 		const index = this.doHash(key);
 
-		const found = this.getElemIndex(index, key) !== -1;
-		if (found) {
+		const found = this.getElemIndex(index, key);
+		if (found !== -1) {
 			this.cmd(
 				act.setText,
 				this.ExplainLabel,
-				'Found Key: ' + key + '  Value: ' + this.hashTableValues[index].val,
+				'Found Key: ' + key + '  Value: ' + this.hashTableValues[found].val,
 			);
 		} else {
 			this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key + '  Not Found!');

@@ -245,7 +245,7 @@ export default class ArrayList extends Algorithm {
 		this.addIndexCode = [
 			['procedure addAtIndex(index, data)'],
 			['  if size == array.length'],
-			['    newArray ← new array[size * 2]'],
+			['    T[] newArray ← new array[size * 2]'],
 			['    for i ← 0 to index - 1, i++:'],
 			['      newArray[i] ← array[i]'],
 			['    newArray[index] ← data'],
@@ -319,9 +319,9 @@ export default class ArrayList extends Algorithm {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
 				if (this.size === this.length) {
-					this.implementAction(this.resize.bind(this), addVal, index, false, false, true);
+					this.implementAction(this.resize.bind(this), addVal, parseInt(index), false, false, true);
 				} else {
-					this.implementAction(this.add.bind(this), addVal, index, false, false, true);
+					this.implementAction(this.add.bind(this), addVal, parseInt(index), false, false, true);
 				}
 			}
 		}
@@ -416,9 +416,10 @@ export default class ArrayList extends Algorithm {
 		const labPushValID = this.nextIndex++;
 
 		if (isAddFront) {
+			this.highlight(0, 0, this.addFBCodeID);
 			this.highlight(1, 0, this.addFBCodeID);
-		}
-		if (isAddBack) {
+		} else if (isAddBack) {
+			this.highlight(4, 0, this.addFBCodeID);
 			this.highlight(5, 0, this.addFBCodeID);
 		}
 		this.highlight(0, 0, this.addIndexCodeID);
@@ -434,12 +435,10 @@ export default class ArrayList extends Algorithm {
 
 		this.arrayMoveID = new Array(this.size);
 
-		this.unhighlight(0, 0, this.addIndexCodeID);
 		this.highlight(9, 0, this.addIndexCodeID);
 		this.cmd(act.step);
-		this.unhighlight(9, 0, this.addIndexCodeID);
 		if (index !== this.size) {
-			if (isAddFront || isAddIndex) {
+			if (isAddFront || (isAddIndex && index !== 0)) {
 				this.highlight(10, 0, this.addIndexCodeID);
 				this.highlight(11, 0, this.addIndexCodeID);
 			}
@@ -487,15 +486,19 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.delete, labPushValID);
 		this.cmd(act.delete, this.highlight1ID);
 		this.unhighlight(12, 0, this.addIndexCodeID);
+		this.unhighlight(9, 0, this.addIndexCodeID);
 		this.highlight(13, 0, this.addIndexCodeID);
 		this.cmd(act.step);
 
 		this.cmd(act.delete, labPushID);
+		this.unhighlight(0, 0, this.addIndexCodeID);
 		this.unhighlight(13, 0, this.addIndexCodeID);
 		if (isAddFront) {
+			this.unhighlight(0, 0, this.addFBCodeID);
 			this.unhighlight(1, 0, this.addFBCodeID);
 		}
 		if (isAddBack) {
+			this.unhighlight(4, 0, this.addFBCodeID);
 			this.unhighlight(5, 0, this.addFBCodeID);
 		}		
 		this.cmd(act.step);
@@ -515,22 +518,18 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 
 		if (isRemoveFront) {
+			this.highlight(0, 0, this.removeFBCodeID);
 			this.highlight(1, 0, this.removeFBCodeID);
-		}
-		if (isRemoveBack) {
+		} else if (isRemoveBack) {
+			this.highlight(4, 0, this.removeFBCodeID);
 			this.highlight(5, 0, this.removeFBCodeID);
 		}
 		this.highlight(0, 0, this.removeIndexCodeID);
+
 		this.cmd(act.step);
 
-		if (isRemoveFront) {
-			this.unhighlight(1, 0, this.removeFBCodeID);
-		}
-		if (isRemoveBack) {
-			this.unhighlight(5, 0, this.removeFBCodeID);
-		}
-		this.unhighlight(0, 0, this.removeIndexCodeID);
 		this.highlight(1, 0, this.removeIndexCodeID);
+
 		index = parseInt(index);
 		const labPopValID = this.nextIndex++;
 
@@ -585,8 +584,19 @@ export default class ArrayList extends Algorithm {
 		this.cmd(act.step);
 		this.unhighlight(6, 0, this.removeIndexCodeID);
 		this.highlight(7, 0, this.removeIndexCodeID);
+
 		this.cmd(act.step);
+
 		this.unhighlight(7, 0, this.removeIndexCodeID);
+		this.unhighlight(0, 0, this.removeIndexCodeID);
+		if (isRemoveFront) {
+			this.unhighlight(0, 0, this.removeFBCodeID);
+			this.unhighlight(1, 0, this.removeFBCodeID);
+		} else if (isRemoveBack) {
+			this.unhighlight(4, 0, this.removeFBCodeID);
+			this.unhighlight(5, 0, this.removeFBCodeID);
+		}
+
 
 		if (index != null) {
 			this.nextIndex = this.nextIndex - (this.size - index);
@@ -607,10 +617,12 @@ export default class ArrayList extends Algorithm {
 		const labPushResizeID = this.nextIndex++;
 		
 		if (isAddFront) {
+			this.highlight(0, 0, this.addFBCodeID);
 			this.highlight(1, 0, this.addFBCodeID);
 			this.highlight(0, 0, this.addIndexCodeID);
 		}
 		if (isAddBack) {
+			this.highlight(4, 0, this.addFBCodeID);
 			this.highlight(5, 0, this.addFBCodeID);
 			this.highlight(0, 0, this.addIndexCodeID);
 		}
@@ -618,17 +630,6 @@ export default class ArrayList extends Algorithm {
 			this.highlight(0, 0, this.addIndexCodeID);
 		}
 		this.cmd(act.step);
-		if (isAddFront) {
-			this.unhighlight(1, 0, this.addFBCodeID);
-			this.unhighlight(0, 0, this.addIndexCodeID);
-		}
-		if (isAddBack) {
-			this.unhighlight(5, 0, this.addFBCodeID);
-			this.unhighlight(0, 0, this.addIndexCodeID);
-		}
-		if (isAddIndex) {
-			this.unhighlight(0, 0, this.addIndexCodeID);
-		}
 
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
@@ -795,6 +796,20 @@ export default class ArrayList extends Algorithm {
 		this.highlight(13, 0, this.addIndexCodeID);
 		this.cmd(act.step);
 		this.unhighlight(13, 0, this.addIndexCodeID);
+
+		if (isAddFront) {
+			this.unhighlight(0, 0, this.addFBCodeID);
+			this.unhighlight(1, 0, this.addFBCodeID);
+			this.unhighlight(0, 0, this.addIndexCodeID);
+		}
+		if (isAddBack) {
+			this.unhighlight(4, 0, this.addFBCodeID);
+			this.unhighlight(5, 0, this.addFBCodeID);
+			this.unhighlight(0, 0, this.addIndexCodeID);
+		}
+		if (isAddIndex) {
+			this.unhighlight(0, 0, this.addIndexCodeID);
+		}
 
 		this.arrayID = this.arrayIDNew;
 		this.arrayLabelID = this.arrayLabelIDNew;

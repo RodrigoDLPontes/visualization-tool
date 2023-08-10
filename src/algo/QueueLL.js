@@ -28,14 +28,14 @@ import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from '.
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
-const LINKED_LIST_START_Y = 200;
+const LINKED_LIST_START_Y = 225;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
 const LINKED_LIST_INSERT_X = 250;
-const LINKED_LIST_INSERT_Y = 50;
+const LINKED_LIST_INSERT_Y = 100;
 
-const LINKED_LIST_ELEMS_PER_LINE = 8;
+const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 100;
 const LINKED_LIST_LINE_SPACING = 100;
 
@@ -48,12 +48,18 @@ const TOP_ELEM_WIDTH = 30;
 const TOP_ELEM_HEIGHT = 30;
 
 const TAIL_POS_X = 180;
+const TAIL_POS_Y = 335;
 const TAIL_LABEL_X = 130;
 
 const QUEUE_LABEL_X = 60;
 const QUEUE_LABEL_Y = 30;
 const QUEUE_ELEMENT_X = 130;
 const QUEUE_ELEMENT_Y = 30;
+
+const CODE_START_X = 330;
+const CODE_START_Y = 30;
+const CODE_HIGHLIGHT_COLOR = '#FF0000';
+const CODE_STANDARD_COLOR = '#000000';
 
 const SIZE = 32;
 
@@ -64,8 +70,6 @@ export default class QueueLL extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.commands = [];
-		this.tail_pos_y = h - LINKED_LIST_ELEM_HEIGHT;
-		this.tail_label_y = this.tail_pos_y;
 		this.setup();
 		this.initialIndex = this.nextIndex;
 	}
@@ -144,7 +148,7 @@ export default class QueueLL extends Algorithm {
 		);
 		this.cmd(act.setNull, this.headID, 1);
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, this.tail_label_y);
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', TAIL_LABEL_X, TAIL_POS_Y);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -152,12 +156,40 @@ export default class QueueLL extends Algorithm {
 			TOP_ELEM_WIDTH,
 			TOP_ELEM_HEIGHT,
 			TAIL_POS_X,
-			this.tail_pos_y,
+			TAIL_POS_Y,
 		);
 		this.cmd(act.setNull, this.tailID, 1);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
+
+		this.enqueueCode = [
+			['procedure enqueue(data)'],
+			['  Node newNode ← new Node(data)'],
+			['  if size == 0'],
+			['    head ← newNode'],
+			['  else'],
+			['    tail.next ← newNode'],
+			['  tail ← newNode'],
+			['  size++'],
+			['end procedure'],
+		];
+
+		this.dequeueCode = [
+			['procedure dequeue()'],
+			['  T data ← head.data'],
+			['  if size == 1'],
+			['    head ← null'],
+			['    tail ← null'],
+			['  else'],
+			['    head ← head.next'],
+			['  size--'],
+			['  return data'],
+			['end procedure'],
+		];
+
+		this.enqueueCodeID = this.addCodeToCanvasBase(this.enqueueCode, CODE_START_X, CODE_START_Y);
+		this.dequeueCodeID = this.addCodeToCanvasBase(this.dequeueCode, CODE_START_X + 285, CODE_START_Y)
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -224,8 +256,10 @@ export default class QueueLL extends Algorithm {
 
 		this.arrayData[this.top] = elemToPush;
 
+		this.highlight(0, 0, this.enqueueCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
+		this.cmd(act.step);
 
 		for (let i = this.top; i > 0; i--) {
 			this.arrayData[i] = this.arrayData[i - 1];
@@ -236,6 +270,7 @@ export default class QueueLL extends Algorithm {
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
+		this.highlight(1, 0, this.enqueueCodeID);
 		this.cmd(
 			act.createLinkedListNode,
 			this.linkedListElemID[0],
@@ -252,33 +287,55 @@ export default class QueueLL extends Algorithm {
 		this.cmd(act.setNull, this.linkedListElemID[0], 1);
 		this.cmd(act.createLabel, labPushID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToPush, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-
 		this.cmd(act.step);
 
 		this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-
-		this.cmd(act.step);
 		this.cmd(act.setText, this.linkedListElemID[0], elemToPush);
 		this.cmd(act.delete, labPushValID);
+		this.cmd(act.step);
 
+		this.unhighlight(1, 0, this.enqueueCodeID);
 		if (this.top === 0) {
+			this.highlight(2, 0, this.enqueueCodeID);
+			this.highlight(3, 0, this.enqueueCodeID);
+			this.highlight(6, 0, this.enqueueCodeID);
 			this.cmd(act.setNull, this.headID, 0);
 			this.cmd(act.setNull, this.tailID, 0);
 			this.cmd(act.connect, this.headID, this.linkedListElemID[this.top]);
 			this.cmd(act.connect, this.tailID, this.linkedListElemID[this.top]);
+			this.cmd(act.step);
 		} else {
+			this.highlight(4, 0, this.enqueueCodeID);
+			this.highlight(5, 0, this.enqueueCodeID);
 			this.cmd(act.setNull, this.linkedListElemID[1], 0);
 			this.cmd(act.connect, this.linkedListElemID[1], this.linkedListElemID[0]);
 			this.cmd(act.step);
-			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[1]);
 		}
-		this.cmd(act.connect, this.tailID, this.linkedListElemID[0]);
 
-		this.cmd(act.step);
 		this.top = this.top + 1;
+		this.unhighlight(2, 0, this.enqueueCodeID);
+		this.unhighlight(3, 0, this.enqueueCodeID);
+		this.unhighlight(6, 0, this.enqueueCodeID);
+		if (this.top === 1) {
+			this.highlight(7, 0, this.enqueueCodeID);
+		}
 		this.resetLinkedListPositions();
-		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
+
+		this.unhighlight(4, 0, this.enqueueCodeID);
+		this.unhighlight(5, 0, this.enqueueCodeID);
+		console.log(this.top);
+		if (this.top !== 1) {
+			this.highlight(6, 0, this.enqueueCodeID);
+		}
+		this.cmd(act.disconnect, this.tailID, this.linkedListElemID[1]);
+		this.cmd(act.connect, this.tailID, this.linkedListElemID[0]);
+		this.cmd(act.step);
+
+		this.unhighlight(7, 0, this.enqueueCodeID);
+		this.unhighlight(6, 0, this.enqueueCodeID);
+		this.unhighlight(0, 0, this.enqueueCodeID);
+		this.cmd(act.delete, labPushID);
 
 		return this.commands;
 	}
@@ -289,8 +346,11 @@ export default class QueueLL extends Algorithm {
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
+		this.highlight(0, 0, this.dequeueCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.cmd(act.step);
 
+		this.highlight(1, 0, this.dequeueCodeID);
 		this.cmd(act.createLabel, labPopID, 'Dequeued Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(
 			act.createLabel,
@@ -302,26 +362,49 @@ export default class QueueLL extends Algorithm {
 
 		this.cmd(act.move, labPopValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
+
+		this.unhighlight(1, 0, this.dequeueCodeID);
 		this.cmd(act.disconnect, this.headID, this.linkedListElemID[this.top - 1]);
 
 		if (this.top === 1) {
+			this.highlight(2, 0, this.dequeueCodeID);
+			this.highlight(3, 0, this.dequeueCodeID);
+			this.highlight(4, 0, this.dequeueCodeID);
 			this.cmd(act.setNull, this.headID, 1);
 			this.cmd(act.setNull, this.tailID, 1);
 			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[this.top - 1]);
 		} else {
+			this.highlight(5, 0, this.dequeueCodeID);
+			this.highlight(6, 0, this.dequeueCodeID);
 			this.cmd(act.connect, this.headID, this.linkedListElemID[this.top - 2]);
 		}
 		this.cmd(act.step);
+
+		this.unhighlight(2, 0, this.dequeueCodeID);
+		this.unhighlight(3, 0, this.dequeueCodeID);
+		this.unhighlight(4, 0, this.dequeueCodeID);
+		this.unhighlight(5, 0, this.dequeueCodeID);
+		this.unhighlight(6, 0, this.dequeueCodeID);
+		this.highlight(7, 0, this.dequeueCodeID);
 		this.cmd(act.delete, this.linkedListElemID[this.top - 1]);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
+		this.cmd(act.step);
 
+		this.unhighlight(7, 0, this.dequeueCodeID);
+		this.unhighlight(0, 0, this.dequeueCodeID);
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
-		this.cmd(act.setText, this.leftoverLabelID, 'Dequeued Value: ');
-		this.cmd(act.setText, this.leftoverValID, this.arrayData[this.top]);
 
 		return this.commands;
+	}
+
+	highlight(ind1, ind2, codeID) {
+		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+	}
+
+	unhighlight(ind1, ind2, codeID) {
+		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

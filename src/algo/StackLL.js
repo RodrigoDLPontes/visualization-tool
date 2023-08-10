@@ -28,21 +28,21 @@ import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from '.
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 100;
-const LINKED_LIST_START_Y = 200;
+const LINKED_LIST_START_Y = 250;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
 const LINKED_LIST_INSERT_X = 250;
 const LINKED_LIST_INSERT_Y = 50;
 
-const LINKED_LIST_ELEMS_PER_LINE = 8;
+const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 100;
 const LINKED_LIST_LINE_SPACING = 100;
 
 const TOP_POS_X = 180;
-const TOP_POS_Y = 100;
+const TOP_POS_Y = 135;
 const TOP_LABEL_X = 130;
-const TOP_LABEL_Y = 100;
+const TOP_LABEL_Y = 135;
 
 const TOP_ELEM_WIDTH = 30;
 const TOP_ELEM_HEIGHT = 30;
@@ -62,7 +62,6 @@ const SIZE = 32;
 export default class StackLL extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
-
 		this.addControls();
 		this.nextIndex = 0;
 		this.commands = [];
@@ -146,40 +145,17 @@ export default class StackLL extends Algorithm {
 
 		this.code = [
 			['procedure push(data)'],
-			['  head = new node(data, head)'],
+			['  head ← new Node(data, head)'],
 			['end procedure'],
-
 			[],
 			['procedure pop()'],
-
-			['  result = head.data'],
-			['  head = head.next'],
+			['  T data ← head.data'],
+			['  head ← head.next'],
+			['  return data'],
 			['end procedure'],
 		];
 
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-
-		// this.codeID = Array(this.code.length);
-		// let i, j;
-		// for (i = 0; i < this.code.length; i++) {
-		// 	this.codeID[i] = new Array(this.code[i].length);
-		// 	for (j = 0; j < this.code[i].length; j++) {
-		// 		this.codeID[i][j] = this.nextIndex++;
-		// 		this.cmd(
-		// 			act.createLabel,
-		// 			this.codeID[i][j],
-		// 			this.code[i][j],
-		// 			CODE_START_X,
-		// 			CODE_START_Y + i * CODE_LINE_HEIGHT,
-		// 			0,
-		// 			true,
-		// 		);
-		// 		this.cmd(act.setForegroundColor, this.codeID[i][j], CODE_STANDARD_COLOR);
-		// 		if (j > 0) {
-		// 			this.cmd(act.alignRight, this.codeID[i][j], this.codeID[i][j - 1]);
-		// 		}
-		// 	}
-		// }
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

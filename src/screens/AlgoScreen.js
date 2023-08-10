@@ -76,7 +76,8 @@ class AlgoScreen extends React.Component {
 
 		const isQuickSelect = algoMap[algoName][0] === 'QuickSelect / kᵗʰ Select';
 
-		const header = algoMap[algoName][2] ? algoMap[algoName][2] : algoMap[algoName][0];
+		// check for verbose name in algoMap
+		const header = algoMap[algoName][3] ? algoMap[algoName][3] : algoMap[algoName][0];
 
 		return (
 			<div className="VisualizationMainPage">

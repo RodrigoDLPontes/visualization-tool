@@ -233,7 +233,10 @@ div.content {
 	position: absolute;
 }
 
-.inner-flex input.button {
+.inner-flex button.button {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
 	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
 	font-weight: 700;
@@ -250,17 +253,29 @@ div.content {
 	pointer-events: auto;
 }
 
-.inner-flex input.button:hover,
-.inner-flex input.button:active {
+.algo-name {
+	flex-grow: 1;
+    text-align: center;
+}
+
+.pseudocode-icon {
+	display: flex;
+    align-items: center;
+	margin-top: -4px;
+	margin-bottom: -4px;
+}
+
+.inner-flex button.button:hover,
+.inner-flex button.button:active {
 	filter: var(--filter);
 }
 
-.inner-flex input.button:focus,
+.inner-flex button.button:focus,
 .inner-flex a:focus {
 	outline: none;
 }
 
-.inner-flex input.button::-moz-focus-inner,
+.inner-flex button.button::-moz-focus-inner,
 .inner-flex a::-moz-focus-inner {
 	border: 0;
 }

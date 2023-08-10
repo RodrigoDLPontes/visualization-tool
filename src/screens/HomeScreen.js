@@ -2,6 +2,7 @@ import '../css/App.css';
 import { Link, Route, Switch } from 'react-router-dom';
 import { algoList, algoMap } from '../AlgoList';
 import AboutScreen from './AboutScreen';
+import { DiCodeBadge } from 'react-icons/di';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import React from 'react';
@@ -16,12 +17,17 @@ const HomeScreen = ({ theme, toggleTheme }) => (
 						<div className="inner-flex">
 							{algoList.map((name, idx) =>
 								algoMap[name] ? (
-									<Link to={`/${name}`} key={idx}>
-										<input
-											className="button"
-											type="button"
-											value={algoMap[name][0]}
-										/>
+									<Link to={`/${name}`} key={idx} style={{ textDecoration: 'none' }}>
+										<button
+         								   className="button"
+         								>
+         									<div className="algo-name">{algoMap[name][0]}</div>
+											{algoMap[name][2] && (
+            									<span className="pseudocode-icon">
+            									  <DiCodeBadge size={36} />
+            									</span>
+          									)}
+         								</button>
 									</Link>
 								) : (
 									<div key={idx} className="divider">

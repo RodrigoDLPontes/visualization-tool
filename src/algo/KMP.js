@@ -111,6 +111,7 @@ export default class KMP extends Algorithm {
 	setup() {
 		this.commands = [];
 		this.textRowID = [];
+		this.rowCountID = [];
 		this.comparisonMatrixID = [];
 		this.failureTableLabelID = this.nextIndex++;
 		this.failureTableCharacterID = [];
@@ -172,6 +173,7 @@ export default class KMP extends Algorithm {
 	reset() {
 		this.nextIndex = 0;
 		this.textRowID = [];
+		this.rowCountID = [];
 		this.comparisonMatrixID = [];
 		this.failureTableLabelID = this.nextIndex++;
 		this.failureTableCharacterID = [];
@@ -268,6 +270,13 @@ export default class KMP extends Algorithm {
 			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
+		}
+
+		for (let i = 1; i <= maxRows; i++) {
+			xpos = ARRAY_START_X - 50;
+			ypos = i * this.cellSize + ARRAY_START_Y;
+			this.rowCountID[i] = this.nextIndex;
+			this.cmd(act.createLabel, this.nextIndex++, `Row ${i}`, xpos, ypos);
 		}
 
 		for (let i = 0; i < text.length; i++) {
@@ -710,6 +719,10 @@ export default class KMP extends Algorithm {
 			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
+		for (let i = 1; i < this.rowCountID.length; i++) {
+			this.cmd(act.delete, this.rowCountID[i]);
+		}
+		this.rowCountID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);

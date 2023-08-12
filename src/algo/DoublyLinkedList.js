@@ -32,13 +32,13 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
-const LINKED_LIST_START_X = 70;
-const LINKED_LIST_START_Y = 400;
+const LINKED_LIST_START_X = 170;
+const LINKED_LIST_START_Y = 100;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
-const LINKED_LIST_INSERT_X = 150;
-const LINKED_LIST_INSERT_Y = 300;
+const LINKED_LIST_INSERT_X = 50;
+const LINKED_LIST_INSERT_Y = 100;
 
 const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 125;
@@ -46,25 +46,25 @@ const LINKED_LIST_LINE_SPACING = 100;
 
 const PUSH_LABEL_X = 50;
 const PUSH_LABEL_Y = 30;
-const PUSH_ELEMENT_X = 120;
+const PUSH_ELEMENT_X = 100;
 const PUSH_ELEMENT_Y = 30;
 
-const HEAD_POS_X = 70;
-const HEAD_POS_Y = 300;
+const HEAD_POS_X = 170;
+const HEAD_POS_Y = 30;
 
-const TAIL_POS_X = 70;
-const TAIL_POS_Y = 500;
+const TAIL_POS_X = 170;
+const TAIL_POS_Y = 165;
 
-const POINTER_LABEL_X = 70;
-const HEAD_LABEL_Y = 270;
+const POINTER_LABEL_X = 210;
+const HEAD_LABEL_Y = 30;
 
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
 
-const CODE_START_X = 230;
-const CODE_START_Y = 12;
+const CODE_START_X = 70;
+const CODE_START_Y = 200;
 const CODE_HIGHLIGHT_COLOR = '#FF0000';
 const CODE_STANDARD_COLOR = '#000000';
 
@@ -249,7 +249,7 @@ export default class DoublyLinkedList extends Algorithm {
 			HEAD_POS_Y,
 		);
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X, HEAD_LABEL_Y + 260);
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X, HEAD_LABEL_Y + 135);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -367,11 +367,11 @@ export default class DoublyLinkedList extends Algorithm {
 		];
 
 		this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 670, CODE_START_Y);
-		this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 925, CODE_START_Y);
+		this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 955, CODE_START_Y);
 		this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
 		
 		this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 670, CODE_START_Y + 190);
-		this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 925, CODE_START_Y + 190);
+		this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 955, CODE_START_Y + 190);
 		this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X + 315, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
@@ -837,7 +837,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
-		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X + 4, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 
 		if (this.size !== 1) {

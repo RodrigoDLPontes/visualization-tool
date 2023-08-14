@@ -256,22 +256,11 @@ export default class ArrayList extends Algorithm {
 			['end procedure'],
 		];
 
-		this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X + 220,
-			CODE_START_Y,
-		);
-		this.removeFBCodeID = this.addCodeToCanvasBase(
-			this.removeFBCode,
-			CODE_START_X + 540,
-			CODE_START_Y,
-		);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X + 775,
-			CODE_START_Y - 3,
-		);
+		this.addFBCodeID = [];
+		this.addIndexCodeID = [];
+
+		this.removeFBCodeID = [];
+		this.removeIndexCodeID = [];
 
 		this.resetIndex = this.nextIndex;
 
@@ -439,6 +428,22 @@ export default class ArrayList extends Algorithm {
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
 
+		if (this.removeFBCodeID.length) {
+			this.removeCode(this.removeFBCodeID);
+			this.removeCode(this.removeIndexCodeID);
+			this.removeFBCodeID = [];
+			this.removeIndexCodeID = [];
+		}
+
+		if (!this.addFBCodeID.length) {
+			this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
+			this.addIndexCodeID = this.addCodeToCanvasBase(
+				this.addIndexCode,
+				CODE_START_X + 220,
+				CODE_START_Y,
+			);
+		}
+
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 
@@ -543,6 +548,26 @@ export default class ArrayList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+
+		if (this.addFBCodeID.length) {
+			this.removeCode(this.addFBCodeID);
+			this.removeCode(this.addIndexCodeID);
+			this.addFBCodeID = [];
+			this.addIndexCodeID = [];
+		}
+
+		if (!this.removeFBCodeID.length) {
+			this.removeFBCodeID = this.addCodeToCanvasBase(
+				this.removeFBCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.removeIndexCodeID = this.addCodeToCanvasBase(
+				this.removeIndexCode,
+				CODE_START_X + 220,
+				CODE_START_Y - 3,
+			);
+		}
 
 		if (isRemoveFront) {
 			this.highlight(0, 0, this.removeFBCodeID);
@@ -855,6 +880,16 @@ export default class ArrayList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
+
+		this.removeCode(this.removeFBCodeID);
+		this.removeCode(this.removeIndexCodeID);
+		this.removeFBCodeID = [];
+		this.removeIndexCodeID = [];
+		this.removeCode(this.addFBCodeID);
+		this.removeCode(this.addIndexCodeID);
+		this.addFBCodeID = [];
+		this.addIndexCodeID = [];
+
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 			this.arrayData[i] = null;

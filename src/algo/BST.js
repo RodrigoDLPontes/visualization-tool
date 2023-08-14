@@ -989,14 +989,6 @@ export default class BST extends Algorithm {
 
 	// 	return this.codeID;
 	// }
-
-	highlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
-	}
 }
 
 class BSTNode {

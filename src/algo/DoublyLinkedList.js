@@ -366,13 +366,37 @@ export default class DoublyLinkedList extends Algorithm {
 			[' end procedure'],
 		];
 
-		this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 670, CODE_START_Y);
-		this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 955, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
-		
-		this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 670, CODE_START_Y + 190);
-		this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 955, CODE_START_Y + 190);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X + 315, CODE_START_Y);
+		this.addFrontCodeID = this.addCodeToCanvasBase(
+			this.addFrontCode,
+			CODE_START_X + 670,
+			CODE_START_Y,
+		);
+		this.addBackCodeID = this.addCodeToCanvasBase(
+			this.addBackCode,
+			CODE_START_X + 955,
+			CODE_START_Y,
+		);
+		this.addIndexCodeID = this.addCodeToCanvasBase(
+			this.addIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+
+		this.removeFrontCodeID = this.addCodeToCanvasBase(
+			this.removeFrontCode,
+			CODE_START_X + 670,
+			CODE_START_Y + 190,
+		);
+		this.removeBackCodeID = this.addCodeToCanvasBase(
+			this.removeBackCode,
+			CODE_START_X + 955,
+			CODE_START_Y + 190,
+		);
+		this.removeIndexCodeID = this.addCodeToCanvasBase(
+			this.removeIndexCode,
+			CODE_START_X + 315,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -610,7 +634,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.cmd(act.step);
 
 		this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
-	
+
 		this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
 		this.cmd(act.delete, labPushValID);
 		this.cmd(act.step);
@@ -707,9 +731,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(
 			act.setHighlight,
-			this.linkedListElemID[
-				index < this.size / 2 ? indexToTraverseTo : indexToTraverseTo
-			],
+			this.linkedListElemID[index < this.size / 2 ? indexToTraverseTo : indexToTraverseTo],
 			0,
 		);
 
@@ -997,14 +1019,6 @@ export default class DoublyLinkedList extends Algorithm {
 				LINKED_LIST_START_Y;
 			this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 		}
-	}
-
-	highlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

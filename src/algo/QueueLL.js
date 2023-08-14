@@ -189,7 +189,11 @@ export default class QueueLL extends Algorithm {
 		];
 
 		this.enqueueCodeID = this.addCodeToCanvasBase(this.enqueueCode, CODE_START_X, CODE_START_Y);
-		this.dequeueCodeID = this.addCodeToCanvasBase(this.dequeueCode, CODE_START_X + 285, CODE_START_Y)
+		this.dequeueCodeID = this.addCodeToCanvasBase(
+			this.dequeueCode,
+			CODE_START_X + 285,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -397,14 +401,6 @@ export default class QueueLL extends Algorithm {
 		this.cmd(act.delete, labPopID);
 
 		return this.commands;
-	}
-
-	highlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

@@ -247,7 +247,7 @@ export default class CircularlyLinkedList extends Algorithm {
 			['    newNode.next ← head.next'],
 			['    head.next ← newNode'],
 			['  size++'],
-			['end procedure']
+			['end procedure'],
 		];
 
 		this.addBackCode = [
@@ -320,13 +320,37 @@ export default class CircularlyLinkedList extends Algorithm {
 			['  return data'],
 		];
 
-		this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
-		this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 600, CODE_START_Y);
-		this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 600, CODE_START_Y + 185);
+		this.addIndexCodeID = this.addCodeToCanvasBase(
+			this.addIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.addFrontCodeID = this.addCodeToCanvasBase(
+			this.addFrontCode,
+			CODE_START_X + 600,
+			CODE_START_Y,
+		);
+		this.addBackCodeID = this.addCodeToCanvasBase(
+			this.addBackCode,
+			CODE_START_X + 600,
+			CODE_START_Y + 185,
+		);
 
-		this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X + 300, CODE_START_Y);
-		this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 900, CODE_START_Y);
-		this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 1155, CODE_START_Y);
+		this.removeIndexCodeID = this.addCodeToCanvasBase(
+			this.removeIndexCode,
+			CODE_START_X + 300,
+			CODE_START_Y,
+		);
+		this.removeFrontCodeID = this.addCodeToCanvasBase(
+			this.removeFrontCode,
+			CODE_START_X + 900,
+			CODE_START_Y,
+		);
+		this.removeBackCodeID = this.addCodeToCanvasBase(
+			this.removeBackCode,
+			CODE_START_X + 1155,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -582,7 +606,7 @@ export default class CircularlyLinkedList extends Algorithm {
 					this.highlight(7, 0, this.addFrontCodeID);
 					this.highlight(8, 0, this.addFrontCodeID);
 				}
-				
+
 				// Change pointers
 				if (this.size === 1) {
 					// Case where we're adding the second node
@@ -736,7 +760,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		}
 
 		this.cmd(act.step);
-		
+
 		if (isAddFront) {
 			this.highlight(9, 0, this.addFrontCodeID);
 		}
@@ -758,7 +782,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		}
 
 		this.cmd(act.step);
-		
+
 		this.unhighlight(0, 0, this.addIndexCodeID);
 		this.unhighlight(0, 0, this.addFrontCodeID);
 		this.unhighlight(9, 0, this.addFrontCodeID);
@@ -1001,7 +1025,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		} else if (isRemoveBack) {
 			this.unhighlight(11, 0, this.removeBackCodeID);
 			this.unhighlight(0, 0, this.removeBackCodeID);
-		} 
+		}
 		if (isRemoveIndex) {
 			this.unhighlight(0, 0, this.removeIndexCodeID);
 			this.unhighlight(11, 0, this.removeIndexCodeID);
@@ -1031,14 +1055,6 @@ export default class CircularlyLinkedList extends Algorithm {
 				LINKED_LIST_START_Y;
 			this.cmd(act.move, this.linkedListElemID[i], nextX, nextY);
 		}
-	}
-
-	highlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

@@ -302,7 +302,7 @@ export default class StackArray extends Algorithm {
 
 		this.cmd(act.setHighlight, this.topID, 1);
 		this.cmd(act.step);
-		
+
 		this.top = this.top + 1;
 		this.cmd(act.setText, this.topID, this.top);
 		this.cmd(act.delete, labPushID);
@@ -313,7 +313,7 @@ export default class StackArray extends Algorithm {
 		if (elemToPush != null) {
 			this.nextIndex = this.nextIndex - 2;
 		}
-		
+
 		this.unhighlight(0, 0, this.pushCodeID);
 
 		return this.commands;
@@ -498,8 +498,7 @@ export default class StackArray extends Algorithm {
 		);
 		this.cmd(act.step);
 
-		const xpos =
-			(parseInt(this.top) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+		const xpos = (parseInt(this.top) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(parseInt(this.top) / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
 			ARRAY_START_Y;
@@ -523,7 +522,7 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.delete, labPushResizeID);
 		this.cmd(act.step);
-		
+
 		this.cmd(act.setHighlight, this.topID, 0);
 		this.unhighlight(7, 0, this.pushCodeID);
 		this.unhighlight(0, 0, this.pushCodeID);
@@ -535,14 +534,6 @@ export default class StackArray extends Algorithm {
 		this.nextIndex = this.nextIndex - this.top + 1;
 
 		return this.commands;
-	}
-
-	highlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

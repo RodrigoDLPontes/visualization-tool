@@ -201,13 +201,12 @@ export default class ArrayList extends Algorithm {
 	}
 
 	setup() {
-
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
 		this.length = SIZE;
 		this.commands = [];
 
-			this.addFBCode = [
+		this.addFBCode = [
 			['procedure addFront(data)'],
 			['  addAtIndex(0, data)'],
 			['end procedure'],
@@ -258,11 +257,23 @@ export default class ArrayList extends Algorithm {
 		];
 
 		this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X + 220, CODE_START_Y);
-		this.removeFBCodeID = this.addCodeToCanvasBase(this.removeFBCode, CODE_START_X + 540, CODE_START_Y);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X + 775, CODE_START_Y - 3);
+		this.addIndexCodeID = this.addCodeToCanvasBase(
+			this.addIndexCode,
+			CODE_START_X + 220,
+			CODE_START_Y,
+		);
+		this.removeFBCodeID = this.addCodeToCanvasBase(
+			this.removeFBCode,
+			CODE_START_X + 540,
+			CODE_START_Y,
+		);
+		this.removeIndexCodeID = this.addCodeToCanvasBase(
+			this.removeIndexCode,
+			CODE_START_X + 775,
+			CODE_START_Y - 3,
+		);
 
-		this.resetIndex = this.nextIndex
+		this.resetIndex = this.nextIndex;
 
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
@@ -321,9 +332,23 @@ export default class ArrayList extends Algorithm {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
 				if (this.size === this.length) {
-					this.implementAction(this.resize.bind(this), addVal, parseInt(index), false, false, true);
+					this.implementAction(
+						this.resize.bind(this),
+						addVal,
+						parseInt(index),
+						false,
+						false,
+						true,
+					);
 				} else {
-					this.implementAction(this.add.bind(this), addVal, parseInt(index), false, false, true);
+					this.implementAction(
+						this.add.bind(this),
+						addVal,
+						parseInt(index),
+						false,
+						false,
+						true,
+					);
 				}
 			}
 		}
@@ -502,7 +527,7 @@ export default class ArrayList extends Algorithm {
 		if (isAddBack) {
 			this.unhighlight(4, 0, this.addFBCodeID);
 			this.unhighlight(5, 0, this.addFBCodeID);
-		}		
+		}
 		this.cmd(act.step);
 
 		if (index != null) {
@@ -599,7 +624,6 @@ export default class ArrayList extends Algorithm {
 			this.unhighlight(5, 0, this.removeFBCodeID);
 		}
 
-
 		if (index != null) {
 			this.nextIndex = this.nextIndex - (this.size - index);
 		} else {
@@ -617,7 +641,7 @@ export default class ArrayList extends Algorithm {
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 		const labPushResizeID = this.nextIndex++;
-		
+
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFBCodeID);
 			this.highlight(1, 0, this.addFBCodeID);
@@ -824,14 +848,6 @@ export default class ArrayList extends Algorithm {
 		this.size = this.size + 1;
 
 		return this.commands;
-	}
-
-	highlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2, codeID) {
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	clearAll() {

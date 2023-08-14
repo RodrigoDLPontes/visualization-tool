@@ -47,7 +47,7 @@
 .rotate-effect {
 	transition: transform 1.5s ease;
 }
-  
+
 .rotate-effect:hover {
 	transform: rotate(360deg);
 }
@@ -235,8 +235,8 @@ div.content {
 
 .inner-flex button.button {
 	display: flex;
-    align-items: center;
-    justify-content: space-between;
+	align-items: center;
+	justify-content: space-between;
 	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
 	font-weight: 700;
@@ -255,12 +255,12 @@ div.content {
 
 .algo-name {
 	flex-grow: 1;
-    text-align: center;
+	text-align: center;
 }
 
 .pseudocode-icon {
 	display: flex;
-    align-items: center;
+	align-items: center;
 	margin-top: -4px;
 	margin-bottom: -4px;
 }

@@ -24,12 +24,17 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addDropDownGroupToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 
 import Hash from './Hash.js';
 
 import { act } from '../anim/AnimationMain';
-
 
 const POINTER_ARRAY_ELEM_WIDTH = 50;
 const POINTER_ARRAY_ELEM_HEIGHT = 25;
@@ -87,7 +92,7 @@ export default class ClosedHash extends Hash {
 		this.hashType = 'integers';
 
 		addDivisorToAlgorithmBar();
-		
+
 		this.randomGroup = addGroupToAlgorithmBar(false);
 
 		// Random data button

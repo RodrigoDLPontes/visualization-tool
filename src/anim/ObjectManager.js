@@ -744,7 +744,7 @@ export default class ObjectManager {
 			centering,
 			this.getTextWidth(objectLabel, isCode, isPointer),
 			isCode,
-			isPointer
+			isPointer,
 		);
 		this.nodes[objectID] = newLabel;
 	}

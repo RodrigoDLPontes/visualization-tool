@@ -24,7 +24,13 @@
 // authors and should not be interpreted as representing official policies, either expressed
 // or implied, of the University of San Francisco
 
-import { addControlToAlgorithmBar, addDivisorToAlgorithmBar, addDropDownGroupToAlgorithmBar, addGroupToAlgorithmBar, addLabelToAlgorithmBar } from './Algorithm.js';
+import {
+	addControlToAlgorithmBar,
+	addDivisorToAlgorithmBar,
+	addDropDownGroupToAlgorithmBar,
+	addGroupToAlgorithmBar,
+	addLabelToAlgorithmBar,
+} from './Algorithm.js';
 import Hash from './Hash.js';
 import { act } from '../anim/AnimationMain';
 
@@ -84,7 +90,7 @@ export default class OpenHash extends Hash {
 
 		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
 		this.hashTypeLabelGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup);
-		this.hashTypedropDownGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup)
+		this.hashTypedropDownGroup = addGroupToAlgorithmBar(true, this.hashTypeParentGroup);
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(

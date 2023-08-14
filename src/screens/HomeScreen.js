@@ -17,17 +17,19 @@ const HomeScreen = ({ theme, toggleTheme }) => (
 						<div className="inner-flex">
 							{algoList.map((name, idx) =>
 								algoMap[name] ? (
-									<Link to={`/${name}`} key={idx} style={{ textDecoration: 'none' }}>
-										<button
-         								   className="button"
-         								>
-         									<div className="algo-name">{algoMap[name][0]}</div>
+									<Link
+										to={`/${name}`}
+										key={idx}
+										style={{ textDecoration: 'none' }}
+									>
+										<button className="button">
+											<div className="algo-name">{algoMap[name][0]}</div>
 											{algoMap[name][2] && (
-            									<span className="pseudocode-icon">
-            									  <DiCodeBadge size={36} />
-            									</span>
-          									)}
-         								</button>
+												<span className="pseudocode-icon">
+													<DiCodeBadge size={36} />
+												</span>
+											)}
+										</button>
 									</Link>
 								) : (
 									<div key={idx} className="divider">

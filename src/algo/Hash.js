@@ -68,7 +68,7 @@ export default class Hash extends Algorithm {
 		const putTopHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
 		const putBottomHorizontalGroup = addGroupToAlgorithmBar(true, putVerticalGroup);
 
-		addLabelToAlgorithmBar(`Key: ${"\u00A0".repeat(2)}`, putTopHorizontalGroup);
+		addLabelToAlgorithmBar(`Key: ${'\u00A0'.repeat(2)}`, putTopHorizontalGroup);
 		this.keyField = addControlToAlgorithmBar('Text', '', putTopHorizontalGroup);
 		this.keyField.size = MAX_HASH_LENGTH;
 		this.keyField.onkeydown = this.returnSubmit(
@@ -78,7 +78,7 @@ export default class Hash extends Algorithm {
 			true,
 		);
 		this.controls.push(this.keyField);
-		
+
 		addLabelToAlgorithmBar('Value: ', putBottomHorizontalGroup);
 		this.valueField = addControlToAlgorithmBar('Text', '', putBottomHorizontalGroup);
 		this.valueField.size = MAX_HASH_LENGTH;
@@ -132,7 +132,7 @@ export default class Hash extends Algorithm {
 
 		const loadVerticalGroup = addGroupToAlgorithmBar(false);
 		const loadVerticalTop = addGroupToAlgorithmBar(true, loadVerticalGroup);
-		const loadPercentGroup = addGroupToAlgorithmBar(true, loadVerticalTop)
+		const loadPercentGroup = addGroupToAlgorithmBar(true, loadVerticalTop);
 		const loadVerticalBottom = addGroupToAlgorithmBar(true, loadVerticalGroup);
 
 		this.loadField = addControlToAlgorithmBar('Text', '', loadPercentGroup);
@@ -148,7 +148,7 @@ export default class Hash extends Algorithm {
 		);
 
 		this.controls.push(this.loadField);
-		
+
 		this.loadButton = addControlToAlgorithmBar('Button', 'Load Factor', loadVerticalBottom);
 		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
 		this.controls.push(this.loadButton);
@@ -188,7 +188,7 @@ export default class Hash extends Algorithm {
 
 		this.dropDownParentGroup = addGroupToAlgorithmBar(false);
 		this.dropDownLabelGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup);
-		this.dropDownGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup)
+		this.dropDownGroup = addGroupToAlgorithmBar(true, this.dropDownParentGroup);
 	}
 
 	checkHashType() {

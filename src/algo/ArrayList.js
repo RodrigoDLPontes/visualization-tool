@@ -201,38 +201,13 @@ export default class ArrayList extends Algorithm {
 	}
 
 	setup() {
-		this.arrayID = new Array(SIZE);
-		this.arrayLabelID = new Array(SIZE);
-		for (let i = 0; i < SIZE; i++) {
-			this.arrayID[i] = this.nextIndex++;
-			this.arrayLabelID[i] = this.nextIndex++;
-		}
 
 		this.arrayData = new Array(SIZE);
-
 		this.size = 0;
 		this.length = SIZE;
 		this.commands = [];
 
-		for (let i = 0; i < SIZE; i++) {
-			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
-			this.cmd(
-				act.createRectangle,
-				this.arrayID[i],
-				'',
-				ARRAY_ELEM_WIDTH,
-				ARRAY_ELEM_HEIGHT,
-				xpos,
-				ypos,
-			);
-			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
-			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
-		}
-
-		this.highlight1ID = this.nextIndex++;
-
-		this.addFBCode = [
+			this.addFBCode = [
 			['procedure addFront(data)'],
 			['  addAtIndex(0, data)'],
 			['end procedure'],
@@ -287,13 +262,40 @@ export default class ArrayList extends Algorithm {
 		this.removeFBCodeID = this.addCodeToCanvasBase(this.removeFBCode, CODE_START_X + 540, CODE_START_Y);
 		this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X + 775, CODE_START_Y - 3);
 
+		this.resetIndex = this.nextIndex
+
+		this.arrayID = new Array(SIZE);
+		this.arrayLabelID = new Array(SIZE);
+		for (let i = 0; i < SIZE; i++) {
+			this.arrayID[i] = this.nextIndex++;
+			this.arrayLabelID[i] = this.nextIndex++;
+		}
+
+		for (let i = 0; i < SIZE; i++) {
+			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
+			const ypos = Math.floor(i / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
+			this.cmd(
+				act.createRectangle,
+				this.arrayID[i],
+				'',
+				ARRAY_ELEM_WIDTH,
+				ARRAY_ELEM_HEIGHT,
+				xpos,
+				ypos,
+			);
+			this.cmd(act.createLabel, this.arrayLabelID[i], i, xpos, ypos + ARRAY_ELEM_HEIGHT);
+			this.cmd(act.setForegroundColor, this.arrayLabelID[i], '#0000FF');
+		}
+
+		this.highlight1ID = this.nextIndex++;
+
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.size = 0;
 		this.length = SIZE;
 		this.arrayID = new Array(SIZE);

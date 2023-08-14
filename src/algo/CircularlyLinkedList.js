@@ -33,12 +33,12 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 50;
-const LINKED_LIST_START_Y = 390;
+const LINKED_LIST_START_Y = 150;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
-const LINKED_LIST_INSERT_X = 125;
-const LINKED_LIST_INSERT_Y = 330;
+const LINKED_LIST_INSERT_X = 235;
+const LINKED_LIST_INSERT_Y = 85;
 
 const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 100;
@@ -50,18 +50,16 @@ const PUSH_ELEMENT_X = 150;
 const PUSH_ELEMENT_Y = 30;
 
 const HEAD_POS_X = 50;
-const HEAD_POS_Y = 330;
+const HEAD_POS_Y = 85;
 
 const POINTER_LABEL_X = 50;
-const HEAD_LABEL_Y = 300;
+const HEAD_LABEL_Y = 55;
 
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
-const CODE_START_X = 25;
-const CODE_START_Y = 60;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
+const CODE_START_X = 500;
+const CODE_START_Y = 250;
 
 const SIZE = 9;
 
@@ -320,37 +318,15 @@ export default class CircularlyLinkedList extends Algorithm {
 			['  return data'],
 		];
 
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.addFrontCodeID = this.addCodeToCanvasBase(
-			this.addFrontCode,
-			CODE_START_X + 600,
-			CODE_START_Y,
-		);
-		this.addBackCodeID = this.addCodeToCanvasBase(
-			this.addBackCode,
-			CODE_START_X + 600,
-			CODE_START_Y + 185,
-		);
+		this.addFrontCodeID = [];
+		this.addBackCodeID = [];
+		this.addIndexCodeID = [];
 
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X + 300,
-			CODE_START_Y,
-		);
-		this.removeFrontCodeID = this.addCodeToCanvasBase(
-			this.removeFrontCode,
-			CODE_START_X + 900,
-			CODE_START_Y,
-		);
-		this.removeBackCodeID = this.addCodeToCanvasBase(
-			this.removeBackCode,
-			CODE_START_X + 1155,
-			CODE_START_Y,
-		);
+		this.removeFrontCodeID = [];
+		this.removeBackCodeID = [];
+		this.removeIndexCodeID = [];
+
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -359,7 +335,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	reset() {
 		this.size = 0;
-		this.nextIndex = this.initialIndex;
+		this.nextIndex = this.resetIndex;
 	}
 
 	addIndexCallback() {
@@ -453,6 +429,25 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+
+		if (this.removeFrontCodeID.length) {
+			this.removeCode(this.removeFrontCodeID);
+			this.removeFrontCodeID = [];
+		}
+		if (this.removeBackCodeID.length) {
+			this.removeCode(this.removeBackCodeID);
+			this.removeBackCodeID = [];
+		}
+		if (this.removeIndexCodeID.length) {
+			this.removeCode(this.removeIndexCodeID);
+			this.removeIndexCodeID = [];
+		}
+
+		if (!this.addFrontCodeID.length && !this.addBackCodeID.length && !this.addIndexCodeID.length) {
+			this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
+			this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 315, CODE_START_Y);
+			this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 635, CODE_START_Y);
+		}
 
 		if (isAddFront || (isAddIndex && index === 0)) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -800,6 +795,26 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+
+		if (this.addFrontCodeID.length) {
+			this.removeCode(this.addFrontCodeID);
+			this.addFrontCodeID = [];
+		}
+		if (this.addBackCodeID.length) {
+			this.removeCode(this.addBackCodeID);
+			this.addBackCodeID = [];
+		}
+		if (this.addIndexCodeID.length) {
+			this.removeCode(this.addIndexCodeID);
+			this.addIndexCodeID = [];
+		}
+
+		if (!this.removeFrontCodeID.length && !this.removeBackCodeID.length && !this.removeIndexCodeID.length) {
+			this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X, CODE_START_Y);
+			this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 310, CODE_START_Y);
+			this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 605, CODE_START_Y);
+		}
+
 		index = parseInt(index);
 
 		if (isRemoveFront) {

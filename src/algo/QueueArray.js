@@ -228,7 +228,6 @@ export default class QueueArray extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
 		this.top = 0;
 		this.front = 0;
 		this.size = 0;
@@ -670,7 +669,9 @@ export default class QueueArray extends Algorithm {
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
-		this.removeCode(this.codeID);
+		if (this.codeID) {
+			this.removeCode(this.codeID);
+		}
 
 		for (let i = 0; i < this.arrayID.length; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');

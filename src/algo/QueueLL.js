@@ -328,7 +328,6 @@ export default class QueueLL extends Algorithm {
 
 		this.unhighlight(4, 0, this.enqueueCodeID);
 		this.unhighlight(5, 0, this.enqueueCodeID);
-		console.log(this.top);
 		if (this.top !== 1) {
 			this.highlight(6, 0, this.enqueueCodeID);
 		}

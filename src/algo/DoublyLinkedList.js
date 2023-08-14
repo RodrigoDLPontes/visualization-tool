@@ -37,8 +37,8 @@ const LINKED_LIST_START_Y = 100;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
-const LINKED_LIST_INSERT_X = 50;
-const LINKED_LIST_INSERT_Y = 100;
+const LINKED_LIST_INSERT_X = 330;
+const LINKED_LIST_INSERT_Y = 30;
 
 const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 125;
@@ -63,10 +63,8 @@ const POINTER_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
 
-const CODE_START_X = 70;
+const CODE_START_X = 135;
 const CODE_START_Y = 200;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 
 export default class DoublyLinkedList extends Algorithm {
 	constructor(am, w, h) {
@@ -249,7 +247,7 @@ export default class DoublyLinkedList extends Algorithm {
 			HEAD_POS_Y,
 		);
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X, HEAD_LABEL_Y + 135);
+		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X - 75, HEAD_LABEL_Y + 135);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -366,37 +364,15 @@ export default class DoublyLinkedList extends Algorithm {
 			[' end procedure'],
 		];
 
-		this.addFrontCodeID = this.addCodeToCanvasBase(
-			this.addFrontCode,
-			CODE_START_X + 670,
-			CODE_START_Y,
-		);
-		this.addBackCodeID = this.addCodeToCanvasBase(
-			this.addBackCode,
-			CODE_START_X + 955,
-			CODE_START_Y,
-		);
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
+		this.addFrontCodeID = [];
+		this.addBackCodeID = [];
+		this.addIndexCodeID = [];
 
-		this.removeFrontCodeID = this.addCodeToCanvasBase(
-			this.removeFrontCode,
-			CODE_START_X + 670,
-			CODE_START_Y + 190,
-		);
-		this.removeBackCodeID = this.addCodeToCanvasBase(
-			this.removeBackCode,
-			CODE_START_X + 955,
-			CODE_START_Y + 190,
-		);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X + 315,
-			CODE_START_Y,
-		);
+		this.removeFrontCodeID = [];
+		this.removeBackCodeID = [];
+		this.removeIndexCodeID = [];
+
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -405,7 +381,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 	reset() {
 		this.size = 0;
-		this.nextIndex = this.initialIndex;
+		this.nextIndex = this.resetIndex;	
 	}
 
 	addIndexCallback() {
@@ -528,6 +504,25 @@ export default class DoublyLinkedList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+
+		if (this.removeFrontCodeID.length) {
+			this.removeCode(this.removeFrontCodeID);
+			this.removeFrontCodeID = [];
+		}
+		if (this.removeBackCodeID.length) {
+			this.removeCode(this.removeBackCodeID);
+			this.removeBackCodeID = [];
+		}
+		if (this.removeIndexCodeID.length) {
+			this.removeCode(this.removeIndexCodeID);
+			this.removeIndexCodeID = [];
+		}
+
+		if (!this.addFrontCodeID.length && !this.addBackCodeID.length && !this.addIndexCodeID.length) {
+			this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
+			this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 300, CODE_START_Y);
+			this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 600, CODE_START_Y);
+		}
 
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -793,6 +788,26 @@ export default class DoublyLinkedList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+
+		if (this.addFrontCodeID.length) {
+			this.removeCode(this.addFrontCodeID);
+			this.addFrontCodeID = [];
+		}
+		if (this.addBackCodeID.length) {
+			this.removeCode(this.addBackCodeID);
+			this.addBackCodeID = [];
+		}
+		if (this.addIndexCodeID.length) {
+			this.removeCode(this.addIndexCodeID);
+			this.addIndexCodeID = [];
+		}
+
+		if (!this.removeFrontCodeID.length && !this.removeBackCodeID.length && !this.removeIndexCodeID.length) {
+			this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X, CODE_START_Y);
+			this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 350, CODE_START_Y);
+			this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 600, CODE_START_Y);
+		}
+
 		index = parseInt(index);
 
 		if (isRemoveFront) {

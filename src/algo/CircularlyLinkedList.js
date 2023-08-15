@@ -58,8 +58,8 @@ const HEAD_LABEL_Y = 55;
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
-const CODE_START_X = 25;
-const CODE_START_Y = 60;
+const CODE_START_X = 500;
+const CODE_START_Y = 250;
 
 const SIZE = 9;
 

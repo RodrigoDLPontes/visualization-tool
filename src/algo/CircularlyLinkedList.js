@@ -61,7 +61,7 @@ const POINTER_ELEM_HEIGHT = 30;
 const CODE_START_X = 250;
 const CODE_START_Y = 10;
 
-const SIZE = 9;
+const SIZE = 15;
 
 export default class CircularlyLinkedList extends Algorithm {
 	constructor(am, w, h) {
@@ -407,6 +407,18 @@ export default class CircularlyLinkedList extends Algorithm {
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 				0,
 			);
+			if (this.addFrontCodeID.length) {
+				this.removeCode(this.addFrontCodeID);
+				this.addFrontCodeID = [];
+			}
+			if (this.addBackCodeID.length) {
+				this.removeCode(this.addBackCodeID);
+				this.addBackCodeID = [];
+			}
+			if (this.addIndexCodeID.length) {
+				this.removeCode(this.addIndexCodeID);
+				this.addIndexCodeID = [];
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}

@@ -386,6 +386,14 @@ export default class ArrayList extends Algorithm {
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 				0,
 			);
+			if (this.addFBCodeID.length) {
+				this.removeCode(this.addFBCodeID);
+				this.addFBCodeID = [];
+			}
+			if (this.addIndexCodeID.length) {
+				this.removeCode(this.addIndexCodeID);
+				this.addIndexCodeID = [];
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -437,7 +445,7 @@ export default class ArrayList extends Algorithm {
 			this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
 			this.addIndexCodeID = this.addCodeToCanvasBase(
 				this.addIndexCode,
-				CODE_START_X + 220,
+				CODE_START_X + 250,
 				CODE_START_Y,
 			);
 		}
@@ -562,8 +570,8 @@ export default class ArrayList extends Algorithm {
 			);
 			this.removeIndexCodeID = this.addCodeToCanvasBase(
 				this.removeIndexCode,
-				CODE_START_X + 220,
-				CODE_START_Y - 3,
+				CODE_START_X + 250,
+				CODE_START_Y,
 			);
 		}
 

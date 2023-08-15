@@ -455,6 +455,18 @@ export default class DoublyLinkedList extends Algorithm {
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 				0,
 			);
+			if (this.addFrontCodeID.length) {
+				this.removeCode(this.addFrontCodeID);
+				this.addFrontCodeID = [];
+			}
+			if (this.addBackCodeID.length) {
+				this.removeCode(this.addBackCodeID);
+				this.addBackCodeID = [];
+			}
+			if (this.addIndexCodeID.length) {
+				this.removeCode(this.addIndexCodeID);
+				this.addIndexCodeID = [];
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -536,12 +548,12 @@ export default class DoublyLinkedList extends Algorithm {
 			);
 			this.addFrontCodeID = this.addCodeToCanvasBase(
 				this.addFrontCode,
-				CODE_START_X + 300,
+				CODE_START_X + 325,
 				CODE_START_Y,
 			);
 			this.addBackCodeID = this.addCodeToCanvasBase(
 				this.addBackCode,
-				CODE_START_X + 600,
+				CODE_START_X + 620,
 				CODE_START_Y,
 			);
 		}

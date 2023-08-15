@@ -126,6 +126,7 @@ export default class BoyerMoore extends Algorithm {
 	setup() {
 		this.commands = [];
 		this.textRowID = [];
+		this.rowCountID = [];
 		this.comparisonMatrixID = [];
 		this.patternTableLabelID = this.nextIndex++;
 		this.patternTableCharacterID = [];
@@ -233,6 +234,7 @@ export default class BoyerMoore extends Algorithm {
 	reset() {
 		this.nextIndex = 0;
 		this.textRowID = [];
+		this.rowCountID = [];
 		this.comparisonMatrixID = [];
 		this.patternTableLabelID = this.nextIndex++;
 		this.patternTableCharacterID = [];
@@ -333,21 +335,31 @@ export default class BoyerMoore extends Algorithm {
 		}
 
 		this.textRowID = new Array(text.length);
+		this.rowCountID = new Array(maxRows);
 		this.comparisonMatrixID = new Array(maxRows);
 		for (let i = 0; i < maxRows; i++) {
 			this.comparisonMatrixID[i] = new Array(text.length);
 		}
 
+		let xpos, ypos;
+
 		for (let i = 0; i < text.length; i++) {
-			const xpos = i * this.cellSize + ARRAY_START_X;
-			const ypos = ARRAY_START_Y - 25;
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y - 25;
 			this.textRowID[i] = this.nextIndex;
 			this.cmd(act.createLabel, this.nextIndex++, i, xpos, ypos);
 		}
 
+		for (let i = 1; i <= maxRows; i++) {
+			xpos = ARRAY_START_X - 50;
+			ypos = i * this.cellSize + ARRAY_START_Y;
+			this.rowCountID[i] = this.nextIndex;
+			this.cmd(act.createLabel, this.nextIndex++, `Row ${i}`, xpos, ypos);
+		}
+
 		for (let i = 0; i < text.length; i++) {
-			const xpos = i * this.cellSize + ARRAY_START_X;
-			const ypos = ARRAY_START_Y;
+			xpos = i * this.cellSize + ARRAY_START_X;
+			ypos = ARRAY_START_Y;
 			this.textRowID[i + text.length] = this.nextIndex;
 			this.cmd(
 				act.createRectangle,
@@ -361,8 +373,6 @@ export default class BoyerMoore extends Algorithm {
 			this.cmd(act.setBackgroundColor, this.nextIndex++, '#D3D3D3');
 		}
 
-		let xpos;
-		let ypos;
 		for (let row = 0; row < maxRows; row++) {
 			for (let col = 0; col < text.length; col++) {
 				xpos = col * this.cellSize + ARRAY_START_X;
@@ -953,12 +963,15 @@ export default class BoyerMoore extends Algorithm {
 			this.cmd(act.delete, this.textRowID[i]);
 		}
 		this.textRowID = [];
+		for (let i = 1; i < this.rowCountID.length; i++) {
+			this.cmd(act.delete, this.rowCountID[i]);
+		}
+		this.rowCountID = [];
 		for (let i = 0; i < this.comparisonMatrixID.length; i++) {
 			for (let j = 0; j < this.comparisonMatrixID[i].length; j++) {
 				this.cmd(act.delete, this.comparisonMatrixID[i][j]);
 			}
 		}
-
 		this.comparisonMatrixID = [];
 		if (this.patternTableCharacterID.length !== 0) {
 			this.cmd(act.delete, this.patternTableLabelID);

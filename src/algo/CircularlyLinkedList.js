@@ -443,10 +443,26 @@ export default class CircularlyLinkedList extends Algorithm {
 			this.removeIndexCodeID = [];
 		}
 
-		if (!this.addFrontCodeID.length && !this.addBackCodeID.length && !this.addIndexCodeID.length) {
-			this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
-			this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 315, CODE_START_Y);
-			this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 635, CODE_START_Y);
+		if (
+			!this.addFrontCodeID.length &&
+			!this.addBackCodeID.length &&
+			!this.addIndexCodeID.length
+		) {
+			this.addIndexCodeID = this.addCodeToCanvasBase(
+				this.addIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBase(
+				this.addFrontCode,
+				CODE_START_X + 315,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBase(
+				this.addBackCode,
+				CODE_START_X + 635,
+				CODE_START_Y,
+			);
 		}
 
 		if (isAddFront || (isAddIndex && index === 0)) {
@@ -809,10 +825,26 @@ export default class CircularlyLinkedList extends Algorithm {
 			this.addIndexCodeID = [];
 		}
 
-		if (!this.removeFrontCodeID.length && !this.removeBackCodeID.length && !this.removeIndexCodeID.length) {
-			this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X, CODE_START_Y);
-			this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 310, CODE_START_Y);
-			this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 605, CODE_START_Y);
+		if (
+			!this.removeFrontCodeID.length &&
+			!this.removeBackCodeID.length &&
+			!this.removeIndexCodeID.length
+		) {
+			this.removeIndexCodeID = this.addCodeToCanvasBase(
+				this.removeIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.removeFrontCodeID = this.addCodeToCanvasBase(
+				this.removeFrontCode,
+				CODE_START_X + 310,
+				CODE_START_Y,
+			);
+			this.removeBackCodeID = this.addCodeToCanvasBase(
+				this.removeBackCode,
+				CODE_START_X + 605,
+				CODE_START_Y,
+			);
 		}
 
 		index = parseInt(index);

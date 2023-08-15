@@ -247,7 +247,13 @@ export default class DoublyLinkedList extends Algorithm {
 			HEAD_POS_Y,
 		);
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X - 75, HEAD_LABEL_Y + 135);
+		this.cmd(
+			act.createLabel,
+			this.tailLabelID,
+			'Tail',
+			POINTER_LABEL_X - 75,
+			HEAD_LABEL_Y + 135,
+		);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -381,7 +387,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 	reset() {
 		this.size = 0;
-		this.nextIndex = this.resetIndex;	
+		this.nextIndex = this.resetIndex;
 	}
 
 	addIndexCallback() {
@@ -518,10 +524,26 @@ export default class DoublyLinkedList extends Algorithm {
 			this.removeIndexCodeID = [];
 		}
 
-		if (!this.addFrontCodeID.length && !this.addBackCodeID.length && !this.addIndexCodeID.length) {
-			this.addIndexCodeID = this.addCodeToCanvasBase(this.addIndexCode, CODE_START_X, CODE_START_Y);
-			this.addFrontCodeID = this.addCodeToCanvasBase(this.addFrontCode, CODE_START_X + 300, CODE_START_Y);
-			this.addBackCodeID = this.addCodeToCanvasBase(this.addBackCode, CODE_START_X + 600, CODE_START_Y);
+		if (
+			!this.addFrontCodeID.length &&
+			!this.addBackCodeID.length &&
+			!this.addIndexCodeID.length
+		) {
+			this.addIndexCodeID = this.addCodeToCanvasBase(
+				this.addIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBase(
+				this.addFrontCode,
+				CODE_START_X + 300,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBase(
+				this.addBackCode,
+				CODE_START_X + 600,
+				CODE_START_Y,
+			);
 		}
 
 		if (isAddFront) {
@@ -802,10 +824,26 @@ export default class DoublyLinkedList extends Algorithm {
 			this.addIndexCodeID = [];
 		}
 
-		if (!this.removeFrontCodeID.length && !this.removeBackCodeID.length && !this.removeIndexCodeID.length) {
-			this.removeIndexCodeID = this.addCodeToCanvasBase(this.removeIndexCode, CODE_START_X, CODE_START_Y);
-			this.removeFrontCodeID = this.addCodeToCanvasBase(this.removeFrontCode, CODE_START_X + 350, CODE_START_Y);
-			this.removeBackCodeID = this.addCodeToCanvasBase(this.removeBackCode, CODE_START_X + 600, CODE_START_Y);
+		if (
+			!this.removeFrontCodeID.length &&
+			!this.removeBackCodeID.length &&
+			!this.removeIndexCodeID.length
+		) {
+			this.removeIndexCodeID = this.addCodeToCanvasBase(
+				this.removeIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.removeFrontCodeID = this.addCodeToCanvasBase(
+				this.removeFrontCode,
+				CODE_START_X + 350,
+				CODE_START_Y,
+			);
+			this.removeBackCodeID = this.addCodeToCanvasBase(
+				this.removeBackCode,
+				CODE_START_X + 600,
+				CODE_START_Y,
+			);
 		}
 
 		index = parseInt(index);

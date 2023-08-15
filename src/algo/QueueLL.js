@@ -58,8 +58,6 @@ const QUEUE_ELEMENT_Y = 30;
 
 const CODE_START_X = 330;
 const CODE_START_Y = 30;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 
 const SIZE = 32;
 

@@ -35,8 +35,6 @@ import { act } from '../anim/AnimationMain';
 const CODE_START_X = 25;
 const CODE_START_Y = 35;
 const CODE_LINE_HEIGHT = 14;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 const QUEUE_START_X = 35;
 const QUEUE_START_Y = 250;
 const QUEUE_SPACING = 40;

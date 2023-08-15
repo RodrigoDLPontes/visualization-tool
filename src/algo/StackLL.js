@@ -54,8 +54,6 @@ const PUSH_ELEMENT_Y = 30;
 
 const CODE_START_X = 400;
 const CODE_START_Y = 25;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 
 const SIZE = 32;
 

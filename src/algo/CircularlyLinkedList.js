@@ -33,12 +33,12 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const LINKED_LIST_START_X = 50;
-const LINKED_LIST_START_Y = 150;
+const LINKED_LIST_START_Y = 250;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
-const LINKED_LIST_INSERT_X = 235;
-const LINKED_LIST_INSERT_Y = 85;
+const LINKED_LIST_INSERT_X = 165;
+const LINKED_LIST_INSERT_Y = 170;
 
 const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 100;
@@ -50,16 +50,16 @@ const PUSH_ELEMENT_X = 150;
 const PUSH_ELEMENT_Y = 30;
 
 const HEAD_POS_X = 50;
-const HEAD_POS_Y = 85;
+const HEAD_POS_Y = 170;
 
 const POINTER_LABEL_X = 50;
-const HEAD_LABEL_Y = 55;
+const HEAD_LABEL_Y = 135;
 
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
-const CODE_START_X = 500;
-const CODE_START_Y = 250;
+const CODE_START_X = 250;
+const CODE_START_Y = 10;
 
 const SIZE = 9;
 

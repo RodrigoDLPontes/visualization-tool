@@ -457,7 +457,8 @@ export default class ObjectManager {
 
 	getNodeX(nodeID) {
 		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
-			throw new Error('Getting x position of an object that does not exist');
+			// throw new Error('Getting x position of an object that does not exist');
+			return;
 		}
 		return this.nodes[nodeID].x;
 	}
@@ -500,7 +501,8 @@ export default class ObjectManager {
 
 	getNodeY(nodeID) {
 		if (this.nodes[nodeID] == null || this.nodes[nodeID] === undefined) {
-			throw new Error('getting y position of an object that does not exist');
+			// throw new Error('getting y position of an object that does not exist');
+			return;
 		}
 		return this.nodes[nodeID].y;
 	}
@@ -744,7 +746,7 @@ export default class ObjectManager {
 			centering,
 			this.getTextWidth(objectLabel, isCode, isPointer),
 			isCode,
-			isPointer
+			isPointer,
 		);
 		this.nodes[objectID] = newLabel;
 	}

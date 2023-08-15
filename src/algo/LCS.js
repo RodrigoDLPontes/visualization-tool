@@ -43,8 +43,6 @@ const TABLE_START_Y = 80;
 const CODE_START_X = 25;
 const CODE_START_Y = 50;
 
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 const LCS_CELL_COLOR = '#99CCFF';
 const MAX_SEQUENCE_LENGTH = 13;
 
@@ -647,14 +645,6 @@ export default class LCS extends Algorithm {
 		}
 		this.highlight(24, 0);
 		this.cmd(act.step);
-	}
-
-	highlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	enableUI() {

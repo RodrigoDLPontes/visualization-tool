@@ -312,7 +312,7 @@ export default class AnimatedLabel extends AnimatedObject {
 			this.highlighted,
 			this.highlightColor,
 			this.isCode,
-			this.isPointer
+			this.isPointer,
 		);
 	}
 }
@@ -330,7 +330,7 @@ class UndoDeleteLabel extends UndoBlock {
 		highlighted,
 		highlightColor,
 		isCode,
-		isPointer
+		isPointer,
 	) {
 		super();
 		this.objectID = objectID;

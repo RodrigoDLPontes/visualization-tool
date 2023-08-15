@@ -32,35 +32,39 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
-const LINKED_LIST_START_X = 100;
-const LINKED_LIST_START_Y = 200;
-const LINKED_LIST_ELEM_WIDTH = 100;
+const LINKED_LIST_START_X = 170;
+const LINKED_LIST_START_Y = 100;
+const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
-const LINKED_LIST_INSERT_X = 200;
-const LINKED_LIST_INSERT_Y = 50;
+const LINKED_LIST_INSERT_X = 330;
+const LINKED_LIST_INSERT_Y = 30;
 
-const LINKED_LIST_ELEMS_PER_LINE = 8;
-const LINKED_LIST_ELEM_SPACING = 150;
+const LINKED_LIST_ELEMS_PER_LINE = 12;
+const LINKED_LIST_ELEM_SPACING = 125;
 const LINKED_LIST_LINE_SPACING = 100;
 
 const PUSH_LABEL_X = 50;
 const PUSH_LABEL_Y = 30;
-const PUSH_ELEMENT_X = 120;
+const PUSH_ELEMENT_X = 100;
 const PUSH_ELEMENT_Y = 30;
 
-const HEAD_POS_X = 180;
-const HEAD_POS_Y = 100;
+const HEAD_POS_X = 170;
+const HEAD_POS_Y = 30;
 
-const TAIL_POS_X = 180;
+const TAIL_POS_X = 170;
+const TAIL_POS_Y = 165;
 
-const POINTER_LABEL_X = 130;
-const HEAD_LABEL_Y = 100;
+const POINTER_LABEL_X = 210;
+const HEAD_LABEL_Y = 30;
 
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
+
+const CODE_START_X = 135;
+const CODE_START_Y = 200;
 
 export default class DoublyLinkedList extends Algorithm {
 	constructor(am, w, h) {
@@ -68,8 +72,6 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addControls();
 		this.nextIndex = 0;
 		this.commands = [];
-		this.tail_pos_y = h - LINKED_LIST_ELEM_HEIGHT;
-		this.tail_label_y = this.tail_pos_y;
 		this.setup();
 		this.initialIndex = this.nextIndex;
 	}
@@ -245,7 +247,13 @@ export default class DoublyLinkedList extends Algorithm {
 			HEAD_POS_Y,
 		);
 
-		this.cmd(act.createLabel, this.tailLabelID, 'Tail', POINTER_LABEL_X, this.tail_label_y);
+		this.cmd(
+			act.createLabel,
+			this.tailLabelID,
+			'Tail',
+			POINTER_LABEL_X - 75,
+			HEAD_LABEL_Y + 135,
+		);
 		this.cmd(
 			act.createRectangle,
 			this.tailID,
@@ -253,13 +261,124 @@ export default class DoublyLinkedList extends Algorithm {
 			POINTER_ELEM_WIDTH,
 			POINTER_ELEM_HEIGHT,
 			TAIL_POS_X,
-			this.tail_pos_y,
+			TAIL_POS_Y,
 		);
 
 		this.cmd(act.setNull, this.headID, 1);
 		this.cmd(act.setNull, this.tailID, 1);
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
+
+		this.addFrontCode = [
+			['procedure addFront(data)'],
+			['  if size == 0'],
+			['    head ← new Node(data)'],
+			['    tail ← head'],
+			['  else'],
+			['    Node newHead ← new Node(data)'],
+			['    newHead.next ← head'],
+			['    head.prev ← newHead'],
+			['    head ← newHead'],
+			['  size++'],
+			['end procedure'],
+		];
+
+		this.addBackCode = [
+			['procedure addBack(data)'],
+			['  if size == 0'],
+			['    tail ← new Node(data)'],
+			['    head ← tail'],
+			['  else'],
+			['    Node newTail ← new Node(data)'],
+			['    newTail.prev ← tail'],
+			['    tail.next ← newTail'],
+			['    tail ← newTail'],
+			['  size++'],
+			['end procedure'],
+		];
+
+		this.addIndexCode = [
+			['procedure addAtIndex(index, data)'],
+			['  if index == 0'],
+			['    addFront(data)'],
+			['  else if index == size'],
+			['    addBack(data)'],
+			['  else'],
+			['    if index < size / 2'],
+			['      Node curr ← head'],
+			['      for i ← 0 to index - 2, i++:'],
+			['        curr = curr.next'],
+			['    else'],
+			['      Node curr ← tail'],
+			['      for i ← size - 1 to index, i--:'],
+			['        curr = curr.prev'],
+			['    Node newNode ← new Node(data)'],
+			['    newNode.prev ← curr'],
+			['    newNode.next ← curr.next'],
+			['    curr.next ← newNode'],
+			['    newNode.next.prev ← newNode'],
+			['    size++'],
+			['end procedure'],
+		];
+
+		this.removeFrontCode = [
+			['procedure removeFront()'],
+			['  T data ← head.data'],
+			['  head ← head.next'],
+			['  if head == null'],
+			['    tail ← null'],
+			['  else'],
+			['    head.prev ← null'],
+			['  size--'],
+			['  return data'],
+			['end procedure'],
+		];
+
+		this.removeBackCode = [
+			['procedure removeBack()'],
+			['  T data ← tail.data'],
+			['  tail ← tail.prev'],
+			['  if tail == null'],
+			['    head ← null'],
+			['  else'],
+			['    tail.next ← null'],
+			['  size--'],
+			['  return data'],
+			['end procedure'],
+		];
+
+		this.removeIndexCode = [
+			['procedure removeFromIndex(index)'],
+			['  if index == 0'],
+			['    removeFront()'],
+			['  else if index == size - 1'],
+			['    removeBack()'],
+			['  else'],
+			['    if index < size / 2'],
+			['      Node curr ← head'],
+			['      for i ← 0 to index - 1, i++:'],
+			['        curr ← curr.next'],
+			['    else'],
+			['      Node curr ← tail'],
+			['      for i ← size - 1 to index + 1, i--:'],
+			['         curr ← curr.prev'],
+			['    T data ← curr.data'],
+			['    curr.prev.next ← curr.next'],
+			['    cur.next.prev ← curr.prev'],
+			['    size--'],
+			['    return data'],
+			[' end procedure'],
+		];
+
+		this.addFrontCodeID = [];
+		this.addBackCodeID = [];
+		this.addIndexCodeID = [];
+
+		this.removeFrontCodeID = [];
+		this.removeBackCodeID = [];
+		this.removeIndexCodeID = [];
+
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -268,7 +387,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 	reset() {
 		this.size = 0;
-		this.nextIndex = this.initialIndex;
+		this.nextIndex = this.resetIndex;
 	}
 
 	addIndexCallback() {
@@ -278,7 +397,7 @@ export default class DoublyLinkedList extends Algorithm {
 			if (index >= 0 && index <= this.size) {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
-				this.implementAction(this.add.bind(this), addVal, index);
+				this.implementAction(this.add.bind(this), addVal, index, false, false, true);
 			}
 		}
 	}
@@ -287,7 +406,7 @@ export default class DoublyLinkedList extends Algorithm {
 		if (this.addValueField.value !== '') {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			this.implementAction(this.add.bind(this), addVal, 0);
+			this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
 		}
 	}
 
@@ -295,7 +414,7 @@ export default class DoublyLinkedList extends Algorithm {
 		if (this.addValueField.value !== '') {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
-			this.implementAction(this.add.bind(this), addVal, this.size);
+			this.implementAction(this.add.bind(this), addVal, this.size, false, true, false);
 		}
 	}
 
@@ -304,20 +423,20 @@ export default class DoublyLinkedList extends Algorithm {
 			const index = this.removeField.value;
 			if (index >= 0 && index < this.size) {
 				this.removeField.value = '';
-				this.implementAction(this.remove.bind(this), index);
+				this.implementAction(this.remove.bind(this), index, false, false, true);
 			}
 		}
 	}
 
 	removeFrontCallback() {
 		if (this.size > 0) {
-			this.implementAction(this.remove.bind(this), 0);
+			this.implementAction(this.remove.bind(this), 0, true, false, false);
 		}
 	}
 
 	removeBackCallback() {
 		if (this.size > 0) {
-			this.implementAction(this.remove.bind(this), this.size - 1);
+			this.implementAction(this.remove.bind(this), this.size - 1, false, true, false);
 		}
 	}
 
@@ -336,25 +455,29 @@ export default class DoublyLinkedList extends Algorithm {
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 				0,
 			);
+			if (this.addFrontCodeID.length) {
+				this.removeCode(this.addFrontCodeID);
+				this.addFrontCodeID = [];
+			}
+			if (this.addBackCodeID.length) {
+				this.removeCode(this.addBackCodeID);
+				this.addBackCodeID = [];
+			}
+			if (this.addIndexCodeID.length) {
+				this.removeCode(this.addIndexCodeID);
+				this.addIndexCodeID = [];
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
 	}
 
-	// DoublyLinkedList.prototype.getCallback = function(event)
-	// {
-	//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-	//     {
-	//         this.implementAction(this.get.bind(this), "");
-	//     }
-	// }
-
 	clearCallback() {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
-	traverse(index) {
-		if (index < Math.floor(this.size / 2)) {
+	removeTraverse(index) {
+		if (index < this.size / 2) {
 			for (let i = 0; i <= index; i++) {
 				this.cmd(act.step);
 				this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
@@ -375,16 +498,105 @@ export default class DoublyLinkedList extends Algorithm {
 		}
 	}
 
-	add(elemToAdd, index) {
+	addTraverse(index) {
+		if (index + 1 < this.size / 2) {
+			for (let i = 0; i <= index; i++) {
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
+				if (i > 0) {
+					this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
+				}
+			}
+			this.cmd(act.step);
+		} else {
+			for (let i = this.size - 1; i >= index; i--) {
+				this.cmd(act.step);
+				this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
+				if (i < this.size) {
+					this.cmd(act.setHighlight, this.linkedListElemID[i + 1], 0);
+				}
+			}
+			this.cmd(act.step);
+		}
+	}
+
+	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+
+		if (this.removeFrontCodeID.length) {
+			this.removeCode(this.removeFrontCodeID);
+			this.removeFrontCodeID = [];
+		}
+		if (this.removeBackCodeID.length) {
+			this.removeCode(this.removeBackCodeID);
+			this.removeBackCodeID = [];
+		}
+		if (this.removeIndexCodeID.length) {
+			this.removeCode(this.removeIndexCodeID);
+			this.removeIndexCodeID = [];
+		}
+
+		if (
+			!this.addFrontCodeID.length &&
+			!this.addBackCodeID.length &&
+			!this.addIndexCodeID.length
+		) {
+			this.addIndexCodeID = this.addCodeToCanvasBase(
+				this.addIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBase(
+				this.addFrontCode,
+				CODE_START_X + 325,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBase(
+				this.addBackCode,
+				CODE_START_X + 620,
+				CODE_START_Y,
+			);
+		}
+
+		if (isAddFront) {
+			this.highlight(0, 0, this.addFrontCodeID);
+		} else if (isAddBack) {
+			this.highlight(0, 0, this.addBackCodeID);
+		} else if (isAddIndex) {
+			this.highlight(0, 0, this.addIndexCodeID);
+		}
+
+		if (isAddIndex && index === 0) {
+			this.highlight(1, 0, this.addIndexCodeID);
+			this.highlight(2, 0, this.addIndexCodeID);
+			this.highlight(0, 0, this.addFrontCodeID);
+		} else if (isAddIndex && index === this.size) {
+			this.highlight(3, 0, this.addIndexCodeID);
+			this.highlight(4, 0, this.addIndexCodeID);
+			this.highlight(0, 0, this.addBackCodeID);
+		}
+
+		this.cmd(act.step);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
 
 		// iterate to the correct node if it is an index != 0 or size
-		const indexToTraverseTo = index < Math.floor(this.size / 2) ? index - 1 : index;
+		const indexToTraverseTo = index - 1;
 		if (index > 0 && index < this.size) {
-			this.traverse(indexToTraverseTo);
+			this.highlight(5, 0, this.addIndexCodeID);
+			if (isAddIndex && index < this.size / 2) {
+				this.highlight(6, 0, this.addIndexCodeID);
+				this.highlight(7, 0, this.addIndexCodeID);
+				this.highlight(8, 0, this.addIndexCodeID);
+				this.highlight(9, 0, this.addIndexCodeID);
+			} else {
+				this.highlight(10, 0, this.addIndexCodeID);
+				this.highlight(11, 0, this.addIndexCodeID);
+				this.highlight(12, 0, this.addIndexCodeID);
+				this.highlight(13, 0, this.addIndexCodeID);
+			}
+			this.addTraverse(indexToTraverseTo);
 		}
 
 		for (let i = this.size - 1; i >= index; i--) {
@@ -396,6 +608,32 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
+		this.cmd(act.step);
+
+		if ((isAddFront || (isAddIndex && index === 0)) && this.size === 0) {
+			this.highlight(1, 0, this.addFrontCodeID);
+		} else if (isAddFront || (isAddIndex && index === 0)) {
+			this.highlight(4, 0, this.addFrontCodeID);
+		} else if (isAddIndex && index === 0) {
+			this.unhighlight(1, 0, this.addIndexCodeID);
+		} else if (isAddIndex && index < this.size / 2) {
+			this.unhighlight(6, 0, this.addIndexCodeID);
+			this.unhighlight(7, 0, this.addIndexCodeID);
+			this.unhighlight(8, 0, this.addIndexCodeID);
+			this.unhighlight(9, 0, this.addIndexCodeID);
+		} else if ((isAddBack || (isAddIndex && index === this.size)) && this.size === 0) {
+			this.highlight(1, 0, this.addBackCodeID);
+		} else if (isAddBack || (isAddIndex && index === this.size)) {
+			this.highlight(4, 0, this.addBackCodeID);
+		} else if (isAddIndex) {
+			this.unhighlight(10, 0, this.addIndexCodeID);
+			this.unhighlight(11, 0, this.addIndexCodeID);
+			this.unhighlight(12, 0, this.addIndexCodeID);
+			this.unhighlight(13, 0, this.addIndexCodeID);
+		}
+
+		this.cmd(act.step);
+
 		this.cmd(
 			act.createDoublyLinkedListNode,
 			this.linkedListElemID[index],
@@ -406,16 +644,29 @@ export default class DoublyLinkedList extends Algorithm {
 			LINKED_LIST_INSERT_Y,
 		);
 
+		if ((isAddFront || (isAddIndex && index === 0)) && this.size === 0) {
+			this.highlight(2, 0, this.addFrontCodeID);
+			this.highlight(3, 0, this.addFrontCodeID);
+		} else if (isAddFront || (isAddIndex && index === 0)) {
+			this.highlight(5, 0, this.addFrontCodeID);
+		} else if ((isAddBack || (isAddIndex && index === this.size)) && this.size === 0) {
+			this.highlight(2, 0, this.addBackCodeID);
+			this.highlight(3, 0, this.addBackCodeID);
+		} else if (isAddBack || (isAddIndex && index === this.size)) {
+			this.highlight(5, 0, this.addBackCodeID);
+		} else if (isAddIndex) {
+			this.highlight(14, 0, this.addIndexCodeID);
+		}
+
 		this.cmd(act.createLabel, labPushID, 'Adding Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPushValID, elemToAdd, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
-
 		this.cmd(act.step);
 
 		this.cmd(act.move, labPushValID, LINKED_LIST_INSERT_X, LINKED_LIST_INSERT_Y);
 
-		this.cmd(act.step);
 		this.cmd(act.setText, this.linkedListElemID[index], elemToAdd);
 		this.cmd(act.delete, labPushValID);
+		this.cmd(act.step);
 
 		if (index === 0) {
 			this.cmd(act.setPrevNull, this.linkedListElemID[index], 1);
@@ -429,6 +680,12 @@ export default class DoublyLinkedList extends Algorithm {
 
 		if (this.size !== 0) {
 			if (index === 0) {
+				if (isAddFront || (isAddIndex && index === 0)) {
+					this.unhighlight(5, 0, this.addFrontCodeID);
+					this.highlight(6, 0, this.addFrontCodeID);
+					this.highlight(7, 0, this.addFrontCodeID);
+					this.highlight(8, 0, this.addFrontCodeID);
+				}
 				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 0);
 				this.cmd(
 					act.connectNext,
@@ -442,6 +699,12 @@ export default class DoublyLinkedList extends Algorithm {
 				);
 				this.cmd(act.disconnect, this.headID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size) {
+				if (isAddBack || (isAddIndex && index === this.size)) {
+					this.unhighlight(5, 0, this.addBackCodeID);
+					this.highlight(6, 0, this.addBackCodeID);
+					this.highlight(7, 0, this.addBackCodeID);
+					this.highlight(8, 0, this.addBackCodeID);
+				}
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 0);
 				this.cmd(
 					act.connectNext,
@@ -455,6 +718,13 @@ export default class DoublyLinkedList extends Algorithm {
 				);
 				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index - 1]);
 			} else {
+				if (isAddIndex) {
+					this.unhighlight(14, 0, this.addIndexCodeID);
+					this.highlight(15, 0, this.addIndexCodeID);
+					this.highlight(16, 0, this.addIndexCodeID);
+					this.highlight(17, 0, this.addIndexCodeID);
+					this.highlight(18, 0, this.addIndexCodeID);
+				}
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
@@ -490,67 +760,223 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(
 			act.setHighlight,
-			this.linkedListElemID[
-				index < Math.floor(this.size / 2) ? indexToTraverseTo : indexToTraverseTo + 1
-			],
+			this.linkedListElemID[index < this.size / 2 ? indexToTraverseTo : indexToTraverseTo],
 			0,
 		);
 
-		this.cmd(act.step);
 		this.size = this.size + 1;
 		this.resetNodePositions();
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
 
+		if (isAddFront || (isAddIndex && index === 0)) {
+			this.unhighlight(1, 0, this.addFrontCodeID);
+			this.unhighlight(2, 0, this.addFrontCodeID);
+			this.unhighlight(3, 0, this.addFrontCodeID);
+			this.unhighlight(4, 0, this.addFrontCodeID);
+			this.unhighlight(5, 0, this.addFrontCodeID);
+			this.unhighlight(6, 0, this.addFrontCodeID);
+			this.unhighlight(7, 0, this.addFrontCodeID);
+			this.unhighlight(8, 0, this.addFrontCodeID);
+			this.highlight(9, 0, this.addFrontCodeID);
+		} else if (isAddBack || (isAddIndex && index === this.size - 1)) {
+			this.unhighlight(1, 0, this.addBackCodeID);
+			this.unhighlight(2, 0, this.addBackCodeID);
+			this.unhighlight(3, 0, this.addBackCodeID);
+			this.unhighlight(4, 0, this.addBackCodeID);
+			this.unhighlight(5, 0, this.addBackCodeID);
+			this.unhighlight(6, 0, this.addBackCodeID);
+			this.unhighlight(7, 0, this.addBackCodeID);
+			this.unhighlight(8, 0, this.addBackCodeID);
+			this.highlight(9, 0, this.addBackCodeID);
+		} else if (isAddIndex) {
+			this.unhighlight(15, 0, this.addIndexCodeID);
+			this.unhighlight(16, 0, this.addIndexCodeID);
+			this.unhighlight(17, 0, this.addIndexCodeID);
+			this.unhighlight(18, 0, this.addIndexCodeID);
+			this.highlight(19, 0, this.addIndexCodeID);
+		}
+
+		this.cmd(act.step);
+
+		if (isAddFront || (isAddIndex && index === 0)) {
+			this.unhighlight(0, 0, this.addFrontCodeID);
+			this.unhighlight(9, 0, this.addFrontCodeID);
+			this.unhighlight(0, 0, this.addIndexCodeID);
+			this.unhighlight(1, 0, this.addIndexCodeID);
+			this.unhighlight(2, 0, this.addIndexCodeID);
+		} else if (isAddBack || (isAddIndex && index === this.size - 1)) {
+			this.unhighlight(0, 0, this.addBackCodeID);
+			this.unhighlight(9, 0, this.addBackCodeID);
+			this.unhighlight(0, 0, this.addIndexCodeID);
+			this.unhighlight(3, 0, this.addIndexCodeID);
+			this.unhighlight(4, 0, this.addIndexCodeID);
+		} else if (isAddIndex) {
+			this.unhighlight(0, 0, this.addIndexCodeID);
+			this.unhighlight(5, 0, this.addIndexCodeID);
+			this.unhighlight(19, 0, this.addIndexCodeID);
+		}
+
 		return this.commands;
 	}
 
-	remove(index) {
+	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
 
+		if (this.addFrontCodeID.length) {
+			this.removeCode(this.addFrontCodeID);
+			this.addFrontCodeID = [];
+		}
+		if (this.addBackCodeID.length) {
+			this.removeCode(this.addBackCodeID);
+			this.addBackCodeID = [];
+		}
+		if (this.addIndexCodeID.length) {
+			this.removeCode(this.addIndexCodeID);
+			this.addIndexCodeID = [];
+		}
+
+		if (
+			!this.removeFrontCodeID.length &&
+			!this.removeBackCodeID.length &&
+			!this.removeIndexCodeID.length
+		) {
+			this.removeIndexCodeID = this.addCodeToCanvasBase(
+				this.removeIndexCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.removeFrontCodeID = this.addCodeToCanvasBase(
+				this.removeFrontCode,
+				CODE_START_X + 350,
+				CODE_START_Y,
+			);
+			this.removeBackCodeID = this.addCodeToCanvasBase(
+				this.removeBackCode,
+				CODE_START_X + 600,
+				CODE_START_Y,
+			);
+		}
+
 		index = parseInt(index);
+
+		if (isRemoveFront) {
+			this.highlight(0, 0, this.removeFrontCodeID);
+		} else if (isRemoveBack) {
+			this.highlight(0, 0, this.removeBackCodeID);
+		} else if (isRemoveIndex) {
+			this.highlight(0, 0, this.removeIndexCodeID);
+		}
+
+		if (isRemoveIndex && index === 0) {
+			this.highlight(1, 0, this.removeIndexCodeID);
+			this.highlight(2, 0, this.removeIndexCodeID);
+			this.highlight(0, 0, this.removeFrontCodeID);
+		} else if (isRemoveIndex && index === this.size - 1) {
+			this.highlight(3, 0, this.removeIndexCodeID);
+			this.highlight(4, 0, this.removeIndexCodeID);
+			this.highlight(0, 0, this.removeBackCodeID);
+		}
+
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
+		this.cmd(act.step);
+
 		if (index > 0 && index < this.size - 1) {
-			this.traverse(index);
+			if (isRemoveIndex) {
+				this.highlight(5, 0, this.removeIndexCodeID);
+				if (index < this.size / 2) {
+					this.highlight(6, 0, this.removeIndexCodeID);
+					this.highlight(7, 0, this.removeIndexCodeID);
+					this.highlight(8, 0, this.removeIndexCodeID);
+					this.highlight(9, 0, this.removeIndexCodeID);
+				} else {
+					this.highlight(10, 0, this.removeIndexCodeID);
+					this.highlight(11, 0, this.removeIndexCodeID);
+					this.highlight(12, 0, this.removeIndexCodeID);
+					this.highlight(13, 0, this.removeIndexCodeID);
+				}
+			}
+			this.removeTraverse(index);
 		}
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
+
+		if (isRemoveFront || (isRemoveIndex && index === 0)) {
+			this.highlight(1, 0, this.removeFrontCodeID);
+		} else if (isRemoveBack || (isRemoveIndex && index === this.size - 1)) {
+			this.highlight(1, 0, this.removeBackCodeID);
+		} else if (isRemoveIndex) {
+			this.unhighlight(6, 0, this.removeIndexCodeID);
+			this.unhighlight(7, 0, this.removeIndexCodeID);
+			this.unhighlight(8, 0, this.removeIndexCodeID);
+			this.unhighlight(9, 0, this.removeIndexCodeID);
+			this.unhighlight(10, 0, this.removeIndexCodeID);
+			this.unhighlight(11, 0, this.removeIndexCodeID);
+			this.unhighlight(12, 0, this.removeIndexCodeID);
+			this.unhighlight(13, 0, this.removeIndexCodeID);
+			this.highlight(14, 0, this.removeIndexCodeID);
+		}
+
 		this.cmd(act.createLabel, labPopID, 'Removing Value: ', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, labPopValID, this.arrayData[index], nodePosX, nodePosY);
-		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
+		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X + 4, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 
 		if (this.size !== 1) {
 			if (index === 0) {
+				if (isRemoveFront || (isRemoveIndex && index === 0)) {
+					this.unhighlight(1, 0, this.removeFrontCodeID);
+					this.highlight(2, 0, this.removeFrontCodeID);
+				}
+				this.cmd(act.connect, this.headID, this.linkedListElemID[index + 1]);
+				this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
+				this.cmd(act.step);
+				if (isRemoveFront || (isRemoveIndex && index === 0)) {
+					this.unhighlight(2, 0, this.removeFrontCodeID);
+					this.highlight(5, 0, this.removeFrontCodeID);
+					this.highlight(6, 0, this.removeFrontCodeID);
+				}
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index + 1],
 					this.linkedListElemID[index],
 				);
 				this.cmd(act.setPrevNull, this.linkedListElemID[index + 1], 1);
-				this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
-				this.cmd(act.connect, this.headID, this.linkedListElemID[index + 1]);
 			} else if (index === this.size - 1) {
+				if (isRemoveBack || (isRemoveIndex && index === this.size - 1)) {
+					this.unhighlight(1, 0, this.removeBackCodeID);
+					this.highlight(2, 0, this.removeBackCodeID);
+				}
+				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
+				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
+				this.cmd(act.step);
+				if (isRemoveBack || (isRemoveIndex && index === this.size - 1)) {
+					this.unhighlight(2, 0, this.removeBackCodeID);
+					this.highlight(5, 0, this.removeBackCodeID);
+					this.highlight(6, 0, this.removeBackCodeID);
+				}
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
 					this.linkedListElemID[index],
 				);
 				this.cmd(act.setNextNull, this.linkedListElemID[index - 1], 1);
-				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
-				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
 			} else {
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
 					LINKED_LIST_START_X;
-				const yPos = LINKED_LIST_START_Y - LINKED_LIST_ELEM_HEIGHT * 2;
+				const yPos = LINKED_LIST_START_Y - LINKED_LIST_ELEM_HEIGHT * 1.6;
 				this.cmd(act.move, this.linkedListElemID[index], xPos, yPos);
-				this.cmd(act.step);
+				if (isRemoveIndex) {
+					this.unhighlight(14, 0, this.removeIndexCodeID);
+					this.highlight(15, 0, this.removeIndexCodeID);
+					this.highlight(16, 0, this.removeIndexCodeID);
+				}
 				this.cmd(
 					act.disconnect,
 					this.linkedListElemID[index - 1],
@@ -573,7 +999,24 @@ export default class DoublyLinkedList extends Algorithm {
 				);
 			}
 		} else {
+			if (isRemoveFront || (isRemoveIndex && index === 0)) {
+				this.unhighlight(1, 0, this.removeFrontCodeID);
+				this.highlight(2, 0, this.removeFrontCodeID);
+			} else if (isRemoveBack || (isRemoveIndex && index === this.size - 1)) {
+				this.unhighlight(1, 0, this.removeBackCodeID);
+				this.highlight(2, 0, this.removeBackCodeID);
+				this.highlight(3, 0, this.removeBackCodeID);
+				this.highlight(4, 0, this.removeBackCodeID);
+			}
 			this.cmd(act.disconnect, this.headID, this.linkedListElemID[index]);
+			if (isRemoveFront || (isRemoveIndex && index === 0)) {
+				this.cmd(act.step);
+			}
+			if (isRemoveFront || (isRemoveIndex && index === 0)) {
+				this.unhighlight(2, 0, this.removeFrontCodeID);
+				this.highlight(3, 0, this.removeFrontCodeID);
+				this.highlight(4, 0, this.removeFrontCodeID);
+			}
 			this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 		}
 		this.cmd(act.step);
@@ -586,8 +1029,48 @@ export default class DoublyLinkedList extends Algorithm {
 		this.size = this.size - 1;
 		this.resetNodePositions();
 
+		this.cmd(act.step);
+
+		if (isRemoveFront || (isRemoveIndex && index === 0)) {
+			this.unhighlight(3, 0, this.removeFrontCodeID);
+			this.unhighlight(4, 0, this.removeFrontCodeID);
+			this.unhighlight(5, 0, this.removeFrontCodeID);
+			this.unhighlight(6, 0, this.removeFrontCodeID);
+			this.highlight(7, 0, this.removeFrontCodeID);
+		} else if (isRemoveBack || (isRemoveIndex && index === this.size)) {
+			this.unhighlight(2, 0, this.removeBackCodeID);
+			this.unhighlight(3, 0, this.removeBackCodeID);
+			this.unhighlight(4, 0, this.removeBackCodeID);
+			this.unhighlight(5, 0, this.removeBackCodeID);
+			this.unhighlight(6, 0, this.removeBackCodeID);
+			this.highlight(7, 0, this.removeBackCodeID);
+		} else if (isRemoveIndex) {
+			this.unhighlight(15, 0, this.removeIndexCodeID);
+			this.unhighlight(16, 0, this.removeIndexCodeID);
+			this.highlight(17, 0, this.removeIndexCodeID);
+		}
+
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
+		this.cmd(act.step);
+
+		if (isRemoveFront || (isRemoveIndex && index === 0)) {
+			this.unhighlight(0, 0, this.removeIndexCodeID);
+			this.unhighlight(1, 0, this.removeIndexCodeID);
+			this.unhighlight(2, 0, this.removeIndexCodeID);
+			this.unhighlight(0, 0, this.removeFrontCodeID);
+			this.unhighlight(7, 0, this.removeFrontCodeID);
+		} else if (isRemoveBack || (isRemoveIndex && index === this.size)) {
+			this.unhighlight(0, 0, this.removeBackCodeID);
+			this.unhighlight(7, 0, this.removeBackCodeID);
+			this.unhighlight(0, 0, this.removeIndexCodeID);
+			this.unhighlight(3, 0, this.removeIndexCodeID);
+			this.unhighlight(4, 0, this.removeIndexCodeID);
+		} else if (isRemoveIndex) {
+			this.unhighlight(0, 0, this.removeIndexCodeID);
+			this.unhighlight(5, 0, this.removeIndexCodeID);
+			this.unhighlight(17, 0, this.removeIndexCodeID);
+		}
 
 		return this.commands;
 	}

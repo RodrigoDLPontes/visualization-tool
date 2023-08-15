@@ -39,8 +39,6 @@ const INFO_MSG_Y = 15;
 
 const CODE_START_X = 15;
 const CODE_START_Y = 100;
-const CODE_HIGHLIGHT_COLOR = '#FF0000';
-const CODE_STANDARD_COLOR = '#000000';
 
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
@@ -561,14 +559,6 @@ export default class HeapSort extends Algorithm {
 
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
-	}
-
-	highlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
-	}
-
-	unhighlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	disableUI() {

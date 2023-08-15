@@ -243,12 +243,14 @@ export default class Algorithm {
 		return codeID;
 	}
 
-	highlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+	highlight(ind1, ind2, codeID) {
+		codeID = codeID === undefined ? this.codeID : codeID;
+		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}
 
-	unhighlight(ind1, ind2) {
-		this.cmd(act.setForegroundColor, this.codeID[ind1][ind2], CODE_STANDARD_COLOR);
+	unhighlight(ind1, ind2, codeID) {
+		codeID = codeID === undefined ? this.codeID : codeID;
+		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	removeCode(codeID) {

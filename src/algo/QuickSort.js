@@ -387,8 +387,26 @@ export default class QuickSort extends Algorithm {
 		const jXPos = j * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
 		this.cmd(act.createHighlightCircle, this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
-		this.cmd(act.createLabel, this.iLabel, 'i', iXPos, ARRAY_START_Y - 40, undefined, false, true);
-		this.cmd(act.createLabel, this.jLabel, 'j', jXPos, ARRAY_START_Y - 40, undefined, false, true);
+		this.cmd(
+			act.createLabel,
+			this.iLabel,
+			'i',
+			iXPos,
+			ARRAY_START_Y - 40,
+			undefined,
+			false,
+			true,
+		);
+		this.cmd(
+			act.createLabel,
+			this.jLabel,
+			'j',
+			jXPos,
+			ARRAY_START_Y - 40,
+			undefined,
+			false,
+			true,
+		);
 		if (i === j) {
 			this.cmd(act.setText, this.iLabel, '');
 			this.cmd(act.setText, this.jLabel, 'i, j');

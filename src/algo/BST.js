@@ -120,7 +120,7 @@ const REMOVE_CODE_SUCC = [
 	['  if curr.left == null'],
 	['    return curr.right'],
 	['  else'],
-	['    curr.left ← removePredecessor(curr.left)'],
+	['    curr.left ← removeSuccessor(curr.left)'],
 	['    return curr'],
 	['end procedure'],
 ];

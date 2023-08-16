@@ -221,7 +221,11 @@ export default class QueueArray extends Algorithm {
 		];
 
 		this.enqueueCodeID = this.addCodeToCanvasBase(this.enqueueCode, CODE_START_X, CODE_START_Y);
-		this.dequeueCodeID = this.addCodeToCanvasBase(this.dequeueCode, CODE_START_X + 465, CODE_START_Y);
+		this.dequeueCodeID = this.addCodeToCanvasBase(
+			this.dequeueCode,
+			CODE_START_X + 465,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -364,7 +368,6 @@ export default class QueueArray extends Algorithm {
 
 	dequeue() {
 		this.commands = [];
-
 
 		const labDequeueID = this.nextIndex++;
 		const labDequeueValID = this.nextIndex++;

@@ -32,7 +32,7 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
-const LINKED_LIST_START_X = 50;
+const LINKED_LIST_START_X = 75;
 const LINKED_LIST_START_Y = 250;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
@@ -1126,6 +1126,18 @@ export default class CircularlyLinkedList extends Algorithm {
 		}
 		this.size = 0;
 		this.cmd(act.setNull, this.headID, 1);
+		this.removeCode(this.addFrontCodeID);
+		this.removeCode(this.addBackCodeID);
+		this.removeCode(this.addIndexCodeID);
+		this.removeCode(this.removeFrontCodeID);
+		this.removeCode(this.removeBackCodeID);
+		this.removeCode(this.removeIndexCodeID);
+		this.addFrontCodeID = [];
+		this.addBackCodeID = [];
+		this.addIndexCodeID = [];
+		this.removerontCodeID = [];
+		this.removeBackCodeID = [];
+		this.removeIndexCodeID = [];
 		return this.commands;
 	}
 }

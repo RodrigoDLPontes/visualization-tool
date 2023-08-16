@@ -32,7 +32,7 @@ import Algorithm, {
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 200;
+const ARRAY_START_Y = 245;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
@@ -40,14 +40,14 @@ const ARRAY_ELEMS_PER_LINE = 14;
 const ARRAY_LINE_SPACING = 130;
 
 const FRONT_POS_X = 180;
-const FRONT_POS_Y = 100;
+const FRONT_POS_Y = 120;
 const FRONT_LABEL_X = 130;
-const FRONT_LABEL_Y = 100;
+const FRONT_LABEL_Y = 120;
 
 const SIZE_POS_X = 280;
-const SIZE_POS_Y = 100;
+const SIZE_POS_Y = 120;
 const SIZE_LABEL_X = 230;
-const SIZE_LABEL_Y = 100;
+const SIZE_LABEL_Y = 120;
 
 const QUEUE_LABEL_X = 60;
 const QUEUE_LABEL_Y = 30;
@@ -55,13 +55,16 @@ const QUEUE_ELEMENT_X = 130;
 const QUEUE_ELEMENT_Y = 30;
 
 const RESIZE_ARRAY_START_X = 100;
-const RESIZE_ARRAY_START_Y = 300;
+const RESIZE_ARRAY_START_Y = 340;
 const QUEUE_RESIZE_LABEL_X = 60;
 const QUEUE_RESIZE_LABEL_Y = 60;
 
 const FRONT_LABEL_OFFSET = -40;
 
 const INDEX_COLOR = '#0000FF';
+
+const CODE_START_X = 450;
+const CODE_START_Y = 20;
 
 const SIZE = 7;
 const MAX_SIZE = 30;
@@ -138,6 +141,61 @@ export default class DequeArray extends Algorithm {
 
 	setup() {
 		this.nextIndex = 0;
+
+		this.addFirstCode = [
+			['procedure addFirst(data)'],
+			['  if size == array.length'],
+			['    T[] newArray ← new array[2 * size]'],
+			['    for i ← 0 to size - 1, i++:'],
+			['      newArray[i + 1] ← array[(front + i) % array.length]'],
+			['    array ← newArray'],
+			['    front ← 0'],
+			['  else'],
+			['    front ← (front - 1) % array.length'],
+			['  array[front] ← data'],
+			['  size++'],
+			['end procedure'],
+		];
+
+		this.addLastCode = [
+			['procedure addLast(data)'],
+			['  if size == array.length'],
+			['    T[] newArray ← new array[2 * size]'],
+			['    for i ← 0 to size - 1, i++:'],
+			['      newArray[i] ← array[(front + i) % array.length]'],
+			['    array ← newArray'],
+			['    front ← 0'],
+			['  array[(front + size) % array.length] ← data'],
+			['  size++'],
+			['end procedure'],
+		];
+
+		this.removeFirstCode = [
+			['procedure removeFirst()'],
+			['  T data ← array[front]'],
+			['  array[front] ← null'],
+			['  front ← (front + 1) % array.length'],
+			['  size--'],
+			['  return data'],
+			['end procedure'],
+		];
+
+		this.removeLastCode = [
+			['procedure removeLast()'],
+			['  back ← (front + size - 1) % array.length'],
+			['  T data ← array[back]'],
+			['  array[back] ← null'],
+			['  size--'],
+			['  return data'],
+			['end procedure'],
+		];
+
+		this.addFirstCodeID = [];
+		this.addLastCodeID = [];
+		this.removeFirstCodeID = [];
+		this.removeLastCodeID = [];
+
+		this.resetIndex = this.nextIndex;
 
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
@@ -225,7 +283,7 @@ export default class DequeArray extends Algorithm {
 		this.top = 0;
 		this.front = 0;
 		this.size = 0;
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 
 		this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE);
@@ -305,6 +363,14 @@ export default class DequeArray extends Algorithm {
 					Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 				);
 			}
+			if (this.addFirstCodeID.length) {
+				this.removeCode(this.addFirstCodeID);
+				this.addFirstCodeID = [];
+			}
+			if (this.addLastCodeID.length) {
+				this.removeCode(this.addLastCodeID);
+				this.addLastCodeID = [];
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -317,10 +383,31 @@ export default class DequeArray extends Algorithm {
 	addLast(elemToAddLast) {
 		this.commands = [];
 
+		if (this.addFirstCodeID.length) {
+			this.removeCode(this.addFirstCodeID);
+			this.addFirstCodeID = [];
+		}
+		if (this.removeFirstCodeID.length) {
+			this.removeCode(this.removeFirstCodeID);
+			this.removeFirstCodeID = [];
+		}
+		if (this.removeLastCodeID.length) {
+			this.removeCode(this.removeLastCodeID);
+			this.removeLastCodeID = [];
+		}
+		if (!this.addLastCodeID.length) {
+			this.addLastCodeID = this.addCodeToCanvasBase(
+				this.addLastCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+		}
+
 		const labAddLastID = this.nextIndex++;
 		const labAddLastValID = this.nextIndex++;
 		const addIndex = (this.front + this.size) % this.arrayData.length;
 
+		this.highlight(0, 0, this.addLastCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
 
@@ -330,6 +417,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.createLabel, labAddLastValID, elemToAddLast, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.cmd(act.step);
+		this.highlight(7, 0, this.addLastCodeID);
 		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 		this.cmd(act.step);
 		this.cmd(
@@ -353,11 +441,17 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 
+		this.unhighlight(7, 0, this.addLastCodeID);
+		this.highlight(8, 0, this.addLastCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
+
 		this.size = this.size + 1;
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
+
+		this.unhighlight(8, 0, this.addLastCodeID);
+		this.unhighlight(0, 0, this.addLastCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labAddLastID);
 		this.cmd(act.setText, this.formulaLabelID, '');
@@ -370,9 +464,30 @@ export default class DequeArray extends Algorithm {
 	addFirst(elemToAdd) {
 		this.commands = [];
 
+		if (this.addLastCodeID.length) {
+			this.removeCode(this.addLastCodeID);
+			this.addLastCodeID = [];
+		}
+		if (this.removeFirstCodeID.length) {
+			this.removeCode(this.removeFirstCodeID);
+			this.removeFirstCodeID = [];
+		}
+		if (this.removeLastCodeID.length) {
+			this.removeCode(this.removeLastCodeID);
+			this.removeLastCodeID = [];
+		}
+		if (!this.addFirstCodeID.length) {
+			this.addFirstCodeID = this.addCodeToCanvasBase(
+				this.addFirstCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+		}
+
 		const labelAddID = this.nextIndex++;
 		const labelAddIDVal = this.nextIndex++;
 
+		this.highlight(0, 0, this.addFirstCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
 
@@ -386,8 +501,10 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.createLabel, labelAddID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labelAddIDVal, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
-
 		this.cmd(act.step);
+
+		this.highlight(7, 0, this.addFirstCodeID);
+		this.highlight(8, 0, this.addFirstCodeID);
 		this.cmd(
 			act.createHighlightCircle,
 			this.highlight1ID,
@@ -400,20 +517,14 @@ export default class DequeArray extends Algorithm {
 			this.formulaLabelID,
 			`Adding ${elemToAdd} to front at index (${this.front} - 1) % ${this.arrayData.length}`,
 		);
-
 		this.cmd(act.step);
+
 		this.cmd(
 			act.move,
 			this.highlight1ID,
 			this.front * ARRAY_ELEM_WIDTH + ARRAY_START_X,
 			ypos + ARRAY_ELEM_HEIGHT,
 		);
-		this.cmd(act.step);
-		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-		this.cmd(act.step);
-		this.cmd(act.move, labelAddIDVal, xpos, ypos);
-		this.cmd(act.step);
-		this.cmd(act.delete, labelAddIDVal);
 
 		this.front = addIndex;
 
@@ -423,26 +534,40 @@ export default class DequeArray extends Algorithm {
 			ARRAY_START_Y +
 			FRONT_LABEL_OFFSET;
 
-		this.cmd(act.setText, this.arrayID[addIndex], elemToAdd);
-		this.cmd(act.step);
 		this.cmd(act.setHighlight, this.frontID, 1);
 		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
+
 		this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
+		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.step);
+
+		this.unhighlight(7, 0, this.addFirstCodeID);
+		this.unhighlight(8, 0, this.addFirstCodeID);
+		this.highlight(9, 0, this.addFirstCodeID);
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
-
+		this.cmd(act.move, labelAddIDVal, xpos, ypos);
 		this.cmd(act.step);
+
+		this.cmd(act.setText, this.arrayID[addIndex], elemToAdd);
+		this.cmd(act.delete, labelAddIDVal);
+		this.cmd(act.step);
+
+		this.unhighlight(9, 0, this.addFirstCodeID);
+		this.highlight(10, 0, this.addFirstCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
+
 		this.cmd(act.setText, this.sizeID, this.size + 1);
 		this.cmd(act.step);
-		this.cmd(act.setHighlight, this.sizeID, 0);
 
+		this.unhighlight(10, 0, this.addFirstCodeID);
+		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
 
+		this.unhighlight(0, 0, this.addFirstCodeID);
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.delete, labelAddID);
 		this.cmd(act.setText, this.formulaLabelID, '');
@@ -456,11 +581,33 @@ export default class DequeArray extends Algorithm {
 	removeFirst() {
 		this.commands = [];
 
+		if (this.addFirstCodeID.length) {
+			this.removeCode(this.addFirstCodeID);
+			this.addFirstCodeID = [];
+		}
+		if (this.addLastCodeID.length) {
+			this.removeCode(this.addLastCodeID);
+			this.addLastCodeID = [];
+		}
+		if (this.removeLastCodeID.length) {
+			this.removeCode(this.removeLastCodeID);
+			this.removeLastCodeID = [];
+		}
+		if (!this.removeFirstCodeID.length) {
+			this.removeFirstCodeID = this.addCodeToCanvasBase(
+				this.removeFirstCode,
+				CODE_START_X - 40,
+				CODE_START_Y + 20,
+			);
+		}
+
 		const labremoveFirstID = this.nextIndex++;
 		const labremoveFirstValID = this.nextIndex++;
 
+		this.highlight(0, 0, this.removeFirstCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
+		this.cmd(act.step);
 
 		this.cmd(
 			act.createLabel,
@@ -470,6 +617,7 @@ export default class DequeArray extends Algorithm {
 			QUEUE_LABEL_Y,
 		);
 
+		this.highlight(1, 0, this.removeFirstCodeID);
 		this.cmd(
 			act.createHighlightCircle,
 			this.highlight1ID,
@@ -490,10 +638,17 @@ export default class DequeArray extends Algorithm {
 
 		const removeFirstVal = this.arrayData[this.front];
 		this.cmd(act.createLabel, labremoveFirstValID, removeFirstVal, xpos, ypos);
-		this.cmd(act.setText, this.arrayID[this.front], '');
+		// this.cmd(act.setText, this.arrayID[this.front], '');
 		this.cmd(act.move, labremoveFirstValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
+		this.unhighlight(1, 0, this.removeFirstCodeID);
+		this.highlight(2, 0, this.removeFirstCodeID);
+		this.cmd(act.setText, this.arrayID[this.front], '');
+		this.cmd(act.step);
+
+		this.unhighlight(2, 0, this.removeFirstCodeID);
+		this.highlight(3, 0, this.removeFirstCodeID);
 		this.cmd(act.setHighlight, this.frontID, 1);
 		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
@@ -509,9 +664,9 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.move, this.frontPointerID, frontxpos, frontypos);
 		this.cmd(act.step);
 
+		this.unhighlight(3, 0, this.removeFirstCodeID);
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
-
 		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
 		this.cmd(act.setText, this.leftoverValID, removeFirstVal);
 
@@ -521,15 +676,19 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, labremoveFirstValID);
 		this.cmd(act.step);
 
+		this.highlight(4, 0, this.removeFirstCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
+
 		this.size--;
 		this.cmd(act.setText, this.sizeID, this.size);
-
 		this.cmd(act.step);
+
+		this.unhighlight(4, 0, this.removeFirstCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
 
+		this.unhighlight(0, 0, this.removeFirstCodeID);
 		this.nextIndex = this.nextIndex - 2;
 
 		return this.commands;
@@ -537,17 +696,39 @@ export default class DequeArray extends Algorithm {
 
 	removeLast() {
 		this.commands = [];
+
+		if (this.addFirstCodeID.length) {
+			this.removeCode(this.addFirstCodeID);
+			this.addFirstCodeID = [];
+		}
+		if (this.addLastCodeID.length) {
+			this.removeCode(this.addLastCodeID);
+			this.addLastCodeID = [];
+		}
+		if (this.removeFirstCodeID.length) {
+			this.removeCode(this.removeFirstCodeID);
+			this.removeFirstCodeID = [];
+		}
+		if (!this.removeLastCodeID.length) {
+			this.removeLastCodeID = this.addCodeToCanvasBase(
+				this.removeLastCode,
+				CODE_START_X - 40,
+				CODE_START_Y + 20,
+			);
+		}
+
 		const remLabelID = this.nextIndex++;
 		const remLabelValID = this.nextIndex++;
 
 		const remIndex =
 			(this.front + this.size - 1 + this.arrayData.length) % this.arrayData.length;
 
+		this.highlight(0, 0, this.removeLastCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
+		this.cmd(act.step);
 
 		this.cmd(act.createLabel, remLabelID, 'Removed Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
-
 		this.cmd(
 			act.createHighlightCircle,
 			this.highlight1ID,
@@ -556,45 +737,51 @@ export default class DequeArray extends Algorithm {
 			FRONT_POS_Y,
 		);
 		this.cmd(act.createHighlightCircle, this.highlight2ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
-
 		this.cmd(act.step);
 
 		const xpos = (remIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
 			Math.floor(remIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
+		this.highlight(1, 0, this.removeLastCodeID);
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.move, this.highlight2ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
-
 		this.cmd(act.step);
 
+		this.unhighlight(1, 0, this.removeLastCodeID);
+		this.highlight(2, 0, this.removeLastCodeID);
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.delete, this.highlight2ID);
-
 		const removedVal = this.arrayData[remIndex];
 		this.cmd(act.createLabel, remLabelValID, removedVal, xpos, ypos);
-		this.cmd(act.setText, this.arrayID[remIndex], '');
 		this.cmd(act.move, remLabelValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
+		this.unhighlight(2, 0, this.removeLastCodeID);
+		this.highlight(3, 0, this.removeLastCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
 		this.cmd(act.setText, this.leftoverValID, removedVal);
-
 		this.cmd(act.setText, this.formulaLabelID, '');
+		this.cmd(act.setText, this.arrayID[remIndex], '');
 
 		this.cmd(act.delete, remLabelID);
 		this.cmd(act.delete, remLabelValID);
 		this.cmd(act.step);
 
+		this.unhighlight(3, 0, this.removeLastCodeID);
+		this.highlight(4, 0, this.removeLastCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
+
 		this.cmd(act.setText, this.sizeID, this.size - 1);
 		this.cmd(act.step);
+
+		this.unhighlight(4, 0, this.removeLastCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
 
+		this.unhighlight(0, 0, this.removeLastCodeID);
 		this.size--;
-
 		this.nextIndex = this.nextIndex - 2;
 
 		return this.commands;
@@ -602,6 +789,37 @@ export default class DequeArray extends Algorithm {
 
 	resize(elemToEnqueue, isFront) {
 		this.commands = [];
+
+		if (this.addFirstCodeID.length) {
+			this.removeCode(this.addFirstCodeID);
+			this.addFirstCodeID = [];
+		}
+		if (this.addLastCodeID.length) {
+			this.removeCode(this.addLastCodeID);
+			this.addLastCodeID = [];
+		}
+		if (this.removeFirstCodeID.length) {
+			this.removeCode(this.removeFirstCodeID);
+			this.removeFirstCodeID = [];
+		}
+		if (this.removeLastCodeID.length) {
+			this.removeCode(this.removeLastCodeID);
+			this.removeLastCodeID = [];
+		}
+
+		if (isFront && !this.addFirstCodeID.length) {
+			this.addFirstCodeID = this.addCodeToCanvasBase(
+				this.addFirstCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+		} else if (!this.addLastCodeID.length) {
+			this.addLastCodeID = this.addCodeToCanvasBase(
+				this.addLastCode,
+				CODE_START_X,
+				CODE_START_Y,
+			);
+		}
 
 		const labEnqueueID = this.nextIndex++;
 		const labEnqueueValID = this.nextIndex++;
@@ -624,6 +842,13 @@ export default class DequeArray extends Algorithm {
 
 		const extra = isFront ? ': elements shifted by 1' : '';
 
+		if (isFront) {
+			this.highlight(0, 0, this.addFirstCodeID);
+			this.highlight(1, 0, this.addFirstCodeID);
+		} else {
+			this.highlight(0, 0, this.addLastCodeID);
+			this.highlight(1, 0, this.addLastCodeID);
+		}
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value:', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(
@@ -636,6 +861,11 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 
 		//Create new array
+		if (isFront) {
+			this.highlight(2, 0, this.addFirstCodeID);
+		} else {
+			this.highlight(2, 0, this.addLastCodeID);
+		}
 		for (let i = 0; i < this.size * 2; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + RESIZE_ARRAY_START_X;
 			const ypos =
@@ -658,6 +888,15 @@ export default class DequeArray extends Algorithm {
 		this.arrayMoveID = new Array(this.size);
 
 		//Move old elements to new array
+		if (isFront) {
+			this.unhighlight(2, 0, this.addFirstCodeID);
+			this.highlight(3, 0, this.addFirstCodeID);
+			this.highlight(4, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(2, 0, this.addLastCodeID);
+			this.highlight(3, 0, this.addLastCodeID);
+			this.highlight(4, 0, this.addLastCodeID);
+		}
 		for (let i = 0; i < this.size; i++) {
 			const xposinit =
 				(((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) *
@@ -700,6 +939,15 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.step);
 
 		//Delete old array
+		if (isFront) {
+			this.unhighlight(3, 0, this.addFirstCodeID);
+			this.unhighlight(4, 0, this.addFirstCodeID);
+			this.highlight(5, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(3, 0, this.addLastCodeID);
+			this.unhighlight(4, 0, this.addLastCodeID);
+			this.highlight(5, 0, this.addLastCodeID);
+		}
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.arrayID[i]);
 			this.cmd(act.delete, this.arrayLabelID[i]);
@@ -720,6 +968,13 @@ export default class DequeArray extends Algorithm {
 		this.arrayLabelID = this.arrayLabelIDNew;
 		this.arrayData = this.arrayDataNew;
 
+		if (isFront) {
+			this.unhighlight(5, 0, this.addFirstCodeID);
+			this.highlight(6, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(5, 0, this.addLastCodeID);
+			this.highlight(6, 0, this.addLastCodeID);
+		}
 		this.cmd(act.setHighlight, this.frontID, 1);
 		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
@@ -728,6 +983,15 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.move, this.frontPointerID, ARRAY_START_X, ARRAY_START_Y + FRONT_LABEL_OFFSET);
 		this.cmd(act.step);
 
+		if (isFront) {
+			this.unhighlight(1, 0, this.addFirstCodeID);
+			this.unhighlight(6, 0, this.addFirstCodeID);
+			this.highlight(9, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(1, 0, this.addLastCodeID);
+			this.unhighlight(6, 0, this.addLastCodeID);
+			this.highlight(7, 0, this.addLastCodeID);
+		}
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
 
@@ -792,12 +1056,27 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.arrayID[addIndex], elemToEnqueue);
 		this.cmd(act.step);
 
+		if (isFront) {
+			this.unhighlight(9, 0, this.addFirstCodeID);
+			this.highlight(10, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(7, 0, this.addLastCodeID);
+			this.highlight(8, 0, this.addLastCodeID);
+		}
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
+
 		this.cmd(act.setText, this.sizeID, this.size + 1);
 		this.cmd(act.step);
-		this.cmd(act.setHighlight, this.sizeID, 0);
 
+		if (isFront) {
+			this.unhighlight(0, 0, this.addFirstCodeID);
+			this.unhighlight(10, 0, this.addFirstCodeID);
+		} else {
+			this.unhighlight(0, 0, this.addLastCodeID);
+			this.unhighlight(8, 0, this.addLastCodeID);
+		}
+		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labEnqueueID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.size++;
@@ -810,6 +1089,14 @@ export default class DequeArray extends Algorithm {
 	clearAll() {
 		this.addField.value = '';
 		this.commands = [];
+		this.removeCode(this.addFirstCodeID);
+		this.removeCode(this.addLastCodeID);
+		this.removeCode(this.removeFirstCodeID);
+		this.removeCode(this.removeLastCodeID);
+		this.addFirstCodeID = [];
+		this.addLastCodeID = [];
+		this.removeFirstCodeID = [];
+		this.removeLastCodeID = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
 

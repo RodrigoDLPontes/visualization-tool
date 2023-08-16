@@ -11,7 +11,7 @@ export const algoMap = {
 	StackLL: ['Stack (LinkedList)', algos.StackLL, true],
 	QueueArray: ['Queue (Array)', algos.QueueArray, true],
 	QueueLL: ['Queue (LinkedList)', algos.QueueLL, true],
-	DequeArray: ['Deque (Array)', algos.DequeArray],
+	DequeArray: ['Deque (Array)', algos.DequeArray, true],
 	DequeLL: ['Deque (LinkedList)', algos.DequeLL],
 	BST: ['Binary Search Tree', algos.BST, true],
 	Heap: ['Heaps / PQs', algos.Heap],

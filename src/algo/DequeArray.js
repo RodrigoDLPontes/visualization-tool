@@ -1094,7 +1094,7 @@ export default class DequeArray extends Algorithm {
 		this.removeCode(this.removeFirstCodeID);
 		this.removeCode(this.removeLastCodeID);
 		this.addFirstCodeID = [];
-		this.addLastCoideID = [];
+		this.addLastCodeID = [];
 		this.removeFirstCodeID = [];
 		this.removeLastCodeID = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');

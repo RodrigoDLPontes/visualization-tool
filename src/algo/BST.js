@@ -115,6 +115,14 @@ const REMOVE_CODE_SUCC = [
 	['      curr.right ← removeSuccessor(curr.right)'],
 	['      curr.data ← successor data'],
 	['  return curr'],
+	[''],
+	['procedure removeSuccessor(curr)'],
+	['  if curr.left == null'],
+	['    return curr.right'],
+	['  else'],
+	['    curr.left ← removePredecessor(curr.left)'],
+	['    return curr'],
+	['end procedure'],
 ];
 const REMOVE_CODE_PRED = [
 	['procedure remove(data)'],
@@ -140,6 +148,14 @@ const REMOVE_CODE_PRED = [
 	['      curr.left ← removePredecessor(curr.left)'],
 	['      curr.data ← predecessor data'],
 	['  return curr'],
+	[''],
+	['procedure removePredecessor(curr)'],
+	['  if curr.right == null'],
+	['    return curr.left'],
+	['  else'],
+	['    curr.right ← removePredecessor(curr.right)'],
+	['    return curr'],
+	['end procedure'],
 ];
 const FIND_CODE = [
 	['procedure find(data)'],
@@ -295,7 +311,7 @@ export default class BST extends Algorithm {
 
 	deleteCallback() {
 		const deletedValue = this.deleteField.value;
-		if (deletedValue !== '') {
+		if (deletedValue !== '' && this.treeRoot) {
 			this.deleteField.value = '';
 			this.implementAction(this.remove.bind(this), parseInt(deletedValue));
 		}
@@ -303,7 +319,7 @@ export default class BST extends Algorithm {
 
 	findCallback() {
 		const findValue = this.findField.value;
-		if (findValue !== '') {
+		if (findValue !== '' && this.treeRoot) {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), parseInt(findValue));
 		}
@@ -327,6 +343,7 @@ export default class BST extends Algorithm {
 				this.add.bind(this),
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
 			);
+			this.clearOldObjects();
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -770,11 +787,7 @@ export default class BST extends Algorithm {
 		} else {
 			this.highlight(5, 0);
 			this.highlight(6, 0);
-			this.cmd(
-				act.setText,
-				0,
-				'Searching for ' + value + ' :  (Element not found)'
-			);
+			this.cmd(act.setText, 0, 'Searching for ' + value + ' :  (Element not found)');
 			this.cmd(act.step);
 
 			this.unhighlight(5, 0);
@@ -811,7 +824,6 @@ export default class BST extends Algorithm {
 		this.highlight(0, 0);
 		this.highlight(1, 0);
 		this.highlight(4, 0);
-
 		this.cmd(act.setText, 0, 'Inserting ' + data);
 		this.cmd(act.step);
 
@@ -821,6 +833,10 @@ export default class BST extends Algorithm {
 
 		this.unhighlight(0, 0);
 		this.unhighlight(1, 0);
+		this.unhighlight(4, 0);
+		this.unhighlight(5, 0);
+		this.unhighlight(6, 0);
+		this.unhighlight(7, 0);
 		this.unhighlight(12, 0);
 
 		return this.commands;
@@ -902,8 +918,8 @@ export default class BST extends Algorithm {
 		const firstLabel = this.nextIndex;
 		this.codeID =
 			this.predSucc === 'succ'
-				? this.addCodeToCanvasBase(REMOVE_CODE_SUCC, CODE_START_X + 15, CODE_START_Y + 75)
-				: this.addCodeToCanvasBase(REMOVE_CODE_PRED, CODE_START_X + 15, CODE_START_Y + 75);
+				? this.addCodeToCanvasBase(REMOVE_CODE_SUCC, CODE_START_X + 15, CODE_START_Y + 15)
+				: this.addCodeToCanvasBase(REMOVE_CODE_PRED, CODE_START_X + 15, CODE_START_Y + 15);
 		for (let i = firstLabel; i < this.nextIndex; i++) this.toClear.push(i);
 
 		this.highlight(0, 0);
@@ -918,10 +934,10 @@ export default class BST extends Algorithm {
 		this.cmd(act.setText, 0, '');
 		this.resizeTree();
 
-		this.unhighlight(22, 0);
 		this.unhighlight(0, 0);
 		this.unhighlight(1, 0);
 		this.unhighlight(4, 0);
+		this.unhighlight(22, 0);
 		return this.commands;
 	}
 
@@ -1026,65 +1042,97 @@ export default class BST extends Algorithm {
 				this.resizeTree();
 				this.unhighlight(19, 0);
 				this.unhighlight(20, 0);
+				this.unhighlight(24, 0);
+				this.unhighlight(29, 0);
 				this.highlight(21, 0);
 				curr.data = dummy[0];
 				this.cmd(act.setText, curr.graphicID, curr.data);
 				this.cmd(act.step);
 			}
 		}
-		this.unhighlight(21, 0);
-		this.unhighlight(11, 0);
-		this.highlight(22, 0);
 		this.unhighlight(5, 0);
 		this.unhighlight(6, 0);
+		this.unhighlight(11, 0);
+		this.unhighlight(21, 0);
+		this.unhighlight(24, 0);
+		this.highlight(22, 0);
 		this.cmd(act.setHighlight, curr.graphicID, 0);
 		this.cmd(act.setText, 0, '');
 		return curr;
 	}
 
 	removeSucc(curr, dummy) {
+		this.unhighlight(27, 0);
+		this.unhighlight(28, 0);
+		this.highlight(24, 0);
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
+
 		if (curr.left == null) {
+			this.highlight(25, 0);
 			this.cmd(act.setText, 0, 'No left child, replace with right child');
 			this.cmd(act.step);
+
 			dummy.push(curr.data);
+			this.highlight(26, 0);
 			this.deleteNode(curr);
 			this.cmd(act.step);
+
+			this.unhighlight(25, 0);
+			this.unhighlight(26, 0);
 			this.cmd(act.setText, 0, '');
 			return curr.right;
 		}
+		this.highlight(27, 0);
+		this.highlight(28, 0);
 		this.cmd(act.setText, 0, 'Left child exists, look left');
+		this.cmd(act.step);
+
 		curr.left = this.removeSucc(curr.left, dummy);
 		if (curr.left != null) {
 			curr.left.parent = curr;
 			this.connectSmart(curr.graphicID, curr.left.graphicID);
 			this.resizeTree();
 		}
+		this.highlight(29, 0);
 		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
 		return curr;
 	}
 
 	removePred(curr, dummy) {
+		this.unhighlight(27, 0);
+		this.unhighlight(28, 0);
+		this.highlight(24, 0);
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
+
 		if (curr.right == null) {
+			this.highlight(25, 0);
 			this.cmd(act.setText, 0, 'No right child, replace with right child');
 			this.cmd(act.step);
+
 			dummy.push(curr.data);
+			this.highlight(26, 0);
 			this.deleteNode(curr);
 			this.cmd(act.step);
+
+			this.unhighlight(25, 0);
+			this.unhighlight(26, 0);
 			this.cmd(act.setText, 0, '');
 			return curr.left;
 		}
+		this.highlight(27, 0);
+		this.highlight(28, 0);
 		this.cmd(act.setText, 0, 'Right child exists, look right');
 		this.cmd(act.step);
+
 		curr.right = this.removePred(curr.right, dummy);
 		if (curr.right != null) {
 			curr.right.parent = curr;
 			this.connectSmart(curr.graphicID, curr.right.graphicID);
 			this.resizeTree();
 		}
+		this.highlight(29, 0);
 		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
 		return curr;
 	}

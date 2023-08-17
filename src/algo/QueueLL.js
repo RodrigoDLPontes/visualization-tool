@@ -236,14 +236,19 @@ export default class QueueLL extends Algorithm {
 		const MAX_SIZE = 7;
 		const MIN_SIZE = 2;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
-			this.implementAction(
-				this.enqueue.bind(this),
-				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-			);
+			const val = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			if (set.has(val)) {
+				i--;
+			} else {
+				set.add(val);
+				this.implementAction(this.enqueue.bind(this), val);
+			}
+
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}

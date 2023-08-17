@@ -377,15 +377,18 @@ export default class ArrayList extends Algorithm {
 		const MAX_SIZE = this.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
-			this.implementAction(
-				this.add.bind(this),
-				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				0,
-			);
+			const value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			if (set.has(value)) {
+				i--;
+			} else {
+				set.add(value);
+				this.implementAction(this.add.bind(this), value, 0);
+			}
 			if (this.addFBCodeID.length) {
 				this.removeCode(this.addFBCodeID);
 				this.addFBCodeID = [];
@@ -886,16 +889,22 @@ export default class ArrayList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
-
-		this.removeCode(this.removeFBCodeID);
-		this.removeCode(this.removeIndexCodeID);
-		this.removeFBCodeID = [];
-		this.removeIndexCodeID = [];
-		this.removeCode(this.addFBCodeID);
-		this.removeCode(this.addIndexCodeID);
-		this.addFBCodeID = [];
-		this.addIndexCodeID = [];
-
+		if (this.removeFBCodeID.length) {
+			this.removeCode(this.removeFBCodeID);
+			this.removeFBCodeID = [];
+		}
+		if (this.removeIndexCodeID.length) {
+			this.removeCode(this.removeIndexCodeID);
+			this.removeIndexCodeID = [];
+		}
+		if (this.addFBCodeID.length) {
+			this.removeCode(this.addFBCodeID);
+			this.addFBCodeID = [];
+		}
+		if (this.addIndexCodeID.length) {
+			this.removeCode(this.addIndexCodeID);
+			this.addIndexCodeID = [];
+		}
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 			this.arrayData[i] = null;

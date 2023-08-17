@@ -472,7 +472,7 @@ export default class Heap extends Algorithm {
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'BuildHeap list cannot contain non-numeric values or numbers >999',
+				'BuildHeap list cannot contain non-numeric values or numbers > 999',
 			);
 			return this.commands;
 		}
@@ -482,6 +482,7 @@ export default class Heap extends Algorithm {
 			.map(Number) // Map to numbers (to remove invalid characters)
 			.filter(x => !Number.isNaN(x)) // Remove stuff that was invalid
 			.slice(0, MAX_ARRAY_SIZE); // Get first 31 numbers
+		this.arrayData = [...new Set(this.arrayData)]; // Remove duplicates
 		this.arrayData.unshift(0); // Add a 0 to start of array
 
 		this.currentHeapSize = this.arrayData.length - 1;

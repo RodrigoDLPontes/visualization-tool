@@ -256,7 +256,6 @@ export default class ArrayList extends Algorithm {
 
 		this.addFBCodeID = [];
 		this.addIndexCodeID = [];
-
 		this.removeFBCodeID = [];
 		this.removeIndexCodeID = [];
 

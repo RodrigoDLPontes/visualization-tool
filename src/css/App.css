@@ -23,24 +23,23 @@
 * {
 	-webkit-appearance: none;
 	-moz-appearance: none;
+	z-index: 0;
 }
 
-#left {
+#menu {
 	float: left;
 	width: 100px;
-	margin-top: 3px;
+	margin-top: 2px;
 }
 
-#right {
-	float: right;
-	width: 100px;
-	margin-top: 18px;
-	margin-right: 0px;
-	position: relative;
+#theme {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	transition: 0.2s ease-out;
 }
 
-#right:hover {
+#theme:hover {
 	cursor: pointer;
 }
 
@@ -52,9 +51,23 @@
 	transform: rotate(360deg);
 }
 
-#center {
+#title {
 	margin: 0 auto;
 	width: 100px;
+}
+
+.gimmicks {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: 25px;
+}
+
+#blob-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: -82px;
 }
 
 body {

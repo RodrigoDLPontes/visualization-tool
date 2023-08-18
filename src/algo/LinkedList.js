@@ -357,27 +357,22 @@ export default class LinkedList extends Algorithm {
 		const MAX_SIZE = 8;
 		const MIN_SIZE = 4;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
-			this.implementAction(
-				this.add.bind(this),
-				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				0,
-			);
+			const val = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			if (set.has(val)) {
+				i--;
+			} else {
+				set.add(val);
+				this.implementAction(this.add.bind(this), val, 0);
+			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
 	}
-
-	// getCallback()
-	// {
-	//     if (this.getField.value != "" && this.getField.value > 0 && this.getField.value < this.size)
-	//     {
-	//         this.implementAction(this.get.bind(this), "");
-	//     }
-	// }
 
 	clearCallback() {
 		this.implementAction(this.clearAll.bind(this));

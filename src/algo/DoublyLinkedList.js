@@ -446,15 +446,18 @@ export default class DoublyLinkedList extends Algorithm {
 		const MAX_SIZE = 6;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
-			this.implementAction(
-				this.add.bind(this),
-				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				0,
-			);
+			const val = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
+			if (set.has(val)) {
+				i--;
+			} else {
+				set.add(val);
+				this.implementAction(this.add.bind(this), val, 0);
+			}
 			if (this.addFrontCodeID.length) {
 				this.removeCode(this.addFrontCodeID);
 				this.addFrontCodeID = [];
@@ -1091,18 +1094,30 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
-		this.removeCode(this.addFrontCodeID);
-		this.removeCode(this.addBackCodeID);
-		this.removeCode(this.addIndexCodeID);
-		this.removeCode(this.removeFrontCodeID);
-		this.removeCode(this.removeBackCodeID);
-		this.removeCode(this.removeIndexCodeID);
-		this.addFrontCodeID = [];
-		this.addBackCodeID = [];
-		this.addIndexCodeID = [];
-		this.removerontCodeID = [];
-		this.removeBackCodeID = [];
-		this.removeIndexCodeID = [];
+		if (this.addFrontCodeID.length) {
+			this.removeCode(this.addFrontCodeID);
+			this.addFrontCodeID = [];
+		}
+		if (this.addBackCodeID.length) {
+			this.removeCode(this.addBackCodeID);
+			this.addBackCodeID = [];
+		}
+		if (this.addIndexCodeID.length) {
+			this.removeCode(this.addIndexCodeID);
+			this.addIndexCodeID = [];
+		}
+		if (this.removeFrontCodeID.length) {
+			this.removeCode(this.removeFrontCodeID);
+			this.removeFrontCodeID = [];
+		}
+		if (this.removeBackCodeID.length) {
+			this.removeCode(this.removeBackCodeID);
+			this.removeBackCodeID = [];
+		}
+		if (this.removeIndexCodeID.length) {
+			this.removeCode(this.removeIndexCodeID);
+			this.removeIndexCodeID = [];
+		}
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}

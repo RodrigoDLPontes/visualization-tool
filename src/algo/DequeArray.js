@@ -347,21 +347,22 @@ export default class DequeArray extends Algorithm {
 		const MAX_SIZE = this.arrayData.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
+		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
+			const val = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
 			const randomNum = Math.floor(Math.random() * 2);
-			if (randomNum === 0) {
-				this.implementAction(
-					this.addFirst.bind(this),
-					Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				);
+			if (set.has(val)) {
+				i--;
 			} else {
-				this.implementAction(
-					this.addLast.bind(this),
-					Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				);
+				set.add(val);
+				if (randomNum === 0) {
+					this.implementAction(this.addFirst.bind(this), val);
+				} else {
+					this.implementAction(this.addLast.bind(this), val);
+				}
 			}
 			if (this.addFirstCodeID.length) {
 				this.removeCode(this.addFirstCodeID);

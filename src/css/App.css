@@ -36,6 +36,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-left: 20px;
 	transition: 0.2s ease-out;
 }
 
@@ -67,7 +68,6 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-right: -82px;
 }
 
 body {
@@ -281,7 +281,6 @@ div.content {
 .inner-flex button.button:hover,
 .inner-flex button.button:active {
 	filter: var(--filter);
-	animation: bounce 1s infinite 1.2s;
 }
 
 .inner-flex button.button:focus,
@@ -385,15 +384,5 @@ div.content {
 	to {
 		left: -240px;
 		opacity: 0;
-	}
-}
-
-@keyframes bounce {
-	0%,
-	100% {
-		transform: translateY(0);
-	}
-	50% {
-		transform: translateY(-7px);
 	}
 }

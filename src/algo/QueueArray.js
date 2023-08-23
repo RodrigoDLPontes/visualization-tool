@@ -277,7 +277,7 @@ export default class QueueArray extends Algorithm {
 		const MAX_SIZE = this.arrayData.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
-		const randomFront = Math.floor(Math.random() * (MAX_SIZE));
+		const randomFront = Math.floor(Math.random() * MAX_SIZE);
 		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this, randomFront));
@@ -683,10 +683,13 @@ export default class QueueArray extends Algorithm {
 		// Front pointer
 		this.front = front;
 		const frontxpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
-		const frontypos = Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y + FRONT_LABEL_OFFSET;
+		const frontypos =
+			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
+			ARRAY_START_Y +
+			FRONT_LABEL_OFFSET;
 		this.cmd(act.setText, this.frontID, front);
 		this.cmd(act.setPosition, this.frontPointerID, frontxpos, frontypos);
-		
+
 		return this.commands;
 	}
 }

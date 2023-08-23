@@ -277,7 +277,7 @@ export default class QueueArray extends Algorithm {
 		const MAX_SIZE = this.arrayData.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
-		const randomFront = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE)) + MIN_SIZE;
+		const randomFront = Math.floor(Math.random() * (MAX_SIZE));
 		const set = new Set();
 
 		this.implementAction(this.clearAll.bind(this, randomFront));

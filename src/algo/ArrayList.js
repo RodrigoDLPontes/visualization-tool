@@ -371,14 +371,14 @@ export default class ArrayList extends Algorithm {
 	}
 
 	randomCallback() {
+		this.implementAction(this.clearAll.bind(this));
+
 		const LOWER_BOUND = 0;
 		const UPPER_BOUND = 16;
 		const MAX_SIZE = this.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
 		const set = new Set();
-
-		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
 			const value = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
@@ -909,6 +909,13 @@ export default class ArrayList extends Algorithm {
 			this.arrayData[i] = null;
 		}
 		this.size = 0;
+
+		// Reset array graphic
+		for (let i = SIZE; i < this.length; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+		this.length = SIZE;
 		return this.commands;
 	}
 

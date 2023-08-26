@@ -215,6 +215,7 @@ export default class DequeArray extends Algorithm {
 		this.leftoverLabelID = this.nextIndex++;
 		this.leftoverValID = this.nextIndex++;
 		this.formulaLabelID = this.nextIndex++;
+		this.arraySize = SIZE;
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -284,6 +285,7 @@ export default class DequeArray extends Algorithm {
 		this.front = 0;
 		this.size = 0;
 		this.nextIndex = this.resetIndex;
+		this.arraySize = SIZE;
 
 		this.arrayData = new Array(SIZE);
 		this.arrayID = new Array(SIZE);
@@ -298,12 +300,12 @@ export default class DequeArray extends Algorithm {
 	}
 
 	addLastCallback() {
-		if (this.size < this.arrayData.length && this.addField.value !== '') {
+		if (this.size < this.arraySize && this.addField.value !== '') {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addLast.bind(this), pushVal);
 		} else if (
-			this.size === this.arrayData.length &&
+			this.size === this.arraySize &&
 			this.addField.value !== '' &&
 			this.size * 2 < MAX_SIZE
 		) {
@@ -326,12 +328,12 @@ export default class DequeArray extends Algorithm {
 	}
 
 	addFirstCallBack() {
-		if (this.size < this.arrayData.length && this.addField.value !== '') {
+		if (this.size < this.arraySize && this.addField.value !== '') {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.addFirst.bind(this), pushVal);
 		} else if (
-			this.size === this.arrayData.length &&
+			this.size === this.arraySize &&
 			this.addField.value !== '' &&
 			this.size * 2 < MAX_SIZE
 		) {
@@ -344,7 +346,7 @@ export default class DequeArray extends Algorithm {
 	randomCallback() {
 		const LOWER_BOUND = 0;
 		const UPPER_BOUND = 16;
-		const MAX_SIZE = this.arrayData.length - 1;
+		const MAX_SIZE = SIZE - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
 		const set = new Set();
@@ -406,7 +408,7 @@ export default class DequeArray extends Algorithm {
 
 		const labAddLastID = this.nextIndex++;
 		const labAddLastValID = this.nextIndex++;
-		const addIndex = (this.front + this.size) % this.arrayData.length;
+		const addIndex = (this.front + this.size) % this.arraySize;
 
 		this.highlight(0, 0, this.addLastCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
@@ -424,7 +426,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(
 			act.setText,
 			this.formulaLabelID,
-			`Adding ${elemToAddLast} to back at index (${this.front} + ${this.size}) % ${this.arrayData.length}`,
+			`Adding ${elemToAddLast} to back at index (${this.front} + ${this.size}) % ${this.arraySize}`,
 		);
 
 		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -492,7 +494,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
 
-		const addIndex = (this.front - 1 + this.arrayData.length) % this.arrayData.length;
+		const addIndex = (this.front - 1 + this.arraySize) % this.arraySize;
 
 		const xpos = (addIndex % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const ypos =
@@ -516,7 +518,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(
 			act.setText,
 			this.formulaLabelID,
-			`Adding ${elemToAdd} to front at index (${this.front} - 1) % ${this.arrayData.length}`,
+			`Adding ${elemToAdd} to front at index (${this.front} - 1) % ${this.arraySize}`,
 		);
 		this.cmd(act.step);
 
@@ -654,7 +656,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
 
-		this.front = (this.front + 1) % this.arrayData.length;
+		this.front = (this.front + 1) % this.arraySize;
 		const frontxpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const frontypos =
 			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
@@ -721,8 +723,7 @@ export default class DequeArray extends Algorithm {
 		const remLabelID = this.nextIndex++;
 		const remLabelValID = this.nextIndex++;
 
-		const remIndex =
-			(this.front + this.size - 1 + this.arrayData.length) % this.arrayData.length;
+		const remIndex = (this.front + this.size - 1 + this.arraySize) % this.arraySize;
 
 		this.highlight(0, 0, this.removeLastCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
@@ -837,7 +838,7 @@ export default class DequeArray extends Algorithm {
 			this.arrayLabelIDNew[i] = this.nextIndex++;
 			if (i < this.size) {
 				this.arrayDataNew[i + frontOffset] =
-					this.arrayData[(this.front + i) % this.arrayData.length];
+					this.arrayData[(this.front + i) % this.arraySize];
 			}
 		}
 
@@ -900,11 +901,10 @@ export default class DequeArray extends Algorithm {
 		}
 		for (let i = 0; i < this.size; i++) {
 			const xposinit =
-				(((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) *
-					ARRAY_ELEM_WIDTH +
+				(((this.front + i) % this.arraySize) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH +
 				ARRAY_START_X;
 			const yposinit =
-				Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) *
+				Math.floor(((this.front + i) % this.arraySize) / ARRAY_ELEMS_PER_LINE) *
 					ARRAY_LINE_SPACING +
 				ARRAY_START_Y;
 
@@ -920,7 +920,7 @@ export default class DequeArray extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.arrayMoveID[i],
-				this.arrayData[(this.front + i) % this.arrayData.length],
+				this.arrayData[(this.front + i) % this.arraySize],
 				xposinit,
 				yposinit,
 			);
@@ -1080,6 +1080,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labEnqueueID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
+		this.arraySize = this.size * 2;
 		this.size++;
 
 		this.nextIndex = this.nextIndex - this.size;
@@ -1101,7 +1102,7 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
 
-		for (let i = 0; i < this.arrayData.length; i++) {
+		for (let i = 0; i < this.arraySize; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 		}
 		this.front = 0;
@@ -1114,6 +1115,14 @@ export default class DequeArray extends Algorithm {
 			ARRAY_START_X,
 			ARRAY_START_Y + FRONT_LABEL_OFFSET,
 		);
+
+		// Reset array graphic
+		for (let i = SIZE; i < this.arraySize; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+		this.arraySize = SIZE;
+
 		return this.commands;
 	}
 }

@@ -520,8 +520,7 @@ export default class QueueArray extends Algorithm {
 		this.highlight(4, 0, this.enqueueCodeID);
 		for (let i = 0; i < this.size; i++) {
 			const xposinit =
-				(((this.front + i) % this.arraySize) % ARRAY_ELEMS_PER_LINE) *
-					ARRAY_ELEM_WIDTH +
+				(((this.front + i) % this.arraySize) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH +
 				ARRAY_START_X;
 			const yposinit =
 				Math.floor(((this.front + i) % this.arraySize) / ARRAY_ELEMS_PER_LINE) *

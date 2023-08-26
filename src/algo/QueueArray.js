@@ -147,6 +147,7 @@ export default class QueueArray extends Algorithm {
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
 		this.leftoverValID = this.nextIndex++;
+		this.arraySize = SIZE;
 
 		for (let i = 0; i < SIZE; i++) {
 			const xpos = (i % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
@@ -247,15 +248,16 @@ export default class QueueArray extends Algorithm {
 		}
 
 		this.nextIndex = this.nextIndex + 8;
+		this.arraySize = SIZE;
 	}
 
 	enqueueCallback() {
-		if (this.size < this.arrayData.length && this.enqueueField.value !== '') {
+		if (this.size < this.arraySize && this.enqueueField.value !== '') {
 			const pushVal = this.enqueueField.value;
 			this.enqueueField.value = '';
 			this.implementAction(this.enqueue.bind(this), pushVal);
 		} else if (
-			this.size === this.arrayData.length &&
+			this.size === this.arraySize &&
 			this.enqueueField !== '' &&
 			this.size * 2 < MAX_SIZE
 		) {
@@ -274,7 +276,7 @@ export default class QueueArray extends Algorithm {
 	randomCallback() {
 		const LOWER_BOUND = 0;
 		const UPPER_BOUND = 16;
-		const MAX_SIZE = this.arrayData.length - 1;
+		const MAX_SIZE = SIZE - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
 		const randomFront = Math.floor(Math.random() * MAX_SIZE);
@@ -307,7 +309,7 @@ export default class QueueArray extends Algorithm {
 		const labIndexID = this.nextIndex++;
 		const labIndexValID = this.nextIndex++;
 
-		const newTail = (this.front + this.size) % this.arrayData.length;
+		const newTail = (this.front + this.size) % this.arraySize;
 		this.arrayData[newTail] = elemToEnqueue;
 		this.highlight(0, 0, this.enqueueCodeID);
 		this.cmd(act.setText, this.leftoverLabelID, '');
@@ -416,7 +418,7 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setHighlight, this.frontPointerID, 1);
 		this.cmd(act.step);
 
-		this.front = (this.front + 1) % this.arrayData.length;
+		this.front = (this.front + 1) % this.arraySize;
 		const frontxpos = (this.front % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		const frontypos =
 			Math.floor(this.front / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING +
@@ -468,7 +470,7 @@ export default class QueueArray extends Algorithm {
 			this.arrayIDNew[i] = this.nextIndex++;
 			this.arrayLabelIDNew[i] = this.nextIndex++;
 			if (i < this.size) {
-				this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arrayData.length];
+				this.arrayDataNew[i] = this.arrayData[(this.front + i) % this.arraySize];
 			}
 		}
 
@@ -518,11 +520,10 @@ export default class QueueArray extends Algorithm {
 		this.highlight(4, 0, this.enqueueCodeID);
 		for (let i = 0; i < this.size; i++) {
 			const xposinit =
-				(((this.front + i) % this.arrayData.length) % ARRAY_ELEMS_PER_LINE) *
-					ARRAY_ELEM_WIDTH +
+				(((this.front + i) % this.arraySize) % ARRAY_ELEMS_PER_LINE) * ARRAY_ELEM_WIDTH +
 				ARRAY_START_X;
 			const yposinit =
-				Math.floor(((this.front + i) % this.arrayData.length) / ARRAY_ELEMS_PER_LINE) *
+				Math.floor(((this.front + i) % this.arraySize) / ARRAY_ELEMS_PER_LINE) *
 					ARRAY_LINE_SPACING +
 				ARRAY_START_Y;
 
@@ -535,7 +536,7 @@ export default class QueueArray extends Algorithm {
 			this.cmd(
 				act.createLabel,
 				this.arrayMoveID[i],
-				this.arrayData[(this.front + i) % this.arrayData.length],
+				this.arrayData[(this.front + i) % this.arraySize],
 				xposinit,
 				yposinit,
 			);
@@ -558,6 +559,7 @@ export default class QueueArray extends Algorithm {
 		}
 
 		//Move new array
+		this.arraySize = this.size * 2;
 		this.unhighlight(3, 0, this.enqueueCodeID);
 		this.unhighlight(4, 0, this.enqueueCodeID);
 		this.highlight(5, 0, this.enqueueCodeID);
@@ -591,7 +593,7 @@ export default class QueueArray extends Algorithm {
 
 		//Delete '(resize required)' text, create circle at the "size" object, add enqueue text
 
-		const newTail = (this.front + this.size) % this.arrayData.length;
+		const newTail = (this.front + this.size) % this.arraySize;
 		const labIndexID = this.nextIndex++;
 		const labIndexValID = this.nextIndex++;
 
@@ -648,7 +650,9 @@ export default class QueueArray extends Algorithm {
 		this.unhighlight(7, 0, this.enqueueCodeID);
 		this.highlight(8, 0, this.enqueueCodeID);
 		this.cmd(act.step);
-		this.size = this.size + 1;
+
+		this.size++;
+
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
 
@@ -672,7 +676,7 @@ export default class QueueArray extends Algorithm {
 		// 	this.removeCode(this.codeID);
 		// }
 
-		for (let i = 0; i < this.arrayID.length; i++) {
+		for (let i = 0; i < this.arraySize; i++) {
 			this.cmd(act.setText, this.arrayID[i], '');
 		}
 
@@ -689,6 +693,13 @@ export default class QueueArray extends Algorithm {
 			FRONT_LABEL_OFFSET;
 		this.cmd(act.setText, this.frontID, front);
 		this.cmd(act.setPosition, this.frontPointerID, frontxpos, frontypos);
+
+		// Reset array graphic
+		for (let i = SIZE; i < this.arraySize; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+		this.arraySize = SIZE;
 
 		return this.commands;
 	}

@@ -116,6 +116,7 @@ export default class StackArray extends Algorithm {
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
 		this.arrayData = new Array(SIZE);
+		this.arraySize = SIZE;
 
 		for (let i = 0; i < SIZE; i++) {
 			this.arrayID[i] = this.nextIndex++;
@@ -230,14 +231,14 @@ export default class StackArray extends Algorithm {
 	}
 
 	randomCallback() {
+		this.implementAction(this.clearAll.bind(this));
+
 		const LOWER_BOUND = 0;
 		const UPPER_BOUND = 16;
 		const MAX_SIZE = this.arrayData.length - 1;
 		const MIN_SIZE = 3;
 		const randomSize = Math.floor(Math.random() * (MAX_SIZE - MIN_SIZE + 1)) + MIN_SIZE;
 		const set = new Set();
-
-		this.implementAction(this.clearAll.bind(this));
 
 		for (let i = 0; i < randomSize; i++) {
 			const val = Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND;
@@ -393,6 +394,7 @@ export default class StackArray extends Algorithm {
 		this.cmd(act.createLabel, labPushValID, elemToPush, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 
+		this.arraySize = this.top * 2;
 		this.arrayIDNew = new Array(this.top * 2);
 		this.arrayLabelIDNew = new Array(this.top * 2);
 		this.arrayDataNew = new Array(this.top * 2);
@@ -545,6 +547,14 @@ export default class StackArray extends Algorithm {
 		}
 		this.top = 0;
 		this.cmd(act.setText, this.topID, '0');
+
+		// Reset array graphic
+		for (let i = SIZE; i < this.arraySize; i++) {
+			this.cmd(act.delete, this.arrayID[i]);
+			this.cmd(act.delete, this.arrayLabelID[i]);
+		}
+		this.arraySize = SIZE;
+
 		return this.commands;
 	}
 }

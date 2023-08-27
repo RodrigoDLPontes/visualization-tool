@@ -188,6 +188,7 @@ export default class BruteForce extends Algorithm {
 
 		// User input validation
 		if (!text || !pattern) {
+			this.shake(this.findButton);
 			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
 			return this.commands;
 		} else if (text.length < pattern.length) {

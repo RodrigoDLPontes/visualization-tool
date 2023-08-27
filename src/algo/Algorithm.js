@@ -269,6 +269,13 @@ export default class Algorithm {
 		}
 	}
 
+	shake(button) {
+		button.classList.add('shake');
+		setTimeout(() => {
+			button.classList.remove('shake');
+		}, 770);
+	}
+
 	cmd(act, ...params) {
 		// Helper method to add command to stack
 		if (this.recordAnimation) {

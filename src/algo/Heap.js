@@ -207,6 +207,8 @@ export default class Heap extends Algorithm {
 		if (insertedValue !== '') {
 			this.insertField.value = '';
 			this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
+		} else {
+			this.shake(this.insertButton);
 		}
 	}
 
@@ -416,6 +418,8 @@ export default class Heap extends Algorithm {
 		this.cmd(act.setText, this.descriptLabel1, '');
 
 		if (this.currentHeapSize === 0) {
+			this.shake(this.removeButton);
+			this.cmd(act.setText, this.infoLabelID, '');
 			this.cmd(act.setText, this.descriptLabel1, 'Heap is empty, cannot dequeue');
 			return this.commands;
 		}
@@ -455,6 +459,7 @@ export default class Heap extends Algorithm {
 
 		// User input validation
 		if (!list.length) {
+			this.shake(this.buildHeapButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
@@ -540,6 +545,7 @@ export default class Heap extends Algorithm {
 			}
 		}
 
+		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.setText, this.descriptLabel1, 'Enqueueing Element: ' + insertedValue);
 		this.cmd(act.step);
 		this.cmd(act.setText, this.descriptLabel1, 'Enqueueing Element: ');

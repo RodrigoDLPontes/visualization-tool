@@ -249,9 +249,11 @@ export default class LSDRadix extends Algorithm {
 
 		// User input validation
 		if (!list.length) {
+			this.shake(this.sortButton);
 			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
 			return this.commands;
 		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.shake(this.sortButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
@@ -259,9 +261,11 @@ export default class LSDRadix extends Algorithm {
 			);
 			return this.commands;
 		} else if (list.map(Number).filter(x => Number.isNaN(x)).length) {
+			this.shake(this.sortButton);
 			this.cmd(act.setText, this.infoLabelID, 'Data cannot contain non-numeric values');
 			return this.commands;
 		} else if (list.filter(x => Math.abs(x) > MAX_VALUE).length > 0) {
+			this.shake(this.sortButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
@@ -269,6 +273,7 @@ export default class LSDRadix extends Algorithm {
 			);
 			return this.commands;
 		} else if (!negativeNumbersEnabled && list.filter(x => x < 0).length > 0) {
+			this.shake(this.sortButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,

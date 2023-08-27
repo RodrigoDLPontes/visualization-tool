@@ -153,18 +153,6 @@ export default class Hash extends Algorithm {
 		this.loadButton.onclick = this.loadFactorCallBack.bind(this);
 		this.controls.push(this.loadButton);
 
-		// const radioButtonList = addRadioButtonGroupToAlgorithmBar(
-		// 	['Hash Integer', 'Hash Strings'],
-		// 	'HashType',
-		// );
-		// this.hashIntegerButton = radioButtonList[0];
-		// this.hashIntegerButton.onclick = this.changeHashTypeCallback.bind(this, true);
-		// this.controls.push(this.hashIntegerButton);
-		// this.hashStringButton = radioButtonList[1];
-		// this.hashStringButton.onclick = this.changeHashTypeCallback.bind(this, false);
-		// this.hashIntegerButton.checked = true;
-		// this.controls.push(this.hashStringButton);
-
 		addDivisorToAlgorithmBar();
 
 		this.rightVerticalGroup = addGroupToAlgorithmBar(false);
@@ -716,6 +704,8 @@ export default class Hash extends Algorithm {
 			this.keyField.value = '';
 			this.valueField.value = '';
 			this.implementAction(this.insertElement.bind(this), insertedKey, insertedValue);
+		} else {
+			this.shake(this.insertButton);
 		}
 	}
 
@@ -724,6 +714,8 @@ export default class Hash extends Algorithm {
 		if (deletedValue !== '') {
 			this.deleteField.value = '';
 			this.implementAction(this.deleteElement.bind(this), deletedValue);
+		} else {
+			this.shake(this.deleteButton);
 		}
 	}
 
@@ -732,6 +724,8 @@ export default class Hash extends Algorithm {
 		if (findValue !== '') {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), findValue);
+		} else {
+			this.shake(this.findButton);
 		}
 	}
 

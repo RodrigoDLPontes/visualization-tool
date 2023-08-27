@@ -312,18 +312,24 @@ export default class DequeArray extends Algorithm {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal, false);
+		} else {
+			this.shake(this.addLastButton);
 		}
 	}
 
 	removeFirstCallback() {
 		if (this.size !== 0) {
 			this.implementAction(this.removeFirst.bind(this));
+		} else {
+			this.shake(this.removeFirstButton);
 		}
 	}
 
 	removeLastCallback() {
 		if (this.size !== 0) {
 			this.implementAction(this.removeLast.bind(this));
+		} else {
+			this.shake(this.removeLastButton);
 		}
 	}
 
@@ -340,6 +346,8 @@ export default class DequeArray extends Algorithm {
 			const pushVal = this.addField.value;
 			this.addField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal, true);
+		} else {
+			this.shake(this.addFirstButton);
 		}
 	}
 

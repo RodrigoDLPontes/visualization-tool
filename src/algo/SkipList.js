@@ -252,6 +252,8 @@ export default class SkipList extends Algorithm {
 			this.addValueFieldRandom.value = '';
 			this.headsField.value = '';
 			this.implementAction(this.add.bind(this), addVal);
+		} else {
+			this.shake(this.addRandomlyButton);
 		}
 	}
 
@@ -262,6 +264,8 @@ export default class SkipList extends Algorithm {
 			const heads = parseInt(this.headsField.value);
 			this.headsField.value = '';
 			this.implementAction(this.add.bind(this), addVal, heads);
+		} else {
+			this.shake(this.addWithHeadsButton);
 		}
 	}
 
@@ -270,6 +274,8 @@ export default class SkipList extends Algorithm {
 			const value = parseInt(this.removeField.value);
 			this.removeField.value = '';
 			this.implementAction(this.remove.bind(this), value);
+		} else {
+			this.shake(this.removeButton);
 		}
 	}
 
@@ -278,6 +284,8 @@ export default class SkipList extends Algorithm {
 			const value = parseInt(this.getField.value);
 			this.getField.value = '';
 			this.implementAction(this.get.bind(this), value);
+		} else {
+			this.shake(this.getButton);
 		}
 	}
 

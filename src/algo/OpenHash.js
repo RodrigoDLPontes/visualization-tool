@@ -141,24 +141,6 @@ export default class OpenHash extends Hash {
 		return this.commands;
 	}
 
-	// quadraticProbeCallback() {
-	// 	if (this.currentProbeType !== 'quadratic') {
-	// 		this.implementAction(this.changeProbeType.bind(this), 'quadratic');
-	// 	}
-	// }
-
-	// doubleHashingCallback() {
-	// 	if (this.currentProbeType !== 'double') {
-	// 		this.implementAction(this.changeProbeType.bind(this), 'double');
-	// 	}
-	// }
-
-	// linearProbeCallback() {
-	// 	if (this.currentProbeType !== 'linear') {
-	// 		this.implementAction(this.changeProbeType.bind(this), 'linear');
-	// 	}
-	// }
-
 	randomCallback() {
 		const LOWER_BOUND = 0;
 		const UPPER_BOUND = 16;

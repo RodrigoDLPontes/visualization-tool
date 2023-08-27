@@ -306,6 +306,8 @@ export default class BST extends Algorithm {
 			// set text value
 			this.insertField.value = '';
 			this.implementAction(this.add.bind(this), parseInt(insertedValue));
+		} else {
+			this.shake(this.insertButton);
 		}
 	}
 
@@ -314,6 +316,8 @@ export default class BST extends Algorithm {
 		if (deletedValue !== '' && this.treeRoot) {
 			this.deleteField.value = '';
 			this.implementAction(this.remove.bind(this), parseInt(deletedValue));
+		} else {
+			this.shake(this.deleteButton);
 		}
 	}
 
@@ -322,6 +326,8 @@ export default class BST extends Algorithm {
 		if (findValue !== '' && this.treeRoot) {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		} else {
+			this.shake(this.findButton);
 		}
 	}
 

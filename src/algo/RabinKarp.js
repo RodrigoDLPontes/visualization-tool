@@ -233,6 +233,7 @@ export default class RabinKarp extends Algorithm {
 		// User input validation
 		this.commands = [];
 		if (!val || val === 0) {
+			this.shake(this.baseButton);
 			this.cmd(act.setText, this.infoLabelID, 'Base must be a non-zero integer');
 		} else {
 			this.cmd(act.setText, this.infoLabelID, 'Base set to ' + val);
@@ -254,6 +255,7 @@ export default class RabinKarp extends Algorithm {
 
 		// User input validation
 		if (!text || !pattern) {
+			this.shake(this.findButton);
 			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must be lowercase letters');
 			return this.commands;
 		} else if (text.length < pattern.length) {

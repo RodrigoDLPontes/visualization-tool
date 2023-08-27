@@ -237,15 +237,19 @@ export default class BTree extends Algorithm {
 		if (insertedValue !== '') {
 			this.insertField.value = '';
 			this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
+		} else {
+			this.shake(this.insertButton);
 		}
 	}
 
 	deleteCallback() {
 		let deletedValue = this.deleteField.value;
-		if (deletedValue !== '') {
+		if (deletedValue !== '' && this.treeRoot) {
 			deletedValue = this.normalizeNumber(this.deleteField.value, 4);
 			this.deleteField.value = '';
 			this.implementAction(this.deleteElement.bind(this), parseInt(deletedValue));
+		} else {
+			this.shake(this.deleteButton);
 		}
 	}
 
@@ -292,7 +296,11 @@ export default class BTree extends Algorithm {
 	}
 
 	printCallback() {
-		this.implementAction(this.printTree.bind(this));
+		if (this.treeRoot) {
+			this.implementAction(this.printTree.bind(this));
+		} else {
+			this.shake(this.printButton);
+		}
 	}
 
 	printTree() {
@@ -424,6 +432,8 @@ export default class BTree extends Algorithm {
 		if (findValue !== '') {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		} else {
+			this.shake(this.findButton);
 		}
 	}
 

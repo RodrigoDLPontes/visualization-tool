@@ -190,6 +190,8 @@ export default class DequeLL extends Algorithm {
 			const addVal = parseInt(this.addField.value);
 			this.addField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0);
+		} else {
+			this.shake(this.addFirstButton);
 		}
 	}
 
@@ -198,18 +200,24 @@ export default class DequeLL extends Algorithm {
 			const addVal = parseInt(this.addField.value);
 			this.addField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size);
+		} else {
+			this.shake(this.addLastButton);
 		}
 	}
 
 	removeFirstCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0);
+		} else {
+			this.shake(this.removeFirstButton);
 		}
 	}
 
 	removeLastCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
+		} else {
+			this.shake(this.removeLastButton);
 		}
 	}
 

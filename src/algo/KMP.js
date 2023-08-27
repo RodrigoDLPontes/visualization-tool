@@ -237,6 +237,7 @@ export default class KMP extends Algorithm {
 
 		// User input validation
 		if (!text || !pattern) {
+			this.shake(this.findButton);
 			this.cmd(act.setText, this.infoLabelID, 'Text and pattern must not be empty');
 			return this.commands;
 		} else if (text.length < pattern.length) {
@@ -542,6 +543,7 @@ export default class KMP extends Algorithm {
 
 		// User input validation
 		if (!pattern) {
+			this.shake(this.bftButton);
 			this.cmd(act.setText, this.infoLabelID, 'Pattern must not be empty');
 			return this.commands;
 		}

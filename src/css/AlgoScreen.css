@@ -298,8 +298,9 @@ em {
 .shake {
 	animation: shake 0.75s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
 	border-color: #e32524 !important;
-	box-shadow: 0 0 5px rgba(227, 37, 36, 0.7) !important;
+	box-shadow: 0 0 4px rgba(227, 37, 36, 0.7) !important;
 	filter: brightness(100%) !important;
+	pointer-events: none !important;
 }
 
 input[type='radio'] {

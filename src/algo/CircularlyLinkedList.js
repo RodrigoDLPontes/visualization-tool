@@ -350,7 +350,11 @@ export default class CircularlyLinkedList extends Algorithm {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
 				this.implementAction(this.add.bind(this), addVal, index, false, false, true);
+			} else {
+				this.shake(this.addIndexButton);
 			}
+		} else {
+			this.shake(this.addIndexButton);
 		}
 	}
 
@@ -359,6 +363,8 @@ export default class CircularlyLinkedList extends Algorithm {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
+		} else {
+			this.shake(this.addFrontButton);
 		}
 	}
 
@@ -367,6 +373,8 @@ export default class CircularlyLinkedList extends Algorithm {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size, false, true, false);
+		} else {
+			this.shake(this.addBackButton);
 		}
 	}
 
@@ -376,19 +384,27 @@ export default class CircularlyLinkedList extends Algorithm {
 			if (index >= 0 && index < this.size) {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index, false, false, true);
+			} else {
+				this.shake(this.removeIndexButton);
 			}
+		} else {
+			this.shake(this.removeIndexButton);
 		}
 	}
 
 	removeFrontCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0, true, false, false);
+		} else {
+			this.shake(this.removeFrontButton);
 		}
 	}
 
 	removeBackCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1, false, true, false);
+		} else {
+			this.shake(this.removeBackButton);
 		}
 	}
 

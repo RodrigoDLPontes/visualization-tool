@@ -183,12 +183,16 @@ export default class StackLL extends Algorithm {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.push.bind(this), pushVal);
+		} else {
+			this.shake(this.pushButton);
 		}
 	}
 
 	popCallback() {
 		if (this.top > 0) {
 			this.implementAction(this.pop.bind(this));
+		} else {
+			this.shake(this.popButton);
 		}
 	}
 

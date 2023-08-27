@@ -221,12 +221,16 @@ export default class StackArray extends Algorithm {
 			const pushVal = this.pushField.value;
 			this.pushField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal);
+		} else {
+			this.shake(this.pushButton);
 		}
 	}
 
 	popCallback() {
 		if (this.top > 0) {
 			this.implementAction(this.pop.bind(this));
+		} else {
+			this.shake(this.popButton);
 		}
 	}
 

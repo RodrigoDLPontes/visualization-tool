@@ -162,6 +162,8 @@ export default class Prims extends Graph {
 			this.startField.value = '';
 			startValue = startValue.toUpperCase();
 			this.implementAction(this.doPrim.bind(this), startValue);
+		} else {
+			this.shake(this.startButton);
 		}
 	}
 
@@ -171,6 +173,7 @@ export default class Prims extends Graph {
 
 		// User input validation
 		if (startVertex < 0 || startVertex >= this.size) {
+			this.shake(this.startButton);
 			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
 			return this.commands;
 		}

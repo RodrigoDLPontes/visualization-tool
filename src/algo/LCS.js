@@ -231,6 +231,7 @@ export default class LCS extends Algorithm {
 
 		// User input validation
 		if (!str1 || !str2) {
+			this.shake(this.tableButton);
 			this.cmd(act.setText, this.infoLabelID, 'S1 and S2 must be non-empty strings');
 			return this.commands;
 		}

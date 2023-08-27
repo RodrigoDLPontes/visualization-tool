@@ -309,7 +309,11 @@ export default class LinkedList extends Algorithm {
 				this.addValueField.value = '';
 				this.addIndexField.value = '';
 				this.implementAction(this.add.bind(this), addVal, index);
+			} else {
+				this.shake(this.addIndexButton);
 			}
+		} else {
+			this.shake(this.addIndexButton);
 		}
 	}
 
@@ -318,6 +322,8 @@ export default class LinkedList extends Algorithm {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0);
+		} else {
+			this.shake(this.addFrontButton);
 		}
 	}
 
@@ -326,6 +332,8 @@ export default class LinkedList extends Algorithm {
 			const addVal = parseInt(this.addValueField.value);
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size);
+		} else {
+			this.shake(this.addBackButton);
 		}
 	}
 
@@ -335,19 +343,27 @@ export default class LinkedList extends Algorithm {
 			if (index >= 0 && index < this.size) {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index);
+			} else {
+				this.shake(this.removeIndexButton);
 			}
+		} else {
+			this.shake(this.removeIndexButton);
 		}
 	}
 
 	removeFrontCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0);
+		} else {
+			this.shake(this.removeFrontButton);
 		}
 	}
 
 	removeBackCallback() {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
+		} else {
+			this.shake(this.removeBackButton);
 		}
 	}
 

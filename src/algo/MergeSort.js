@@ -240,9 +240,11 @@ export default class MergeSort extends Algorithm {
 
 		// User input validation
 		if (!list.length) {
+			this.shake(this.sortButton);
 			this.cmd(act.setText, this.infoLabelID, 'Data must contain integers such as "3,1,2"');
 			return this.commands;
 		} else if (list.length > MAX_ARRAY_SIZE) {
+			this.shake(this.sortButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
@@ -250,10 +252,11 @@ export default class MergeSort extends Algorithm {
 			);
 			return this.commands;
 		} else if (list.map(Number).filter(x => x > 999 || Number.isNaN(x)).length) {
+			this.shake(this.sortButton);
 			this.cmd(
 				act.setText,
 				this.infoLabelID,
-				'Data cannot contain non-numeric values or numbers >999',
+				'Data cannot contain non-numeric values or numbers > 999',
 			);
 			return this.commands;
 		}

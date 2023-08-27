@@ -264,12 +264,16 @@ export default class QueueArray extends Algorithm {
 			const pushVal = this.enqueueField.value;
 			this.enqueueField.value = '';
 			this.implementAction(this.resize.bind(this), pushVal);
+		} else {
+			this.shake(this.enqueueButton);
 		}
 	}
 
 	dequeueCallback() {
 		if (this.size !== 0) {
 			this.implementAction(this.dequeue.bind(this));
+		} else {
+			this.shake(this.dequeueButton);
 		}
 	}
 

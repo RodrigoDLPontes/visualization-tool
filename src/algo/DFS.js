@@ -237,6 +237,8 @@ export default class DFS extends Graph {
 			} else {
 				this.implementAction(this.doDFSRecursive.bind(this), startValue);
 			}
+		} else {
+			this.shake(this.startButton);
 		}
 	}
 
@@ -246,6 +248,7 @@ export default class DFS extends Graph {
 
 		// User input validation
 		if (vertex < 0 || vertex >= this.size) {
+			this.shake(this.startButton);
 			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
 			return this.commands;
 		}

@@ -139,6 +139,8 @@ export default class SplayTree extends Algorithm {
 			// set text value
 			this.insertField.value = '';
 			this.implementAction(this.insertElement.bind(this), parseInt(insertedValue));
+		} else {
+			this.shake(this.insertButton);
 		}
 	}
 
@@ -148,6 +150,8 @@ export default class SplayTree extends Algorithm {
 			deletedValue = this.normalizeNumber(deletedValue, 4);
 			this.deleteField.value = '';
 			this.implementAction(this.deleteElement.bind(this), parseInt(deletedValue));
+		} else {
+			this.shake(this.deleteButton);
 		}
 	}
 
@@ -313,6 +317,8 @@ export default class SplayTree extends Algorithm {
 		if (findValue !== '') {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), parseInt(findValue));
+		} else {
+			this.shake(this.findButton);
 		}
 	}
 

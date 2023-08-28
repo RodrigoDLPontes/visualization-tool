@@ -299,7 +299,6 @@ export default class LinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.initialIndex;
-		this.infoLabelID = this.nextIndex++;
 		if (this.tailEnabled) {
 			this.animationManager.setAllLayers([0, 1]);
 		} else {

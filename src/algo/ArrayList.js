@@ -262,9 +262,9 @@ export default class ArrayList extends Algorithm {
 		this.removeFBCodeID = [];
 		this.removeIndexCodeID = [];
 
-		this.resetIndex = this.nextIndex;
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+		this.resetIndex = this.nextIndex;
 
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);

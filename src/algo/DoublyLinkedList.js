@@ -394,7 +394,6 @@ export default class DoublyLinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.resetIndex;
-		this.infoLabelID = this.nextIndex++;
 	}
 
 	setInfoText(text) {

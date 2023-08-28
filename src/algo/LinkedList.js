@@ -306,7 +306,7 @@ export default class LinkedList extends Algorithm {
 			this.animationManager.setAllLayers([0]);
 		}
 	}
-	
+
 	setInfoText(text) {
 		this.commands = [];
 		this.cmd(act.setText, this.infoLabelID, text);
@@ -331,6 +331,7 @@ export default class LinkedList extends Algorithm {
 				this.shake(this.addIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 			this.shake(this.addIndexButton);
 		}
 	}
@@ -341,6 +342,7 @@ export default class LinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -351,6 +353,7 @@ export default class LinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addBackButton);
 		}
 	}
@@ -372,6 +375,7 @@ export default class LinkedList extends Algorithm {
 				this.shake(this.removeIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 			this.shake(this.removeIndexButton);
 		}
 	}

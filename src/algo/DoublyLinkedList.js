@@ -47,9 +47,9 @@ const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 125;
 const LINKED_LIST_LINE_SPACING = 100;
 
-const PUSH_LABEL_X = 50;
+const PUSH_LABEL_X = 65;
 const PUSH_LABEL_Y = 60;
-const PUSH_ELEMENT_X = 100;
+const PUSH_ELEMENT_X = 115;
 const PUSH_ELEMENT_Y = 60;
 
 const HEAD_POS_X = 170;
@@ -61,8 +61,8 @@ const TAIL_POS_Y = 195;
 const POINTER_LABEL_X = 220;
 const HEAD_LABEL_Y = 60;
 
-const POINTER_ELEM_WIDTH = 60;
-const POINTER_ELEM_HEIGHT = 60;
+const POINTER_ELEM_WIDTH = 30;
+const POINTER_ELEM_HEIGHT = 30;
 
 const SIZE = 32;
 
@@ -421,6 +421,7 @@ export default class DoublyLinkedList extends Algorithm {
 				this.shake(this.addIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 			this.shake(this.addIndexButton);
 		}
 	}
@@ -431,6 +432,7 @@ export default class DoublyLinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -441,6 +443,7 @@ export default class DoublyLinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size, false, true, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addBackButton);
 		}
 	}
@@ -462,6 +465,7 @@ export default class DoublyLinkedList extends Algorithm {
 				this.shake(this.removeIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 			this.shake(this.removeIndexButton);
 		}
 	}

@@ -36,7 +36,7 @@ const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
 
 const LINKED_LIST_START_X = 75;
-const LINKED_LIST_START_Y = 250;
+const LINKED_LIST_START_Y = 275;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
@@ -53,10 +53,10 @@ const PUSH_ELEMENT_X = 150;
 const PUSH_ELEMENT_Y = 30;
 
 const HEAD_POS_X = 50;
-const HEAD_POS_Y = 170;
+const HEAD_POS_Y = 195;
 
 const POINTER_LABEL_X = 50;
-const HEAD_LABEL_Y = 135;
+const HEAD_LABEL_Y = 165;
 
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
@@ -351,7 +351,6 @@ export default class CircularlyLinkedList extends Algorithm {
 		return this.commands;
 	}
 
-
 	addIndexCallback() {
 		if (
 			this.addValueField.value !== '' &&
@@ -374,6 +373,7 @@ export default class CircularlyLinkedList extends Algorithm {
 				this.shake(this.addIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 			this.shake(this.addIndexButton);
 		}
 	}
@@ -384,6 +384,7 @@ export default class CircularlyLinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -394,6 +395,7 @@ export default class CircularlyLinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size, false, true, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addBackButton);
 		}
 	}
@@ -415,6 +417,7 @@ export default class CircularlyLinkedList extends Algorithm {
 				this.shake(this.removeIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 			this.shake(this.removeIndexButton);
 		}
 	}

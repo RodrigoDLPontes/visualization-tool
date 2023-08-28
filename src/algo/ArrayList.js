@@ -265,7 +265,7 @@ export default class ArrayList extends Algorithm {
 		this.resetIndex = this.nextIndex;
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
-		
+
 		this.arrayID = new Array(SIZE);
 		this.arrayLabelID = new Array(SIZE);
 		for (let i = 0; i < SIZE; i++) {
@@ -359,6 +359,7 @@ export default class ArrayList extends Algorithm {
 			}
 		} else {
 			this.shake(this.addIndexButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 		}
 	}
 
@@ -375,6 +376,7 @@ export default class ArrayList extends Algorithm {
 				this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -393,6 +395,7 @@ export default class ArrayList extends Algorithm {
 			}
 		} else {
 			this.shake(this.addBackButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 		}
 	}
 
@@ -445,6 +448,7 @@ export default class ArrayList extends Algorithm {
 			}
 		} else {
 			this.shake(this.removeIndexButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 		}
 	}
 

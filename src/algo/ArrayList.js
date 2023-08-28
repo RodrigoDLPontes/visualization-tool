@@ -309,7 +309,6 @@ export default class ArrayList extends Algorithm {
 			this.arrayLabelID[i] = this.nextIndex++;
 		}
 		this.highlight1ID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
 	}
 
 	setInfoText(text) {

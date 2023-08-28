@@ -33,6 +33,9 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const ARRAY_START_X = 85;
 const ARRAY_START_Y = 100;
 const RESIZE_ARRAY_START_X = 85;
@@ -259,6 +262,8 @@ export default class ArrayList extends Algorithm {
 		this.removeFBCodeID = [];
 		this.removeIndexCodeID = [];
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 		this.resetIndex = this.nextIndex;
 
 		this.arrayID = new Array(SIZE);
@@ -306,6 +311,12 @@ export default class ArrayList extends Algorithm {
 		this.highlight1ID = this.nextIndex++;
 	}
 
+	setInfoText(text) {
+		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, text);
+		return this.commands;
+	}
+
 	addIndexCallback() {
 		if (
 			this.addValueField.value !== '' &&
@@ -338,9 +349,16 @@ export default class ArrayList extends Algorithm {
 				}
 			} else {
 				this.shake(this.addIndexButton);
+				this.implementAction(
+					this.setInfoText.bind(this),
+					this.size === 0
+						? 'Index must be 0 when the list is empty.'
+						: `Index must be between 0 and ${this.size}.`,
+				);
 			}
 		} else {
 			this.shake(this.addIndexButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 		}
 	}
 
@@ -357,6 +375,7 @@ export default class ArrayList extends Algorithm {
 				this.implementAction(this.add.bind(this), addVal, 0, true, false, false);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -375,6 +394,7 @@ export default class ArrayList extends Algorithm {
 			}
 		} else {
 			this.shake(this.addBackButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 		}
 	}
 
@@ -416,10 +436,18 @@ export default class ArrayList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index, false, false, true);
 			} else {
+				let errorMsg = 'Cannot remove from an empty list.';
+				if (this.size === 1) {
+					errorMsg = 'Index must be 0 when the list contains one element.';
+				} else if (this.size > 1) {
+					errorMsg = `Index must be between 0 and ${this.size - 1}.`;
+				}
+				this.implementAction(this.setInfoText.bind(this), errorMsg);
 				this.shake(this.removeIndexButton);
 			}
 		} else {
 			this.shake(this.removeIndexButton);
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 		}
 	}
 
@@ -427,6 +455,7 @@ export default class ArrayList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0, true, false, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeFrontButton);
 		}
 	}
@@ -435,6 +464,7 @@ export default class ArrayList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1, false, true, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeBackButton);
 		}
 	}
@@ -451,6 +481,7 @@ export default class ArrayList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.removeFBCodeID.length) {
 			this.removeCode(this.removeFBCodeID);
@@ -572,6 +603,7 @@ export default class ArrayList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.addFBCodeID.length) {
 			this.removeCode(this.addFBCodeID);
@@ -686,6 +718,7 @@ export default class ArrayList extends Algorithm {
 
 	resize(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -904,6 +937,7 @@ export default class ArrayList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 		if (this.removeFBCodeID.length) {
 			this.removeCode(this.removeFBCodeID);
 			this.removeFBCodeID = [];

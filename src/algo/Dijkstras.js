@@ -209,6 +209,8 @@ export default class Dijkstras extends Graph {
 			this.startField.value = '';
 			startValue = startValue.toUpperCase();
 			this.implementAction(this.doDijkstra.bind(this), startValue);
+		} else {
+			this.shake(this.startButton);
 		}
 	}
 
@@ -218,6 +220,7 @@ export default class Dijkstras extends Graph {
 
 		// User input validation
 		if (current < 0 || current >= this.size) {
+			this.shake(this.startButton);
 			this.cmd(act.setText, this.infoLabelID, startValue + ' is not a vertex in the graph');
 			return this.commands;
 		}

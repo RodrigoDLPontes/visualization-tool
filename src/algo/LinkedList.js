@@ -33,6 +33,9 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 200;
 const LINKED_LIST_ELEM_WIDTH = 70;
@@ -242,6 +245,8 @@ export default class LinkedList extends Algorithm {
 
 		this.topID = this.nextIndex++;
 		this.topLabelID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
@@ -301,6 +306,12 @@ export default class LinkedList extends Algorithm {
 		}
 	}
 
+	setInfoText(text) {
+		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, text);
+		return this.commands;
+	}
+
 	addIndexCallback() {
 		if (this.addValueField.value !== '' && this.addIndexField.value !== '') {
 			const addVal = parseInt(this.addValueField.value);
@@ -310,9 +321,16 @@ export default class LinkedList extends Algorithm {
 				this.addIndexField.value = '';
 				this.implementAction(this.add.bind(this), addVal, index);
 			} else {
+				this.implementAction(
+					this.setInfoText.bind(this),
+					this.size === 0
+						? 'Index must be 0 when the list is empty.'
+						: `Index must be between 0 and ${this.size}.`,
+				);
 				this.shake(this.addIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data or index.');
 			this.shake(this.addIndexButton);
 		}
 	}
@@ -323,6 +341,7 @@ export default class LinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, 0);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addFrontButton);
 		}
 	}
@@ -333,6 +352,7 @@ export default class LinkedList extends Algorithm {
 			this.addValueField.value = '';
 			this.implementAction(this.add.bind(this), addVal, this.size);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input data.');
 			this.shake(this.addBackButton);
 		}
 	}
@@ -344,9 +364,17 @@ export default class LinkedList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index);
 			} else {
+				let errorMsg = 'Cannot remove from an empty list.';
+				if (this.size === 1) {
+					errorMsg = 'Index must be 0 when the list contains one element.';
+				} else if (this.size > 1) {
+					errorMsg = `Index must be between 0 and ${this.size - 1}.`;
+				}
+				this.implementAction(this.setInfoText.bind(this), errorMsg);
 				this.shake(this.removeIndexButton);
 			}
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Missing input index.');
 			this.shake(this.removeIndexButton);
 		}
 	}
@@ -355,6 +383,7 @@ export default class LinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeFrontButton);
 		}
 	}
@@ -363,6 +392,7 @@ export default class LinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeBackButton);
 		}
 	}
@@ -407,6 +437,7 @@ export default class LinkedList extends Algorithm {
 
 	add(elemToAdd, index) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -508,6 +539,7 @@ export default class LinkedList extends Algorithm {
 
 	remove(index) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		index = parseInt(index);
 		const labPopID = this.nextIndex++;
@@ -602,6 +634,7 @@ export default class LinkedList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}

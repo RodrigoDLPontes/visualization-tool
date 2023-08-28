@@ -32,39 +32,42 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const LINKED_LIST_START_X = 170;
-const LINKED_LIST_START_Y = 100;
+const LINKED_LIST_START_Y = 130;
 const LINKED_LIST_ELEM_WIDTH = 70;
 const LINKED_LIST_ELEM_HEIGHT = 30;
 
 const LINKED_LIST_INSERT_X = 330;
-const LINKED_LIST_INSERT_Y = 30;
+const LINKED_LIST_INSERT_Y = 60;
 
 const LINKED_LIST_ELEMS_PER_LINE = 12;
 const LINKED_LIST_ELEM_SPACING = 125;
 const LINKED_LIST_LINE_SPACING = 100;
 
 const PUSH_LABEL_X = 50;
-const PUSH_LABEL_Y = 30;
+const PUSH_LABEL_Y = 60;
 const PUSH_ELEMENT_X = 100;
-const PUSH_ELEMENT_Y = 30;
+const PUSH_ELEMENT_Y = 60;
 
 const HEAD_POS_X = 170;
-const HEAD_POS_Y = 30;
+const HEAD_POS_Y = 60;
 
 const TAIL_POS_X = 170;
-const TAIL_POS_Y = 165;
+const TAIL_POS_Y = 195;
 
-const POINTER_LABEL_X = 210;
-const HEAD_LABEL_Y = 30;
+const POINTER_LABEL_X = 220;
+const HEAD_LABEL_Y = 60;
 
-const POINTER_ELEM_WIDTH = 30;
-const POINTER_ELEM_HEIGHT = 30;
+const POINTER_ELEM_WIDTH = 60;
+const POINTER_ELEM_HEIGHT = 60;
 
 const SIZE = 32;
 
 const CODE_START_X = 135;
-const CODE_START_Y = 200;
+const CODE_START_Y = 230;
 
 export default class DoublyLinkedList extends Algorithm {
 	constructor(am, w, h) {
@@ -232,6 +235,9 @@ export default class DoublyLinkedList extends Algorithm {
 		this.tailID = this.nextIndex++;
 		this.tailLabelID = this.nextIndex++;
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
@@ -251,7 +257,7 @@ export default class DoublyLinkedList extends Algorithm {
 			act.createLabel,
 			this.tailLabelID,
 			'Tail',
-			POINTER_LABEL_X - 75,
+			POINTER_LABEL_X - 95,
 			HEAD_LABEL_Y + 135,
 		);
 		this.cmd(
@@ -388,6 +394,13 @@ export default class DoublyLinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.resetIndex;
+		this.infoLabelID = this.nextIndex++;
+	}
+
+	setInfoText(text) {
+		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, text);
+		return this.commands;
 	}
 
 	addIndexCallback() {
@@ -399,6 +412,12 @@ export default class DoublyLinkedList extends Algorithm {
 				this.addIndexField.value = '';
 				this.implementAction(this.add.bind(this), addVal, index, false, false, true);
 			} else {
+				this.implementAction(
+					this.setInfoText.bind(this),
+					this.size === 0
+						? 'Index must be 0 when the list is empty.'
+						: `Index must be between 0 and ${this.size}.`,
+				);
 				this.shake(this.addIndexButton);
 			}
 		} else {
@@ -433,6 +452,13 @@ export default class DoublyLinkedList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index, false, false, true);
 			} else {
+				let errorMsg = 'Cannot remove from an empty list.';
+				if (this.size === 1) {
+					errorMsg = 'Index must be 0 when the list contains one element.';
+				} else if (this.size > 1) {
+					errorMsg = `Index must be between 0 and ${this.size - 1}.`;
+				}
+				this.implementAction(this.setInfoText.bind(this), errorMsg);
 				this.shake(this.removeIndexButton);
 			}
 		} else {
@@ -444,6 +470,7 @@ export default class DoublyLinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0, true, false, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeFrontButton);
 		}
 	}
@@ -452,6 +479,7 @@ export default class DoublyLinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1, false, true, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeBackButton);
 		}
 	}
@@ -541,6 +569,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.removeFrontCodeID.length) {
 			this.removeCode(this.removeFrontCodeID);
@@ -841,6 +870,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.addFrontCodeID.length) {
 			this.removeCode(this.addFrontCodeID);
@@ -1110,6 +1140,7 @@ export default class DoublyLinkedList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 		if (this.addFrontCodeID.length) {
 			this.removeCode(this.addFrontCodeID);
 			this.addFrontCodeID = [];

@@ -32,6 +32,9 @@ import Algorithm, {
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const LINKED_LIST_START_X = 75;
 const LINKED_LIST_START_Y = 250;
 const LINKED_LIST_ELEM_WIDTH = 70;
@@ -58,7 +61,7 @@ const HEAD_LABEL_Y = 135;
 const POINTER_ELEM_WIDTH = 30;
 const POINTER_ELEM_HEIGHT = 30;
 
-const CODE_START_X = 250;
+const CODE_START_X = 350;
 const CODE_START_Y = 10;
 
 const SIZE = 15;
@@ -228,6 +231,9 @@ export default class CircularlyLinkedList extends Algorithm {
 
 		this.cmd(act.setNull, this.headID, 1);
 
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
+
 		this.arrayData = new Array(SIZE);
 		this.size = 0;
 		this.leftoverLabelID = this.nextIndex++;
@@ -336,7 +342,15 @@ export default class CircularlyLinkedList extends Algorithm {
 	reset() {
 		this.size = 0;
 		this.nextIndex = this.resetIndex;
+		this.infoLabelID = this.nextIndex++;
 	}
+
+	setInfoText(text) {
+		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, text);
+		return this.commands;
+	}
+
 
 	addIndexCallback() {
 		if (
@@ -351,6 +365,12 @@ export default class CircularlyLinkedList extends Algorithm {
 				this.addIndexField.value = '';
 				this.implementAction(this.add.bind(this), addVal, index, false, false, true);
 			} else {
+				this.implementAction(
+					this.setInfoText.bind(this),
+					this.size === 0
+						? 'Index must be 0 when the list is empty.'
+						: `Index must be between 0 and ${this.size}.`,
+				);
 				this.shake(this.addIndexButton);
 			}
 		} else {
@@ -385,6 +405,13 @@ export default class CircularlyLinkedList extends Algorithm {
 				this.removeField.value = '';
 				this.implementAction(this.remove.bind(this), index, false, false, true);
 			} else {
+				let errorMsg = 'Cannot remove from an empty list.';
+				if (this.size === 1) {
+					errorMsg = 'Index must be 0 when the list contains one element.';
+				} else if (this.size > 1) {
+					errorMsg = `Index must be between 0 and ${this.size - 1}.`;
+				}
+				this.implementAction(this.setInfoText.bind(this), errorMsg);
 				this.shake(this.removeIndexButton);
 			}
 		} else {
@@ -396,6 +423,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), 0, true, false, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeFrontButton);
 		}
 	}
@@ -404,6 +432,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		if (this.size > 0) {
 			this.implementAction(this.remove.bind(this), this.size - 1, false, true, false);
 		} else {
+			this.implementAction(this.setInfoText.bind(this), 'Cannot remove from an empty list.');
 			this.shake(this.removeBackButton);
 		}
 	}
@@ -460,6 +489,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.removeFrontCodeID.length) {
 			this.removeCode(this.removeFrontCodeID);
@@ -842,6 +872,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
+		this.implementAction(this.setInfoText.bind(this), '');
 
 		if (this.addFrontCodeID.length) {
 			this.removeCode(this.addFrontCodeID);
@@ -1140,6 +1171,7 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.addIndexField.value = '';
 		this.removeField.value = '';
 		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, '');
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}

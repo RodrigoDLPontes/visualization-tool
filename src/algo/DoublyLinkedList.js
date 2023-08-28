@@ -48,9 +48,9 @@ const LINKED_LIST_ELEM_SPACING = 125;
 const LINKED_LIST_LINE_SPACING = 100;
 
 const PUSH_LABEL_X = 65;
-const PUSH_LABEL_Y = 60;
-const PUSH_ELEMENT_X = 115;
-const PUSH_ELEMENT_Y = 60;
+const PUSH_LABEL_Y = 25;
+const PUSH_ELEMENT_X = 125;
+const PUSH_ELEMENT_Y = 25;
 
 const HEAD_POS_X = 170;
 const HEAD_POS_Y = 60;

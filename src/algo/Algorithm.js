@@ -351,7 +351,7 @@ export default class Algorithm {
 				return false;
 			} else if (
 				(maxsize !== undefined && field.value.length >= maxsize) ||
-				(intOnly && (keyASCII < 48 || keyASCII > 57))
+				(intOnly && !((keyASCII >= 48 && keyASCII <= 57) || (keyASCII >= 96 && keyASCII <= 105)))
 			) {
 				if (!controlKey(keyASCII)) return false;
 			}

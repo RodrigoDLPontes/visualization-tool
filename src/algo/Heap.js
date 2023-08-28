@@ -223,7 +223,7 @@ export default class Heap extends Algorithm {
 
 	buildHeapCallback() {
 		const list = this.buildHeapField.value.split(',').filter(x => x !== '');
-		this.implementAction(this.clear.bind(this));
+		this.implementAction(this.clear.bind(this), true);
 		this.implementAction(this.buildHeap.bind(this), list);
 	}
 
@@ -260,9 +260,9 @@ export default class Heap extends Algorithm {
 		}
 	}
 
-	clear() {
+	clear(keepBH) {
+		if (!keepBH) this.buildHeapField.value = '';
 		this.insertField.value = '';
-		this.buildHeapField.value = '';
 		this.commands = [];
 		while (this.currentHeapSize > 0) {
 			this.cmd(act.delete, this.circleObjs[this.currentHeapSize]);
@@ -271,7 +271,6 @@ export default class Heap extends Algorithm {
 		}
 		this.cmd(act.setText, this.descriptLabel1, '');
 		this.cmd(act.setText, this.infoLabelID, '');
-		this.buildHeapField.value = '';
 		return this.commands;
 	}
 

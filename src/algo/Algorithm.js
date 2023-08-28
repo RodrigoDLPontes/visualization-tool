@@ -273,7 +273,7 @@ export default class Algorithm {
 		button.classList.add('shake');
 		setTimeout(() => {
 			button.classList.remove('shake');
-		}, 770);
+		}, 750);
 	}
 
 	cmd(act, ...params) {

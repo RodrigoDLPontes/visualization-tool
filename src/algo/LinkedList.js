@@ -437,7 +437,7 @@ export default class LinkedList extends Algorithm {
 
 	add(elemToAdd, index) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -539,7 +539,7 @@ export default class LinkedList extends Algorithm {
 
 	remove(index) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		index = parseInt(index);
 		const labPopID = this.nextIndex++;

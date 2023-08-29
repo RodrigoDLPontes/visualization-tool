@@ -491,7 +491,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		if (this.removeFrontCodeID.length) {
 			this.removeCode(this.removeFrontCodeID);
@@ -874,7 +874,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		if (this.addFrontCodeID.length) {
 			this.removeCode(this.addFrontCodeID);

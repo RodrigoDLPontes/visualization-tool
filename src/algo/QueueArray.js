@@ -258,7 +258,7 @@ export default class QueueArray extends Algorithm {
 			this.implementAction(this.enqueue.bind(this), pushVal);
 		} else if (
 			this.size === this.arraySize &&
-			this.enqueueField !== '' &&
+			this.enqueueField.value !== '' &&
 			this.size * 2 < MAX_SIZE
 		) {
 			const pushVal = this.enqueueField.value;

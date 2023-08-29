@@ -505,18 +505,6 @@ export default class DoublyLinkedList extends Algorithm {
 				set.add(val);
 				this.implementAction(this.add.bind(this), val, 0);
 			}
-			if (this.addFrontCodeID.length) {
-				this.removeCode(this.addFrontCodeID);
-				this.addFrontCodeID = [];
-			}
-			if (this.addBackCodeID.length) {
-				this.removeCode(this.addBackCodeID);
-				this.addBackCodeID = [];
-			}
-			if (this.addIndexCodeID.length) {
-				this.removeCode(this.addIndexCodeID);
-				this.addIndexCodeID = [];
-			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -574,40 +562,22 @@ export default class DoublyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		if (this.removeFrontCodeID.length) {
-			this.removeCode(this.removeFrontCodeID);
-			this.removeFrontCodeID = [];
-		}
-		if (this.removeBackCodeID.length) {
-			this.removeCode(this.removeBackCodeID);
-			this.removeBackCodeID = [];
-		}
-		if (this.removeIndexCodeID.length) {
-			this.removeCode(this.removeIndexCodeID);
-			this.removeIndexCodeID = [];
-		}
+		this.addIndexCodeID = this.addCodeToCanvasBase(
+			this.addIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.addFrontCodeID = this.addCodeToCanvasBase(
+			this.addFrontCode,
+			CODE_START_X + 325,
+			CODE_START_Y,
+		);
+		this.addBackCodeID = this.addCodeToCanvasBase(
+			this.addBackCode,
+			CODE_START_X + 620,
+			CODE_START_Y,
+		);
 
-		if (
-			!this.addFrontCodeID.length &&
-			!this.addBackCodeID.length &&
-			!this.addIndexCodeID.length
-		) {
-			this.addIndexCodeID = this.addCodeToCanvasBase(
-				this.addIndexCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-			this.addFrontCodeID = this.addCodeToCanvasBase(
-				this.addFrontCode,
-				CODE_START_X + 325,
-				CODE_START_Y,
-			);
-			this.addBackCodeID = this.addCodeToCanvasBase(
-				this.addBackCode,
-				CODE_START_X + 620,
-				CODE_START_Y,
-			);
-		}
 
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -868,6 +838,10 @@ export default class DoublyLinkedList extends Algorithm {
 			this.unhighlight(19, 0, this.addIndexCodeID);
 		}
 
+		this.removeCode(this.addFrontCodeID);
+		this.removeCode(this.addBackCodeID);
+		this.removeCode(this.addIndexCodeID);
+
 		return this.commands;
 	}
 
@@ -875,40 +849,21 @@ export default class DoublyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		if (this.addFrontCodeID.length) {
-			this.removeCode(this.addFrontCodeID);
-			this.addFrontCodeID = [];
-		}
-		if (this.addBackCodeID.length) {
-			this.removeCode(this.addBackCodeID);
-			this.addBackCodeID = [];
-		}
-		if (this.addIndexCodeID.length) {
-			this.removeCode(this.addIndexCodeID);
-			this.addIndexCodeID = [];
-		}
-
-		if (
-			!this.removeFrontCodeID.length &&
-			!this.removeBackCodeID.length &&
-			!this.removeIndexCodeID.length
-		) {
-			this.removeIndexCodeID = this.addCodeToCanvasBase(
-				this.removeIndexCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-			this.removeFrontCodeID = this.addCodeToCanvasBase(
-				this.removeFrontCode,
-				CODE_START_X + 350,
-				CODE_START_Y,
-			);
-			this.removeBackCodeID = this.addCodeToCanvasBase(
-				this.removeBackCode,
-				CODE_START_X + 600,
-				CODE_START_Y,
-			);
-		}
+		this.removeIndexCodeID = this.addCodeToCanvasBase(
+			this.removeIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.removeFrontCodeID = this.addCodeToCanvasBase(
+			this.removeFrontCode,
+			CODE_START_X + 350,
+			CODE_START_Y,
+		);
+		this.removeBackCodeID = this.addCodeToCanvasBase(
+			this.removeBackCode,
+			CODE_START_X + 600,
+			CODE_START_Y,
+		);
 
 		index = parseInt(index);
 
@@ -1124,6 +1079,10 @@ export default class DoublyLinkedList extends Algorithm {
 			this.unhighlight(17, 0, this.removeIndexCodeID);
 		}
 
+			this.removeCode(this.removeFrontCodeID);
+			this.removeCode(this.removeBackCodeID);
+			this.removeCode(this.removeIndexCodeID);
+
 		return this.commands;
 	}
 
@@ -1144,30 +1103,6 @@ export default class DoublyLinkedList extends Algorithm {
 		this.removeField.value = '';
 		this.commands = [];
 		this.cmd(act.setText, this.infoLabelID, '');
-		if (this.addFrontCodeID.length) {
-			this.removeCode(this.addFrontCodeID);
-			this.addFrontCodeID = [];
-		}
-		if (this.addBackCodeID.length) {
-			this.removeCode(this.addBackCodeID);
-			this.addBackCodeID = [];
-		}
-		if (this.addIndexCodeID.length) {
-			this.removeCode(this.addIndexCodeID);
-			this.addIndexCodeID = [];
-		}
-		if (this.removeFrontCodeID.length) {
-			this.removeCode(this.removeFrontCodeID);
-			this.removeFrontCodeID = [];
-		}
-		if (this.removeBackCodeID.length) {
-			this.removeCode(this.removeBackCodeID);
-			this.removeBackCodeID = [];
-		}
-		if (this.removeIndexCodeID.length) {
-			this.removeCode(this.removeIndexCodeID);
-			this.removeIndexCodeID = [];
-		}
 		for (let i = 0; i < this.size; i++) {
 			this.cmd(act.delete, this.linkedListElemID[i]);
 		}

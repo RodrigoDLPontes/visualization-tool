@@ -457,18 +457,6 @@ export default class CircularlyLinkedList extends Algorithm {
 				set.add(val);
 				this.implementAction(this.add.bind(this), val, 0);
 			}
-			if (this.addFrontCodeID.length) {
-				this.removeCode(this.addFrontCodeID);
-				this.addFrontCodeID = [];
-			}
-			if (this.addBackCodeID.length) {
-				this.removeCode(this.addBackCodeID);
-				this.addBackCodeID = [];
-			}
-			if (this.addIndexCodeID.length) {
-				this.removeCode(this.addIndexCodeID);
-				this.addIndexCodeID = [];
-			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -493,40 +481,21 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		if (this.removeFrontCodeID.length) {
-			this.removeCode(this.removeFrontCodeID);
-			this.removeFrontCodeID = [];
-		}
-		if (this.removeBackCodeID.length) {
-			this.removeCode(this.removeBackCodeID);
-			this.removeBackCodeID = [];
-		}
-		if (this.removeIndexCodeID.length) {
-			this.removeCode(this.removeIndexCodeID);
-			this.removeIndexCodeID = [];
-		}
-
-		if (
-			!this.addFrontCodeID.length &&
-			!this.addBackCodeID.length &&
-			!this.addIndexCodeID.length
-		) {
-			this.addIndexCodeID = this.addCodeToCanvasBase(
-				this.addIndexCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-			this.addFrontCodeID = this.addCodeToCanvasBase(
-				this.addFrontCode,
-				CODE_START_X + 315,
-				CODE_START_Y,
-			);
-			this.addBackCodeID = this.addCodeToCanvasBase(
-				this.addBackCode,
-				CODE_START_X + 635,
-				CODE_START_Y,
-			);
-		}
+		this.addIndexCodeID = this.addCodeToCanvasBase(
+			this.addIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.addFrontCodeID = this.addCodeToCanvasBase(
+			this.addFrontCode,
+			CODE_START_X + 315,
+			CODE_START_Y,
+		);
+		this.addBackCodeID = this.addCodeToCanvasBase(
+			this.addBackCode,
+			CODE_START_X + 635,
+			CODE_START_Y,
+		);
 
 		if (isAddFront || (isAddIndex && index === 0)) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -869,6 +838,10 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.unhighlight(4, 0, this.addIndexCodeID);
 		this.unhighlight(12, 0, this.addIndexCodeID);
 
+		this.removeCode(this.addFrontCodeID);
+		this.removeCode(this.addBackCodeID);
+		this.removeCode(this.addIndexCodeID);
+
 		return this.commands;
 	}
 
@@ -876,40 +849,21 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		if (this.addFrontCodeID.length) {
-			this.removeCode(this.addFrontCodeID);
-			this.addFrontCodeID = [];
-		}
-		if (this.addBackCodeID.length) {
-			this.removeCode(this.addBackCodeID);
-			this.addBackCodeID = [];
-		}
-		if (this.addIndexCodeID.length) {
-			this.removeCode(this.addIndexCodeID);
-			this.addIndexCodeID = [];
-		}
-
-		if (
-			!this.removeFrontCodeID.length &&
-			!this.removeBackCodeID.length &&
-			!this.removeIndexCodeID.length
-		) {
-			this.removeIndexCodeID = this.addCodeToCanvasBase(
-				this.removeIndexCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-			this.removeFrontCodeID = this.addCodeToCanvasBase(
-				this.removeFrontCode,
-				CODE_START_X + 310,
-				CODE_START_Y,
-			);
-			this.removeBackCodeID = this.addCodeToCanvasBase(
-				this.removeBackCode,
-				CODE_START_X + 605,
-				CODE_START_Y,
-			);
-		}
+		this.removeIndexCodeID = this.addCodeToCanvasBase(
+			this.removeIndexCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.removeFrontCodeID = this.addCodeToCanvasBase(
+			this.removeFrontCode,
+			CODE_START_X + 310,
+			CODE_START_Y,
+		);
+		this.removeBackCodeID = this.addCodeToCanvasBase(
+			this.removeBackCode,
+			CODE_START_X + 605,
+			CODE_START_Y,
+		);
 
 		index = parseInt(index);
 
@@ -1154,6 +1108,10 @@ export default class CircularlyLinkedList extends Algorithm {
 
 		this.cmd(act.step);
 
+		this.removeCode(this.removeFrontCodeID);
+		this.removeCode(this.removeBackCodeID);
+		this.removeCode(this.removeIndexCodeID);
+
 		return this.commands;
 	}
 
@@ -1179,30 +1137,6 @@ export default class CircularlyLinkedList extends Algorithm {
 		}
 		this.size = 0;
 		this.cmd(act.setNull, this.headID, 1);
-		if (this.addFrontCodeID.length) {
-			this.removeCode(this.addFrontCodeID);
-			this.addFrontCodeID = [];
-		}
-		if (this.addBackCodeID.length) {
-			this.removeCode(this.addBackCodeID);
-			this.addBackCodeID = [];
-		}
-		if (this.addIndexCodeID.length) {
-			this.removeCode(this.addIndexCodeID);
-			this.addIndexCodeID = [];
-		}
-		if (this.removeFrontCodeID.length) {
-			this.removeCode(this.removeFrontCodeID);
-			this.removeFrontCodeID = [];
-		}
-		if (this.removeBackCodeID.length) {
-			this.removeCode(this.removeBackCodeID);
-			this.removeBackCodeID = [];
-		}
-		if (this.removeIndexCodeID.length) {
-			this.removeCode(this.removeIndexCodeID);
-			this.removeIndexCodeID = [];
-		}
 
 		return this.commands;
 	}

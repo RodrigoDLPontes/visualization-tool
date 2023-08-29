@@ -481,7 +481,7 @@ export default class ArrayList extends Algorithm {
 
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		if (this.removeFBCodeID.length) {
 			this.removeCode(this.removeFBCodeID);
@@ -603,7 +603,7 @@ export default class ArrayList extends Algorithm {
 
 	remove(index, isRemoveFront, isRemoveBack, isRemoveIndex) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		if (this.addFBCodeID.length) {
 			this.removeCode(this.addFBCodeID);
@@ -718,7 +718,7 @@ export default class ArrayList extends Algorithm {
 
 	resize(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
-		this.implementAction(this.setInfoText.bind(this), '');
+		this.setInfoText('');
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;

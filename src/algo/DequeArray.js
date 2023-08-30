@@ -374,14 +374,6 @@ export default class DequeArray extends Algorithm {
 					this.implementAction(this.addLast.bind(this), val);
 				}
 			}
-			if (this.addFirstCodeID.length) {
-				this.removeCode(this.addFirstCodeID);
-				this.addFirstCodeID = [];
-			}
-			if (this.addLastCodeID.length) {
-				this.removeCode(this.addLastCodeID);
-				this.addLastCodeID = [];
-			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
 		}
@@ -394,25 +386,11 @@ export default class DequeArray extends Algorithm {
 	addLast(elemToAddLast) {
 		this.commands = [];
 
-		if (this.addFirstCodeID.length) {
-			this.removeCode(this.addFirstCodeID);
-			this.addFirstCodeID = [];
-		}
-		if (this.removeFirstCodeID.length) {
-			this.removeCode(this.removeFirstCodeID);
-			this.removeFirstCodeID = [];
-		}
-		if (this.removeLastCodeID.length) {
-			this.removeCode(this.removeLastCodeID);
-			this.removeLastCodeID = [];
-		}
-		if (!this.addLastCodeID.length) {
-			this.addLastCodeID = this.addCodeToCanvasBase(
-				this.addLastCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-		}
+		this.addLastCodeID = this.addCodeToCanvasBase(
+			this.addLastCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
 
 		const labAddLastID = this.nextIndex++;
 		const labAddLastValID = this.nextIndex++;
@@ -469,31 +447,19 @@ export default class DequeArray extends Algorithm {
 
 		this.nextIndex = this.nextIndex - 2;
 
+		this.removeCode(this.addLastCodeID)
+
 		return this.commands;
 	}
 
 	addFirst(elemToAdd) {
 		this.commands = [];
 
-		if (this.addLastCodeID.length) {
-			this.removeCode(this.addLastCodeID);
-			this.addLastCodeID = [];
-		}
-		if (this.removeFirstCodeID.length) {
-			this.removeCode(this.removeFirstCodeID);
-			this.removeFirstCodeID = [];
-		}
-		if (this.removeLastCodeID.length) {
-			this.removeCode(this.removeLastCodeID);
-			this.removeLastCodeID = [];
-		}
-		if (!this.addFirstCodeID.length) {
-			this.addFirstCodeID = this.addCodeToCanvasBase(
-				this.addFirstCode,
-				CODE_START_X,
-				CODE_START_Y,
-			);
-		}
+		this.addFirstCodeID = this.addCodeToCanvasBase(
+			this.addFirstCode,
+			CODE_START_X,
+			CODE_START_Y,
+		);
 
 		const labelAddID = this.nextIndex++;
 		const labelAddIDVal = this.nextIndex++;
@@ -586,31 +552,19 @@ export default class DequeArray extends Algorithm {
 
 		this.nextIndex = this.nextIndex - 2;
 
+		this.removeCode(this.addFirstCodeID)
+
 		return this.commands;
 	}
 
 	removeFirst() {
 		this.commands = [];
 
-		if (this.addFirstCodeID.length) {
-			this.removeCode(this.addFirstCodeID);
-			this.addFirstCodeID = [];
-		}
-		if (this.addLastCodeID.length) {
-			this.removeCode(this.addLastCodeID);
-			this.addLastCodeID = [];
-		}
-		if (this.removeLastCodeID.length) {
-			this.removeCode(this.removeLastCodeID);
-			this.removeLastCodeID = [];
-		}
-		if (!this.removeFirstCodeID.length) {
-			this.removeFirstCodeID = this.addCodeToCanvasBase(
-				this.removeFirstCode,
-				CODE_START_X - 40,
-				CODE_START_Y + 20,
-			);
-		}
+		this.removeFirstCodeID = this.addCodeToCanvasBase(
+			this.removeFirstCode,
+			CODE_START_X - 40,
+			CODE_START_Y + 20,
+		);
 
 		const labremoveFirstID = this.nextIndex++;
 		const labremoveFirstValID = this.nextIndex++;
@@ -702,31 +656,19 @@ export default class DequeArray extends Algorithm {
 		this.unhighlight(0, 0, this.removeFirstCodeID);
 		this.nextIndex = this.nextIndex - 2;
 
+		this.removeCode(this.removeFirstCodeID)
+
 		return this.commands;
 	}
 
 	removeLast() {
 		this.commands = [];
 
-		if (this.addFirstCodeID.length) {
-			this.removeCode(this.addFirstCodeID);
-			this.addFirstCodeID = [];
-		}
-		if (this.addLastCodeID.length) {
-			this.removeCode(this.addLastCodeID);
-			this.addLastCodeID = [];
-		}
-		if (this.removeFirstCodeID.length) {
-			this.removeCode(this.removeFirstCodeID);
-			this.removeFirstCodeID = [];
-		}
-		if (!this.removeLastCodeID.length) {
-			this.removeLastCodeID = this.addCodeToCanvasBase(
-				this.removeLastCode,
-				CODE_START_X - 40,
-				CODE_START_Y + 20,
-			);
-		}
+		this.removeLastCodeID = this.addCodeToCanvasBase(
+			this.removeLastCode,
+			CODE_START_X - 40,
+			CODE_START_Y + 20,
+		);
 
 		const remLabelID = this.nextIndex++;
 		const remLabelValID = this.nextIndex++;
@@ -794,36 +736,21 @@ export default class DequeArray extends Algorithm {
 		this.size--;
 		this.nextIndex = this.nextIndex - 2;
 
+		this.removeCode(this.removeLastCodeID)
+
 		return this.commands;
 	}
 
 	resize(elemToEnqueue, isFront) {
 		this.commands = [];
 
-		if (this.addFirstCodeID.length) {
-			this.removeCode(this.addFirstCodeID);
-			this.addFirstCodeID = [];
-		}
-		if (this.addLastCodeID.length) {
-			this.removeCode(this.addLastCodeID);
-			this.addLastCodeID = [];
-		}
-		if (this.removeFirstCodeID.length) {
-			this.removeCode(this.removeFirstCodeID);
-			this.removeFirstCodeID = [];
-		}
-		if (this.removeLastCodeID.length) {
-			this.removeCode(this.removeLastCodeID);
-			this.removeLastCodeID = [];
-		}
-
-		if (isFront && !this.addFirstCodeID.length) {
+		if (isFront) {
 			this.addFirstCodeID = this.addCodeToCanvasBase(
 				this.addFirstCode,
 				CODE_START_X,
 				CODE_START_Y,
 			);
-		} else if (!this.addLastCodeID.length) {
+		} else {
 			this.addLastCodeID = this.addCodeToCanvasBase(
 				this.addLastCode,
 				CODE_START_X,
@@ -1093,16 +1020,18 @@ export default class DequeArray extends Algorithm {
 
 		this.nextIndex = this.nextIndex - this.size;
 
+		if (isFront) {
+			this.removeCode(this.addFirstCodeID);
+		} else {
+			this.removeCode(this.addLastCodeID);
+		}
+
 		return this.commands;
 	}
 
 	clearAll() {
 		this.addField.value = '';
 		this.commands = [];
-		this.removeCode(this.addFirstCodeID);
-		this.removeCode(this.addLastCodeID);
-		this.removeCode(this.removeFirstCodeID);
-		this.removeCode(this.removeLastCodeID);
 		this.addFirstCodeID = [];
 		this.addLastCodeID = [];
 		this.removeFirstCodeID = [];

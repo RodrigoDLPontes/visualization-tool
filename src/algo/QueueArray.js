@@ -28,7 +28,7 @@ import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from '.
 import { act } from '../anim/AnimationMain';
 
 const ARRAY_START_X = 100;
-const ARRAY_START_Y = 225;
+const ARRAY_START_Y = 240;
 const ARRAY_ELEM_WIDTH = 50;
 const ARRAY_ELEM_HEIGHT = 50;
 
@@ -56,7 +56,7 @@ const QUEUE_INDEXVAL_X = 260;
 const QUEUE_INDEXVAL_Y = 50;
 
 const RESIZE_ARRAY_START_X = 100;
-const RESIZE_ARRAY_START_Y = 330;
+const RESIZE_ARRAY_START_Y = 345;
 const QUEUE_RESIZE_LABEL_X = 60;
 const QUEUE_RESIZE_LABEL_Y = 60;
 
@@ -259,7 +259,7 @@ export default class QueueArray extends Algorithm {
 			this.implementAction(this.enqueue.bind(this), pushVal);
 		} else if (
 			this.size === this.arraySize &&
-			this.enqueueField !== '' &&
+			this.enqueueField.value !== '' &&
 			this.size * 2 < MAX_SIZE
 		) {
 			const pushVal = this.enqueueField.value;

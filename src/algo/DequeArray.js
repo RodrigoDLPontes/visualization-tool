@@ -85,7 +85,7 @@ export default class DequeArray extends Algorithm {
 		// Add's value text field
 		this.addField = addControlToAlgorithmBar('Text', '');
 		this.addField.style.textAlign = 'center';
-		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4);
+		this.addField.onkeydown = this.returnSubmit(this.addField, null, 4, true);
 		this.controls.push(this.addField);
 
 		// Add first button

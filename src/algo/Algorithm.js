@@ -343,6 +343,7 @@ export default class Algorithm {
 			if (keyASCII === 13 && funct != null) {
 				funct();
 			} else if (
+				keyASCII === 32 || // space
 				keyASCII === 190 ||
 				keyASCII === 59 ||
 				keyASCII === 173

@@ -126,14 +126,7 @@ export default class Dijkstras extends Graph {
 			['      PQ.enqueue((w, d1 + d2))'],
 		];
 
-		this.codeID = this.addCodeToCanvasBase(
-			this.code,
-			CODE_START_X,
-			CODE_START_Y,
-			undefined,
-			undefined,
-			1,
-		);
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 
 		this.tableEntryHeight = this.isLarge ? LARGE_TABLE_ENTRY_HEIGHT : SMALL_TABLE_ENTRY_HEIGHT;
 		for (let i = 0; i < this.size; i++) {

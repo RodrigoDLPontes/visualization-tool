@@ -1,6 +1,6 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
-import { BsFileEarmarkCodeFill, BsFillSunFill, BsMoonFill } from 'react-icons/bs';
+import { BsBookHalf, BsFileEarmarkCodeFill, BsFillSunFill, BsMoonFill } from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -26,6 +26,7 @@ class AlgoScreen extends React.Component {
 			examplesEnabled: false,
 			width: 0,
 			theme: 'light',
+			pseudocodeEnabled: false,
 		};
 		ReactGA.send({ hitType: 'pageview', page: algoName });
 	}
@@ -98,9 +99,15 @@ class AlgoScreen extends React.Component {
 										size={31}
 										onClick={toggleTheme}
 										color="#f9c333"
+										className="rotate-effect"
 									/>
 								) : (
-									<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+									<BsMoonFill
+										size={29}
+										onClick={toggleTheme}
+										color="#d4f1f1"
+										className="rotate-effect"
+									/>
 								)}
 							</div>
 						</h1>
@@ -109,17 +116,23 @@ class AlgoScreen extends React.Component {
 					<div id="mainContent">
 						<div id="algoControlSection">
 							<table id="AlgorithmSpecificControls"></table>
-							{modals[algoName] && (
-								<IconContext.Provider value={{ className: 'menu-modal' }}>
-									<MdMenuBook onClick={this.toggleExamples} />
-								</IconContext.Provider>
-							)}
-							<div id="pseudocodeToggle">
-								<BsFileEarmarkCodeFill
-									size={31}
-									onClick={this.togglePseudocode}
-									color="black"
-								/>
+							<div id="toggles">
+								{algoMap[algoName][2] && (
+									<BsFileEarmarkCodeFill
+										className="pseudocode-toggle"
+										size={32}
+										onClick={this.togglePseudocode}
+										opacity={this.state.pseudocodeEnabled ? '100%' : '40%'}
+									/>
+								)}
+								{modals[algoName] && (
+									<BsBookHalf
+										className="menu-modal"
+										size={30}
+										onClick={this.toggleExamples}
+										opacity={this.state.examplesEnabled ? '100%' : '40%'}
+									/>
+								)}
 							</div>
 						</div>
 
@@ -154,7 +167,10 @@ class AlgoScreen extends React.Component {
 
 	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
 
-	togglePseudocode = () => this.animManag.toggleLayer(32);
+	togglePseudocode = () => {
+		this.setState(state => ({ pseudocodeEnabled: !state.pseudocodeEnabled }));
+		this.animManag.toggleLayer(32);
+	};
 }
 
 AlgoScreen.propTypes = {

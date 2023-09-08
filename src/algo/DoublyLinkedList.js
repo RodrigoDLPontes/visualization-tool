@@ -578,7 +578,6 @@ export default class DoublyLinkedList extends Algorithm {
 			CODE_START_Y,
 		);
 
-
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFrontCodeID);
 		} else if (isAddBack) {
@@ -1079,9 +1078,9 @@ export default class DoublyLinkedList extends Algorithm {
 			this.unhighlight(17, 0, this.removeIndexCodeID);
 		}
 
-			this.removeCode(this.removeFrontCodeID);
-			this.removeCode(this.removeBackCodeID);
-			this.removeCode(this.removeIndexCodeID);
+		this.removeCode(this.removeFrontCodeID);
+		this.removeCode(this.removeBackCodeID);
+		this.removeCode(this.removeIndexCodeID);
 
 		return this.commands;
 	}

@@ -661,6 +661,12 @@ export default class AnimationManager extends EventListener {
 		this.animatedObjects.draw();
 	}
 
+	toggleLayer(layer) {
+		this.animatedObjects.toggleLayer(layer);
+		console.log(layer);
+		this.animatedObjects.draw();
+	}
+
 	setAllLayers(layers) {
 		this.animatedObjects.setAllLayers(layers);
 		// Drop in an extra draw call here, just in case we are not

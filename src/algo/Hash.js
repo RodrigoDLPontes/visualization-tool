@@ -170,9 +170,14 @@ export default class Hash extends Algorithm {
 			'Restart',
 			this.rightVerticalBottom,
 		);
-		this.initialCapacityField.onkeydown = this.returnSubmit(this.initialCapacityField, null, 2, true);
+		this.initialCapacityField.onkeydown = this.returnSubmit(
+			this.initialCapacityField,
+			null,
+			2,
+			true,
+		);
 		this.restartButton.onclick = this.clearCallback.bind(this);
-		
+
 		addDivisorToAlgorithmBar();
 
 		this.dropDownParentGroup = addGroupToAlgorithmBar(false);

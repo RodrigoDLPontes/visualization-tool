@@ -209,6 +209,12 @@ export default class ObjectManager {
 		this.resetLayers();
 	}
 
+	toggleLayer(layer) {
+		this.activeLayers[layer] = !this.activeLayers[layer];
+		console.log(this.activeLayers);
+		this.resetLayers();
+	}
+
 	resetLayers() {
 		let i;
 		for (i = 0; i < this.nodes.length; i++) {

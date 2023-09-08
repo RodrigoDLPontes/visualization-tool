@@ -1,6 +1,6 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
-import { BsFillSunFill, BsMoonFill } from 'react-icons/bs';
+import { BsFileEarmarkCodeFill, BsFillSunFill, BsMoonFill } from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -114,6 +114,13 @@ class AlgoScreen extends React.Component {
 									<MdMenuBook onClick={this.toggleExamples} />
 								</IconContext.Provider>
 							)}
+							<div id="pseudocodeToggle">
+								<BsFileEarmarkCodeFill
+									size={31}
+									onClick={this.togglePseudocode}
+									color="black"
+								/>
+							</div>
 						</div>
 
 						<div className="viewport">
@@ -146,6 +153,8 @@ class AlgoScreen extends React.Component {
 	}
 
 	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
+
+	togglePseudocode = () => this.animManag.toggleLayer(32);
 }
 
 AlgoScreen.propTypes = {

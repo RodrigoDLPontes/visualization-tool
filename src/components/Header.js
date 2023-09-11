@@ -46,7 +46,12 @@ class Header extends React.Component {
 									className="rotate-effect"
 								/>
 							) : (
-								<BsMoonFill size={29} onClick={toggleTheme} color="#d4f1f1" />
+								<BsMoonFill
+									size={29}
+									onClick={toggleTheme}
+									color="#d4f1f1"
+									className="rotate-effect"
+								/>
 							)}
 						</div>
 					</div>

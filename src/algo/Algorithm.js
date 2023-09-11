@@ -216,7 +216,7 @@ export default class Algorithm {
 		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
-		layer = typeof layer !== 'undefined' ? layer : 0;
+		layer = typeof layer !== 'undefined' ? layer : 32;
 		const isCode = true;
 		const codeID = Array(code.length);
 		let i, j;

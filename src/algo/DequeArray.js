@@ -386,11 +386,7 @@ export default class DequeArray extends Algorithm {
 	addLast(elemToAddLast) {
 		this.commands = [];
 
-		this.addLastCodeID = this.addCodeToCanvasBase(
-			this.addLastCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
+		this.addLastCodeID = this.addCodeToCanvasBase(this.addLastCode, CODE_START_X, CODE_START_Y);
 
 		const labAddLastID = this.nextIndex++;
 		const labAddLastValID = this.nextIndex++;
@@ -447,7 +443,7 @@ export default class DequeArray extends Algorithm {
 
 		this.nextIndex = this.nextIndex - 2;
 
-		this.removeCode(this.addLastCodeID)
+		this.removeCode(this.addLastCodeID);
 
 		return this.commands;
 	}
@@ -552,7 +548,7 @@ export default class DequeArray extends Algorithm {
 
 		this.nextIndex = this.nextIndex - 2;
 
-		this.removeCode(this.addFirstCodeID)
+		this.removeCode(this.addFirstCodeID);
 
 		return this.commands;
 	}
@@ -656,7 +652,7 @@ export default class DequeArray extends Algorithm {
 		this.unhighlight(0, 0, this.removeFirstCodeID);
 		this.nextIndex = this.nextIndex - 2;
 
-		this.removeCode(this.removeFirstCodeID)
+		this.removeCode(this.removeFirstCodeID);
 
 		return this.commands;
 	}
@@ -736,7 +732,7 @@ export default class DequeArray extends Algorithm {
 		this.size--;
 		this.nextIndex = this.nextIndex - 2;
 
-		this.removeCode(this.removeLastCodeID)
+		this.removeCode(this.removeLastCodeID);
 
 		return this.commands;
 	}

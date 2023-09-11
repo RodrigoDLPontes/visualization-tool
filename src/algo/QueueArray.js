@@ -89,7 +89,7 @@ export default class QueueArray extends Algorithm {
 			this.enqueueField,
 			this.enqueueCallback.bind(this),
 			4,
-			true
+			true,
 		);
 
 		this.enqueueButton = addControlToAlgorithmBar('Button', 'Enqueue');

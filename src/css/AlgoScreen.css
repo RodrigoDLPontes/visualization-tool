@@ -61,6 +61,12 @@
 	align-items: center;
 	border-bottom: var(--border) 2px solid;
 	transition: all 0.4s ease 0s;
+	padding: 5px 5px;
+}
+
+.VisualizationMainPage #toggles * {
+	margin: 0 10px;
+	color: var(--primary);
 }
 
 .VisualizationMainPage #AlgorithmSpecificControls {
@@ -177,6 +183,9 @@ em {
 	filter: var(--filter);
 }
 
+.pseudocode-toggle {
+	cursor: pointer;
+}
 .VisualizationMainPage .modal {
 	position: absolute;
 	right: 20px;

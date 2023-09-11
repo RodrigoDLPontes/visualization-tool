@@ -53,6 +53,7 @@ export default class ObjectManager {
 		this.backEdges = [];
 		this.activeLayers = [];
 		this.activeLayers[0] = true;
+		this.activeLayers[32] = true; // pseudocode layer
 		this.ctx = canvasRef.current.getContext('2d');
 		this.framenum = 0;
 		this.width = 0;

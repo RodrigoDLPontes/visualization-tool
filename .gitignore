@@ -25,3 +25,6 @@ yarn-error.log*
 # my notes for how to contribute from the bluejeans meeting
 contrib.txt
 .eslintrc
+
+# ide settings
+.vscode/

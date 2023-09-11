@@ -4,9 +4,7 @@ import { BsBookHalf, BsFileEarmarkCodeFill, BsFillSunFill, BsMoonFill } from 're
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
-import { MdMenuBook } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactGA from 'react-ga4';
@@ -26,7 +24,7 @@ class AlgoScreen extends React.Component {
 			examplesEnabled: false,
 			width: 0,
 			theme: 'light',
-			pseudocodeEnabled: false,
+			pseudocodeEnabled: true,
 		};
 		ReactGA.send({ hitType: 'pageview', page: algoName });
 	}

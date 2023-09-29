@@ -186,11 +186,11 @@ export default class Hash extends Algorithm {
 	}
 
 	checkHashType() {
-		if (this.hashTypeDropDown.value === 'Hash Integers') {
+		if (this.hashTypeDropDown.value === 'Integers') {
 			this.implementAction(this.changeHashType.bind(this), 'integers');
-		} else if (this.hashTypeDropDown.value === 'Hash Strings') {
+		} else if (this.hashTypeDropDown.value === 'Strings') {
 			this.implementAction(this.changeHashType.bind(this), 'strings');
-		} else if (this.hashTypeDropDown.value === 'True Hash Function') {
+		} else if (this.hashTypeDropDown.value === 'True') {
 			this.implementAction(this.changeHashType.bind(this), 'true');
 		}
 	}

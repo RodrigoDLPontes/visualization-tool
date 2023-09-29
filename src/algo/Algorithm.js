@@ -83,7 +83,8 @@ export function addDropDownGroupToAlgorithmBar(optionNames, groupName, group) {
 	dropDown.name = groupName;
 	for (let i = 0; i < optionNames.length; i++) {
 		const option = document.createElement('option');
-		option.text = optionNames[i];
+		option.value = optionNames[i][0];
+		option.text = optionNames[i][1];
 		dropDown.add(option);
 	}
 

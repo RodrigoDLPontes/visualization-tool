@@ -75,7 +75,7 @@ export default class Hash extends Algorithm {
 			this.keyField,
 			this.insertCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true,
+			false,
 		);
 		this.controls.push(this.keyField);
 
@@ -103,7 +103,7 @@ export default class Hash extends Algorithm {
 			this.keyField,
 			this.deleteCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true,
+			false,
 		);
 		this.controls.push(this.deleteField);
 
@@ -120,7 +120,7 @@ export default class Hash extends Algorithm {
 			this.keyField,
 			this.findCallback.bind(this),
 			MAX_HASH_LENGTH,
-			true,
+			false,
 		);
 		this.controls.push(this.findField);
 
@@ -307,7 +307,8 @@ export default class Hash extends Algorithm {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
-			const index = parseInt(input) % this.table_size;
+			
+			const index = ((parseInt(input) % this.table_size) + this.table_size) % this.table_size;
 			this.currHash = parseInt(input);
 
 			this.cmd(

@@ -202,66 +202,27 @@ export default class Hash extends Algorithm {
 	changeHashType(newHashType) {
 		if (this.hashType !== newHashType) {
 			this.hashType = newHashType;
-			if (this.hashType === 'integers') {
-				this.keyField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.insertCallback.bind(this),
-					MAX_HASH_LENGTH,
-					true,
-				);
-				this.deleteField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.deleteCallback.bind(this),
-					MAX_HASH_LENGTH,
-					true,
-				);
-				this.findField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.findCallback.bind(this),
-					MAX_HASH_LENGTH,
-					true,
-				);
-			} else if (this.hashType === 'strings') {
-				this.keyField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.insertCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-				this.deleteField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.deleteCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-				this.findField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.findCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-			} else if (this.hashType === 'true') {
-				this.keyField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.insertCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-				this.deleteField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.deleteCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-				this.findField.onkeydown = this.returnSubmit(
-					this.keyField,
-					this.findCallback.bind(this),
-					MAX_HASH_LENGTH,
-					false,
-				);
-			}
+			this.keyField.onkeydown = this.returnSubmit(
+				this.keyField,
+				this.insertCallback.bind(this),
+				MAX_HASH_LENGTH,
+				false,
+			);
+			this.deleteField.onkeydown = this.returnSubmit(
+				this.keyField,
+				this.deleteCallback.bind(this),
+				MAX_HASH_LENGTH,
+				false,
+			);
+			this.findField.onkeydown = this.returnSubmit(
+				this.keyField,
+				this.findCallback.bind(this),
+				MAX_HASH_LENGTH,
+				false,
+			);
+			return this.resetAll();
 		}
-		return this.resetAll();
+		return;
 	}
 
 	randomCallback() {
@@ -301,13 +262,25 @@ export default class Hash extends Algorithm {
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
+	
+	doHash(input, resetHash) {
+		const desiredMode = (isNaN(parseInt(input))) ? 'strings' : 'integers';
 
-	doHash(input) {
+		if ((desiredMode !== this.hashType) && !resetHash) {
+			throw new Error("The type of Key can not change with this operation!");
+		}
+		const labelInfo = this.nextIndex++;
+		if (!isNaN(parseInt(input)) && resetHash) {
+			this.implementAction(this.changeHashType.bind(this), 'integers');
+			this.hashTypeDropDown.value = 'Integers';
+		} else if (isNaN(parseInt(input)) && resetHash) {
+			this.implementAction(this.changeHashType.bind(this), 'strings');
+			this.hashTypeDropDown.value = 'Strings';
+		}
 		if (this.hashType === 'integers') {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
 			const highlightID = this.nextIndex++;
-			
 			const index = ((parseInt(input) % this.table_size) + this.table_size) % this.table_size;
 			this.currHash = parseInt(input);
 
@@ -702,10 +675,7 @@ export default class Hash extends Algorithm {
 	}
 
 	insertCallback() {
-		const insertedKey =
-			this.hashType === 'integers'
-				? parseInt(this.keyField.value).toString()
-				: this.keyField.value;
+		const insertedKey = this.keyField.value;
 		const insertedValue = this.valueField.value;
 		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';

@@ -278,6 +278,14 @@ export default class ClosedHash extends Hash {
 	}
 
 	insertElement(key, value) {
+		let index;
+		try {
+			index = this.doHash(key, true);
+		} catch (e) {
+			this.shake(this.insertButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return;
+		}
 		const elem = `<${key}, ${value}>`;
 		this.commands = [];
 
@@ -310,8 +318,6 @@ export default class ClosedHash extends Hash {
 			0,
 			1,
 		);
-
-		const index = this.doHash(key);
 
 		let found = false;
 		let prev = null;
@@ -430,7 +436,14 @@ export default class ClosedHash extends Hash {
 	deleteElement(key) {
 		this.commands = [];
 		this.cmd(act.setText, this.ExplainLabel, 'Deleting entry with key: ' + key);
-		const index = this.doHash(key);
+		let index;
+		try {
+			index = this.doHash(key, false);
+		} catch (e) {
+			this.shake(this.deleteButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return;
+		}
 		if (this.hashTableValues[index] == null) {
 			this.cmd(
 				act.setText,
@@ -499,8 +512,14 @@ export default class ClosedHash extends Hash {
 	findElement(key) {
 		this.commands = [];
 		this.cmd(act.setText, this.ExplainLabel, 'Finding entry with key: ' + key);
-
-		const index = this.doHash(key);
+		let index;
+		try {
+			index = this.doHash(key, false);
+		} catch (e) {
+			this.shake(this.findButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return;
+		}
 		const compareIndex = this.nextIndex++;
 		let found = false;
 		let tmp = this.hashTableValues[index];
@@ -626,8 +645,15 @@ export default class ClosedHash extends Hash {
 					this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
 				}
 				this.cmd(act.step);
-
-				const index = this.doHash(node.key);
+				
+				let index;
+				try {
+					index = this.doHash(node.key, false);
+				} catch (e) {
+					this.shake(this.insertButton);
+					this.cmd(act.setText, this.ExplainLabel, e.message);
+					return;
+				}
 
 				node.next = this.hashTableValues[index];
 				this.cmd(act.setNull, node.graphicID, 1);

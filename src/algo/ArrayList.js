@@ -210,53 +210,53 @@ export default class ArrayList extends Algorithm {
 
 		this.addFBCode = [
 			['procedure addFront(data)'],
-			['  addAtIndex(0, data)'],
+			['  call addAtIndex at front with data'],
 			['end procedure'],
 			[''],
 			['procedure addBack(data)'],
-			['  addAtIndex(size, data)'],
+			['  call addAtIndex at back with data'],
 			['end procedure'],
 		];
-
+		
 		this.addIndexCode = [
 			['procedure addAtIndex(index, data)'],
-			['  if size == array.length'],
-			['    T[] newArray ← new array[size * 2]'],
-			['    for i ← 0 to index - 1, i++:'],
-			['      newArray[i] ← array[i]'],
-			['    newArray[index] ← data'],
-			['    for i ← index to size - 1, i++:'],
-			['      newArray[i + 1] ← array[i]'],
-			['    array ← newArray'],
-			['  else'],
-			['    for i ← size to index + 1, i--:'],
-			['      array[i] ← array[i - 1]'],
-			['    array[index] ← data'],
-			['  size++'],
+			['  if (at max capacity):'],
+			['    create newArray with 2x capacity'],
+			['    for (i from 0 to index):'],
+			['      copy array value at i to newArray'],
+			['    put data into newArray at index'],
+			['    for (i from index to back):'],
+			['      copy and shift array value at i to newArray'],
+			['    array points to newArray'],
+			['  else:'],
+			['    for (i from back to spot after index):'],
+			['      shift array value back'],
+			['    put data into array at index'],
+			['  increment size'],
 			['end procedure'],
 		];
-
+		
 		this.removeFBCode = [
 			['procedure removeFront()'],
-			['  removeFromIndex(0)'],
+			['  call removeFromIndex at front'],
 			['end procedure'],
 			[''],
 			['procedure removeBack()'],
-			['  removeFromIndex(size - 1)'],
+			['  call removeFromIndex at back'],
 			['end procedure'],
 		];
-
+		
 		this.removeIndexCode = [
 			['procedure removeFromIndex(index)'],
-			['  T data ← array[index]'],
-			['  array[index] ← null'],
-			['  for i ← index to size - 2, i++:'],
-			['    array[i] ← array[i + 1]'],
-			['  array[size - 1] ← null'],
-			['  size--'],
-			['  return data'],
+			['  copy data at index to temp'],
+			['  for (i from index to spot before back):'],
+			['    copy array value at i and shift to newArray'],
+			['  null out back of array'],
+			['  decrement size'],
+			['  return temp'],
 			['end procedure'],
 		];
+				
 
 		this.addFBCodeID = [];
 		this.addIndexCodeID = [];
@@ -479,7 +479,7 @@ export default class ArrayList extends Algorithm {
 		this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
 		this.addIndexCodeID = this.addCodeToCanvasBase(
 			this.addIndexCode,
-			CODE_START_X + 250,
+			CODE_START_X + 300,
 			CODE_START_Y,
 		);
 
@@ -599,7 +599,7 @@ export default class ArrayList extends Algorithm {
 		);
 		this.removeIndexCodeID = this.addCodeToCanvasBase(
 			this.removeIndexCode,
-			CODE_START_X + 250,
+			CODE_START_X + 300,
 			CODE_START_Y,
 		);
 

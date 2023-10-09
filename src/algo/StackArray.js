@@ -166,24 +166,24 @@ export default class StackArray extends Algorithm {
 
 		this.pushCode = [
 			['procedure push(data)'],
-			['  if size == array.length'],
-			['    T[] newArray ← new array[2 * size]'],
-			['    for i ← 0 to size - 1, i++:'],
-			['      newArray[i] ← array[i]'],
-			['    array ← newArray'],
-			['  array[size] ← data'],
-			['  size++'],
+			['  if (at max capacity):'],
+			['    create newArray with 2x capacity'],
+			['    for (i from front to back):'],
+			['      copy array value at i to newArray'],
+			['    array points to newArray'],
+			['    put data into array at back'],
+			['    increment size'],
 			['end procedure'],
 		];
-
+		
 		this.popCode = [
 			['procedure pop()'],
-			['  size--'],
-			['  T data ← array[size]'],
-			['  array[size] ← null'],
-			['  return data'],
+			['  copy array value at back to temp'],
+			['  null out back of array'],
+			['  decrement size'],
+			['  return temp'],
 			['end procedure'],
-		];
+		];		
 
 		this.pushCodeID = this.addCodeToCanvasBase(this.pushCode, CODE_START_X, CODE_START_Y);
 		this.popCodeID = this.addCodeToCanvasBase(this.popCode, CODE_START_X + 325, CODE_START_Y);

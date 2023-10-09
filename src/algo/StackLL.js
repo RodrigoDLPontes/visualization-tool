@@ -142,19 +142,26 @@ export default class StackLL extends Algorithm {
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 		this.cmd(act.createLabel, this.leftoverValID, '', PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 
-		this.code = [
+		this.pushCode = [
 			['procedure push(data)'],
-			['  head ← new Node(data, head)'],
-			['end procedure'],
-			[],
-			['procedure pop()'],
-			['  T data ← head.data'],
-			['  head ← head.next'],
-			['  return data'],
+			['  create newNode node with data'],
+			['  newNode.next points to head'],
+			['  head points to newNode'],
+			['  increment size'],
 			['end procedure'],
 		];
+		
+		this.popCode = [
+			['procedure pop()'],
+			['  copy data at head to temp'],
+			['  head moves to next node'],
+			['  decrement size'],
+			['  return temp'],
+			['end procedure'],
+		];		
 
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.pushCodeID = this.addCodeToCanvasBase(this.pushCode, CODE_START_X, CODE_START_Y);
+		this.popCodeID = this.addCodeToCanvasBase(this.popCode, CODE_START_X + 325, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -233,7 +240,7 @@ export default class StackLL extends Algorithm {
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
-		this.highlight(1, 0);
+		this.highlight(1, 0, this.pushCodeID);
 
 		this.cmd(
 			act.createLinkedListNode,
@@ -259,6 +266,7 @@ export default class StackLL extends Algorithm {
 		this.cmd(act.setText, this.linkedListElemID[this.top], elemToPush);
 		this.cmd(act.delete, labPushValID);
 
+		this.unhighlight(1, 0, this.pushCodeID)
 		if (this.top === 0) {
 			this.cmd(act.setNull, this.topID, 0);
 			this.cmd(act.setNull, this.linkedListElemID[this.top], 1);
@@ -272,13 +280,18 @@ export default class StackLL extends Algorithm {
 			this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
 		}
 		this.cmd(act.connect, this.topID, this.linkedListElemID[this.top]);
+		this.highlight(2, 0, this.pushCodeID)
+		this.highlight(3, 0, this.pushCodeID)
 
 		this.cmd(act.step);
 		this.top = this.top + 1;
+		this.unhighlight(2, 0, this.pushCodeID)
+		this.unhighlight(3, 0, this.pushCodeID)
+		this.highlight(4, 0, this.pushCodeID)
 		this.resetLinkedListPositions();
 		this.cmd(act.delete, labPushID);
 		this.cmd(act.step);
-		this.unhighlight(1, 0);
+		this.unhighlight(4, 0, this.pushCodeID)
 
 		return this.commands;
 	}
@@ -301,25 +314,28 @@ export default class StackLL extends Algorithm {
 			LINKED_LIST_START_Y,
 		);
 
-		this.highlight(5, 0);
+		this.highlight(1, 0, this.popCodeID);
 		this.cmd(act.move, labPopValID, PUSH_ELEMENT_X, PUSH_ELEMENT_Y);
 		this.cmd(act.step);
 		this.cmd(act.disconnect, this.topID, this.linkedListElemID[this.top - 1]);
-		this.unhighlight(5, 0);
+		this.unhighlight(1, 0, this.popCodeID);
 
 		if (this.top === 1) {
 			this.cmd(act.setNull, this.topID, 1);
 		} else {
 			this.cmd(act.connect, this.topID, this.linkedListElemID[this.top - 2]);
 		}
-		this.highlight(6, 0);
+		this.highlight(2, 0, this.popCodeID);
 		this.cmd(act.step);
-		this.unhighlight(6, 0);
+		this.unhighlight(2, 0, this.popCodeID);
 		this.cmd(act.delete, this.linkedListElemID[this.top - 1]);
-		this.highlight(7, 0);
+		this.highlight(3, 0, this.popCodeID);
+		this.highlight(4, 0, this.popCodeID);
 		this.top = this.top - 1;
 		this.resetLinkedListPositions();
-		this.unhighlight(7, 0);
+		this.cmd(act.step)
+		this.unhighlight(3, 0, this.popCodeID);
+		this.unhighlight(4, 0, this.popCodeID);
 
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);

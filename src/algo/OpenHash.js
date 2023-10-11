@@ -87,7 +87,6 @@ export default class OpenHash extends Hash {
 		this.probeTypeDropDown.style.width = '132px';
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
-
 		addDivisorToAlgorithmBar();
 
 		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
@@ -96,7 +95,11 @@ export default class OpenHash extends Hash {
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[['Integers', 'Hash Integers'], ['Strings', 'Hash Strings'], ['True', 'True Hash Function']],
+			[
+				['Integers', 'Hash Integers'],
+				['Strings', 'Hash Strings'],
+				['True', 'True Hash Function'],
+			],
 			'Hash Type',
 			this.hashTypedropDownGroup,
 		);

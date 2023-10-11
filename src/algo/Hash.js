@@ -262,9 +262,14 @@ export default class Hash extends Algorithm {
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
-	
-	doHash(input) {
-		
+
+	doHash(input, resetHash) {
+		const desiredMode = isNaN(parseInt(input)) ? 'strings' : 'integers';
+
+		if (desiredMode !== this.hashType) {
+			throw new Error(`That key is not a valid input for the hash type "${this.hashType}"`);
+		}
+
 		if (this.hashType === 'integers') {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;
@@ -662,29 +667,9 @@ export default class Hash extends Algorithm {
 		return [];
 	}
 
-	checkKeyType(key, resetHash) {
-		const desiredMode = (isNaN(parseInt(key))) ? 'strings' : 'integers';
-		if ((desiredMode !== this.hashType)) {
-			if (!resetHash){
-				throw new Error("The type of Key can not change with this operation!");
-			}
-
-			//const labelInfo = this.nextIndex++;
-			if (!isNaN(parseInt(key)) && resetHash) {
-				this.implementAction(this.changeHashType.bind(this), 'integers');
-				this.hashTypeDropDown.value = 'Integers';
-			} else if (isNaN(parseInt(key)) && resetHash) {
-				this.implementAction(this.changeHashType.bind(this), 'strings');
-				this.hashTypeDropDown.value = 'Strings';
-			}
-
-		}
-	}
-
 	insertCallback() {
 		const insertedKey = this.keyField.value;
 		const insertedValue = this.valueField.value;
-		this.checkKeyType(insertedKey, true);
 		if (insertedKey !== '' && insertedValue !== '') {
 			this.keyField.value = '';
 			this.valueField.value = '';
@@ -696,7 +681,6 @@ export default class Hash extends Algorithm {
 
 	deleteCallback() {
 		const deletedValue = this.deleteField.value;
-		this.checkKeyType(deletedValue, false);
 		if (deletedValue !== '') {
 			this.deleteField.value = '';
 			this.implementAction(this.deleteElement.bind(this), deletedValue);
@@ -707,7 +691,6 @@ export default class Hash extends Algorithm {
 
 	findCallback() {
 		const findValue = this.findField.value;
-		this.checkKeyType(findValue, false);
 		if (findValue !== '') {
 			this.findField.value = '';
 			this.implementAction(this.findElement.bind(this), findValue);

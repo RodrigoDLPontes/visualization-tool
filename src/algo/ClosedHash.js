@@ -82,7 +82,11 @@ export default class ClosedHash extends Hash {
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.dropDownLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[['Integers', 'Hash Integers'], ['Strings', 'Hash Strings'], ['True', 'True Hash Function']],
+			[
+				['Integers', 'Hash Integers'],
+				['Strings', 'Hash Strings'],
+				['True', 'True Hash Function'],
+			],
 			'Hash Type',
 			this.dropDownParentGroup,
 		);
@@ -278,16 +282,16 @@ export default class ClosedHash extends Hash {
 	}
 
 	insertElement(key, value) {
+		this.commands = [];
 		let index;
 		try {
 			index = this.doHash(key, true);
 		} catch (e) {
 			this.shake(this.insertButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 		const elem = `<${key}, ${value}>`;
-		this.commands = [];
 
 		this.cmd(act.setText, this.loadFactorID, `Load Factor: ${this.load_factor}`);
 
@@ -442,7 +446,7 @@ export default class ClosedHash extends Hash {
 		} catch (e) {
 			this.shake(this.deleteButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 		if (this.hashTableValues[index] == null) {
 			this.cmd(
@@ -518,7 +522,7 @@ export default class ClosedHash extends Hash {
 		} catch (e) {
 			this.shake(this.findButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 		const compareIndex = this.nextIndex++;
 		let found = false;
@@ -645,7 +649,7 @@ export default class ClosedHash extends Hash {
 					this.cmd(act.setNull, this.oldHashTableVisual[i], 1);
 				}
 				this.cmd(act.step);
-				
+
 				let index;
 				try {
 					index = this.doHash(node.key, false);

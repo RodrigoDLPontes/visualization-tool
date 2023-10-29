@@ -473,7 +473,7 @@ export default class ObjectManager {
 	getTextWidth(text, isCode, isPointer) {
 		// TODO:  Need to make fonts more flexible, and less hardwired.
 		if (isCode) {
-			this.ctx.font = '13px Source Code Pro';
+			this.ctx.font = '13px "Source Code Pro", monospace';
 		} else if (isPointer) {
 			this.ctx.font = '16px Arial';
 		} else {

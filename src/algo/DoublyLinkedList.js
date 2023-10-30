@@ -31,6 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json'
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -275,114 +276,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.addFrontCode = [
-			['procedure addFront(data)'],
-			['  if (list is empty):'],
-			['    head points to new node'],
-			['    tail points to new node'],
-			['  else:'],
-			['    create newHead node with data'],
-			['    newHead.next points to head'],
-			['    head.prev points to newHead'],
-			['    head points to newHead'],
-			['  increment size'],
-			['end procedure'],
-		];
-		
-		this.addBackCode = [
-			['procedure addBack(data)'],
-			['  if (list is empty):'],
-			['    head points to new node'],
-			['    tail points to new node'],
-			['  else:'],
-			['    create newTail node with data'],
-			['    newTail.prev points to tail'],
-			['    tail.next points to newTail'],
-			['    tail points to newTail'],
-			['  increment size'],
-			['end procedure'],
-		];
-		
-		this.addIndexCode = [
-			['procedure addAtIndex(index, data)'],
-			['  if (index is at the front):'],
-			['    call addFront with data'],
-			['  else if (index is at the back):'],
-			['    call addBack with data'],
-			['  else:'],
-			['    if (index is closer to front):'],
-			['      curr points to head'],
-			['      for (i from 0 to node before index):'],
-			['        curr moves to next node'],
-			['    else:'],
-			['      curr points to tail'],
-			['      for (i from back to index):'],
-			['        curr moves to previous node'],
-			['    create newNode node with data'],
-			['    newNode.prev points to curr'],
-			['    newNode.next points to curr.next'],
-			['    curr.next points to newNode'],
-			['    newNode.next.prev points to newNode'],
-			['    increment size'],
-			['end procedure'],
-		];
-		
-		this.removeIndexCode = [
-			['procedure removeFromIndex(index)'],
-			['  if (index is at the front):'],
-			['    call removeFront'],
-			['  else (index is at the back):'],
-			['    call removeBack'],
-			['  else:'],
-			['    if (index is in the front half):'],
-			['      curr points to head'],
-			['      for (i from front to index):'],
-			['        curr moves to next node'],
-			['    else:'],
-			['      curr points to tail'],
-			['      for (i from back to index):'],
-			['        curr moves to previous node'],
-			['    copy data at curr to temp'],
-			['    curr.prev.next points to curr.next'],
-			['    curr.next.prev points to curr.prev'],
-			['    decrement size'],
-			['    return temp'],
-			['end procedure'],
-		];
-		
-		this.removeFrontCode = [
-			['procedure removeFront()'],
-			['  copy data at head to temp'],
-			['  head moves to next node'],
-			['  if (head is null):'],
-			['    null out tail'],
-			['  else:'],
-			['    null out head.prev'],
-			['  decrement size'],
-			['  return temp'],
-			['end procedure'],
-		];
-		
-		this.removeBackCode = [
-			['procedure removeBack()'],
-			['  copy data at tail to temp'],
-			['  tail moves to previous node'],
-			['  if (tail is null):'],
-			['    null out head'],
-			['  else:'],
-			['    null out tail.next'],
-			['  decrement size'],
-			['  return temp'],
-			['end procedure'],
-		];	
-
-		this.addFrontCodeID = [];
-		this.addBackCodeID = [];
-		this.addIndexCodeID = [];
-
-		this.removeFrontCodeID = [];
-		this.removeBackCodeID = [];
-		this.removeIndexCodeID = [];
+		this.pseudocode = pseudocodeText.DoublyLinkedList;
 
 		this.resetIndex = this.nextIndex;
 
@@ -503,7 +397,7 @@ export default class DoublyLinkedList extends Algorithm {
 				i--;
 			} else {
 				set.add(val);
-				this.implementAction(this.add.bind(this), val, 0);
+				this.implementAction(this.add.bind(this), val, 0, false, true, false, true);
 			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
@@ -558,25 +452,15 @@ export default class DoublyLinkedList extends Algorithm {
 		}
 	}
 
-	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
+	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex, skipPseudocode) {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.addFrontCodeID = this.addCodeToCanvasBase(
-			this.addFrontCode,
-			CODE_START_X + 325,
-			CODE_START_Y,
-		);
-		this.addBackCodeID = this.addCodeToCanvasBase(
-			this.addBackCode,
-			CODE_START_X + 620,
-			CODE_START_Y,
-		);
+		if (!skipPseudocode) {
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addIndex', CODE_START_X, CODE_START_Y);
+			this.addFrontCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFront', CODE_START_X + 325, CODE_START_Y);
+			this.addBackCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addBack', CODE_START_X + 620, CODE_START_Y);
+		}
 
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -837,9 +721,11 @@ export default class DoublyLinkedList extends Algorithm {
 			this.unhighlight(19, 0, this.addIndexCodeID);
 		}
 
-		this.removeCode(this.addFrontCodeID);
-		this.removeCode(this.addBackCodeID);
-		this.removeCode(this.addIndexCodeID);
+		if (!skipPseudocode) {
+			this.removeCode(this.addFrontCodeID);
+			this.removeCode(this.addBackCodeID);
+			this.removeCode(this.addIndexCodeID);
+		}
 
 		return this.commands;
 	}
@@ -848,21 +734,9 @@ export default class DoublyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.removeFrontCodeID = this.addCodeToCanvasBase(
-			this.removeFrontCode,
-			CODE_START_X + 325,
-			CODE_START_Y,
-		);
-		this.removeBackCodeID = this.addCodeToCanvasBase(
-			this.removeBackCode,
-			CODE_START_X + 620,
-			CODE_START_Y,
-		);
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeIndex', CODE_START_X, CODE_START_Y);
+		this.removeFrontCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeFront', CODE_START_X + 325, CODE_START_Y);
+		this.removeBackCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeBack', CODE_START_X + 620, CODE_START_Y);
 
 		index = parseInt(index);
 

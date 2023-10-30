@@ -134,7 +134,7 @@ class AlgoScreen extends React.Component {
 											className="pseudocode-toggle"
 											size={32}
 											onClick={this.togglePseudocode}
-											title="Code: English-like"
+											title="Code: English"
 										/>
 									)}
 									{algoMap[algoName][2] && pseudocode==='code' && (

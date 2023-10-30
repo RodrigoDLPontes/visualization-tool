@@ -252,26 +252,23 @@ export default class Algorithm {
 	}
 
 	highlight(ind1, ind2, codeID) {
-		if (codeID.english) {
-			this.highlight(ind1, ind2, codeID.english);
-			this.highlight(ind1, ind2, codeID.code);
-			return;
-		}
-		codeID = codeID === undefined ? this.codeID : codeID;
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+		if (!codeID) return;
+		if (codeID.english.length)
+			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+		if (codeID.code.length)
+			this.cmd(act.setForegroundColor, codeID.code[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}
 
 	unhighlight(ind1, ind2, codeID) {
-		if (codeID.english) {
-			this.unhighlight(ind1, ind2, codeID.english);
-			this.unhighlight(ind1, ind2, codeID.code);
-			return;
-		}
-		codeID = codeID === undefined ? this.codeID : codeID;
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
+		if (!codeID) return;
+		if (codeID.english.length)
+			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_STANDARD_COLOR);
+		if (codeID.code.length)
+			this.cmd(act.setForegroundColor, codeID.code[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	removeCode(codeID) {
+		if (!codeID) return;
 		if (codeID.english) {
 			this.removeCode(codeID.english);
 			this.removeCode(codeID.code);

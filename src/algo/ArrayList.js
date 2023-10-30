@@ -421,18 +421,11 @@ export default class ArrayList extends Algorithm {
 		return this.commands;
 	}
 
-	createPseudocodeElems(key, x_offset = 0, y_offset = 0) {
-		return {
-			english: this.addCodeToCanvasBase(this.pseudocode[key], 'english', CODE_START_X + x_offset, CODE_START_Y + y_offset),
-			code: this.addCodeToCanvasBase(this.pseudocode[key], 'code', CODE_START_X + x_offset, CODE_START_Y + y_offset)
-		};
-	}
-
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
 		this.setInfoText('');
-		this.addFBCodeID = this.createPseudocodeElems('addFB');
-		this.addIndexCodeID = this.createPseudocodeElems('addIndex', 300);
+		this.addFBCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFB', CODE_START_X, CODE_START_Y);
+		this.addIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addIndex', CODE_START_X + 300, CODE_START_Y);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -543,8 +536,8 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeFBCodeID = this.createPseudocodeElems('removeFB');
-		this.removeIndexCodeID = this.createPseudocodeElems('removeIndex', 300);
+		this.removeFBCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeFB', CODE_START_X, CODE_START_Y);
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeIndex', CODE_START_X + 300, CODE_START_Y);
 
 		if (isRemoveFront) {
 			this.highlight(0, 0, this.removeFBCodeID);

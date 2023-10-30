@@ -32,6 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json'
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -208,61 +209,9 @@ export default class ArrayList extends Algorithm {
 		this.length = SIZE;
 		this.commands = [];
 
-		this.addFBCode = [
-			['procedure addFront(data)'],
-			['  call addAtIndex at front with data'],
-			['end procedure'],
-			[''],
-			['procedure addBack(data)'],
-			['  call addAtIndex at back with data'],
-			['end procedure'],
-		];
+		this.pseudocode = pseudocodeText.ArrayList;
+		this.pseudocodeIDs = {};
 		
-		this.addIndexCode = [
-			['procedure addAtIndex(index, data)'],
-			['  if (at max capacity):'],
-			['    create newArray with 2x capacity'],
-			['    for (i from 0 to index):'],
-			['      copy array value at i to newArray'],
-			['    put data into newArray at index'],
-			['    for (i from index to back):'],
-			['      copy and shift array value at i to newArray'],
-			['    array points to newArray'],
-			['  else:'],
-			['    for (i from back to spot after index):'],
-			['      shift array value back'],
-			['    put data into array at index'],
-			['  increment size'],
-			['end procedure'],
-		];
-		
-		this.removeFBCode = [
-			['procedure removeFront()'],
-			['  call removeFromIndex at front'],
-			['end procedure'],
-			[''],
-			['procedure removeBack()'],
-			['  call removeFromIndex at back'],
-			['end procedure'],
-		];
-		
-		this.removeIndexCode = [
-			['procedure removeFromIndex(index)'],
-			['  copy data at index to temp'],
-			['  for (i from index to spot before back):'],
-			['    copy array value at i and shift to newArray'],
-			['  null out back of array'],
-			['  decrement size'],
-			['  return temp'],
-			['end procedure'],
-		];
-				
-
-		this.addFBCodeID = [];
-		this.addIndexCodeID = [];
-		this.removeFBCodeID = [];
-		this.removeIndexCodeID = [];
-
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 		this.resetIndex = this.nextIndex;
@@ -472,16 +421,18 @@ export default class ArrayList extends Algorithm {
 		return this.commands;
 	}
 
+	createPseudocodeElems(key, x_offset = 0, y_offset = 0) {
+		return {
+			english: this.addCodeToCanvasBase(this.pseudocode[key], 'english', CODE_START_X + x_offset, CODE_START_Y + y_offset),
+			code: this.addCodeToCanvasBase(this.pseudocode[key], 'code', CODE_START_X + x_offset, CODE_START_Y + y_offset)
+		};
+	}
+
 	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
 		this.setInfoText('');
-
-		this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X + 300,
-			CODE_START_Y,
-		);
+		this.addFBCodeID = this.createPseudocodeElems('addFB');
+		this.addIndexCodeID = this.createPseudocodeElems('addIndex', 300);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -592,16 +543,8 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeFBCodeID = this.addCodeToCanvasBase(
-			this.removeFBCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X + 300,
-			CODE_START_Y,
-		);
+		this.removeFBCodeID = this.createPseudocodeElems('removeFB');
+		this.removeIndexCodeID = this.createPseudocodeElems('removeIndex', 300);
 
 		if (isRemoveFront) {
 			this.highlight(0, 0, this.removeFBCodeID);
@@ -700,6 +643,8 @@ export default class ArrayList extends Algorithm {
 	resize(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
 		this.setInfoText('');
+		this.addFBCodeID = this.createPseudocodeElems('addFB');
+		this.addIndexCodeID = this.createPseudocodeElems('addIndex', 300);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;

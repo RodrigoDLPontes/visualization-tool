@@ -213,11 +213,12 @@ export default class Algorithm {
 		this.commands = [];
 	}
 
-	addCodeToCanvasBase(code, start_x, start_y, line_height, standard_color, layer) {
+	addCodeToCanvasBase(code, version, start_x, start_y, line_height, standard_color, layer) {
+		code = code[version];
 		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
-		layer = typeof layer !== 'undefined' ? layer : 32;
+		layer = version === 'code' ? 33 : 32;
 		const isCode = true;
 		const codeID = Array(code.length);
 		let i, j;
@@ -245,16 +246,31 @@ export default class Algorithm {
 	}
 
 	highlight(ind1, ind2, codeID) {
+		if (codeID.english) {
+			this.highlight(ind1, ind2, codeID.english);
+			this.highlight(ind1, ind2, codeID.code);
+			return;
+		}
 		codeID = codeID === undefined ? this.codeID : codeID;
 		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}
 
 	unhighlight(ind1, ind2, codeID) {
+		if (codeID.english) {
+			this.unhighlight(ind1, ind2, codeID.english);
+			this.unhighlight(ind1, ind2, codeID.code);
+			return;
+		}
 		codeID = codeID === undefined ? this.codeID : codeID;
 		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	removeCode(codeID) {
+		if (codeID.english) {
+			this.removeCode(codeID.english);
+			this.removeCode(codeID.code);
+			return;
+		}
 		for (let i = 0; i < codeID.length; i++) {
 			for (let j = 0; j < codeID[i].length; j++) {
 				this.cmd(act.delete, codeID[i][j]);

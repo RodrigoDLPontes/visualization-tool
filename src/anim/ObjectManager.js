@@ -53,7 +53,8 @@ export default class ObjectManager {
 		this.backEdges = [];
 		this.activeLayers = [];
 		this.activeLayers[0] = true;
-		this.activeLayers[32] = true; // pseudocode layer
+		this.activeLayers[32] = true; // pseudocode english layer
+		this.activeLayers[33] = false; // pseudocode code layer
 		this.ctx = canvasRef.current.getContext('2d');
 		this.framenum = 0;
 		this.width = 0;
@@ -212,7 +213,12 @@ export default class ObjectManager {
 
 	toggleLayer(layer) {
 		this.activeLayers[layer] = !this.activeLayers[layer];
-		console.log(this.activeLayers);
+		this.resetLayers();
+	}
+
+	updateLayer(layer, isActive) {
+		this.activeLayers[layer] = isActive;
+		//console.log(this.activeLayers);
 		this.resetLayers();
 	}
 

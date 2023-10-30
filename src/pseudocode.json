@@ -475,5 +475,182 @@
                 ["end procedure"]
             ]
         }
+    },
+    "StackArray": {
+        "push": {
+            "code": [
+                ["procedure push(data)"],
+                ["  if size == array.length"],
+                ["    T[] newArray ← new array[2 * size]"],
+                ["    for i ← 0 to size - 1, i++:"],
+                ["      newArray[i] ← array[i]"],
+                ["    array ← newArray"],
+                ["  array[size] ← data"],
+                ["  size++"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure push(data)"],
+                ["  if (at max capacity):"],
+                ["    create newArray with 2x capacity"],
+                ["    for (i from front to back):"],
+                ["      copy array value at i to newArray"],
+                ["    array points to newArray"],
+                ["    put data into array at back"],
+                ["    increment size"],
+                ["end procedure"]
+            ]
+        },
+        "pop": {
+            "code": [
+                ["procedure pop()"],
+                ["  size--"],
+                ["  T data ← array[size]"],
+                ["  array[size] ← null"],
+                ["  return data"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure pop()"],
+                ["  copy array value at back to temp"],
+                ["  null out back of array"],
+                ["  decrement size"],
+                ["  return temp"],
+                ["end procedure"]
+            ]
+        }
+    },
+    "StackLL": {
+        "push": {
+            "code": [
+                ["procedure push(data)"],
+                ["  head ← new Node(data, head)"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure push(data)"],
+                ["  create newNode node with data"],
+                ["  newNode.next points to head"],
+                ["  head points to newNode"],
+                ["  increment size"],
+                ["end procedure"]
+            ]
+        },
+        "pop": {
+            "code": [
+                ["procedure pop()"],
+                ["  T data ← head.data"],
+                ["  head ← head.next"],
+                ["  return data"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure pop()"],
+                ["  copy data at head to temp"],
+                ["  head moves to next node"],
+                ["  decrement size"],
+                ["  return temp"],
+                ["end procedure"]
+            ]
+        }
+    },
+    "QueueArray": {
+        "enqueue": {
+            "code": [
+                ["procedure enqueue(data)"],
+                ["  if size == array.length"],
+                ["    T[] newArray ← new array[2 * size]"],
+                ["    for i ← 0 to size - 1, i++:"],
+                ["      newArray[i] ← array[(front + i) % array.length]"],
+                ["    array ← newArray"],
+                ["    front ← 0"],
+                ["  array[(front + size) % array.length] ← data"],
+                ["  size++"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure enqueue(data)"],
+                ["  if (at max capacity):"],
+                ["    create newArray with 2x capacity"],
+                ["    for (i from front to back):"],
+                ["      calculate index = (front + i) % capacity"],
+                ["      copy array value at index to newArray"],
+                ["    array points to newArray"],
+                ["    reset front to 0"],
+                ["  put data into array at back"],
+                ["  increment size"],
+                ["end procedure"]
+            ]
+        },
+        "dequeue": {
+            "code": [
+                ["procedure dequeue()"],
+                ["  T data ← array[front]"],
+                ["  array[front] ← null"],
+                ["  front ← (front + 1) % array.length"],
+                ["  size--"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure dequeue()"],
+                ["  copy array value at front to temp"],
+                ["  null out front of array"],
+                ["  increment front"],
+                ["  decrement size"],
+                ["end procedure"]
+            ]
+        }
+    },
+    "QueueLL": {
+        "enqueue": {
+            "code": [
+                ["procedure enqueue(data)"],
+                ["  Node newNode ← new Node(data)"],
+                ["  if size == 0"],
+                ["    head ← newNode"],
+                ["  else"],
+                ["    tail.next ← newNode"],
+                ["  tail ← newNode"],
+                ["  size++"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure enqueue(data)"],
+                ["  create newNode node with data"],
+                ["  if (queue is empty):"],
+                ["    head points to newNode"],
+                ["  else:"],
+                ["    tail.next points to newNode"],
+                ["  tail points to newNode"],
+                ["  increment size"],
+                ["end procedure"]
+            ]
+        },
+        "dequeue": {
+            "code": [
+                ["procedure dequeue()"],
+                ["  T data ← head.data"],
+                ["  if size == 1"],
+                ["    head ← null"],
+                ["    tail ← null"],
+                ["  else"],
+                ["    head ← head.next"],
+                ["  size--"],
+                ["  return data"],
+                ["end procedure"]
+            ],
+            "english": [
+                ["procedure dequeue()"],
+                ["  copy data at head to temp"],
+                ["  if (queue has 1 node):"],
+                ["    null out head"],
+                ["    null out tail"],
+                ["  else:"],
+                ["    head moves to next node"],
+                ["  decrement size"],
+                ["  return temp"],
+                ["end procedure"]
+            ]
+        }
     }
 }

@@ -26,6 +26,7 @@
 
 import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json'
 
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 225;
@@ -162,37 +163,9 @@ export default class QueueLL extends Algorithm {
 		this.cmd(act.createLabel, this.leftoverLabelID, '', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
-		this.enqueueCode = [
-			['procedure enqueue(data)'],
-			['  create newNode node with data'],
-			['  if (queue is empty):'],
-			['    head points to newNode'],
-			['  else:'],
-			['    tail.next points to newNode'],
-			['  tail points to newNode'],
-			['  increment size'],
-			['end procedure'],
-		];
-		
-		this.dequeueCode = [
-			['procedure dequeue()'],
-			['  copy data at head to temp'],
-			['  if (queue has 1 node):'],
-			['    null out head'],
-			['    null out tail'],
-			['  else:'],
-			['    head moves to next node'],
-			['  decrement size'],
-			['  return temp'],
-			['end procedure'],
-		];		
-
-		this.enqueueCodeID = this.addCodeToCanvasBase(this.enqueueCode, CODE_START_X, CODE_START_Y);
-		this.dequeueCodeID = this.addCodeToCanvasBase(
-			this.dequeueCode,
-			CODE_START_X + 285,
-			CODE_START_Y,
-		);
+		this.pseudocode = pseudocodeText.QueueLL;
+		this.enqueueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'enqueue', CODE_START_X, CODE_START_Y);
+		this.dequeueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'dequeue', CODE_START_X + 285, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

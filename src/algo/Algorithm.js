@@ -253,6 +253,12 @@ export default class Algorithm {
 
 	highlight(ind1, ind2, codeID) {
 		if (!codeID) return;
+		// Single pseudocode type
+		if (codeID.length) {
+			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+			return;
+		}
+		// Multiple pseudocode types
 		if (codeID.english.length)
 			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 		if (codeID.code.length)
@@ -261,6 +267,12 @@ export default class Algorithm {
 
 	unhighlight(ind1, ind2, codeID) {
 		if (!codeID) return;
+		// Single pseudocode type
+		if (codeID.length) {
+			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
+			return;
+		}
+		// Multiple pseudocode types
 		if (codeID.english.length)
 			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_STANDARD_COLOR);
 		if (codeID.code.length)

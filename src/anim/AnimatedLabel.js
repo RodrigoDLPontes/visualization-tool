@@ -45,6 +45,33 @@ export default class AnimatedLabel extends AnimatedObject {
 		this.leftWidth = -1;
 		this.centerWidth = -1;
 		this.highlightIndex = -1;
+		this.fontLoaded = false;
+		if (isCode) {
+			this.loadFont();
+		}
+	}
+
+	async loadFont() {
+		const font = new FontFace('Source Code Pro', 'url(/SourceCodePro-Regular.ttf)', {
+			display: 'swap',
+		});
+
+		try {
+			await font.load();
+			document.fonts.add(font);
+			this.fontLoaded = true;
+			this.redraw();
+		} catch (error) {
+			console.error('Font could not be loaded:', error);
+			this.fontLoaded = false;
+		}
+	}
+
+	redraw() {
+		// Redraw method to be called when the font is loaded
+		const canvas = document.getElementById('canvas');
+		const context = canvas.getContext('2d');
+		this.draw(context);
 	}
 
 	centered() {
@@ -52,17 +79,9 @@ export default class AnimatedLabel extends AnimatedObject {
 	}
 
 	draw(context) {
-		if (!this.addedToScene) return;
+		if (!this.addedToScene || (this.isCode && !this.fontLoaded)) return;
 
 		context.globalAlpha = this.alpha;
-
-		const font = new FontFace('Source Code Pro', 'url(/SourceCodePro-Regular.ttf)');
-		font.load().then(
-			() => {
-				document.fonts.add(font);
-			},
-			() => {},
-		);
 
 		if (this.isCode) {
 			context.font = '13px "Source Code Pro", monospace';

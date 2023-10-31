@@ -183,6 +183,164 @@ export default class BTree extends Algorithm {
 		this.succButton.onclick = this.succCallback.bind(this);
 		this.succButton.checked = true;
 		this.predSucc = 'succ';
+
+		addDivisorToAlgorithmBar();
+
+		const verticalGroup3 = addGroupToAlgorithmBar(false);
+		addLabelToAlgorithmBar(
+			'| separated list of nodes with comma separated keys (e.g. "1,3|0|2|4")',
+			verticalGroup3,
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup3);
+
+		this.buildTreeField = addControlToAlgorithmBar('Text', '', horizontalGroup);
+		this.buildTreeField.onkeydown = this.returnSubmit(
+			this.buildTreeField,
+			this.buildTreeCallback.bind(this),
+			75,
+			false,
+		);
+		this.controls.push(this.buildTreeField);
+
+		this.buildTreeButton = addControlToAlgorithmBar('Button', 'Build Tree', horizontalGroup);
+		this.buildTreeButton.onclick = this.buildTreeCallback.bind(this);
+		this.controls.push(this.buildTreeButton);
+	}
+
+	buildTreeCallback() {
+		const insertedValue = this.buildTreeField.value;
+		this.implementAction(this.clearTree.bind(this));
+		this.insertField.value = '';
+		this.implementAction(this.buildTree.bind(this), insertedValue);
+	}
+
+	buildTree(insertedValue) {
+		this.commands = [];
+
+		let nodes = insertedValue.split("|").map(n => n.split(",").map(q => parseInt(q)));
+
+		this.treeRoot = new BTreeNode(this.nextIndex++, this.starting_x, STARTING_Y);
+		this.cmd(
+			act.createBTreeNode,
+			this.treeRoot.graphicID,
+			WIDTH_PER_ELEM,
+			NODE_HEIGHT,
+			1,
+			this.starting_x,
+			STARTING_Y,
+			BACKGROUND_COLOR,
+			FOREGROUND_COLOR,
+		);
+		this.treeRoot.keys = nodes[0];
+		this.treeRoot.numKeys = nodes[0].length;
+		this.treeRoot.children = [];
+		this.cmd(act.setText, this.treeRoot.graphicID, nodes[0].join("   "), 0);
+		this.cmd(act.setNumElements, this.treeRoot.graphicID, nodes[0].length);
+		this.resizeTree();
+		for (let i = 0; i < nodes[0].length; i++) {
+			this.cmd(act.setText, this.treeRoot.graphicID, nodes[0][i], i);
+			this.treeRoot.numKeys = nodes[0].length;
+		}
+		
+		for (let i = 1; i < nodes.length; i++) {
+			let newNode = new BTreeNode(this.nextIndex++, this.starting_x, STARTING_Y);
+			newNode.keys = nodes[i];
+			newNode.numKeys = nodes[i].length;
+			newNode.children = [];
+			this.buildTreeRecurse(this.treeRoot, nodes[i][0], newNode);
+	
+		}
+
+		if (this.treeHasProblem(this.treeRoot)) {
+			this.reset();
+			this.shake(this.buildTreeButton);
+			return [];
+		}
+		
+		this.cmd(act.setText, this.messageID, '');
+
+		return this.commands;
+	}
+
+	treeHasProblem(node) {
+		if (node == null) {
+			return false;
+		}
+		if (node.numKeys > this.max_keys) {
+			return true;
+		}
+		if (node.isLeaf) {
+			return false;
+		}
+		if (node.numKeys != node.children.length - 1) {
+			return true;
+		}
+		for (let i = 0; i < node.numKeys; i++) {
+			let key = node.keys[i];
+			let c1 = node.children[i];
+			let c2 = node.children[i + 1];
+			for (let k of c1.keys) {
+				if (k >= key) return true;
+			}
+			for (let k of c2.keys) {
+				if (k <= key) return true;
+			}
+		}
+
+		for (let child of node.children) {
+			if (this.treeHasProblem(child)) return true;			
+		}
+		return false;
+
+	}
+
+	// ex 2,9,13|1|5,6,7|11,12|14,16
+	buildTreeRecurse(node, val, nodeToAdd) {
+		let index = 0;
+		while (index < node.numKeys && node.keys[index] < val) {
+			index++;
+		}
+		let nextNode = node.children[index];
+		if (nextNode == null) {
+			node.isLeaf = false;
+			node.children.push(nodeToAdd);
+			nodeToAdd.y = node.y + 100;
+			nodeToAdd.x = node.x + ((index - 1.5) * 150);
+			nodeToAdd.parent = node;
+			
+			this.cmd(
+				act.createBTreeNode,
+				nodeToAdd.graphicID,
+				WIDTH_PER_ELEM,
+				NODE_HEIGHT,
+				1,
+				nodeToAdd.x,
+				nodeToAdd.y,
+				BACKGROUND_COLOR,
+				FOREGROUND_COLOR,
+			);
+			
+			this.cmd(act.setNumElements, nodeToAdd.graphicID, nodeToAdd.keys.length);
+			this.resizeTree();
+			for (let i = 0; i < nodeToAdd.keys.length; i++) {
+				this.cmd(act.setText, nodeToAdd.graphicID, nodeToAdd.keys[i], i);
+			}
+
+			this.cmd(
+				act.connect,
+				node.graphicID,
+				nodeToAdd.graphicID,
+				FOREGROUND_COLOR,
+				0, // Curve
+				0, // Directed
+				'', // Label
+				index,
+			);
+		
+		} else {
+			this.buildTreeRecurse(nextNode, val);
+		}
 	}
 
 	reset() {
@@ -395,6 +553,9 @@ export default class BTree extends Algorithm {
 		if (tree != null) {
 			if (!tree.isLeaf) {
 				for (let i = 0; i <= tree.numKeys; i++) {
+					if (!tree.children[i]) {
+						continue;
+					}
 					this.cmd(act.disconnect, tree.graphicID, tree.children[i].graphicID);
 					this.deleteTree(tree.children[i]);
 				}

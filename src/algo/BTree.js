@@ -33,6 +33,9 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const FIRST_PRINT_POS_X = 50;
 const PRINT_VERTICAL_GAP = 20;
 const PRINT_MAX = 990;
@@ -156,9 +159,9 @@ export default class BTree extends Algorithm {
 		this.controls.push(this.clearButton);
 
 		addDivisorToAlgorithmBar();
-		addLabelToAlgorithmBar('Promote with');
+		addLabelToAlgorithmBar('Promote');
 		const splitIndexButtonList = addRadioButtonGroupToAlgorithmBar(
-			['second data', 'third data'],
+			['second', 'third'],
 			'Split Index',
 		);
 
@@ -198,7 +201,7 @@ export default class BTree extends Algorithm {
 		this.buildTreeField.onkeydown = this.returnSubmit(
 			this.buildTreeField,
 			this.buildTreeCallback.bind(this),
-			75,
+			50,
 			false,
 		);
 		this.controls.push(this.buildTreeField);
@@ -206,6 +209,8 @@ export default class BTree extends Algorithm {
 		this.buildTreeButton = addControlToAlgorithmBar('Button', 'Build Tree', horizontalGroup);
 		this.buildTreeButton.onclick = this.buildTreeCallback.bind(this);
 		this.controls.push(this.buildTreeButton);
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 	}
 
 	buildTreeCallback() {
@@ -217,6 +222,11 @@ export default class BTree extends Algorithm {
 
 	buildTree(insertedValue) {
 		this.commands = [];
+		this.cmd(
+			act.setText,
+			this.infoLabelID,
+			""
+		);
 
 		let nodes = insertedValue.split("|").map(n => n.split(",").map(q => parseInt(q)));
 
@@ -252,10 +262,17 @@ export default class BTree extends Algorithm {
 	
 		}
 
-		if (this.treeHasProblem(this.treeRoot)) {
+		let problem = this.treeHasProblem(this.treeRoot);
+		if (problem) {
+			this.commands = [];
+			this.cmd(
+				act.setText,
+				this.infoLabelID,
+				problem
+			);
 			this.reset();
 			this.shake(this.buildTreeButton);
-			return [];
+			return this.commands;
 		}
 		
 		this.cmd(act.setText, this.messageID, '');
@@ -265,33 +282,33 @@ export default class BTree extends Algorithm {
 
 	treeHasProblem(node) {
 		if (node == null) {
-			return false;
+			return "";
 		}
 		if (node.numKeys > this.max_keys) {
-			return true;
+			return `Nodes can have at most ${this.max_keys} keys`;
 		}
 		if (node.isLeaf) {
-			return false;
+			return "";
 		}
 		if (node.numKeys != node.children.length - 1) {
-			return true;
+			return `Node with ${node.numKeys} keys must have ${node.numKeys + 1} children if not a leaf`;
 		}
 		for (let i = 0; i < node.numKeys; i++) {
 			let key = node.keys[i];
 			let c1 = node.children[i];
 			let c2 = node.children[i + 1];
 			for (let k of c1.keys) {
-				if (k >= key) return true;
+				if (k >= key) return `Tree must respect order property. ${k} >= ${key}`;
 			}
 			for (let k of c2.keys) {
-				if (k <= key) return true;
+				if (k <= key) return `Tree must respect order property. ${k} <= ${key}`;
 			}
 		}
 
 		for (let child of node.children) {
 			if (this.treeHasProblem(child)) return true;			
 		}
-		return false;
+		return "";
 
 	}
 
@@ -339,7 +356,7 @@ export default class BTree extends Algorithm {
 			);
 		
 		} else {
-			this.buildTreeRecurse(nextNode, val);
+			this.buildTreeRecurse(nextNode, val, nodeToAdd);
 		}
 	}
 

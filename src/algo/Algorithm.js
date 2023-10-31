@@ -251,10 +251,15 @@ export default class Algorithm {
 		return codeID;
 	}
 
-	highlight(ind1, ind2, codeID) {
+	highlight(ind1, ind2, codeID, type) {
 		if (!codeID) return;
+		// Type specified
+		if (type) {
+			this.highlight(ind1, ind2, codeID[type]);
+			return;
+		}		
 		// Single pseudocode type
-		if (codeID.length) {
+		if (codeID[0] !== undefined) {
 			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 			return;
 		}
@@ -265,10 +270,15 @@ export default class Algorithm {
 			this.cmd(act.setForegroundColor, codeID.code[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}
 
-	unhighlight(ind1, ind2, codeID) {
+	unhighlight(ind1, ind2, codeID, type) {
 		if (!codeID) return;
+		// Type specified
+		if (type) {
+			this.unhighlight(ind1, ind2, codeID[type]);
+			return;
+		}
 		// Single pseudocode type
-		if (codeID.length) {
+		if (codeID[0] !== undefined) {
 			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
 			return;
 		}

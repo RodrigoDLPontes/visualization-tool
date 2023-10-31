@@ -297,8 +297,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setText, this.leftoverValID, '');
 		this.cmd(act.step);
 
-		this.highlight(7, 0, this.enqueueCodeID.code);
-		this.highlight(8, 0, this.enqueueCodeID.english);
+		this.highlight(7, 0, this.enqueueCodeID, "code");
+		this.highlight(8, 0, this.enqueueCodeID, "english");
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(
@@ -335,10 +335,10 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 
-		this.unhighlight(7, 0, this.enqueueCodeID.code);
-		this.highlight(8, 0, this.enqueueCodeID.code);
-		this.unhighlight(8, 0, this.enqueueCodeID.english);
-		this.highlight(9, 0, this.enqueueCodeID.english);
+		this.unhighlight(7, 0, this.enqueueCodeID, "code");
+		this.highlight(8, 0, this.enqueueCodeID, "code");
+		this.unhighlight(8, 0, this.enqueueCodeID, "english");
+		this.highlight(9, 0, this.enqueueCodeID, "english");
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 
@@ -346,8 +346,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
 
-		this.unhighlight(8, 0, this.enqueueCodeID.code);
-		this.unhighlight(9, 0, this.enqueueCodeID.english);
+		this.unhighlight(8, 0, this.enqueueCodeID, "code");
+		this.unhighlight(9, 0, this.enqueueCodeID, "english");
 		this.unhighlight(0, 0, this.enqueueCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labEnqueueID);
@@ -659,8 +659,8 @@ export default class QueueArray extends Algorithm {
 		this.commands = [];
 		this.cmd(act.setText, this.leftoverLabelID, '');
 		this.cmd(act.setText, this.leftoverValID, '');
-		// if (this.codeID) {
-		// 	this.removeCode(this.codeID);
+		// if (this, "code"ID) {
+		// 	this.removeCode(this, "code"ID);
 		// }
 
 		for (let i = 0; i < this.arraySize; i++) {

@@ -117,18 +117,18 @@ export default class SelectionSort extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Minimum', 'Maximum'],
-			'Min/Max',
+			['Maximum', 'Minimum'],
+			'Max/Min',
 		);
 
-		this.minButton = minMaxButtonList[0];
+		this.minButton = minMaxButtonList[1];
 		this.minButton.onclick = this.minCallback.bind(this);
 		this.controls.push(this.minButton);
-		this.minButton.checked = true;
-		this.maxButton = minMaxButtonList[1];
+		this.maxButton = minMaxButtonList[0];
 		this.maxButton.onclick = this.maxCallback.bind(this);
 		this.controls.push(this.maxButton);
-		this.isMin = true;
+		this.maxButton.checked = true;
+		this.isMin = false;
 	}
 
 	setup() {
@@ -165,14 +165,14 @@ export default class SelectionSort extends Algorithm {
 		this.code = [
 			['procedure SelectionSort(array):'],
 			['  length ← length of array'],
-			['  for i ← 0, length do'],
-			['    min ← i'],
-			['    for j ← i + 1, length do'],
-			['      if array[j] < array[min]'],
-			['        min ← j'],
+			['  for i ← length - 1, 0 do'],
+			['    max ← i'],
+			['    for j ← i - 1, 0 do'],
+			['      if array[j] > array[max]'],
+			['        max ← j'],
 			['      end if'],
 			['    end for'],
-			['    swap array[min], array[i]'],
+			['    swap array[max], array[i]'],
 			['  end for'],
 			['end procedure'],
 		];
@@ -198,13 +198,13 @@ export default class SelectionSort extends Algorithm {
 		this.swapCountID = this.nextIndex++;
 		this.swapCount = 0;
 		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-		if (!this.isMin) {
-			this.cmd(act.setText, this.codeID[2][0], '  for i ← length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '    max ← i');
-			this.cmd(act.setText, this.codeID[4][0], '    for j ← i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[5][0], '        max ← j');
-			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
+		if (this.isMin) {
+			this.cmd(act.setText, this.codeID[2][0], '  for i ← 0, length do');
+			this.cmd(act.setText, this.codeID[3][0], '    min ← i');
+			this.cmd(act.setText, this.codeID[4][0], '    for j ← i + 1, length do');
+			this.cmd(act.setText, this.codeID[5][0], '      if array[j] < array[min]');
+			this.cmd(act.setText, this.codeID[5][0], '        min ← j');
+			this.cmd(act.setText, this.codeID[9][0], '    swap array[min], array[i]');
 		}
 	}
 

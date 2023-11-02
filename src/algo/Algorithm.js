@@ -326,7 +326,7 @@ export default class Algorithm {
 		return input.substr(-maxLen);
 	}
 
-	returnSubmit(field, funct, maxsize, intOnly) {
+	returnSubmit(field, funct, maxsize, intOnly, ignoreMaxSize = false) {
 		if (maxsize !== undefined) {
 			field.size = maxsize;
 		}
@@ -339,6 +339,7 @@ export default class Algorithm {
 				// Netscape/Firefox/Opera
 				keyASCII = event.which;
 			}
+			let sizeGood = ignoreMaxSize || field.value.length < maxsize;
 
 			if (keyASCII === 13 && funct != null) {
 				funct();
@@ -350,7 +351,7 @@ export default class Algorithm {
 			) {
 				return false;
 			} else if (
-				(maxsize !== undefined && field.value.length >= maxsize) ||
+				!sizeGood ||
 				(intOnly &&
 					!((keyASCII >= 48 && keyASCII <= 57) || (keyASCII >= 96 && keyASCII <= 105)))
 			) {

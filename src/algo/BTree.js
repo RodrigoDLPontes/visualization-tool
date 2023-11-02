@@ -138,11 +138,11 @@ export default class BTree extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
-		addDivisorToAlgorithmBar();
+		// addDivisorToAlgorithmBar();
 
-		this.printButton = addControlToAlgorithmBar('Button', 'Print');
-		this.printButton.onclick = this.printCallback.bind(this);
-		this.controls.push(this.printButton);
+		// this.printButton = addControlToAlgorithmBar('Button', 'Print');
+		// this.printButton.onclick = this.printCallback.bind(this);
+		// this.controls.push(this.printButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -201,8 +201,9 @@ export default class BTree extends Algorithm {
 		this.buildTreeField.onkeydown = this.returnSubmit(
 			this.buildTreeField,
 			this.buildTreeCallback.bind(this),
-			50,
+			30,
 			false,
+			true
 		);
 		this.controls.push(this.buildTreeField);
 

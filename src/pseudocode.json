@@ -1097,5 +1097,41 @@
                 ["end procedure"]            
             ]
         }
+    },
+    "BubbleSort": {
+      "find": {
+        "code": [
+          ["procedure BubbleSort(array):"],
+          ["  end <- array.length"],
+          ["  start <- 0"],
+          ["  while start < end:"],
+          ["    swapped <- start"],
+          ["    for j <- 0, end:"],
+          ["      if array[j] > array[j + 1]:"],
+          ["        swap array[j], array[j + 1]"],
+          ["        swapped <- j"],
+          ["      end if"],
+          ["    end for"],
+          ["    end <- swapped"],
+          ["  end while"],
+          ["end procedure"]
+        ],
+        "english": [
+          ["procedure BubbleSort(array):"],
+          ["  end points to last element"],
+          ["  start points to first element"],
+          ["  while (start < end):"],
+          ["    lastSwapped points to start"],
+          ["    for (j from start to end):"],
+          ["      if (array[j] > array[j + 1]):"],
+          ["        bubble array[j] by swapping up"],
+          ["        lastSwapped points to j"],
+          ["      end if"],
+          ["    end for"],
+          ["    end points to lastSwapped"],
+          ["  end while"],
+          ["end procedure"]                
+        ]
+      }
     }
 }

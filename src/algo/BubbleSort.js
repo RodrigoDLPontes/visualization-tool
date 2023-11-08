@@ -32,6 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json'
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -140,52 +141,12 @@ export default class BubbleSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
-		this.code = [
-			['procedure BubbleSort(array):'],
-			['  end ← length of array'],
-			['  start ← 0'],
-			['  swapped ← start'],
-			['  while start < end'],
-			['    swapped ← start'],
-			['    for j ← 0, end do'],
-			['      if arr[j] > arr[j + 1]'],
-			['        swap arr[j], arr[j + 1]'],
-			['        swapped ← j'],
-			['      end if'],
-			['    end for'],
-			['    end ← swapped'],
-			['  end while'],
-			['end procedure'],
-		];
-
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.pseudocode = pseudocodeText.BubbleSort;
+		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
-	}
-
-	reset() {
-		this.nextIndex = 0;
-		this.compCount = 0;
-		this.swapCount = 0;
-		this.arrayData = [];
-		this.arrayID = [];
-		this.displayData = [];
-		this.removeCode(this.codeID);
-		this.iPointerID = this.nextIndex++;
-		this.jPointerID = this.nextIndex++;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
-		this.swapCountID = this.nextIndex++;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-		if (!lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], ' sorted ← false');
-			this.cmd(act.setText, this.codeID[4][0], ' while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '      sorted ← true');
-			this.cmd(act.setText, this.codeID[9][0], '                sorted ← false');
-			this.cmd(act.setText, this.codeID[12][0], '      end ← end - 1');
-		}
 	}
 
 	randomCallback() {
@@ -219,17 +180,25 @@ export default class BubbleSort extends Algorithm {
 	toggleLastSwap() {
 		this.implementAction(this.clear.bind(this));
 		if (lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID[3][0], '  sorted ← false');
-			this.cmd(act.setText, this.codeID[4][0], '  while start < end and sorted is false');
-			this.cmd(act.setText, this.codeID[5][0], '    sorted ← true');
-			this.cmd(act.setText, this.codeID[9][0], '        sorted ← false');
-			this.cmd(act.setText, this.codeID[12][0], '    end ← end - 1');
+			this.cmd(act.setText, this.codeID.code[3][0], '  while start < end and sorted is false');
+			this.cmd(act.setText, this.codeID.code[4][0], '    sorted ← true');
+			this.cmd(act.setText, this.codeID.code[8][0], '        sorted ← false');
+			this.cmd(act.setText, this.codeID.code[11][0], '    end ← end - 1');
+
+			this.cmd(act.setText, this.codeID.english[3][0], '  while (start < end and not sorted):');
+			this.cmd(act.setText, this.codeID.english[4][0], '    mark sorted as true');
+			this.cmd(act.setText, this.codeID.english[8][0], '        mark sorted as false');
+			this.cmd(act.setText, this.codeID.english[11][0], '    decrement end');
 		} else {
-			this.cmd(act.setText, this.codeID[3][0], '  swapped ← start');
-			this.cmd(act.setText, this.codeID[4][0], '  while start < end');
-			this.cmd(act.setText, this.codeID[5][0], '    swapped ← start');
-			this.cmd(act.setText, this.codeID[9][0], '        swapped ← j');
-			this.cmd(act.setText, this.codeID[12][0], '    end ← swapped');
+			this.cmd(act.setText, this.codeID.code[3][0], '  while start < end');
+			this.cmd(act.setText, this.codeID.code[4][0], '    swapped ← start');
+			this.cmd(act.setText, this.codeID.code[8][0], '        swapped ← j');
+			this.cmd(act.setText, this.codeID.code[11][0], '    end ← swapped');
+
+			this.cmd(act.setText, this.codeID.english[3][0], '  while (start < end)');
+			this.cmd(act.setText, this.codeID.english[4][0], '    lastSwapped points to start');
+			this.cmd(act.setText, this.codeID.english[8][0], '        lastSwapped points to j');
+			this.cmd(act.setText, this.codeID.english[11][0], '    end points to lastSwapped');
 		}
 		lastSwapEnabled = !lastSwapEnabled;
 	}

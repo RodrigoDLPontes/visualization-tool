@@ -288,6 +288,11 @@ export default class BTree extends Algorithm {
 		if (node.numKeys > this.max_keys) {
 			return `Nodes can have at most ${this.max_keys} keys`;
 		}
+		for (let i = 0; i < node.numKeys - 1; i++) {
+			if (node.keys[i] >= node.keys[i + 1]) {
+				return `Tree must respect order property within nodes. ${node.keys[i]} >= ${node.keys[i + 1]}`;
+			}
+		}
 		if (node.isLeaf) {
 			return "";
 		}

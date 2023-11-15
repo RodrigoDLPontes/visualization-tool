@@ -312,7 +312,8 @@ export default class BTree extends Algorithm {
 		}
 
 		for (let child of node.children) {
-			if (this.treeHasProblem(child)) return true;			
+			let childProblem = this.treeHasProblem(child);
+			if (childProblem) return childProblem;			
 		}
 		return "";
 

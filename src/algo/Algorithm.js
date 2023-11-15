@@ -339,7 +339,7 @@ export default class Algorithm {
 				// Netscape/Firefox/Opera
 				keyASCII = event.which;
 			}
-			let sizeGood = ignoreMaxSize || field.value.length < maxsize;
+			const sizeGood = ignoreMaxSize || field.value.length < maxsize;
 
 			if (keyASCII === 13 && funct != null) {
 				funct();

@@ -33,6 +33,9 @@ import Algorithm, {
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
 
+const INFO_MSG_X = 25;
+const INFO_MSG_Y = 15;
+
 const FIRST_PRINT_POS_X = 50;
 const PRINT_VERTICAL_GAP = 20;
 const PRINT_MAX = 990;
@@ -74,11 +77,15 @@ export default class BTree extends Algorithm {
 		this.cmd(act.createLabel, this.messageID, '', MESSAGE_X, MESSAGE_Y, 0);
 		this.moveLabel1ID = this.nextIndex++;
 		this.moveLabel2ID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 		this.commands = [];
+
+		this.resetIndex = 4;
 
 		this.first_print_pos_y = h - 3 * PRINT_VERTICAL_GAP;
 
@@ -135,11 +142,11 @@ export default class BTree extends Algorithm {
 		this.findButton.onclick = this.findCallback.bind(this);
 		this.controls.push(this.findButton);
 
-		addDivisorToAlgorithmBar();
+		// addDivisorToAlgorithmBar();
 
-		this.printButton = addControlToAlgorithmBar('Button', 'Print');
-		this.printButton.onclick = this.printCallback.bind(this);
-		this.controls.push(this.printButton);
+		// this.printButton = addControlToAlgorithmBar('Button', 'Print');
+		// this.printButton.onclick = this.printCallback.bind(this);
+		// this.controls.push(this.printButton);
 
 		addDivisorToAlgorithmBar();
 
@@ -156,9 +163,9 @@ export default class BTree extends Algorithm {
 		this.controls.push(this.clearButton);
 
 		addDivisorToAlgorithmBar();
-		addLabelToAlgorithmBar('Promote with');
+		addLabelToAlgorithmBar('Promote');
 		const splitIndexButtonList = addRadioButtonGroupToAlgorithmBar(
-			['second data', 'third data'],
+			['second', 'third'],
 			'Split Index',
 		);
 
@@ -183,10 +190,180 @@ export default class BTree extends Algorithm {
 		this.succButton.onclick = this.succCallback.bind(this);
 		this.succButton.checked = true;
 		this.predSucc = 'succ';
+
+		addDivisorToAlgorithmBar();
+
+		const verticalGroup3 = addGroupToAlgorithmBar(false);
+		addLabelToAlgorithmBar(
+			'| separated list of nodes with comma separated keys (e.g. "1,3|0|2|4")',
+			verticalGroup3,
+		);
+
+		const horizontalGroup = addGroupToAlgorithmBar(true, verticalGroup3);
+
+		this.buildTreeField = addControlToAlgorithmBar('Text', '', horizontalGroup);
+		this.buildTreeField.onkeydown = this.returnSubmit(
+			this.buildTreeField,
+			this.buildTreeCallback.bind(this),
+			30,
+			false,
+			true,
+		);
+		this.controls.push(this.buildTreeField);
+
+		this.buildTreeButton = addControlToAlgorithmBar('Button', 'Build Tree', horizontalGroup);
+		this.buildTreeButton.onclick = this.buildTreeCallback.bind(this);
+		this.controls.push(this.buildTreeButton);
+	}
+
+	buildTreeCallback() {
+		const insertedValue = this.buildTreeField.value;
+		this.implementAction(this.clearTree.bind(this));
+		this.insertField.value = '';
+		this.implementAction(this.buildTree.bind(this), insertedValue);
+	}
+
+	buildTree(insertedValue) {
+		this.commands = [];
+		this.cmd(act.setText, this.infoLabelID, '');
+
+		const nodes = insertedValue.split('|').map(n => n.split(',').map(q => parseInt(q)));
+
+		this.treeRoot = new BTreeNode(this.nextIndex++, this.starting_x, STARTING_Y);
+		this.cmd(
+			act.createBTreeNode,
+			this.treeRoot.graphicID,
+			WIDTH_PER_ELEM,
+			NODE_HEIGHT,
+			1,
+			this.starting_x,
+			STARTING_Y,
+			BACKGROUND_COLOR,
+			FOREGROUND_COLOR,
+		);
+		this.treeRoot.keys = nodes[0];
+		this.treeRoot.numKeys = nodes[0].length;
+		this.treeRoot.children = [];
+		this.cmd(act.setText, this.treeRoot.graphicID, nodes[0].join('   '), 0);
+		this.cmd(act.setNumElements, this.treeRoot.graphicID, nodes[0].length);
+		this.resizeTree();
+		for (let i = 0; i < nodes[0].length; i++) {
+			this.cmd(act.setText, this.treeRoot.graphicID, nodes[0][i], i);
+			this.treeRoot.numKeys = nodes[0].length;
+		}
+
+		for (let i = 1; i < nodes.length; i++) {
+			const newNode = new BTreeNode(this.nextIndex++, this.starting_x, STARTING_Y);
+			newNode.keys = nodes[i];
+			newNode.numKeys = nodes[i].length;
+			newNode.children = [];
+			this.buildTreeRecurse(this.treeRoot, nodes[i][0], newNode);
+		}
+
+		const problem = this.treeHasProblem(this.treeRoot);
+		if (problem) {
+			this.commands = [];
+			this.cmd(act.setText, this.infoLabelID, problem);
+			this.reset();
+			this.shake(this.buildTreeButton);
+			return this.commands;
+		}
+
+		this.cmd(act.setText, this.messageID, '');
+
+		return this.commands;
+	}
+
+	treeHasProblem(node) {
+		if (node == null) {
+			return '';
+		}
+		if (node.numKeys > this.max_keys) {
+			return `Nodes can have at most ${this.max_keys} keys`;
+		}
+		for (let i = 0; i < node.numKeys - 1; i++) {
+			if (node.keys[i] >= node.keys[i + 1]) {
+				return `Tree must respect order property within nodes. ${node.keys[i]} >= ${
+					node.keys[i + 1]
+				}`;
+			}
+		}
+		if (node.isLeaf) {
+			return '';
+		}
+		if (node.numKeys !== node.children.length - 1) {
+			return `Node with ${node.numKeys} keys must have ${
+				node.numKeys + 1
+			} children if not a leaf`;
+		}
+		for (let i = 0; i < node.numKeys; i++) {
+			const key = node.keys[i];
+			const c1 = node.children[i];
+			const c2 = node.children[i + 1];
+			for (const k of c1.keys) {
+				if (k >= key) return `Tree must respect order property. ${k} >= ${key}`;
+			}
+			for (const k of c2.keys) {
+				if (k <= key) return `Tree must respect order property. ${k} <= ${key}`;
+			}
+		}
+
+		for (const child of node.children) {
+			const childProblem = this.treeHasProblem(child);
+			if (childProblem) return childProblem;
+		}
+		return '';
+	}
+
+	// ex 2,9,13|1|5,6,7|11,12|14,16
+	buildTreeRecurse(node, val, nodeToAdd) {
+		let index = 0;
+		while (index < node.numKeys && node.keys[index] < val) {
+			index++;
+		}
+		const nextNode = node.children[index];
+		if (nextNode == null) {
+			node.isLeaf = false;
+			node.children.push(nodeToAdd);
+			nodeToAdd.y = node.y + 100;
+			nodeToAdd.x = node.x + (index - 1.5) * 150;
+			nodeToAdd.parent = node;
+
+			this.cmd(
+				act.createBTreeNode,
+				nodeToAdd.graphicID,
+				WIDTH_PER_ELEM,
+				NODE_HEIGHT,
+				1,
+				nodeToAdd.x,
+				nodeToAdd.y,
+				BACKGROUND_COLOR,
+				FOREGROUND_COLOR,
+			);
+
+			this.cmd(act.setNumElements, nodeToAdd.graphicID, nodeToAdd.keys.length);
+			this.resizeTree();
+			for (let i = 0; i < nodeToAdd.keys.length; i++) {
+				this.cmd(act.setText, nodeToAdd.graphicID, nodeToAdd.keys[i], i);
+			}
+
+			this.cmd(
+				act.connect,
+				node.graphicID,
+				nodeToAdd.graphicID,
+				FOREGROUND_COLOR,
+				0, // Curve
+				0, // Directed
+				'', // Label
+				index,
+			);
+		} else {
+			this.buildTreeRecurse(nextNode, val, nodeToAdd);
+		}
 	}
 
 	reset() {
-		this.nextIndex = 3;
+		this.nextIndex = this.resetIndex;
 		this.max_degree = 4;
 		this.max_keys = 3;
 		this.min_keys = 1;
@@ -387,7 +564,7 @@ export default class BTree extends Algorithm {
 		this.commands = [];
 		this.deleteTree(this.treeRoot);
 		this.treeRoot = null;
-		this.nextIndex = 3;
+		this.nextIndex = this.resetIndex;
 		return this.commands;
 	}
 
@@ -395,6 +572,9 @@ export default class BTree extends Algorithm {
 		if (tree != null) {
 			if (!tree.isLeaf) {
 				for (let i = 0; i <= tree.numKeys; i++) {
+					if (!tree.children[i]) {
+						continue;
+					}
 					this.cmd(act.disconnect, tree.graphicID, tree.children[i].graphicID);
 					this.deleteTree(tree.children[i]);
 				}
@@ -407,7 +587,7 @@ export default class BTree extends Algorithm {
 		this.commands = [];
 		this.deleteTree(this.treeRoot);
 		this.treeRoot = null;
-		this.nextIndex = 3;
+		this.nextIndex = this.resetIndex;
 		const newDegree = degree;
 		this.ignoreInputs = true;
 		this.maxDegreeRadioButtons[newDegree - MIN_MAX_DEGREE].checked = true;

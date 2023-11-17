@@ -101,7 +101,7 @@ export default class Floyd extends Graph {
 	smallGraphCallback() {
 		if (this.size !== SMALL_SIZE) {
 			this.animationManager.resetAll();
-			this.animationManager.setAllLayers([0, this.currentLayer]);
+			this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 			this.logicalButton.disabled = false;
 			this.adjacencyListButton.disabled = false;
 			this.adjacencyMatrixButton.disabled = false;

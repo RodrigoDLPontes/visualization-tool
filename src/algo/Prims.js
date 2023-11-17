@@ -139,7 +139,7 @@ export default class Prims extends Graph {
 		);
 		this.cmd(act.createLabel, this.nextIndex++, 'Priority Queue:', PQ_LABEL_X, PQ_LABEL_Y, 0);
 
-		this.animationManager.setAllLayers([0, this.currentLayer]);
+		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();

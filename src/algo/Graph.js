@@ -522,7 +522,7 @@ export default class Graph extends Algorithm {
 
 		this.buildAdjMatrix();
 
-		this.animationManager.setAllLayers([0, this.currentLayer]);
+		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();

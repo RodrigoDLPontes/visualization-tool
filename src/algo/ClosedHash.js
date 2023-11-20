@@ -82,7 +82,11 @@ export default class ClosedHash extends Hash {
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.dropDownLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[['Integers', 'Hash Integers'], ['Strings', 'Hash Strings'], ['True', 'True Hash Function']],
+			[
+				['Integers', 'Hash Integers'],
+				['Strings', 'Hash Strings'],
+				['True', 'True Hash Function'],
+			],
 			'Hash Type',
 			this.dropDownParentGroup,
 		);

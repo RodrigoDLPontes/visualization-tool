@@ -229,7 +229,6 @@ export default class OpenHash extends Hash {
 		this.cmd(act.move, labID, this.indexXPos[index], this.indexYPos[index] - ARRAY_ELEM_HEIGHT);
 		this.cmd(act.step);
 		this.cmd(act.delete, labID);
-		console.log(index);
 		this.cmd(act.setText, this.hashTableVisual[index], elem);
 		this.cmd(act.setHighlight, this.hashTableVisual[index], 0);
 		this.hashTableValues[index] = entry;

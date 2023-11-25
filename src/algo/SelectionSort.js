@@ -171,29 +171,21 @@ export default class SelectionSort extends Algorithm {
 		this.animationManager.clearHistory();
 	}
 
-	// reset() {
-	// 	this.nextIndex = 0;
-	// 	this.arrayData = [];
-	// 	this.arrayID = [];
-	// 	this.displayData = [];
-	// 	this.removeCode(this.codeID);
-	// 	this.iPointerID = this.nextIndex++;
-	// 	this.jPointerID = this.nextIndex++;
-	// 	this.comparisonCountID = this.nextIndex++;
-	// 	this.infoLabelID = this.nextIndex++;
-	// 	this.compCount = 0;
-	// 	this.swapCountID = this.nextIndex++;
-	// 	this.swapCount = 0;
-	// 	this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-	// 	if (!this.isMin) {
-	// 		this.cmd(act.setText, this.codeID[2][0], '  for i ← length - 1, 0 do');
-	// 		this.cmd(act.setText, this.codeID[3][0], '    max ← i');
-	// 		this.cmd(act.setText, this.codeID[4][0], '    for j ← i - 1, 0 do');
-	// 		this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
-	// 		this.cmd(act.setText, this.codeID[5][0], '        max ← j');
-	// 		this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
-	// 	}
-	// }
+	reset() {
+		this.nextIndex = 0;
+		this.arrayData = [];
+		this.arrayID = [];
+		this.displayData = [];
+		this.removeCode(this.codeID);
+		this.iPointerID = this.nextIndex++;
+		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.compCount = 0;
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+	}
 
 	randomCallback() {
 		//Generate between 5 and 15 random values
@@ -216,12 +208,19 @@ export default class SelectionSort extends Algorithm {
 	minCallback() {
 		if (!this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '  for i ← 0, length do');
-			this.cmd(act.setText, this.codeID[3][0], '    min ← i');
-			this.cmd(act.setText, this.codeID[4][0], '    for j ← i + 1, length do');
-			this.cmd(act.setText, this.codeID[5][0], '      if array[j] < array[min]');
-			this.cmd(act.setText, this.codeID[6][0], '        min ← j');
-			this.cmd(act.setText, this.codeID[9][0], '    swap array[min], array[i]');
+			this.cmd(act.setText, this.codeID.code[2][0], '  for i ← 0, length:');
+			this.cmd(act.setText, this.codeID.code[3][0], '    min ← i');
+			this.cmd(act.setText, this.codeID.code[4][0], '    for j ← i + 1, length:');
+			this.cmd(act.setText, this.codeID.code[5][0], '      if array[j] < array[min]:');
+			this.cmd(act.setText, this.codeID.code[6][0], '        min ← j');
+			this.cmd(act.setText, this.codeID.code[9][0], '    swap array[min], array[i]');
+
+			this.cmd(act.setText, this.codeID.english[2][0], '  for (i from start to end):');
+			this.cmd(act.setText, this.codeID.english[3][0], '    initialize min value');
+			this.cmd(act.setText, this.codeID.english[4][0], '    for (j from i to end):');
+			this.cmd(act.setText, this.codeID.english[5][0], '      if (array[j] < min value):');
+			this.cmd(act.setText, this.codeID.english[6][0], '        min value is array[j]');
+			this.cmd(act.setText, this.codeID.english[9][0], '    swap min value with array[i]');
 			this.isMin = true;
 		}
 	}
@@ -229,12 +228,19 @@ export default class SelectionSort extends Algorithm {
 	maxCallback() {
 		if (this.isMin) {
 			this.implementAction(this.clear.bind(this));
-			this.cmd(act.setText, this.codeID[2][0], '  for i ← length - 1, 0 do');
-			this.cmd(act.setText, this.codeID[3][0], '    max ← i');
-			this.cmd(act.setText, this.codeID[4][0], '    for j ← i - 1, 0 do');
-			this.cmd(act.setText, this.codeID[5][0], '      if array[j] > array[max]');
-			this.cmd(act.setText, this.codeID[6][0], '        max ← j');
-			this.cmd(act.setText, this.codeID[9][0], '    swap array[max], array[i]');
+			this.cmd(act.setText, this.codeID.code[2][0], '  for i ← length - 1, 0:');
+			this.cmd(act.setText, this.codeID.code[3][0], '    max ← i');
+			this.cmd(act.setText, this.codeID.code[4][0], '    for j ← i - 1, 0:');
+			this.cmd(act.setText, this.codeID.code[5][0], '      if array[j] > array[max]:');
+			this.cmd(act.setText, this.codeID.code[6][0], '        max ← j');
+			this.cmd(act.setText, this.codeID.code[9][0], '    swap array[max], array[i]');
+
+			this.cmd(act.setText, this.codeID.english[2][0], '  for (i from end to start):');
+			this.cmd(act.setText, this.codeID.english[3][0], '    initialize max value');
+			this.cmd(act.setText, this.codeID.english[4][0], '    for (j from i to start):');
+			this.cmd(act.setText, this.codeID.english[5][0], '      if (array[j] > max value):');
+			this.cmd(act.setText, this.codeID.english[6][0], '        max value is array[j]');
+			this.cmd(act.setText, this.codeID.english[9][0], '    swap max value with array[i]');
 			this.isMin = false;
 		}
 	}

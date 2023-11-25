@@ -1220,7 +1220,7 @@
         ["  for i ← 0, length:"],
         ["    min ← i"],
         ["    for j ← i + 1, length:"],
-        ["      if array[j] < array[min]"],
+        ["      if array[j] < array[min]:"],
         ["        min ← j"],
         ["      end if"],
         ["    end for"],
@@ -1241,6 +1241,56 @@
         ["    swap min value with array[i]"],
         ["  end for"],
         ["end procedure"]
+      ]
+    }
+  },
+  "QuickSort": {
+    "find": {
+      "code": [
+        ["procedure QuickSort(array, left, right):"],
+        ["  pivotIdx ← random index within region being sorted"],
+        ["  pivot ← array[pivotIdx]"],
+        ["  swap array[left], array[pivotIdx]"],
+        ["  i ← left + 1, j ← right - 1"],
+        ["  while i <= j:"],
+        ["    while", " ", "i <= j", " and ", "array[i] <= pivot", ":"],
+        ["      i ← i + 1"],
+        ["    end while"],
+        ["    while", " ", "i <= j", " and ", "array[j] >= pivot", ":"],
+        ["      j ← j - 1"],
+        ["    end while"],
+        ["    if i <= j:"],
+        ["      swap array[i], array[j]"],
+        ["      i ← i + 1, j ← j - 1"],
+        ["    end if"],
+        ["  end while"],
+        ["  swap pivot, array[j]"],
+        ["  QuickSort(array, left, j)"],
+        ["  QuickSort(array, j + 1, right)"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure QuickSort(array, left, right):"],
+        ["  pivotIdx is some random index within partition"],
+        ["  pivot is the value at pivotIdx"],
+        ["  swap array[left] with the pivot"],
+        ["  i points to left + 1,  j points to right - 1"],
+        ["  while (j has not crossed i):"],
+        ["    while", " (", "j has not crossed i", " and ", "array[i] <= pivot", "):"],
+        ["      increment i"],
+        ["    end while"],
+        ["    while", " (", "j has not crossed i", " and ", "array[j] >= pivot", "):"],
+        ["      decrement j"],
+        ["    end while"],
+        ["    if j and i crossed:"],
+        ["      swap i and j"],
+        ["      increment i, decrement j"],
+        ["    end if"],
+        ["  end while"],
+        ["  swap the pivot and j"],
+        ["  recursively call QuickSort() on the left partition"],
+        ["  recursively call QuickSort() on the right partition"],
+        ["end procedure"] 
       ]
     }
   }

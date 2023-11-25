@@ -149,30 +149,21 @@ export default class CocktailSort extends Algorithm {
 		this.animationManager.clearHistory();
 	}
 
-	// reset() {
-	// 	this.nextIndex = 0;
-	// 	this.compCount = 0;
-	// 	this.swapCount = 0;
-	// 	this.arrayData = [];
-	// 	this.arrayID = [];
-	// 	this.displayData = [];
-	// 	this.removeCode(this.codeID);
-	// 	this.iPointerID = this.nextIndex++;
-	// 	this.jPointerID = this.nextIndex++;
-	// 	this.comparisonCountID = this.nextIndex++;
-	// 	this.infoLabelID = this.nextIndex++;
-	// 	this.swapCountID = this.nextIndex++;
-	// 	this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-	// 	if (!lastSwapEnabled) {
-	// 		this.cmd(act.setText, this.codeID[2][0], '     sorted ← false');
-	// 		this.cmd(act.setText, this.codeID[3][0], '     while start < end and sorted is false');
-	// 		this.cmd(act.setText, this.codeID[4][0], '          sorted ← true');
-	// 		this.cmd(act.setText, this.codeID[8][0], '                    sorted ← false');
-	// 		this.cmd(act.setText, this.codeID[11][0], '          end ← end - 1');
-	// 		this.cmd(act.setText, this.codeID[15][0], '                    sorted ← false');
-	// 		this.cmd(act.setText, this.codeID[18][0], '          start ← start + 1');
-	// 	}
-	// }
+	reset() {
+		this.nextIndex = 0;
+		this.compCount = 0;
+		this.swapCount = 0;
+		this.arrayData = [];
+		this.arrayID = [];
+		this.displayData = [];
+		this.removeCode(this.codeID);
+		this.iPointerID = this.nextIndex++;
+		this.jPointerID = this.nextIndex++;
+		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.swapCountID = this.nextIndex++;
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+	}
 
 	sortCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');

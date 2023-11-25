@@ -1183,5 +1183,65 @@
         ["end procedure"]
       ]
     }
+  },
+  "InsertionSort": {
+    "find": {
+      "code": [
+        ["procedure InsertionSort(array):"],
+        ["  length ← array.length"],
+        ["  for i ← 1, length - 1:"],
+        ["    j ← i"],
+        ["    while", " ", "j > 0", ", ", "array[j - 1] > array[j]", ":"],
+        ["      swap array[j - 1], array[j]"],
+        ["      j ← j - 1"],
+        ["    end while"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure InsertionSort(array):"],
+        ["  length is array's length"],
+        ["  for (i from start to end):"],
+        ["    j points to i"],
+        ["    while", " (", "j is positive", " and ", "array[j - 1] > array[j]", "):"],
+        ["      bubble array[j] by swapping down"],
+        ["      decrement j"],
+        ["    end while"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "SelectionSort": {
+    "find": {
+      "code": [
+        ["procedure SelectionSort(array):"],
+        ["  length ← array.length"],
+        ["  for i ← 0, length:"],
+        ["    min ← i"],
+        ["    for j ← i + 1, length:"],
+        ["      if array[j] < array[min]"],
+        ["        min ← j"],
+        ["      end if"],
+        ["    end for"],
+        ["    swap array[min], array[i]"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure SelectionSort(array):"],
+        ["  length is array's length"],
+        ["  for (i from start to end):"],
+        ["    initialize min value"],
+        ["    for (j from i to end):"],
+        ["      if (array[j] < min value):"],
+        ["        min value is array[j]"],
+        ["      end if"],
+        ["    end for"],
+        ["    swap min value with array[i]"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    }
   }
 }

@@ -1417,5 +1417,173 @@
         ["end procedure"]
       ]
     }
+  },
+  "LSDRadixSort": {
+    "find": {
+      "code": [
+        ["procedure LSDRadixSort(array):"],
+        ["  buckets ← array of 19 lists"],
+        ["  k ← length of largest number by magnitude"],
+        ["  length ← array.length"],
+        ["  div ← 1"],
+        ["  for i ← 1, k:"],
+        ["    for j ← 0, length - 1:"],
+        ["      b ← array[j] / div % 10 + 9"],
+        ["      buckets[b].addLast(array[j])"],
+        ["    end for"],
+        ["    index ← 0"],
+        ["    for b ← 0, 18:"],
+        ["      while buckets[b].size > 0:"],
+        ["        array[index] ← buckets[b].removeFirst()"],
+        ["        index ← index + 1"],
+        ["      end while"],
+        ["    end for"],
+        ["    div ← div * 10"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure LSDRadixSort(array):"],
+        ["  buckets is an array containing 19 lists"],
+        ["  k is the length of largest number by magnitude"],
+        ["  length is array's length"],
+        ["  base starts at 1"],
+        ["  for (i from 1 to k):"],
+        ["    for (j from 0 to length):"],
+        ["      b is (num at array[j] / base % 10 + 9)"],
+        ["      buckets[b].addLast(array[j])"],
+        ["    end for"],
+        ["    index starts at 0"],
+        ["    for each bucket:"],
+        ["      while (bucket is not empty):"],
+        ["        pop from top of bucket into array at index"],
+        ["        increment index"],
+        ["      end while"],
+        ["    end for"],
+        ["    multiply base by 10"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "HeapSort": {
+    "find": {
+      "code": [
+        ["procedure HeapSort(array):"],
+        ["  heap ← new PriorityQueue(array)"],
+        ["  for i ← 0, array.length -1:"],
+        ["    add heap.remove() to array[i]"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure HeapSort(array):"],
+        ["  create heap from array with BuildHeap"],
+        ["  for (i from 0 to array.length):"],
+        ["    pop from heap into array at i"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "BruteForce": {
+    "find": {
+      "code": [
+        ["procedure BruteForce(text, pattern):"],
+        ["  n ← text.length, m ← pattern.length"],
+        ["  for i ← 0, n - m:"],
+        ["    j ← 0"],
+        ["    while j < m and pattern[j] = text[i + j]:"],
+        ["      j ← j + 1"],
+        ["    end while"],
+        ["    if j = m:"],
+        ["      // match found at i"],
+        ["    end if"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure BruteForce(text, pattern):"],
+        ["  n is text's length, m is pattern's length"],
+        ["  for (i from 0 to n - m):"],
+        ["    j starts at 0"],
+        ["    while (j < m and pattern[j] matches text[i + j]):"],
+        ["      increment j"],
+        ["    end while"],
+        ["    if (j == m):"],
+        ["      // match found at i"],
+        ["    end if"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "BoyerMoore": {
+    "find": {
+      "code": [
+        ["procedure BoyerMoore(text, pattern):"],
+        ["  lastTable ← BuildLastOccurrenceTable(pattern)"],
+        ["  m ← pattern.length, n ← text.length"],
+        ["  i ← 0"],
+        ["  while i <= n - m:"],
+        ["    j = m - 1"],
+        ["    while j >= 0 and text[i + j] == pattern[j]:"],
+        ["      j ← j - 1"],
+        ["      if j == -1:"],
+        ["        // match found at i"],
+        ["        i ← i + 1"],
+        ["      else:"],
+        ["        shift ← lastTable[text[i + j]]"],
+        ["        if shift < j:"],
+        ["          i ← i + (j - shift)"],
+        ["        else:"],
+        ["          i ← i + 1"],
+        ["        end if"],
+        ["      end if"],
+        ["    end while"],
+        ["  end while"],
+        ["end procedure"],
+        [""],
+        ["procedure BuildLastOccurrenceTable(pattern):"],
+        ["  lastTable ← new HashMap<Character, Integer>"],
+        ["  for i ← 0, pattern.length:"],
+        ["    lastTable[pattern[i]] ← i"],
+        ["  end for"],
+        ["  return lastTable"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure BoyerMoore(text, pattern):"],
+        ["  lastTable is pattern's last occurrence table"],
+        ["  m is pattern's length, n is text's length"],
+        ["  i starts at 0"],
+        ["  while (i <= n - m):"],
+        ["    j starts at m - 1"],
+        ["    while (j >= 0 and text[i + j] matches pattern[j]):"],
+        ["      decrement j"],
+        ["      if (j == -1):"],
+        ["        // match found at i"],
+        ["        increment i"],
+        ["      else:"],
+        ["        shift is the lastTable index for text[i + j]"],
+        ["        if (shift < j):"],
+        ["          add j - shift to i"],
+        ["        else:"],
+        ["          increment i"],
+        ["        end if"],
+        ["      end if"],
+        ["    end while"],
+        ["  end while"],
+        ["end procedure"],
+        [""],
+        ["procedure BuildLastOccurrenceTable(pattern):"],
+        ["  lastTable is a map from Characters to Integers"],
+        ["  for (i from 0 to pattern.length):"],
+        ["    set lastTable for pattern[i] to i"],
+        ["  end for"],
+        ["  return lastTable"],
+        ["end procedure"]
+      ]
+    }
   }
 }

@@ -31,6 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json'
 
 const MAX_ARRAY_SIZE = 15;
 
@@ -126,16 +127,8 @@ export default class HeapSort extends Algorithm {
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
-		this.code = [
-			['procedure heapSort(array)'],
-			['  heap ← create new PriorityQueue(array)'],
-			['  for i ← 0, array.length - 1, loop:'],
-			['    add ', 'heap.remove()', ' to data[i]'],
-			['  end for'],
-			['end procedure'],
-		];
-
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.pseudocode = pseudocodeText.HeapSort;
+		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
 
 		// this.codeID = Array(this.code.length);
 		// let i, j;
@@ -189,7 +182,7 @@ export default class HeapSort extends Algorithm {
 			return this.commands;
 		}
 
-		this.highlight(0, 0);
+		this.highlight(0, 0, this.codeID);
 
 		this.arrayData = list
 			.map(Number)
@@ -232,10 +225,10 @@ export default class HeapSort extends Algorithm {
 		}
 		this.arrayData = displayDataTemp;
 		this.cmd(act.step);
-		this.unhighlight(0, 0);
+		this.unhighlight(0, 0, this.codeID);
 
 		//Create a new heap
-		this.highlight(1, 0);
+		this.highlight(1, 0, this.codeID);
 		this.createHeap(this.arrayData);
 		this.cmd(act.step);
 
@@ -248,18 +241,20 @@ export default class HeapSort extends Algorithm {
 		}
 		this.cmd(act.step);
 
-		this.unhighlight(1, 0);
+		this.unhighlight(1, 0, this.codeID);
 		this.cmd(act.setText, this.infoLabelID, '');
 
 		//Remove all of the elements from the heap
+		this.highlight(2, 0, this.codeID);
 		while (this.currentHeapSize > 0) {
-			this.highlight(2, 0);
-			this.cmd(act.step);
-			this.unhighlight(2, 0);
+			this.highlight(3, 0, this.codeID)
 			this.remove();
+			this.unhighlight(3, 0, this.codeID)
+			this.cmd(act.step);
 		}
+		this.unhighlight(2, 0, this.codeID);
 
-		this.highlight(4, 0);
+		this.highlight(4, 0, this.codeID);
 		this.cmd(act.setText, this.infoLabelID, '');
 		this.cmd(act.step);
 
@@ -267,11 +262,11 @@ export default class HeapSort extends Algorithm {
 			this.cmd(act.delete, this.heapArrayID[i]);
 			this.cmd(act.delete, this.heapArrayLabelID[i]);
 		}
-		this.unhighlight(4, 0);
-		this.highlight(5, 0);
+		this.unhighlight(4, 0, this.codeID);
+		this.highlight(5, 0, this.codeID);
 		this.cmd(act.step);
 
-		this.unhighlight(5, 0);
+		this.unhighlight(5, 0, this.codeID);
 
 		return this.commands;
 	}

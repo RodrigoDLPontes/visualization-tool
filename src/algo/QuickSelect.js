@@ -176,22 +176,22 @@ export default class QuickSelect extends Algorithm {
 		this.animationManager.clearHistory();
 	}
 
-	// reset() {
-	// 	this.nextIndex = 0;
-	// 	this.arrayData = [];
-	// 	this.displayData = [];
-	// 	this.arrayID = [];
-	// 	this.removeCode(this.codeID);
-	// 	this.iPointerID = 0;
-	// 	this.jPointerID = 0;
-	// 	this.pPointerID = 0;
-	// 	this.comparisonCountID = this.nextIndex++;
-	// 	this.infoLabelID = this.nextIndex++;
-	// 	this.compCount = 0;
-	// 	this.swapCountID = this.nextIndex++;
-	// 	this.swapCount = 0;
-	// 	this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
-	// }
+	reset() {
+		this.nextIndex = 0;
+		this.arrayData = [];
+		this.displayData = [];
+		this.arrayID = [];
+		this.removeCode(this.codeID);
+		this.iPointerID = 0;
+		this.jPointerID = 0;
+		this.pPointerID = 0;
+		this.comparisonCountID = this.nextIndex++;
+		this.infoLabelID = this.nextIndex++;
+		this.compCount = 0;
+		this.swapCountID = this.nextIndex++;
+		this.swapCount = 0;
+		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+	}
 
 	runCallback() {
 		const list = this.listField.value.split(',').filter(x => x !== '');

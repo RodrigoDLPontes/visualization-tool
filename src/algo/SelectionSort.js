@@ -118,18 +118,18 @@ export default class SelectionSort extends Algorithm {
 		addDivisorToAlgorithmBar();
 
 		const minMaxButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Minimum', 'Maximum'],
-			'Min/Max',
+			['Maximum', 'Minimum'],
+			'Max/Min',
 		);
 
-		this.minButton = minMaxButtonList[0];
+		this.minButton = minMaxButtonList[1];
 		this.minButton.onclick = this.minCallback.bind(this);
 		this.controls.push(this.minButton);
-		this.minButton.checked = true;
-		this.maxButton = minMaxButtonList[1];
+		this.maxButton = minMaxButtonList[0];
 		this.maxButton.onclick = this.maxCallback.bind(this);
 		this.controls.push(this.maxButton);
-		this.isMin = true;
+		this.maxButton.checked = true;
+		this.isMin = false;
 	}
 
 	setup() {

@@ -55,18 +55,18 @@
 	border-radius: 0px 0px 15px 15px;
 	filter: drop-shadow(3px 3px 3px);
 	font-size: x-large;
-	animation: banner-ease ease-in-out 2.0s forwards;
+	animation: banner-ease ease-in-out 2s forwards;
 	text-align: center;
 	cursor: default;
 }
 
 @keyframes banner-ease {
-    from {
-        transform: translateY(-7vw);
-    }
-    to {
-        transform: translateY(-25px);
-    }
+	from {
+		transform: translateY(-7vw);
+	}
+	to {
+		transform: translateY(-25px);
+	}
 }
 
 .rotate-effect {

@@ -30,7 +30,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -282,7 +282,8 @@ export default class KMP extends Algorithm {
 		const tableStartX = ARRAY_START_X + text.length * this.cellSize + 110;
 
 		this.codeID = this.addCodeToCanvasBaseAll(
-			this.pseudocode, 'find',
+			this.pseudocode,
+			'find',
 			ARRAY_START_X + text.length * this.cellSize + 10,
 			CODE_Y,
 		);
@@ -342,7 +343,7 @@ export default class KMP extends Algorithm {
 		this.highlight(1, 0, this.codeID);
 		this.highlight(2, 0, this.codeID);
 		this.highlight(3, 0, this.codeID);
-		this.cmd(act.step)
+		this.cmd(act.step);
 		this.unhighlight(1, 0, this.codeID);
 		this.unhighlight(2, 0, this.codeID);
 		this.unhighlight(3, 0, this.codeID);

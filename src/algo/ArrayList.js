@@ -32,7 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -210,7 +210,7 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 
 		this.pseudocode = pseudocodeText.ArrayList;
-		
+
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 		this.resetIndex = this.nextIndex;
@@ -425,8 +425,18 @@ export default class ArrayList extends Algorithm {
 		this.setInfoText('');
 
 		if (!skipPseudocode) {
-			this.addFBCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFB', CODE_START_X, CODE_START_Y);
-			this.addIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addIndex', CODE_START_X + 300, CODE_START_Y);
+			this.addFBCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFB',
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addIndex',
+				CODE_START_X + 300,
+				CODE_START_Y,
+			);
 		}
 
 		const labPushID = this.nextIndex++;
@@ -540,8 +550,18 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeFBCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeFB', CODE_START_X, CODE_START_Y);
-		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeIndex', CODE_START_X + 300, CODE_START_Y);
+		this.removeFBCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFB',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeIndex',
+			CODE_START_X + 300,
+			CODE_START_Y,
+		);
 
 		if (isRemoveFront) {
 			this.highlight(0, 0, this.removeFBCodeID);
@@ -641,8 +661,18 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.addFBCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFB', CODE_START_X, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addIndex', CODE_START_X + 300, CODE_START_Y);
+		this.addFBCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'addFB',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'addIndex',
+			CODE_START_X + 300,
+			CODE_START_Y,
+		);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;

@@ -33,7 +33,7 @@ import Graph from './Graph.js';
 import { PRIMS_KRUSKALS_ADJ_LIST } from './util/GraphValues';
 import PriorityQueue from './util/PriorityQueue';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const PQ_DEQUEUED_COLOR = '#0000FF';
 const VISITED_COLOR = '#99CCFF';
@@ -103,7 +103,12 @@ export default class Prims extends Graph {
 		this.pq = new PriorityQueue();
 
 		this.pseudocode = pseudocodeText.Prims;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'run', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'run',
+			CODE_START_X,
+			CODE_START_Y,
+		);
 
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);

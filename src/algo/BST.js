@@ -31,7 +31,7 @@ import Algorithm, {
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const CODE_START_X = 25;
 const CODE_START_Y = 35;
@@ -51,7 +51,15 @@ export default class BST extends Algorithm {
 		this.commands = [];
 		this.edges = [];
 		this.toClear = [];
-		this.cmd(act.createLabel, 0, '', BST.EXPLANITORY_TEXT_X, BST.EXPLANITORY_TEXT_Y, 0, this.codeID);
+		this.cmd(
+			act.createLabel,
+			0,
+			'',
+			BST.EXPLANITORY_TEXT_X,
+			BST.EXPLANITORY_TEXT_Y,
+			0,
+			this.codeID,
+		);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
@@ -214,7 +222,7 @@ export default class BST extends Algorithm {
 			this.implementAction(
 				this.add.bind(this),
 				Math.floor(Math.random() * (UPPER_BOUND - LOWER_BOUND + 1)) + LOWER_BOUND,
-				true
+				true,
 			);
 			this.clearOldObjects();
 			this.animationManager.skipForward();
@@ -422,7 +430,12 @@ export default class BST extends Algorithm {
 		this.xPosOfNextLabel = BST.FIRST_PRINT_POS_X;
 		this.yPosOfNextLabel = this.first_print_pos_y;
 
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, this.traversal + 'order', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			this.traversal + 'order',
+			CODE_START_X,
+			CODE_START_Y,
+		);
 		if (this.traversal === 'pre') {
 			this.preOrderRec(this.treeRoot, this.codeID);
 		} else if (this.traversal === 'in') {
@@ -531,7 +544,12 @@ export default class BST extends Algorithm {
 		this.clearOldObjects();
 
 		const firstLabel = this.nextIndex;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X + 30, CODE_START_Y + 80);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X + 30,
+			CODE_START_Y + 80,
+		);
 		for (let i = firstLabel; i < this.nextIndex; i++) this.toClear.push(i);
 
 		this.highlightID = this.nextIndex++;
@@ -668,11 +686,16 @@ export default class BST extends Algorithm {
 		this.clearOldObjects();
 
 		const firstLabel = this.nextIndex;
-		
+
 		if (!skipPseudocode) {
-			this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'add', CODE_START_X + 30, CODE_START_Y + 80);
+			this.codeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'add',
+				CODE_START_X + 30,
+				CODE_START_Y + 80,
+			);
 		}
-		
+
 		for (let i = firstLabel; i < this.nextIndex; i++) this.toClear.push(i);
 
 		this.highlight(0, 0, this.codeID);
@@ -772,8 +795,20 @@ export default class BST extends Algorithm {
 		const firstLabel = this.nextIndex;
 		this.codeID =
 			this.predSucc === 'succ'
-				? this.addCodeToCanvasBaseAll(this.pseudocode, 'remove_successor', CODE_START_X + 15, CODE_START_Y + 15, 13)
-				: this.addCodeToCanvasBaseAll(this.pseudocode, 'remove_predecessor', CODE_START_X + 15, CODE_START_Y + 15, 13);
+				? this.addCodeToCanvasBaseAll(
+						this.pseudocode,
+						'remove_successor',
+						CODE_START_X + 15,
+						CODE_START_Y + 15,
+						13,
+				  )
+				: this.addCodeToCanvasBaseAll(
+						this.pseudocode,
+						'remove_predecessor',
+						CODE_START_X + 15,
+						CODE_START_Y + 15,
+						13,
+				  );
 		for (let i = firstLabel; i < this.nextIndex; i++) this.toClear.push(i);
 
 		this.highlight(0, 0, this.codeID);

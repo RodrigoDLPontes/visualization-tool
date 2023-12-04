@@ -1,6 +1,13 @@
 import '../css/AlgoScreen.css';
 import '../css/App.css';
-import { BsBookHalf, BsFileEarmarkCodeFill, BsFileEarmarkFill, BsFileEarmarkFontFill, BsFillSunFill, BsMoonFill } from 'react-icons/bs';
+import {
+	BsBookHalf,
+	BsFileEarmarkCodeFill,
+	BsFileEarmarkFill,
+	BsFileEarmarkFontFill,
+	BsFillSunFill,
+	BsMoonFill,
+} from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -58,7 +65,7 @@ class AlgoScreen extends React.Component {
 		const algoName = this.state.algoName;
 		const theme = this.props.theme;
 		const toggleTheme = this.props.toggleTheme;
-		const pseudocode = this.state.pseudocodeType
+		const pseudocode = this.state.pseudocodeType;
 
 		if (!algoMap[algoName]) {
 			return (
@@ -120,31 +127,31 @@ class AlgoScreen extends React.Component {
 						<div id="algoControlSection">
 							<table id="AlgorithmSpecificControls"></table>
 							<div id="toggles">
-									{algoMap[algoName][2] && pseudocode==='none' && (
-										<BsFileEarmarkFill
-											className="pseudocode-toggle"
-											size={32}
-											onClick={this.togglePseudocode}
-											opacity={'40%'}
-											title="Code: Hidden"
-										/>
-									)}
-									{algoMap[algoName][2] && pseudocode==='english' && (
-										<BsFileEarmarkFontFill
-											className="pseudocode-toggle"
-											size={32}
-											onClick={this.togglePseudocode}
-											title="Code: English"
-										/>
-									)}
-									{algoMap[algoName][2] && pseudocode==='code' && (
-										<BsFileEarmarkCodeFill
-											className="pseudocode-toggle"
-											size={32}
-											onClick={this.togglePseudocode}
-											title="Code: Pseudo"
-										/>
-									)}
+								{algoMap[algoName][2] && pseudocode === 'none' && (
+									<BsFileEarmarkFill
+										className="pseudocode-toggle"
+										size={32}
+										onClick={this.togglePseudocode}
+										opacity={'40%'}
+										title="Code: Hidden"
+									/>
+								)}
+								{algoMap[algoName][2] && pseudocode === 'english' && (
+									<BsFileEarmarkFontFill
+										className="pseudocode-toggle"
+										size={32}
+										onClick={this.togglePseudocode}
+										title="Code: English"
+									/>
+								)}
+								{algoMap[algoName][2] && pseudocode === 'code' && (
+									<BsFileEarmarkCodeFill
+										className="pseudocode-toggle"
+										size={32}
+										onClick={this.togglePseudocode}
+										title="Code: Pseudo"
+									/>
+								)}
 								{modals[algoName] && (
 									<BsBookHalf
 										className="menu-modal"
@@ -189,10 +196,10 @@ class AlgoScreen extends React.Component {
 	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
 
 	togglePseudocode = () => {
-		const pseudocodeMap = {none: 'english', english: 'code', code: 'none'};
-		this.animManag.updateLayer(32, this.state.pseudocodeType==='none');
-		this.animManag.updateLayer(33, this.state.pseudocodeType==='english');
-		this.setState(state => ({ pseudocodeType: pseudocodeMap[state.pseudocodeType] }))
+		const pseudocodeMap = { none: 'english', english: 'code', code: 'none' };
+		this.animManag.updateLayer(32, this.state.pseudocodeType === 'none');
+		this.animManag.updateLayer(33, this.state.pseudocodeType === 'english');
+		this.setState(state => ({ pseudocodeType: pseudocodeMap[state.pseudocodeType] }));
 	};
 }
 

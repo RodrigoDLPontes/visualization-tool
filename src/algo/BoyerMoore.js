@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -323,13 +323,16 @@ export default class BoyerMoore extends Algorithm {
 		if (this.galilRuleEnabled) {
 			this.buildFailureTable(text.length, pattern);
 			this.codeID = this.addCodeToCanvasBaseAll(
-				pseudocodeText.BoyerMoore, "galil",
+				pseudocodeText.BoyerMoore,
+				'galil',
 				ARRAY_START_X + text.length * this.cellSize + 10,
-				BM_CODE_Y, 14
+				BM_CODE_Y,
+				14,
 			);
 		} else {
 			this.codeID = this.addCodeToCanvasBaseAll(
-				pseudocodeText.BoyerMoore, "find",
+				pseudocodeText.BoyerMoore,
+				'find',
 				ARRAY_START_X + text.length * this.cellSize + 10,
 				BM_CODE_Y,
 			);
@@ -576,7 +579,12 @@ export default class BoyerMoore extends Algorithm {
 		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
 		this.cmd(act.setText, this.comparisonCountID, 'Comparison Count: ' + this.compCount);
 
-		this.codeID = this.addCodeToCanvasBaseAll(pseudocodeText.BoyerMoore, "lastTable", labelsX, BM_CODE_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			pseudocodeText.BoyerMoore,
+			'lastTable',
+			labelsX,
+			BM_CODE_Y,
+		);
 
 		// Display pattern table
 		const patternTableStartX = ARRAY_START_X + textLength * this.cellSize + 80;
@@ -714,7 +722,13 @@ export default class BoyerMoore extends Algorithm {
 			'Period = pattern.length - FT[pattern.length - 1]',
 		);
 
-		this.codeID = this.addCodeToCanvasBaseAll(pseudocodeText.KMP, "failureTable", labelX, GALIL_CODE_Y, 14);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			pseudocodeText.KMP,
+			'failureTable',
+			labelX,
+			GALIL_CODE_Y,
+			14,
+		);
 
 		// Display empty failure table
 		const tableStartX = ARRAY_START_X + textLength * this.cellSize + 110;

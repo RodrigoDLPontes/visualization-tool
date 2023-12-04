@@ -26,7 +26,7 @@
 
 import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const LINKED_LIST_START_X = 100;
 const LINKED_LIST_START_Y = 225;
@@ -164,8 +164,18 @@ export default class QueueLL extends Algorithm {
 		this.cmd(act.createLabel, this.leftoverValID, '', QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.pseudocode = pseudocodeText.QueueLL;
-		this.enqueueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'enqueue', CODE_START_X, CODE_START_Y);
-		this.dequeueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'dequeue', CODE_START_X + 285, CODE_START_Y);
+		this.enqueueCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'enqueue',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.dequeueCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'dequeue',
+			CODE_START_X + 285,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -308,13 +318,13 @@ export default class QueueLL extends Algorithm {
 		this.cmd(act.disconnect, this.tailID, this.linkedListElemID[1]);
 		this.cmd(act.connect, this.tailID, this.linkedListElemID[0]);
 		this.cmd(act.step);
-		this.unhighlight(6, 0, this.enqueueCodeID)
+		this.unhighlight(6, 0, this.enqueueCodeID);
 		this.highlight(7, 0, this.enqueueCodeID);
-		this.cmd(act.step)
+		this.cmd(act.step);
 
 		this.cmd(act.delete, labPushID);
-		this.unhighlight(7, 0, this.enqueueCodeID)
-		this.unhighlight(0, 0, this.enqueueCodeID)
+		this.unhighlight(7, 0, this.enqueueCodeID);
+		this.unhighlight(0, 0, this.enqueueCodeID);
 		return this.commands;
 	}
 

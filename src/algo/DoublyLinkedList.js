@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -457,9 +457,24 @@ export default class DoublyLinkedList extends Algorithm {
 		this.setInfoText('');
 
 		if (!skipPseudocode) {
-			this.addIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addIndex', CODE_START_X, CODE_START_Y);
-			this.addFrontCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFront', CODE_START_X + 325, CODE_START_Y);
-			this.addBackCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addBack', CODE_START_X + 620, CODE_START_Y);
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addIndex',
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFront',
+				CODE_START_X + 325,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addBack',
+				CODE_START_X + 620,
+				CODE_START_Y,
+			);
 		}
 
 		if (isAddFront) {
@@ -734,9 +749,24 @@ export default class DoublyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeIndex', CODE_START_X, CODE_START_Y);
-		this.removeFrontCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeFront', CODE_START_X + 325, CODE_START_Y);
-		this.removeBackCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeBack', CODE_START_X + 620, CODE_START_Y);
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeIndex',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.removeFrontCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFront',
+			CODE_START_X + 325,
+			CODE_START_Y,
+		);
+		this.removeBackCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeBack',
+			CODE_START_X + 620,
+			CODE_START_Y,
+		);
 
 		index = parseInt(index);
 

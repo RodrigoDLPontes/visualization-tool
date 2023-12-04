@@ -30,7 +30,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 245;
@@ -337,7 +337,12 @@ export default class DequeArray extends Algorithm {
 		this.commands = [];
 
 		if (!skipPseudocode) {
-			this.addLastCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addLast', CODE_START_X, CODE_START_Y);
+			this.addLastCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addLast',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		}
 
 		const labAddLastID = this.nextIndex++;
@@ -354,8 +359,8 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.createLabel, labAddLastValID, elemToAddLast, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 
 		this.cmd(act.step);
-		this.highlight(7, 0, this.addLastCodeID, "code");
-		this.highlight(8, 0, this.addLastCodeID, "english");
+		this.highlight(7, 0, this.addLastCodeID, 'code');
+		this.highlight(8, 0, this.addLastCodeID, 'english');
 		this.cmd(act.createHighlightCircle, this.highlight1ID, INDEX_COLOR, SIZE_POS_X, SIZE_POS_Y);
 		this.cmd(act.step);
 		this.cmd(
@@ -379,10 +384,10 @@ export default class DequeArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 
-		this.unhighlight(7, 0, this.addLastCodeID, "code");
-		this.unhighlight(8, 0, this.addLastCodeID, "english");
-		this.highlight(8, 0, this.addLastCodeID, "code");
-		this.highlight(9, 0, this.addLastCodeID, "english");
+		this.unhighlight(7, 0, this.addLastCodeID, 'code');
+		this.unhighlight(8, 0, this.addLastCodeID, 'english');
+		this.highlight(8, 0, this.addLastCodeID, 'code');
+		this.highlight(9, 0, this.addLastCodeID, 'english');
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 
@@ -390,8 +395,8 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
 
-		this.unhighlight(8, 0, this.addLastCodeID, "code");
-		this.unhighlight(9, 0, this.addLastCodeID, "english");
+		this.unhighlight(8, 0, this.addLastCodeID, 'code');
+		this.unhighlight(9, 0, this.addLastCodeID, 'english');
 		this.unhighlight(0, 0, this.addLastCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labAddLastID);
@@ -410,7 +415,12 @@ export default class DequeArray extends Algorithm {
 		this.commands = [];
 
 		if (!skipPseudocode) {
-			this.addFirstCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFirst', CODE_START_X, CODE_START_Y);
+			this.addFirstCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFirst',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		}
 
 		const labelAddID = this.nextIndex++;
@@ -432,9 +442,9 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.createLabel, labelAddIDVal, elemToAdd, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
-		this.highlight(7, 0, this.addFirstCodeID, "code");
+		this.highlight(7, 0, this.addFirstCodeID, 'code');
 		this.highlight(8, 0, this.addFirstCodeID);
-		this.highlight(9, 0, this.addFirstCodeID, "english");
+		this.highlight(9, 0, this.addFirstCodeID, 'english');
 		this.cmd(
 			act.createHighlightCircle,
 			this.highlight1ID,
@@ -473,11 +483,11 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.setText, this.frontID, this.front);
 		this.cmd(act.step);
 
-		this.unhighlight(7, 0, this.addFirstCodeID, "code");
+		this.unhighlight(7, 0, this.addFirstCodeID, 'code');
 		this.unhighlight(8, 0, this.addFirstCodeID);
-		this.unhighlight(9, 0, this.addFirstCodeID, "english");
-		this.highlight(9, 0, this.addFirstCodeID, "code");
-		this.highlight(10, 0, this.addFirstCodeID, "english");
+		this.unhighlight(9, 0, this.addFirstCodeID, 'english');
+		this.highlight(9, 0, this.addFirstCodeID, 'code');
+		this.highlight(10, 0, this.addFirstCodeID, 'english');
 		this.cmd(act.setHighlight, this.frontID, 0);
 		this.cmd(act.setHighlight, this.frontPointerID, 0);
 		this.cmd(act.move, labelAddIDVal, xpos, ypos);
@@ -487,18 +497,18 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, labelAddIDVal);
 		this.cmd(act.step);
 
-		this.unhighlight(9, 0, this.addFirstCodeID, "code");
-		this.unhighlight(10, 0, this.addFirstCodeID, "english");
-		this.highlight(10, 0, this.addFirstCodeID, "code");
-		this.highlight(11, 0, this.addFirstCodeID, "english");
+		this.unhighlight(9, 0, this.addFirstCodeID, 'code');
+		this.unhighlight(10, 0, this.addFirstCodeID, 'english');
+		this.highlight(10, 0, this.addFirstCodeID, 'code');
+		this.highlight(11, 0, this.addFirstCodeID, 'english');
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 
 		this.cmd(act.setText, this.sizeID, this.size + 1);
 		this.cmd(act.step);
 
-		this.unhighlight(10, 0, this.addFirstCodeID, "code");
-		this.unhighlight(11, 0, this.addFirstCodeID, "english");
+		this.unhighlight(10, 0, this.addFirstCodeID, 'code');
+		this.unhighlight(11, 0, this.addFirstCodeID, 'english');
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.step);
 
@@ -520,7 +530,12 @@ export default class DequeArray extends Algorithm {
 	removeFirst() {
 		this.commands = [];
 
-		this.removeFirstCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeFirst', CODE_START_X - 40, CODE_START_Y + 20);
+		this.removeFirstCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFirst',
+			CODE_START_X - 40,
+			CODE_START_Y + 20,
+		);
 
 		const labremoveFirstID = this.nextIndex++;
 		const labremoveFirstValID = this.nextIndex++;
@@ -622,7 +637,12 @@ export default class DequeArray extends Algorithm {
 	removeLast() {
 		this.commands = [];
 
-		this.removeLastCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'removeLast', CODE_START_X - 40, CODE_START_Y + 20);
+		this.removeLastCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeLast',
+			CODE_START_X - 40,
+			CODE_START_Y + 20,
+		);
 
 		const remLabelID = this.nextIndex++;
 		const remLabelValID = this.nextIndex++;
@@ -650,15 +670,15 @@ export default class DequeArray extends Algorithm {
 			Math.floor(remIndex / ARRAY_ELEMS_PER_LINE) * ARRAY_LINE_SPACING + ARRAY_START_Y;
 
 		this.highlight(1, 0, this.removeLastCodeID);
-		this.highlight(2, 0, this.removeLastCodeID, "code");
+		this.highlight(2, 0, this.removeLastCodeID, 'code');
 		this.cmd(act.move, this.highlight1ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.move, this.highlight2ID, xpos, ypos + ARRAY_ELEM_HEIGHT);
 		this.cmd(act.step);
 
 		this.unhighlight(1, 0, this.removeLastCodeID);
-		this.unhighlight(2, 0, this.removeLastCodeID, "code");
-		this.highlight(2, 0, this.removeLastCodeID, "english");
-		this.highlight(3, 0, this.removeLastCodeID, "code");
+		this.unhighlight(2, 0, this.removeLastCodeID, 'code');
+		this.highlight(2, 0, this.removeLastCodeID, 'english');
+		this.highlight(3, 0, this.removeLastCodeID, 'code');
 		this.cmd(act.delete, this.highlight1ID);
 		this.cmd(act.delete, this.highlight2ID);
 		const removedVal = this.arrayData[remIndex];
@@ -666,10 +686,10 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.move, remLabelValID, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(act.step);
 
-		this.unhighlight(2, 0, this.removeLastCodeID, "english");
-		this.unhighlight(3, 0, this.removeLastCodeID, "code");
-		this.highlight(3, 0, this.removeLastCodeID, "english");
-		this.highlight(4, 0, this.removeLastCodeID, "code");
+		this.unhighlight(2, 0, this.removeLastCodeID, 'english');
+		this.unhighlight(3, 0, this.removeLastCodeID, 'code');
+		this.highlight(3, 0, this.removeLastCodeID, 'english');
+		this.highlight(4, 0, this.removeLastCodeID, 'code');
 		this.cmd(act.setText, this.leftoverLabelID, 'Removed Value: ');
 		this.cmd(act.setText, this.leftoverValID, removedVal);
 		this.cmd(act.setText, this.formulaLabelID, '');
@@ -679,8 +699,8 @@ export default class DequeArray extends Algorithm {
 		this.cmd(act.delete, remLabelValID);
 		this.cmd(act.step);
 
-		this.highlight(4, 0, this.removeLastCodeID, "english");
-		this.highlight(5, 0, this.removeLastCodeID, "code");
+		this.highlight(4, 0, this.removeLastCodeID, 'english');
+		this.highlight(5, 0, this.removeLastCodeID, 'code');
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 
@@ -692,7 +712,7 @@ export default class DequeArray extends Algorithm {
 
 		this.unhighlight(3, 0, this.removeLastCodeID);
 		this.unhighlight(4, 0, this.removeLastCodeID);
-		this.unhighlight(5, 0, this.removeLastCodeID, "code");
+		this.unhighlight(5, 0, this.removeLastCodeID, 'code');
 		this.unhighlight(0, 0, this.removeLastCodeID);
 		this.size--;
 		this.nextIndex = this.nextIndex - 2;
@@ -706,9 +726,19 @@ export default class DequeArray extends Algorithm {
 		this.commands = [];
 
 		if (isFront) {
-			this.addFirstCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addFirst', CODE_START_X, CODE_START_Y);
+			this.addFirstCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFirst',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		} else {
-			this.addLastCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'addLast', CODE_START_X, CODE_START_Y);
+			this.addLastCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addLast',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		}
 
 		const labEnqueueID = this.nextIndex++;

@@ -32,7 +32,7 @@ import {
 import { BFS_DFS_ADJ_LIST } from './util/GraphValues';
 import Graph from './Graph.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const BFS_QUEUE_HEAD_COLOR = '#0000FF';
 const VISITED_COLOR = '#99CCFF';
@@ -136,7 +136,12 @@ export default class BFS extends Graph {
 			0,
 		);
 
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'run', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'run',
+			CODE_START_X,
+			CODE_START_Y,
+		);
 
 		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);

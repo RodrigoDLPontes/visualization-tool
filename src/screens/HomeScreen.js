@@ -15,9 +15,17 @@ const HomeScreen = ({ theme, toggleTheme }) => (
 				<Route exact path="/">
 					<div className="banner-container">
 						<div className="banner">
-							<span role="img" aria-label="nerd">🤓</span>
+							<span role="img" aria-label="nerd">
+								🤓
+							</span>
 							<span> Studying for the final? </span>
-							<a href="https://forms.gle/j9iMhFi8drjf2PU86" target="_blank" rel="noreferrer">Tell us how we can improve!</a>
+							<a
+								href="https://forms.gle/j9iMhFi8drjf2PU86"
+								target="_blank"
+								rel="noreferrer"
+							>
+								Tell us how we can improve!
+							</a>
 						</div>
 					</div>
 					<div className="outer-flex">

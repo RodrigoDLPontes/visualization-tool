@@ -28,7 +28,7 @@ import Graph, { EDGE_COLOR, VERTEX_INDEX_COLOR } from './Graph.js';
 import { KRUSKALS_DS_COLORS, PRIMS_KRUSKALS_ADJ_LIST } from './util/GraphValues';
 import { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MESSAGE_LABEL_X = 30;
 const MESSAGE_LABEL_Y = 15;
@@ -157,7 +157,12 @@ export default class Kruskals extends Graph {
 		this.cmd(act.createLabel, this.nextIndex++, 'Priority Queue:', PQ_LABEL_X, PQ_LABEL_Y, 0);
 
 		this.pseudocode = pseudocodeText.Kruskals;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'run', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'run',
+			CODE_START_X,
+			CODE_START_Y,
+		);
 
 		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);

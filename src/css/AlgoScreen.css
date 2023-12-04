@@ -176,7 +176,7 @@ em {
 	height: 35px;
 	margin-right: 20px;
 	cursor: pointer;
-	transition: .2s;
+	transition: 0.2s;
 	color: var(--primary);
 }
 
@@ -186,7 +186,7 @@ em {
 }
 .pseudocode-toggle {
 	cursor: pointer;
-	transition: .2s;
+	transition: 0.2s;
 }
 .pseudocode-toggle:hover {
 	scale: 125%;

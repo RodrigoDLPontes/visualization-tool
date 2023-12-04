@@ -33,7 +33,7 @@ import {
 import { BFS_DFS_ADJ_LIST } from './util/GraphValues';
 import Graph from './Graph.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const DFS_STACK_TOP_COLOR = '#0000FF';
 const VISITED_COLOR = '#99CCFF';
@@ -168,9 +168,19 @@ export default class DFS extends Graph {
 
 		this.pseudocode = pseudocodeText.DFS;
 		if (this.physicalStack) {
-			this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'iterative', CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'iterative',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		} else {
-			this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'recursive', CODE_START_X, CODE_START_Y);
+			this.codeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'recursive',
+				CODE_START_X,
+				CODE_START_Y,
+			);
 		}
 
 		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
@@ -264,7 +274,7 @@ export default class DFS extends Graph {
 			vertexID = this.stackID.pop();
 
 			this.highlight(4, 0, this.codeID);
-			this.cmd(act.step)
+			this.cmd(act.step);
 			this.unhighlight(4, 0, this.codeID);
 			this.highlight(5, 0, this.codeID);
 

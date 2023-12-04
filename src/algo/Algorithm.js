@@ -215,8 +215,22 @@ export default class Algorithm {
 
 	addCodeToCanvasBaseAll(code, key, start_x = 0, start_y = 0, line_height = CODE_LINE_HEIGHT) {
 		return {
-			english: this.addCodeToCanvasBase(code[key]['english'], start_x, start_y, line_height, CODE_STANDARD_COLOR, 32),
-			code: this.addCodeToCanvasBase(code[key]['code'], start_x, start_y, line_height, CODE_STANDARD_COLOR, 33)
+			english: this.addCodeToCanvasBase(
+				code[key]['english'],
+				start_x,
+				start_y,
+				line_height,
+				CODE_STANDARD_COLOR,
+				32,
+			),
+			code: this.addCodeToCanvasBase(
+				code[key]['code'],
+				start_x,
+				start_y,
+				line_height,
+				CODE_STANDARD_COLOR,
+				33,
+			),
 		};
 	}
 
@@ -257,7 +271,7 @@ export default class Algorithm {
 		if (type) {
 			this.highlight(ind1, ind2, codeID[type]);
 			return;
-		}		
+		}
 		// Single pseudocode type
 		if (codeID[0] !== undefined) {
 			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);

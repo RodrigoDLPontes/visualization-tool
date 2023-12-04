@@ -26,7 +26,7 @@
 
 import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 240;
@@ -202,8 +202,18 @@ export default class QueueArray extends Algorithm {
 		this.highlight1ID = this.nextIndex++;
 
 		this.pseudocode = pseudocodeText.QueueArray;
-		this.enqueueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'enqueue', CODE_START_X, CODE_START_Y);
-		this.dequeueCodeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'dequeue', CODE_START_X + 465, CODE_START_Y);
+		this.enqueueCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'enqueue',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.dequeueCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'dequeue',
+			CODE_START_X + 465,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -297,8 +307,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setText, this.leftoverValID, '');
 		this.cmd(act.step);
 
-		this.highlight(7, 0, this.enqueueCodeID, "code");
-		this.highlight(8, 0, this.enqueueCodeID, "english");
+		this.highlight(7, 0, this.enqueueCodeID, 'code');
+		this.highlight(8, 0, this.enqueueCodeID, 'english');
 		this.cmd(act.createLabel, labEnqueueID, 'Enqueuing Value: ', QUEUE_LABEL_X, QUEUE_LABEL_Y);
 		this.cmd(act.createLabel, labEnqueueValID, elemToEnqueue, QUEUE_ELEMENT_X, QUEUE_ELEMENT_Y);
 		this.cmd(
@@ -335,10 +345,10 @@ export default class QueueArray extends Algorithm {
 
 		this.cmd(act.delete, this.highlight1ID);
 
-		this.unhighlight(7, 0, this.enqueueCodeID, "code");
-		this.highlight(8, 0, this.enqueueCodeID, "code");
-		this.unhighlight(8, 0, this.enqueueCodeID, "english");
-		this.highlight(9, 0, this.enqueueCodeID, "english");
+		this.unhighlight(7, 0, this.enqueueCodeID, 'code');
+		this.highlight(8, 0, this.enqueueCodeID, 'code');
+		this.unhighlight(8, 0, this.enqueueCodeID, 'english');
+		this.highlight(9, 0, this.enqueueCodeID, 'english');
 		this.cmd(act.setHighlight, this.sizeID, 1);
 		this.cmd(act.step);
 
@@ -346,8 +356,8 @@ export default class QueueArray extends Algorithm {
 		this.cmd(act.setText, this.sizeID, this.size);
 		this.cmd(act.step);
 
-		this.unhighlight(8, 0, this.enqueueCodeID, "code");
-		this.unhighlight(9, 0, this.enqueueCodeID, "english");
+		this.unhighlight(8, 0, this.enqueueCodeID, 'code');
+		this.unhighlight(9, 0, this.enqueueCodeID, 'english');
 		this.unhighlight(0, 0, this.enqueueCodeID);
 		this.cmd(act.setHighlight, this.sizeID, 0);
 		this.cmd(act.delete, labEnqueueID);

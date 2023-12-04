@@ -44,6 +44,31 @@
 	cursor: pointer;
 }
 
+.banner-container {
+	justify-content: center;
+	display: flex;
+}
+
+.banner {
+	background-color: rgb(255, 128, 128);
+	padding: 20px 40px 10px 40px;
+	border-radius: 0px 0px 15px 15px;
+	filter: drop-shadow(3px 3px 3px);
+	font-size: x-large;
+	animation: banner-ease ease-in-out 2.0s forwards;
+	text-align: center;
+	cursor: default;
+}
+
+@keyframes banner-ease {
+    from {
+        transform: translateY(-7vw);
+    }
+    to {
+        transform: translateY(-25px);
+    }
+}
+
 .rotate-effect {
 	transition: transform 1.5s ease;
 }
@@ -144,9 +169,9 @@ body {
 	font-weight: 100;
 }
 
-.content a {
+/* .content a {
 	cursor: default;
-}
+} */
 
 .about a,
 .four-o-four a {

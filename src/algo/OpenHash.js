@@ -87,7 +87,6 @@ export default class OpenHash extends Hash {
 		this.probeTypeDropDown.style.width = '132px';
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
-
 		addDivisorToAlgorithmBar();
 
 		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
@@ -96,7 +95,11 @@ export default class OpenHash extends Hash {
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[['Integers', 'Hash Integers'], ['Strings', 'Hash Strings'], ['True', 'True Hash Function']],
+			[
+				['Integers', 'Hash Integers'],
+				['Strings', 'Hash Strings'],
+				['True', 'True Hash Function'],
+			],
 			'Hash Type',
 			this.hashTypedropDownGroup,
 		);
@@ -179,7 +182,6 @@ export default class OpenHash extends Hash {
 		const entry = new MapEntry(key, value);
 		const elem = entry.elem;
 		this.commands = [];
-
 		if (
 			(this.size + 1) / this.table_size > this.load_factor &&
 			this.table_size * 2 + 1 < MAX_SIZE
@@ -195,6 +197,8 @@ export default class OpenHash extends Hash {
 
 		if (index === -2 && this.table_size * 2 < MAX_SIZE) {
 			this.resize(true);
+			index = this.doHash(key);
+			index = this.getEmptyIndex(index, key);
 		} else if (index === -2) {
 			this.cmd(
 				act.setText,
@@ -447,8 +451,6 @@ export default class OpenHash extends Hash {
 	}
 
 	resize(fromCycle) {
-		this.commands = [];
-
 		this.cmd(act.setText, this.ExplainLabel, '');
 		this.cmd(act.setText, this.DelIndexLabel, '');
 

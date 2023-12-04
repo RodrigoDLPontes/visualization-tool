@@ -32,7 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -130,9 +130,15 @@ export default class LSDRadix extends Algorithm {
 
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
-		
+
 		this.pseudocode = pseudocodeText.LSDRadixSort;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -140,18 +146,13 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.arrayDisplay = [];
 		this.bucketsData = [];
 		this.bucketsID = [];
 		this.bucketsDisplay = [];
-		this.removeCode(this.codeID);
-		this.iPointerID = this.nextIndex++;
-		this.jPointerID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	sortCallback() {
@@ -192,15 +193,31 @@ export default class LSDRadix extends Algorithm {
 			this.cmd(act.setText, this.codeID.code[7][0], '      b ← array[j] / div % 10 + 9');
 			this.cmd(act.setText, this.codeID.code[11][0], '    for bucket ← 0, 18:');
 
-			this.cmd(act.setText, this.codeID.english[1][0], '  buckets is an array containing 19 lists');
-			this.cmd(act.setText, this.codeID.english[7][0], '      b is (num at array[j] / base % 10 + 9)');
+			this.cmd(
+				act.setText,
+				this.codeID.english[1][0],
+				'  buckets is an array containing 19 lists',
+			);
+			this.cmd(
+				act.setText,
+				this.codeID.english[7][0],
+				'      b is (num at array[j] / base % 10 + 9)',
+			);
 		} else {
 			this.cmd(act.setText, this.codeID.code[1][0], '  buckets ← array of 10 lists');
 			this.cmd(act.setText, this.codeID.code[7][0], '      b ← array[j] / div % 10');
 			this.cmd(act.setText, this.codeID.code[11][0], '    for bucket ← 0, 9:');
 
-			this.cmd(act.setText, this.codeID.english[1][0], '  buckets is an array containing 10 lists');
-			this.cmd(act.setText, this.codeID.english[7][0], '      b is (num at array[j] / base % 10)');
+			this.cmd(
+				act.setText,
+				this.codeID.english[1][0],
+				'  buckets is an array containing 10 lists',
+			);
+			this.cmd(
+				act.setText,
+				this.codeID.english[7][0],
+				'      b is (num at array[j] / base % 10)',
+			);
 		}
 	}
 
@@ -598,7 +615,7 @@ export default class LSDRadix extends Algorithm {
 				}
 				this.unhighlight(11, 0, this.codeID);
 				this.highlight(17, 0, this.codeID);
-				this.cmd(act.step)
+				this.cmd(act.step);
 				this.unhighlight(17, 0, this.codeID);
 			}
 		}

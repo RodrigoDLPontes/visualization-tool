@@ -32,7 +32,7 @@ import Algorithm, {
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -161,7 +161,13 @@ export default class QuickSort extends Algorithm {
 		);
 
 		this.pseudocode = pseudocodeText.QuickSort;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -169,22 +175,17 @@ export default class QuickSort extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.displayData = [];
 		this.arrayID = [];
-		this.removeCode(this.codeID);
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.iLabel = 0;
 		this.jLabel = 0;
 		this.pPointerID = 0;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
-		this.swapCountID = this.nextIndex++;
 		this.swapCount = 0;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	sortCallback() {

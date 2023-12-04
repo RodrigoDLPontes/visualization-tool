@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -131,7 +131,13 @@ export default class InsertionSort extends Algorithm {
 		);
 
 		this.pseudocode = pseudocodeText.InsertionSort;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -139,19 +145,12 @@ export default class InsertionSort extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
-		this.removeCode(this.codeID);
-		this.iPointerID = this.nextIndex++;
-		this.jPointerID = this.nextIndex++;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
-		this.swapCountID = this.nextIndex++;
 		this.compCount = 0;
 		this.swapCount = 0;
-		this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	randomCallback() {

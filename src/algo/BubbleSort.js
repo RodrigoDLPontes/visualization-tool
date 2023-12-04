@@ -32,7 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -142,7 +142,13 @@ export default class BubbleSort extends Algorithm {
 		);
 
 		this.pseudocode = pseudocodeText.BubbleSort;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -150,19 +156,12 @@ export default class BubbleSort extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.compCount = 0;
 		this.swapCount = 0;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
-		this.removeCode(this.codeID);
-		this.iPointerID = this.nextIndex++;
-		this.jPointerID = this.nextIndex++;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
-		this.swapCountID = this.nextIndex++;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	randomCallback() {
@@ -196,12 +195,20 @@ export default class BubbleSort extends Algorithm {
 	toggleLastSwap() {
 		this.implementAction(this.clear.bind(this));
 		if (lastSwapEnabled) {
-			this.cmd(act.setText, this.codeID.code[3][0], '  while start < end and sorted is false');
+			this.cmd(
+				act.setText,
+				this.codeID.code[3][0],
+				'  while start < end and sorted is false',
+			);
 			this.cmd(act.setText, this.codeID.code[4][0], '    sorted ← true');
 			this.cmd(act.setText, this.codeID.code[8][0], '        sorted ← false');
 			this.cmd(act.setText, this.codeID.code[11][0], '    end ← end - 1');
 
-			this.cmd(act.setText, this.codeID.english[3][0], '  while (start < end and not sorted):');
+			this.cmd(
+				act.setText,
+				this.codeID.english[3][0],
+				'  while (start < end and not sorted):',
+			);
 			this.cmd(act.setText, this.codeID.english[4][0], '    mark sorted as true');
 			this.cmd(act.setText, this.codeID.english[8][0], '        mark sorted as false');
 			this.cmd(act.setText, this.codeID.english[11][0], '    decrement end');

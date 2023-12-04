@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 15;
 
@@ -127,9 +127,6 @@ export default class MergeSort extends Algorithm {
 		this.commands = [];
 		this.arrayData = [];
 		this.arrayID = [];
-		this.iPointerID = 0;
-		this.jPointerID = 0;
-		this.kPointerID = 0;
 		this.comparisonCountID = this.nextIndex++;
 
 		this.compCount = 0;
@@ -145,22 +142,23 @@ export default class MergeSort extends Algorithm {
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
 		this.pseudocode = pseudocodeText.MergeSort;
-		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', CODE_START_X, CODE_START_Y);
-		
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
+
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.arrayID = [];
-		this.iPointerID = 0;
-		this.jPointerID = 0;
-		this.kPointerID = 0;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
 	}
 
@@ -568,7 +566,7 @@ export default class MergeSort extends Algorithm {
 			this.unhighlight(25, 0, this.codeID);
 		}
 		this.unhighlight(22, 0, this.codeID);
-		
+
 		// Delete pointers
 		this.cmd(act.delete, iPointerID);
 		this.cmd(act.delete, jPointerID);

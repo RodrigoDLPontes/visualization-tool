@@ -1789,5 +1789,239 @@
         ["end procedure"]
       ]
     }
+  },
+  "BFS": {
+    "run": {
+      "code": [
+        ["procedure BFS(Vertex s):"],
+        ["  initialize VisitedSet VS"],
+        ["  initialize Queue Q"],
+        ["  initialize List L"],
+        ["  Q.enqueue(s)"],
+        ["  VS.add(s)"],
+        ["  while Q.size > 0:"],
+        ["    v ← Q.dequeue()"],
+        ["    L.add(v)"],
+        ["    for all w adjacent to v:"],
+        ["      if w not in VS:"],
+        ["        Q.enqueue(w)"],
+        ["        VS.add(w)"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure BFS(Vertex start):"],
+        ["  initialize a visited set"],
+        ["  initialize a queue"],
+        ["  initialize a traversal list"],
+        ["  enqueue start"],
+        ["  add start to visited set"],
+        ["  while (queue is not empty):"],
+        ["    dequeue vertex"],
+        ["    add vertex to traversal list"],
+        ["    for each adjacent vertex:"],
+        ["      if (adjacent vertex is not visited):"],
+        ["        enqueue adjacent vertex"],
+        ["        add adjacent vertex to visited set"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "DFS": {
+    "recursive": {
+      "code": [
+        ["procedure DFS(Vertex s, Set VS, List L):"],
+        ["  VS.add(s)"],
+        ["  L.add(s)"],
+        ["  for all v adjacent to s:"],
+        ["    if v not in VS:"],
+        ["      DFS(v, VS, L)"],
+        ["    end if"],
+        ["  end for"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure DFS(Vertex start, Set visited, List traversal):"],
+        ["  add start to visited set"],
+        ["  add start to traversal list"],
+        ["  for each adjacent vertex:"],
+        ["    if (adjacent vertex is not visited):"],
+        ["      recursively call DFS on adjacent vertex"],
+        ["    end if"],
+        ["  end for"],
+        ["end procedure"]
+      ]
+    },
+    "iterative": {
+      "code": [
+        ["procedure DFS(Vertex s, Set VS, List L):"],
+        ["  initialize Stack K"],
+        ["  add s to K, VS"],
+        ["  while K is not empty:"],
+        ["    v ← remove from K"],
+        ["    add v to L"],
+        ["    for all w adjacent to v:"],
+        ["      if w not in VS:"],
+        ["        add w to K, VS"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure DFS(Vertex start, Set visited, List traversal):"],
+        ["  initialize a stack"],
+        ["  push start vertex onto the stack and add it to visited set"],
+        ["  while (stack is not empty):"],
+        ["    pop vertex from stack"],
+        ["    add vertex to traversal list"],
+        ["    for each adjacent vertex:"],
+        ["      if (adjacent vertex is not visited):"],
+        ["        add adjacent vertex to stack and visited set"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "Dijkstras": {
+    "run": {
+      "code": [
+        ["procedure Dijkstras(Vertex s, Graph G):"],
+        ["  initialize VisitedSet VS"],
+        ["  initialize DistanceMap DM"],
+        ["  initialize PriorityQueue PQ"],
+        ["  for all v in G:"],
+        ["    DM.put(v, ∞)"],
+        ["  end for"],
+        ["  PQ.enqueue((s, 0))"],
+        ["  DM.put(s, 0)"],
+        ["  while PQ.size > 0 and VS.size < G.vertices.size:"],
+        ["    (u, d1) ← PQ.dequeue()"],
+        ["    if u not in VS:"],
+        ["      VS.add(u)"],
+        ["      for all (w, d2) adjacent to u:"],
+        ["        if w not in VS:"],
+        ["          DM.put(w, d1 + d2)"],
+        ["          PQ.enqueue((w, d1 + d2))"],
+        ["        end if"],
+        ["      end for"],
+        ["    end if"],
+        ["  end while"],
+        ["  return DM"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure Dijkstras(Vertex start, Graph graph):"],
+        ["  initialize a visited set"],
+        ["  initialize a distance map"],
+        ["  initialize a priority queue"],
+        ["  for each vertex in the graph:"],
+        ["    put vertex in distance map with distance ∞"],
+        ["  end for"],
+        ["  enqueue the start vertex with distance 0"],
+        ["  put start vertex in distance map with distance 0"],
+        ["  while (queue is not empty and visited set is not full):"],
+        ["    dequeue vertex and its distance"],
+        ["    if (vertex is not visited):"],
+        ["      add vertex to visited set"],
+        ["      for each adjacent vertex and distance:"],
+        ["        if (adjacent vertex is not visited):"],
+        ["          put adjacent vertex and sum into distance map"],
+        ["          enqueue adjacent vertex and cumulative distance"],
+        ["        end if"],
+        ["      end for"],
+        ["    end if"],
+        ["  end while"],
+        ["  return distance map"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "Prims": {
+    "run": {
+      "code": [
+        ["procedure Prims(Vertex s, Graph G):"],
+        ["  initialize VisitedSet VS"],
+        ["  initialize EdgeSet MST"],
+        ["  initialize PriorityQueue PQ"],
+        ["  VS.add(s)"],
+        ["  for all edge(s, v) in G:"],
+        ["    PQ.enqueue(edge(s, v))"],
+        ["  end for"],
+        ["  while PQ.size > 0 and VS.size < G.vertices.size:"],
+        ["    edge(u, w) ← PQ.dequeue()"],
+        ["    MST.add(edge(u, w))"],
+        ["    VS.add(w)"],
+        ["    for all edge(w, x) adjacent to w:"],
+        ["      if x not in VS:"],
+        ["        PQ.enqueue(edge(w, x))"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["  return MST"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure Prims(Vertex start, Graph graph):"],
+        ["  initialize a visited set"],
+        ["  initialize an edge set MST"],
+        ["  initialize a priority queue"],
+        ["  add start to visited set"],
+        ["  for each edge adjacent to start vertex in the graph:"],
+        ["    enqueue edge"],
+        ["  end for"],
+        ["  while (queue is not empty and visited set is not full):"],
+        ["    dequeue edge between vertices V, W"],
+        ["    add edge to MST"],
+        ["    add W to visited set"],
+        ["    for each edge adjacent to W:"],
+        ["      if (other endpoint vertex is not visited):"],
+        ["        enqueue edge between W and other endpoint vertex"],
+        ["      end if"],
+        ["    end for"],
+        ["  end while"],
+        ["  return MST"],
+        ["end procedure"]
+      ]
+    }
+  },
+  "Kruskals": {
+    "run": {
+      "code": [
+        ["procedure Kruskals(Graph g):"],
+        ["  initialize DisjointSet, DS, with all vertices in G"],
+        ["  initialize MST EdgeSet, MST"],
+        ["  initialize PriorityQueue, PQ with all edges in G"],
+        ["  while PQ is not empty and MST has fewer than n-1 edges:"],
+        ["    edge(u, v) ← PQ.dequeue()"],
+        ["    if u and v are not in the same cluster:"],
+        ["      add edge(u, v) to MST"],
+        ["      merge u's cluster with v's cluster"],
+        ["    end if"],
+        ["  end while"],
+        ["end procedure"]
+      ],
+      "english": [
+        ["procedure Kruskals(Graph g):"],
+        ["  initialize a disjoint set with all vertices in graph"],
+        ["  initialize an edge set MST"],
+        ["  initialize a priority queue with all edges in graph"],
+        ["  while (queue is not empty and MST has fewer than n-1 edges):"],
+        ["    dequeue edge"],
+        ["    if (edge's endpoint vertices are not in the same set):"],
+        ["      add edge to MST"],
+        ["      merge u's set with v's set in the disjoint set structure"],
+        ["    end if"],
+        ["  end while"],
+        ["end procedure"]
+      ]
+    }
   }
 }

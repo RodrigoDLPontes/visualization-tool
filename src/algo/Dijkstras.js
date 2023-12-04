@@ -181,7 +181,7 @@ export default class Dijkstras extends Graph {
 			TABLE_START_Y - SMALL_TABLE_ENTRY_HEIGHT,
 		);
 
-		this.animationManager.setAllLayers([0, this.currentLayer]);
+		this.animationManager.setAllLayers([0, 32, this.currentLayer]);
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
 		this.animationManager.clearHistory();

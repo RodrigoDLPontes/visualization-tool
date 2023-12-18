@@ -498,12 +498,9 @@ export default class RabinKarp extends Algorithm {
 			}
 			this.highlight(15, 0, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(15, 0, this.codeID);
-			this.highlight(16, 0, this.codeID);
-			this.cmd(act.step);
-			this.unhighlight(16, 0, this.codeID);
 			if (i < text.length - pattern.length) {
-				this.highlight(17, 0, this.codeID);
+				this.unhighlight(15, 0, this.codeID);
+				this.highlight(16, 0, this.codeID);
 				textHash =
 					this.baseValue * (textHash - base * (text.charCodeAt(i) - 97)) +
 					(text.charCodeAt(i + pattern.length) - 97);
@@ -517,8 +514,12 @@ export default class RabinKarp extends Algorithm {
 					textCalculation.substring(0, textCalculation.length - 2) + ' = ' + textHash;
 				this.cmd(act.setText, this.textHashCalculationID, textCalculation);
 				this.cmd(act.step);
-				this.unhighlight(17, 0, this.codeID);
+				this.unhighlight(16, 0, this.codeID);
 			}
+			this.unhighlight(15, 0, this.codeID);
+			this.highlight(18, 0, this.codeID);
+			this.cmd(act.step);
+			this.unhighlight(18, 0, this.codeID);
 			row++;
 		}
 		this.unhighlight(5, 0, this.codeID);

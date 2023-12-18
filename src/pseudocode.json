@@ -1742,10 +1742,10 @@
 				["        // match found at i"],
 				["      end if"],
 				["    end if"],
-				["    i ← i + 1"],
-				["    if i <= n - m:"],
-				["      textHash ← rolled hash of text[i...i + m]"],
+				["    if i < n - m:"],
+				["      textHash ← rolled hash of text[i to i + m]"],
 				["    end if"],
+				["    i ← i + 1"],
 				["  end while"],
 				["end procedure"]
 			],
@@ -1765,10 +1765,10 @@
 				["        // match found at i"],
 				["      end if"],
 				["    end if"],
-				["    move i forward"],
-				["    if (i <= n - m):"],
+				["    if (i < n - m):"],
 				["      roll textHash forward one"],
 				["    end if"],
+				["    move i forward"],
 				["  end while"],
 				["end procedure"]
 			]

@@ -342,10 +342,9 @@ export default class Dijkstras extends Graph {
 									TABLE_START_Y + neighbor * this.tableEntryHeight - 5,
 									0,
 								);
-
+								this.highlight(16, 0, this.codeID);
 								this.cmd(act.step);
 								this.unhighlight(15, 0, this.codeID);
-								this.highlight(16, 0, this.codeID);
 
 								this.cmd(act.setText, this.infoLabelID, 'Updating distance');
 								this.cmd(
@@ -376,6 +375,7 @@ export default class Dijkstras extends Graph {
 											PQ_LINE_SPACING,
 									0,
 								);
+								this.unhighlight(16, 0, this.codeID);
 								this.cmd(act.step);
 
 								const newPqIDs = this.pq.getIDs();

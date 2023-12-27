@@ -90,7 +90,7 @@ export default class Graph extends Algorithm {
 	constructor(am, w, h, defaultEdges, dir, dag, costs) {
 		super(am, w, h);
 		this.controls = [];
-		defaultEdges = defaultEdges === [] ? undefined : defaultEdges;
+		defaultEdges = defaultEdges.length === 0 ? undefined : defaultEdges;
 		dir = dir === undefined ? false : dir;
 		dag = dag === undefined ? false : dag;
 		costs = costs === undefined ? false : costs;
@@ -218,7 +218,7 @@ export default class Graph extends Algorithm {
 	}
 
 	graphRepChangedCallback(newLayer) {
-		this.animationManager.setAllLayers([0, newLayer]);
+		this.animationManager.setAllLayers([0, 32, newLayer]);
 		this.currentLayer = newLayer;
 	}
 

@@ -663,7 +663,12 @@ export default class AnimationManager extends EventListener {
 
 	toggleLayer(layer) {
 		this.animatedObjects.toggleLayer(layer);
-		console.log(layer);
+		this.animatedObjects.draw();
+	}
+
+	updateLayer(layer, isActive) {
+		// console.log(layer, isActive)
+		this.animatedObjects.updateLayer(layer, isActive);
 		this.animatedObjects.draw();
 	}
 

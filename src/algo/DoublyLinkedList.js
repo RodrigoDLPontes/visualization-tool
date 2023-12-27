@@ -31,6 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -275,114 +276,7 @@ export default class DoublyLinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.addFrontCode = [
-			['procedure addFront(data)'],
-			['  if size == 0'],
-			['    head ← new Node(data)'],
-			['    tail ← head'],
-			['  else'],
-			['    Node newHead ← new Node(data)'],
-			['    newHead.next ← head'],
-			['    head.prev ← newHead'],
-			['    head ← newHead'],
-			['  size++'],
-			['end procedure'],
-		];
-
-		this.addBackCode = [
-			['procedure addBack(data)'],
-			['  if size == 0'],
-			['    tail ← new Node(data)'],
-			['    head ← tail'],
-			['  else'],
-			['    Node newTail ← new Node(data)'],
-			['    newTail.prev ← tail'],
-			['    tail.next ← newTail'],
-			['    tail ← newTail'],
-			['  size++'],
-			['end procedure'],
-		];
-
-		this.addIndexCode = [
-			['procedure addAtIndex(index, data)'],
-			['  if index == 0'],
-			['    addFront(data)'],
-			['  else if index == size'],
-			['    addBack(data)'],
-			['  else'],
-			['    if index < size / 2'],
-			['      Node curr ← head'],
-			['      for i ← 0 to index - 2, i++:'],
-			['        curr = curr.next'],
-			['    else'],
-			['      Node curr ← tail'],
-			['      for i ← size - 1 to index, i--:'],
-			['        curr = curr.prev'],
-			['    Node newNode ← new Node(data)'],
-			['    newNode.prev ← curr'],
-			['    newNode.next ← curr.next'],
-			['    curr.next ← newNode'],
-			['    newNode.next.prev ← newNode'],
-			['    size++'],
-			['end procedure'],
-		];
-
-		this.removeFrontCode = [
-			['procedure removeFront()'],
-			['  T data ← head.data'],
-			['  head ← head.next'],
-			['  if head == null'],
-			['    tail ← null'],
-			['  else'],
-			['    head.prev ← null'],
-			['  size--'],
-			['  return data'],
-			['end procedure'],
-		];
-
-		this.removeBackCode = [
-			['procedure removeBack()'],
-			['  T data ← tail.data'],
-			['  tail ← tail.prev'],
-			['  if tail == null'],
-			['    head ← null'],
-			['  else'],
-			['    tail.next ← null'],
-			['  size--'],
-			['  return data'],
-			['end procedure'],
-		];
-
-		this.removeIndexCode = [
-			['procedure removeFromIndex(index)'],
-			['  if index == 0'],
-			['    removeFront()'],
-			['  else if index == size - 1'],
-			['    removeBack()'],
-			['  else'],
-			['    if index < size / 2'],
-			['      Node curr ← head'],
-			['      for i ← 0 to index - 1, i++:'],
-			['        curr ← curr.next'],
-			['    else'],
-			['      Node curr ← tail'],
-			['      for i ← size - 1 to index + 1, i--:'],
-			['         curr ← curr.prev'],
-			['    T data ← curr.data'],
-			['    curr.prev.next ← curr.next'],
-			['    cur.next.prev ← curr.prev'],
-			['    size--'],
-			['    return data'],
-			[' end procedure'],
-		];
-
-		this.addFrontCodeID = [];
-		this.addBackCodeID = [];
-		this.addIndexCodeID = [];
-
-		this.removeFrontCodeID = [];
-		this.removeBackCodeID = [];
-		this.removeIndexCodeID = [];
+		this.pseudocode = pseudocodeText.DoublyLinkedList;
 
 		this.resetIndex = this.nextIndex;
 
@@ -503,7 +397,7 @@ export default class DoublyLinkedList extends Algorithm {
 				i--;
 			} else {
 				set.add(val);
-				this.implementAction(this.add.bind(this), val, 0);
+				this.implementAction(this.add.bind(this), val, 0, false, true, false, true);
 			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
@@ -558,25 +452,30 @@ export default class DoublyLinkedList extends Algorithm {
 		}
 	}
 
-	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
+	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex, skipPseudocode) {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.addFrontCodeID = this.addCodeToCanvasBase(
-			this.addFrontCode,
-			CODE_START_X + 325,
-			CODE_START_Y,
-		);
-		this.addBackCodeID = this.addCodeToCanvasBase(
-			this.addBackCode,
-			CODE_START_X + 620,
-			CODE_START_Y,
-		);
+		if (!skipPseudocode) {
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addIndex',
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFront',
+				CODE_START_X + 325,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addBack',
+				CODE_START_X + 620,
+				CODE_START_Y,
+			);
+		}
 
 		if (isAddFront) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -837,9 +736,11 @@ export default class DoublyLinkedList extends Algorithm {
 			this.unhighlight(19, 0, this.addIndexCodeID);
 		}
 
-		this.removeCode(this.addFrontCodeID);
-		this.removeCode(this.addBackCodeID);
-		this.removeCode(this.addIndexCodeID);
+		if (!skipPseudocode) {
+			this.removeCode(this.addFrontCodeID);
+			this.removeCode(this.addBackCodeID);
+			this.removeCode(this.addIndexCodeID);
+		}
 
 		return this.commands;
 	}
@@ -848,19 +749,22 @@ export default class DoublyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeIndex',
 			CODE_START_X,
 			CODE_START_Y,
 		);
-		this.removeFrontCodeID = this.addCodeToCanvasBase(
-			this.removeFrontCode,
-			CODE_START_X + 350,
+		this.removeFrontCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFront',
+			CODE_START_X + 325,
 			CODE_START_Y,
 		);
-		this.removeBackCodeID = this.addCodeToCanvasBase(
-			this.removeBackCode,
-			CODE_START_X + 600,
+		this.removeBackCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeBack',
+			CODE_START_X + 620,
 			CODE_START_Y,
 		);
 

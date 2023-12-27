@@ -32,6 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -208,60 +209,7 @@ export default class ArrayList extends Algorithm {
 		this.length = SIZE;
 		this.commands = [];
 
-		this.addFBCode = [
-			['procedure addFront(data)'],
-			['  addAtIndex(0, data)'],
-			['end procedure'],
-			[''],
-			['procedure addBack(data)'],
-			['  addAtIndex(size, data)'],
-			['end procedure'],
-		];
-
-		this.addIndexCode = [
-			['procedure addAtIndex(index, data)'],
-			['  if size == array.length'],
-			['    T[] newArray ← new array[size * 2]'],
-			['    for i ← 0 to index - 1, i++:'],
-			['      newArray[i] ← array[i]'],
-			['    newArray[index] ← data'],
-			['    for i ← index to size - 1, i++:'],
-			['      newArray[i + 1] ← array[i]'],
-			['    array ← newArray'],
-			['  else'],
-			['    for i ← size to index + 1, i--:'],
-			['      array[i] ← array[i - 1]'],
-			['    array[index] ← data'],
-			['  size++'],
-			['end procedure'],
-		];
-
-		this.removeFBCode = [
-			['procedure removeFront()'],
-			['  removeFromIndex(0)'],
-			['end procedure'],
-			[''],
-			['procedure removeBack()'],
-			['  removeFromIndex(size - 1)'],
-			['end procedure'],
-		];
-
-		this.removeIndexCode = [
-			['procedure removeFromIndex(index)'],
-			['  T data ← array[index]'],
-			['  array[index] ← null'],
-			['  for i ← index to size - 2, i++:'],
-			['    array[i] ← array[i + 1]'],
-			['  array[size - 1] ← null'],
-			['  size--'],
-			['  return data'],
-			['end procedure'],
-		];
-
-		this.addFBCodeID = [];
-		this.addIndexCodeID = [];
-		this.removeFBCodeID = [];
-		this.removeIndexCodeID = [];
+		this.pseudocode = pseudocodeText.ArrayList;
 
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
@@ -415,7 +363,7 @@ export default class ArrayList extends Algorithm {
 				i--;
 			} else {
 				set.add(value);
-				this.implementAction(this.add.bind(this), value, 0);
+				this.implementAction(this.add.bind(this), value, 0, true, false, false, true);
 			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
@@ -472,16 +420,24 @@ export default class ArrayList extends Algorithm {
 		return this.commands;
 	}
 
-	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
+	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex, skipPseudocode) {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.addFBCodeID = this.addCodeToCanvasBase(this.addFBCode, CODE_START_X, CODE_START_Y);
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X + 250,
-			CODE_START_Y,
-		);
+		if (!skipPseudocode) {
+			this.addFBCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFB',
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addIndex',
+				CODE_START_X + 300,
+				CODE_START_Y,
+			);
+		}
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -582,8 +538,10 @@ export default class ArrayList extends Algorithm {
 
 		this.size = this.size + 1;
 
-		this.removeCode(this.addFBCodeID);
-		this.removeCode(this.addIndexCodeID);
+		if (!skipPseudocode) {
+			this.removeCode(this.addFBCodeID);
+			this.removeCode(this.addIndexCodeID);
+		}
 
 		return this.commands;
 	}
@@ -592,14 +550,16 @@ export default class ArrayList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeFBCodeID = this.addCodeToCanvasBase(
-			this.removeFBCode,
+		this.removeFBCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFB',
 			CODE_START_X,
 			CODE_START_Y,
 		);
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
-			CODE_START_X + 250,
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeIndex',
+			CODE_START_X + 300,
 			CODE_START_Y,
 		);
 
@@ -700,6 +660,19 @@ export default class ArrayList extends Algorithm {
 	resize(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
 		this.commands = [];
 		this.setInfoText('');
+
+		this.addFBCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'addFB',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'addIndex',
+			CODE_START_X + 300,
+			CODE_START_Y,
+		);
 
 		const labPushID = this.nextIndex++;
 		const labPushValID = this.nextIndex++;
@@ -909,6 +882,9 @@ export default class ArrayList extends Algorithm {
 		}
 
 		this.size = this.size + 1;
+
+		this.removeCode(this.addFBCodeID);
+		this.removeCode(this.addIndexCodeID);
 
 		return this.commands;
 	}

@@ -213,11 +213,32 @@ export default class Algorithm {
 		this.commands = [];
 	}
 
+	addCodeToCanvasBaseAll(code, key, start_x = 0, start_y = 0, line_height = CODE_LINE_HEIGHT) {
+		return {
+			english: this.addCodeToCanvasBase(
+				code[key]['english'],
+				start_x,
+				start_y,
+				line_height,
+				CODE_STANDARD_COLOR,
+				32,
+			),
+			code: this.addCodeToCanvasBase(
+				code[key]['code'],
+				start_x,
+				start_y,
+				line_height,
+				CODE_STANDARD_COLOR,
+				33,
+			),
+		};
+	}
+
 	addCodeToCanvasBase(code, start_x, start_y, line_height, standard_color, layer) {
 		line_height = typeof line_height !== 'undefined' ? line_height : CODE_LINE_HEIGHT;
 		standard_color =
 			typeof standard_color !== 'undefined' ? standard_color : CODE_STANDARD_COLOR;
-		layer = typeof layer !== 'undefined' ? layer : 32;
+		layer = typeof layer != 'undefined' ? layer : 32;
 		const isCode = true;
 		const codeID = Array(code.length);
 		let i, j;
@@ -244,17 +265,51 @@ export default class Algorithm {
 		return codeID;
 	}
 
-	highlight(ind1, ind2, codeID) {
-		codeID = codeID === undefined ? this.codeID : codeID;
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+	highlight(ind1, ind2, codeID, type) {
+		if (!codeID) return;
+		// Type specified
+		if (type) {
+			this.highlight(ind1, ind2, codeID[type]);
+			return;
+		}
+		// Single pseudocode type
+		if (codeID[0] !== undefined) {
+			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+			return;
+		}
+		// Multiple pseudocode types
+		if (codeID.english.length)
+			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_HIGHLIGHT_COLOR);
+		if (codeID.code.length)
+			this.cmd(act.setForegroundColor, codeID.code[ind1][ind2], CODE_HIGHLIGHT_COLOR);
 	}
 
-	unhighlight(ind1, ind2, codeID) {
-		codeID = codeID === undefined ? this.codeID : codeID;
-		this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
+	unhighlight(ind1, ind2, codeID, type) {
+		if (!codeID) return;
+		// Type specified
+		if (type) {
+			this.unhighlight(ind1, ind2, codeID[type]);
+			return;
+		}
+		// Single pseudocode type
+		if (codeID[0] !== undefined) {
+			this.cmd(act.setForegroundColor, codeID[ind1][ind2], CODE_STANDARD_COLOR);
+			return;
+		}
+		// Multiple pseudocode types
+		if (codeID.english.length)
+			this.cmd(act.setForegroundColor, codeID.english[ind1][ind2], CODE_STANDARD_COLOR);
+		if (codeID.code.length)
+			this.cmd(act.setForegroundColor, codeID.code[ind1][ind2], CODE_STANDARD_COLOR);
 	}
 
 	removeCode(codeID) {
+		if (!codeID) return;
+		if (codeID.english) {
+			this.removeCode(codeID.english);
+			this.removeCode(codeID.code);
+			return;
+		}
 		for (let i = 0; i < codeID.length; i++) {
 			for (let j = 0; j < codeID[i].length; j++) {
 				this.cmd(act.delete, codeID[i][j]);

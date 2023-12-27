@@ -26,6 +26,7 @@
 
 import Algorithm, { addControlToAlgorithmBar, addDivisorToAlgorithmBar } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const ARRAY_START_X = 100;
 const ARRAY_START_Y = 225;
@@ -164,29 +165,19 @@ export default class StackArray extends Algorithm {
 		this.highlight1ID = this.nextIndex++;
 		this.highlight2ID = this.nextIndex++;
 
-		this.pushCode = [
-			['procedure push(data)'],
-			['  if size == array.length'],
-			['    T[] newArray ← new array[2 * size]'],
-			['    for i ← 0 to size - 1, i++:'],
-			['      newArray[i] ← array[i]'],
-			['    array ← newArray'],
-			['  array[size] ← data'],
-			['  size++'],
-			['end procedure'],
-		];
-
-		this.popCode = [
-			['procedure pop()'],
-			['  size--'],
-			['  T data ← array[size]'],
-			['  array[size] ← null'],
-			['  return data'],
-			['end procedure'],
-		];
-
-		this.pushCodeID = this.addCodeToCanvasBase(this.pushCode, CODE_START_X, CODE_START_Y);
-		this.popCodeID = this.addCodeToCanvasBase(this.popCode, CODE_START_X + 325, CODE_START_Y);
+		this.pseudocode = pseudocodeText.StackArray;
+		this.pushCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'push',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.popCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'pop',
+			CODE_START_X + 325,
+			CODE_START_Y,
+		);
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();

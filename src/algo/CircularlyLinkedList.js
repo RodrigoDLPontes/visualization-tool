@@ -31,6 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -240,97 +241,7 @@ export default class CircularlyLinkedList extends Algorithm {
 
 		this.cmd(act.createLabel, this.leftoverLabelID, '', PUSH_LABEL_X, PUSH_LABEL_Y);
 
-		this.addFrontCode = [
-			['procedure addFront(data)'],
-			['  if size == 0'],
-			['    head ← new Node(data)'],
-			['    head.next ← head'],
-			['  else'],
-			['    Node newNode ← new Node(head.data)'],
-			['    head.data ← data'],
-			['    newNode.next ← head.next'],
-			['    head.next ← newNode'],
-			['  size++'],
-			['end procedure'],
-		];
-
-		this.addBackCode = [
-			['procedure addBack(data)'],
-			['  addFront(data)'],
-			['  head ← head.next'],
-			['end procedure'],
-		];
-
-		this.addIndexCode = [
-			['procedure addAtIndex(index, data)'],
-			['  if index == 0'],
-			['    addFront(data)'],
-			['  else if index == size'],
-			['    addBack(data)'],
-			['  else'],
-			['    Node curr ← head'],
-			['    for i ← 0 to index - 2, i++:'],
-			['      curr ← curr.next'],
-			['    Node newNode = new Node(data)'],
-			['    newNode.next ← curr.next'],
-			['    curr.next ← newNode'],
-			['    size++'],
-			['end procedure'],
-		];
-
-		this.removeIndexCode = [
-			['procedure removeIndex(index)'],
-			['  if index == 0'],
-			['    removeFront()'],
-			['  else if index == size - 1'],
-			['    removeBack()'],
-			['  else'],
-			['    Node curr ← head'],
-			['    for i ← 0 to index - 2, i++:'],
-			['      curr ← curr.next'],
-			['    T data ← curr.next.data'],
-			['    curr.next ← curr.next.next'],
-			['    size--'],
-			['    return data'],
-			['end procedure'],
-		];
-
-		this.removeFrontCode = [
-			['procedure removeFront()'],
-			['  T data ← head.data'],
-			['  if size == 1'],
-			['    head ← null'],
-			['  else'],
-			['    head.data ← head.next.data'],
-			['    head.next ← head.next.next'],
-			['  size--'],
-			['  return data'],
-			['end procedure'],
-		];
-
-		this.removeBackCode = [
-			['procedure removeBack()'],
-			['  T data ← null'],
-			['  if size == 1'],
-			['    data ← head.data'],
-			['    head ← null'],
-			['  else'],
-			['    Node curr ← head'],
-			['    for i ← 0 to size - 2'],
-			['      curr ← curr.next'],
-			['    data ← curr.next.data'],
-			['    curr.next ← curr.next.next'],
-			['  size--'],
-			['  return data'],
-		];
-
-		this.addFrontCodeID = [];
-		this.addBackCodeID = [];
-		this.addIndexCodeID = [];
-
-		this.removeFrontCodeID = [];
-		this.removeBackCodeID = [];
-		this.removeIndexCodeID = [];
+		this.pseudocode = pseudocodeText.CircularlyLinkedList;
 
 		this.resetIndex = this.nextIndex;
 
@@ -455,7 +366,7 @@ export default class CircularlyLinkedList extends Algorithm {
 				i--;
 			} else {
 				set.add(val);
-				this.implementAction(this.add.bind(this), val, 0);
+				this.implementAction(this.add.bind(this), val, 0, false, true, false, true);
 			}
 			this.animationManager.skipForward();
 			this.animationManager.clearHistory();
@@ -477,25 +388,30 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.cmd(act.step);
 	}
 
-	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex) {
+	add(elemToAdd, index, isAddFront, isAddBack, isAddIndex, skipPseudocode) {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.addIndexCodeID = this.addCodeToCanvasBase(
-			this.addIndexCode,
-			CODE_START_X,
-			CODE_START_Y,
-		);
-		this.addFrontCodeID = this.addCodeToCanvasBase(
-			this.addFrontCode,
-			CODE_START_X + 315,
-			CODE_START_Y,
-		);
-		this.addBackCodeID = this.addCodeToCanvasBase(
-			this.addBackCode,
-			CODE_START_X + 635,
-			CODE_START_Y,
-		);
+		if (!skipPseudocode) {
+			this.addIndexCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addIndex',
+				CODE_START_X,
+				CODE_START_Y,
+			);
+			this.addFrontCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addFront',
+				CODE_START_X + 360,
+				CODE_START_Y,
+			);
+			this.addBackCodeID = this.addCodeToCanvasBaseAll(
+				this.pseudocode,
+				'addBack',
+				CODE_START_X + 700,
+				CODE_START_Y,
+			);
+		}
 
 		if (isAddFront || (isAddIndex && index === 0)) {
 			this.highlight(0, 0, this.addFrontCodeID);
@@ -838,9 +754,11 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.unhighlight(4, 0, this.addIndexCodeID);
 		this.unhighlight(12, 0, this.addIndexCodeID);
 
-		this.removeCode(this.addFrontCodeID);
-		this.removeCode(this.addBackCodeID);
-		this.removeCode(this.addIndexCodeID);
+		if (!skipPseudocode) {
+			this.removeCode(this.addFrontCodeID);
+			this.removeCode(this.addBackCodeID);
+			this.removeCode(this.addIndexCodeID);
+		}
 
 		return this.commands;
 	}
@@ -849,19 +767,22 @@ export default class CircularlyLinkedList extends Algorithm {
 		this.commands = [];
 		this.setInfoText('');
 
-		this.removeIndexCodeID = this.addCodeToCanvasBase(
-			this.removeIndexCode,
+		this.removeIndexCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeIndex',
 			CODE_START_X,
 			CODE_START_Y,
 		);
-		this.removeFrontCodeID = this.addCodeToCanvasBase(
-			this.removeFrontCode,
-			CODE_START_X + 310,
+		this.removeFrontCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeFront',
+			CODE_START_X + 360,
 			CODE_START_Y,
 		);
-		this.removeBackCodeID = this.addCodeToCanvasBase(
-			this.removeBackCode,
-			CODE_START_X + 605,
+		this.removeBackCodeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'removeBack',
+			CODE_START_X + 700,
 			CODE_START_Y,
 		);
 

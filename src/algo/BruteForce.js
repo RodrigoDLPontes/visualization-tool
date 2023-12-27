@@ -30,6 +30,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -104,19 +105,6 @@ export default class BruteForce extends Algorithm {
 		this.textRowID = [];
 		this.rowCountID = [];
 		this.comparisonMatrixID = [];
-		this.codeID = [];
-
-		this.code = [
-			['procedure BruteForce(text, pattern)'],
-			['  n ← text.length, m ← pattern.length'],
-			['  for i ← 0, n - m'],
-			['    j ← 0'],
-			['    while j < m and pattern[j] = text[i + j]'],
-			['      j ← j + 1'],
-			['    if j = m'],
-			['      match found at i'],
-			['end procedure'],
-		];
 
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0, 0);
@@ -210,6 +198,8 @@ export default class BruteForce extends Algorithm {
 		}
 
 		const labelsX = ARRAY_START_X + text.length * this.cellSize + 10;
+		this.pseudocode = pseudocodeText.BruteForce;
+		this.codeID = this.addCodeToCanvasBaseAll(this.pseudocode, 'find', labelsX, CODE_Y);
 		this.cmd(act.move, this.comparisonCountID, labelsX, COMP_COUNT_Y);
 
 		this.textRowID = new Array(text.length);
@@ -267,8 +257,6 @@ export default class BruteForce extends Algorithm {
 			}
 		}
 
-		this.codeID = this.addCodeToCanvasBase(this.code, labelsX, CODE_Y);
-
 		const iPointerID = this.nextIndex++;
 		const jPointerID = this.nextIndex++;
 		this.cmd(
@@ -291,7 +279,7 @@ export default class BruteForce extends Algorithm {
 		let i = 0;
 		let j = 0;
 		let row = 0;
-		this.highlight(2, 0);
+		this.highlight(2, 0, this.codeID);
 		this.cmd(act.step);
 		while (i <= text.length - pattern.length) {
 			for (let k = i; k < i + pattern.length; k++) {
@@ -303,10 +291,10 @@ export default class BruteForce extends Algorithm {
 					ypos,
 				);
 			}
-			this.highlight(3, 0);
+			this.highlight(3, 0, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(3, 0);
-			this.highlight(4, 0);
+			this.unhighlight(3, 0, this.codeID);
+			this.highlight(4, 0, this.codeID);
 			this.cmd(act.step);
 			while (j < pattern.length && pattern.charAt(j) === text.charAt(i + j)) {
 				this.cmd(
@@ -316,9 +304,9 @@ export default class BruteForce extends Algorithm {
 				);
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#2ECC71');
 				j++;
-				this.highlight(5, 0);
+				this.highlight(5, 0, this.codeID);
 				this.cmd(act.step);
-				this.unhighlight(5, 0);
+				this.unhighlight(5, 0, this.codeID);
 				if (j !== pattern.length) {
 					const xpos = (i + j) * this.cellSize + ARRAY_START_X;
 					this.cmd(act.move, iPointerID, xpos, ARRAY_START_Y);
@@ -327,7 +315,7 @@ export default class BruteForce extends Algorithm {
 				}
 				this.cmd(act.step);
 			}
-			this.unhighlight(4, 0);
+			this.unhighlight(4, 0, this.codeID);
 			if (j < pattern.length) {
 				this.cmd(
 					act.setText,
@@ -335,15 +323,15 @@ export default class BruteForce extends Algorithm {
 					'Comparison Count: ' + ++this.compCount,
 				);
 			}
-			this.highlight(6, 0);
+			this.highlight(7, 0, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(6, 0);
+			this.unhighlight(7, 0, this.codeID);
 			if (j !== pattern.length) {
 				this.cmd(act.setBackgroundColor, this.comparisonMatrixID[row][i + j], '#E74C3C');
 			} else {
-				this.highlight(7, 0);
+				this.highlight(8, 0, this.codeID);
 				this.cmd(act.step);
-				this.unhighlight(7, 0);
+				this.unhighlight(8, 0, this.codeID);
 			}
 			i++;
 			j = 0;
@@ -356,7 +344,7 @@ export default class BruteForce extends Algorithm {
 				this.cmd(act.step);
 			}
 		}
-		this.unhighlight(2, 0);
+		this.unhighlight(2, 0, this.codeID);
 
 		this.cmd(act.delete, iPointerID);
 		this.cmd(act.delete, jPointerID);

@@ -1,0 +1,2011 @@
+{
+	"ArrayList": {
+		"addFB": {
+			"code": [
+				["procedure addFront(data)"],
+				["  addAtIndex(0, data)"],
+				["end procedure"],
+				[""],
+				["procedure addBack(data)"],
+				["  addAtIndex(size, data)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addFront(data)"],
+				["  call addAtIndex at front with data"],
+				["end procedure"],
+				[""],
+				["procedure addBack(data)"],
+				["  call addAtIndex at back with data"],
+				["end procedure"]
+			]
+		},
+		"addIndex": {
+			"code": [
+				["procedure addAtIndex(index, data)"],
+				["  if size == array.length"],
+				["    T[] newArray ← new array[size * 2]"],
+				["    for i ← 0 to index - 1, i++:"],
+				["      newArray[i] ← array[i]"],
+				["    newArray[index] ← data"],
+				["    for i ← index to size - 1, i++:"],
+				["      newArray[i + 1] ← array[i]"],
+				["    array ← newArray"],
+				["  else"],
+				["    for i ← size to index + 1, i--:"],
+				["      array[i] ← array[i - 1]"],
+				["    array[index] ← data"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addAtIndex(index, data)"],
+				["  if (at max capacity):"],
+				["    create newArray with 2x capacity"],
+				["    for (i from 0 to index):"],
+				["      copy array value at i to newArray"],
+				["    put data into newArray at index"],
+				["    for (i from index to back):"],
+				["      copy and shift array value at i to newArray"],
+				["    array points to newArray"],
+				["  else:"],
+				["    for (i from back to spot after index):"],
+				["      shift array value back"],
+				["    put data into array at index"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"removeFB": {
+			"code": [
+				["procedure removeFront()"],
+				["  removeFromIndex(0)"],
+				["end procedure"],
+				[""],
+				["procedure removeBack()"],
+				["  removeFromIndex(size - 1)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFront()"],
+				["  call removeFromIndex at front"],
+				["end procedure"],
+				[""],
+				["procedure removeBack()"],
+				["  call removeFromIndex at back"],
+				["end procedure"]
+			]
+		},
+		"removeIndex": {
+			"code": [
+				["procedure removeFromIndex(index)"],
+				["  T data ← array[index]"],
+				["  array[index] ← null"],
+				["  for i ← index to size - 2, i++:"],
+				["    array[i] ← array[i + 1]"],
+				["  array[size - 1] ← null"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFromIndex(index)"],
+				["  copy data at index to temp"],
+				["  for (i from index to spot before back):"],
+				["    copy array value at i and shift to newArray"],
+				["  null out back of array"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"DoublyLinkedList": {
+		"addFront": {
+			"code": [
+				["procedure addFront(data)"],
+				["  if size == 0"],
+				["    head ← new Node(data)"],
+				["    tail ← head"],
+				["  else"],
+				["    Node newHead ← new Node(data)"],
+				["    newHead.next ← head"],
+				["    head.prev ← newHead"],
+				["    head ← newHead"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addFront(data)"],
+				["  if (list is empty):"],
+				["    head points to new node"],
+				["    tail points to new node"],
+				["  else:"],
+				["    create newHead node with data"],
+				["    newHead.next points to head"],
+				["    head.prev points to newHead"],
+				["    head points to newHead"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"addBack": {
+			"code": [
+				["procedure addBack(data)"],
+				["  if size == 0"],
+				["    tail ← new Node(data)"],
+				["    head ← tail"],
+				["  else"],
+				["    Node newTail ← new Node(data)"],
+				["    newTail.prev ← tail"],
+				["    tail.next ← newTail"],
+				["    tail ← newTail"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addBack(data)"],
+				["  if (list is empty):"],
+				["    head points to new node"],
+				["    tail points to new node"],
+				["  else:"],
+				["    create newTail node with data"],
+				["    newTail.prev points to tail"],
+				["    tail.next points to newTail"],
+				["    tail points to newTail"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"addIndex": {
+			"code": [
+				["procedure addAtIndex(index, data)"],
+				["  if index == 0"],
+				["    addFront(data)"],
+				["  else if index == size"],
+				["    addBack(data)"],
+				["  else"],
+				["    if index < size / 2"],
+				["      Node curr ← head"],
+				["      for i ← 0 to index - 2, i++:"],
+				["        curr = curr.next"],
+				["    else"],
+				["      Node curr ← tail"],
+				["      for i ← size - 1 to index, i--:"],
+				["        curr = curr.prev"],
+				["    Node newNode ← new Node(data)"],
+				["    newNode.prev ← curr"],
+				["    newNode.next ← curr.next"],
+				["    curr.next ← newNode"],
+				["    newNode.next.prev ← newNode"],
+				["    size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addAtIndex(index, data)"],
+				["  if (index is at the front):"],
+				["    call addFront with data"],
+				["  else if (index is at the back):"],
+				["    call addBack with data"],
+				["  else:"],
+				["    if (index is closer to front):"],
+				["      curr points to head"],
+				["      for (i from 0 to node before index):"],
+				["        curr moves to next node"],
+				["    else:"],
+				["      curr points to tail"],
+				["      for (i from back to index):"],
+				["        curr moves to previous node"],
+				["    create newNode node with data"],
+				["    newNode.prev points to curr"],
+				["    newNode.next points to curr.next"],
+				["    curr.next points to newNode"],
+				["    newNode.next.prev points to newNode"],
+				["    increment size"],
+				["end procedure"]
+			]
+		},
+		"removeFront": {
+			"code": [
+				["procedure removeFront()"],
+				["  T data ← head.data"],
+				["  head ← head.next"],
+				["  if head == null"],
+				["    tail ← null"],
+				["  else"],
+				["    head.prev ← null"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFront()"],
+				["  copy data at head to temp"],
+				["  head moves to next node"],
+				["  if (head is null):"],
+				["    null out tail"],
+				["  else:"],
+				["    null out head.prev"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeBack": {
+			"code": [
+				["procedure removeBack()"],
+				["  T data ← tail.data"],
+				["  tail ← tail.prev"],
+				["  if tail == null"],
+				["    head ← null"],
+				["  else"],
+				["    tail.next ← null"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeBack()"],
+				["  copy data at tail to temp"],
+				["  tail moves to previous node"],
+				["  if (tail is null):"],
+				["    null out head"],
+				["  else:"],
+				["    null out tail.next"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeIndex": {
+			"code": [
+				["procedure removeFromIndex(index)"],
+				["  if index == 0"],
+				["    removeFront()"],
+				["  else if index == size - 1"],
+				["    removeBack()"],
+				["  else"],
+				["    if index < size / 2"],
+				["      Node curr ← head"],
+				["      for i ← 0 to index - 1, i++:"],
+				["        curr ← curr.next"],
+				["    else"],
+				["      Node curr ← tail"],
+				["      for i ← size - 1 to index + 1, i--:"],
+				["         curr ← curr.prev"],
+				["    T data ← curr.data"],
+				["    curr.prev.next ← curr.next"],
+				["    curr.next.prev ← curr.prev"],
+				["    size--"],
+				["    return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFromIndex(index)"],
+				["  if (index is at the front):"],
+				["    call removeFront"],
+				["  else (index is at the back):"],
+				["    call removeBack"],
+				["  else:"],
+				["    if (index is in the front half):"],
+				["      curr points to head"],
+				["      for (i from front to index):"],
+				["        curr moves to next node"],
+				["    else:"],
+				["      curr points to tail"],
+				["      for (i from back to index):"],
+				["        curr moves to previous node"],
+				["    copy data at curr to temp"],
+				["    curr.prev.next points to curr.next"],
+				["    curr.next.prev points to curr.prev"],
+				["    decrement size"],
+				["    return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"CircularlyLinkedList": {
+		"addFront": {
+			"code": [
+				["procedure addFront(data)"],
+				["  if size == 0"],
+				["    head ← new Node(data)"],
+				["    head.next ← head"],
+				["  else"],
+				["    Node newNode ← new Node(head.data)"],
+				["    head.data ← data"],
+				["    newNode.next ← head.next"],
+				["    head.next ← newNode"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addFront(data)"],
+				["  if (list is empty):"],
+				["    create newNode node with data"],
+				["    head points to newNode"],
+				["    head.next points to itself"],
+				["  else:"],
+				["    create newNode node with head's data"],
+				["    set head's data to new data"],
+				["    newNode.next points to head.next"],
+				["    head.next points to newNode"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"addBack": {
+			"code": [
+				["procedure addBack(data)"],
+				["  addFront(data)"],
+				["  head ← head.next"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addBack(data)"],
+				["  call addFront with data"],
+				["  head moves to next node"],
+				["end procedure"]
+			]
+		},
+		"addIndex": {
+			"code": [
+				["procedure addAtIndex(index, data)"],
+				["  if index == 0"],
+				["    addFront(data)"],
+				["  else if index == size"],
+				["    addBack(data)"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to index - 2, i++:"],
+				["      curr ← curr.next"],
+				["    Node newNode = new Node(data)"],
+				["    newNode.next ← curr.next"],
+				["    curr.next ← newNode"],
+				["    size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addAtIndex(index, data)"],
+				["  if (index is at the front):"],
+				["    call addFront with data"],
+				["  else (index is at the back):"],
+				["    call addBack with data"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before index):"],
+				["      curr moves to next node"],
+				["    create newNode node with data"],
+				["    newNode.next points to curr.next"],
+				["    curr.next points to newNode"],
+				["    increment size"],
+				["end procedure"]
+			]
+		},
+		"removeFront": {
+			"code": [
+				["procedure removeFront()"],
+				["  T data ← head.data"],
+				["  if size == 1"],
+				["    head ← null"],
+				["  else"],
+				["    head.data ← head.next.data"],
+				["    head.next ← head.next.next"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFront()"],
+				["  copy data at head to temp"],
+				["  if (list has 1 node):"],
+				["    null out head pointer"],
+				["  else:"],
+				["    copy data at head.next to head.data"],
+				["    head.next points to head.next.next"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeBack": {
+			"code": [
+				["procedure removeBack()"],
+				["  T data ← null"],
+				["  if size == 1"],
+				["    data ← head.data"],
+				["    head ← null"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to size - 2"],
+				["      curr ← curr.next"],
+				["    data ← curr.next.data"],
+				["    curr.next ← curr.next.next"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeBack()"],
+				["  if (list has 1 node):"],
+				["    copy data at head to temp"],
+				["    null out head pointer"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before end):"],
+				["      curr moves to next node"],
+				["    copy data at curr.next to temp"],
+				["    curr.next points to curr.next.next"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeIndex": {
+			"code": [
+				["procedure removeIndex(index)"],
+				["  if index == 0"],
+				["    removeFront()"],
+				["  else if index == size - 1"],
+				["    removeBack()"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to index - 2, i++:"],
+				["      curr ← curr.next"],
+				["    T data ← curr.next.data"],
+				["    curr.next ← curr.next.next"],
+				["    size--"],
+				["    return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeIndex(index)"],
+				["  if (index is at the front):"],
+				["    call removeFront"],
+				["  else (index is at the back):"],
+				["    call removeBack"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before index):"],
+				["      curr moves to next node"],
+				["    copy data at curr.next to temp"],
+				["    curr.next points to curr.next.next"],
+				["    decrement size"],
+				["    return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"StackArray": {
+		"push": {
+			"code": [
+				["procedure push(data)"],
+				["  if size == array.length"],
+				["    T[] newArray ← new array[2 * size]"],
+				["    for i ← 0 to size - 1, i++:"],
+				["      newArray[i] ← array[i]"],
+				["    array ← newArray"],
+				["  array[size] ← data"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure push(data)"],
+				["  if (at max capacity):"],
+				["    create newArray with 2x capacity"],
+				["    for (i from front to back):"],
+				["      copy array value at i to newArray"],
+				["    array points to newArray"],
+				["    put data into array at back"],
+				["    increment size"],
+				["end procedure"]
+			]
+		},
+		"pop": {
+			"code": [
+				["procedure pop()"],
+				["  size--"],
+				["  T data ← array[size]"],
+				["  array[size] ← null"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure pop()"],
+				["  copy array value at back to temp"],
+				["  null out back of array"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"StackLL": {
+		"push": {
+			"code": [
+				["procedure push(data)"],
+				["  head ← new Node(data, head)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure push(data)"],
+				["  create newNode node with data"],
+				["  newNode.next points to head"],
+				["  head points to newNode"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"pop": {
+			"code": [
+				["procedure pop()"],
+				["  T data ← head.data"],
+				["  head ← head.next"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure pop()"],
+				["  copy data at head to temp"],
+				["  head moves to next node"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"QueueArray": {
+		"enqueue": {
+			"code": [
+				["procedure enqueue(data)"],
+				["  if size == array.length"],
+				["    T[] newArray ← new array[2 * size]"],
+				["    for i ← 0 to size - 1, i++:"],
+				["      newArray[i] ← array[(front + i) % array.length]"],
+				["    array ← newArray"],
+				["    front ← 0"],
+				["  array[(front + size) % array.length] ← data"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure enqueue(data)"],
+				["  if (at max capacity):"],
+				["    create newArray with 2x capacity"],
+				["    for (i from front to back):"],
+				["      calculate index = (front + i) % capacity"],
+				["      copy array value at index to newArray"],
+				["    array points to newArray"],
+				["    reset front to 0"],
+				["  put data into array at back"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"dequeue": {
+			"code": [
+				["procedure dequeue()"],
+				["  T data ← array[front]"],
+				["  array[front] ← null"],
+				["  front ← (front + 1) % array.length"],
+				["  size--"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure dequeue()"],
+				["  copy array value at front to temp"],
+				["  null out front of array"],
+				["  increment front"],
+				["  decrement size"],
+				["end procedure"]
+			]
+		}
+	},
+	"QueueLL": {
+		"enqueue": {
+			"code": [
+				["procedure enqueue(data)"],
+				["  Node newNode ← new Node(data)"],
+				["  if size == 0"],
+				["    head ← newNode"],
+				["  else"],
+				["    tail.next ← newNode"],
+				["  tail ← newNode"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure enqueue(data)"],
+				["  create newNode node with data"],
+				["  if (queue is empty):"],
+				["    head points to newNode"],
+				["  else:"],
+				["    tail.next points to newNode"],
+				["  tail points to newNode"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"dequeue": {
+			"code": [
+				["procedure dequeue()"],
+				["  T data ← head.data"],
+				["  if size == 1"],
+				["    head ← null"],
+				["    tail ← null"],
+				["  else"],
+				["    head ← head.next"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure dequeue()"],
+				["  copy data at head to temp"],
+				["  if (queue has 1 node):"],
+				["    null out head"],
+				["    null out tail"],
+				["  else:"],
+				["    head moves to next node"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"DequeArray": {
+		"addFirst": {
+			"code": [
+				["procedure addFirst(data)"],
+				["  if size == array.length"],
+				["    T[] newArray ← new array[2 * size]"],
+				["    for i ← 0 to size - 1, i++:"],
+				["      newArray[i + 1] ← array[(front + i) % array.length]"],
+				["    array ← newArray"],
+				["    front ← 0"],
+				["  else"],
+				["    front ← (front - 1) % array.length"],
+				["  array[front] ← data"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addFirst(data)"],
+				["  if (at max capacity):"],
+				["    create newArray with 2x capacity"],
+				["    for (i from front to back):"],
+				["      calculate index = (front + i) % capacity"],
+				["      copy and shift array value at index to newArray"],
+				["    array points to newArray"],
+				["    reset front to 0"],
+				["  else:"],
+				["    decrement front"],
+				["  put data into array at front"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"addLast": {
+			"code": [
+				["procedure addLast(data)"],
+				["  if size == array.length"],
+				["    T[] newArray ← new array[2 * size]"],
+				["    for i ← 0 to size - 1, i++:"],
+				["      newArray[i] ← array[(front + i) % array.length]"],
+				["    array ← newArray"],
+				["    front ← 0"],
+				["  array[(front + size) % array.length] ← data"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addLast(data)"],
+				["  if (at max capacity)"],
+				["    create newArray with 2x capacity"],
+				["    for (i from front to back):"],
+				["      calculate index = (front + i % capacity)"],
+				["      copy array value at index to newArray"],
+				["    array points to newArray"],
+				["    reset front to 0"],
+				["  put data into array at back"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"removeFirst": {
+			"code": [
+				["procedure removeFirst()"],
+				["  T data ← array[front]"],
+				["  array[front] ← null"],
+				["  front ← (front + 1) % array.length"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFirst()"],
+				["  copy data at front to temp"],
+				["  null out front of array"],
+				["  increment front"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeLast": {
+			"code": [
+				["procedure removeLast()"],
+				["  back ← (front + size - 1) % array.length"],
+				["  T data ← array[back]"],
+				["  array[back] ← null"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeLast()"],
+				["  copy data at back to temp"],
+				["  null out back of array"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		}
+	},
+	"DequeLL": {
+		"addFirst": {
+			"code": [],
+			"english": []
+		},
+		"addLast": {
+			"code": [],
+			"english": []
+		},
+		"removeFirst": {
+			"code": [],
+			"english": []
+		},
+		"removeLast": {
+			"code": [],
+			"english": []
+		}
+	},
+	"BST": {
+		"preorder": {
+			"code": [
+				["procedure preOrder(Node node)"],
+				["  if node != null:"],
+				["    // do something with node"],
+				["    preOrder(node.left)"],
+				["    preOrder(node.right)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure preOrder(Node node)"],
+				["  if node is not null:"],
+				["    look at data in the node"],
+				["    recurse left"],
+				["    recurse right"],
+				["end procedure"]
+			]
+		},
+		"inorder": {
+			"code": [
+				["procedure inOrder(Node node)"],
+				["  if node != null:"],
+				["    inOrder(node.left)"],
+				["    // do something with node"],
+				["    inOrder(node.right)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure inOrder(Node node)"],
+				["  if node is not null:"],
+				["    recurse left"],
+				["    look at data in the node"],
+				["    recurse right"],
+				["end procedure"]
+			]
+		},
+		"postorder": {
+			"code": [
+				["procedure postOrder(Node node)"],
+				["  if node != null:"],
+				["    postOrder(node.left)"],
+				["    postOrder(node.right)"],
+				["    // do something with node"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure postOrder(Node node)"],
+				["  if node is not null:"],
+				["    recurse left"],
+				["    recurse right"],
+				["    look at data in the node"],
+				["end procedure"]
+			]
+		},
+		"levelorder": {
+			"code": [
+				["procedure levelOrder()"],
+				["  Queue q ← new Queue()"],
+				["  q.add(root)"],
+				["  while q.size > 0"],
+				["    Node curr ← q.remove()"],
+				["    // do something with curr"],
+				["    if curr.left != null:"],
+				["      q.add(curr.left)"],
+				["    if curr.right != null:"],
+				["      q.add(curr.right)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure levelOrder()"],
+				["  create Queue q"],
+				["  add root to q"],
+				["  while q is not empty"],
+				["    Node curr ← remove from q"],
+				["    record data from curr"],
+				["    if curr.left is not null:"],
+				["      add curr.left to q"],
+				["    if curr.right is not null:"],
+				["      add curr.right to q"],
+				["end procedure"]
+			]
+		},
+		"add": {
+			"code": [
+				["procedure add(data)"],
+				["  root ← addH(data, root) "],
+				["end procedure"],
+				[""],
+				["procedure addH(data, curr)"],
+				["  if curr == null"],
+				["    size++"],
+				["    return new Node(data)"],
+				["  else if data < curr.data"],
+				["    curr.left ← addH(data, curr.left)"],
+				["  else if data > curr.data"],
+				["    curr.right ← addH(data, curr.right)"],
+				["  return curr"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure add(data)"],
+				["    reinforce root with addH call on root"],
+				["end procedure"],
+				[""],
+				["procedure addH(data, curr)"],
+				["  if (curr is null):"],
+				["    increment size"],
+				["    return new node with data"],
+				["  else if (data < curr.data):"],
+				["    reinforce left child with addH call on left child"],
+				["  else if (data > right child):"],
+				["    reinforce right child with addH call on right child"],
+				["  return curr"],
+				["end procedure"]
+			]
+		},
+		"remove_successor": {
+			"code": [
+				["procedure remove(data)"],
+				["  dummy ← new Node(null)"],
+				["  root ← removeH(data, root, dummy)"],
+				["  return dummy.data"],
+				["end procedure"],
+				[""],
+				["procedure removeH(data, curr, dummy)"],
+				["  if curr == null"],
+				["    return null"],
+				["  else if data < curr.data"],
+				["    curr.left ← removeH(data, curr.left)"],
+				["  else if data > curr.data"],
+				["    curr.right ← removeH(data, curr.right)"],
+				["  else"],
+				["    size--"],
+				["    dummy.data ← curr.data"],
+				["    if curr.left == null && curr.right == null"],
+				["      return null"],
+				["    else if curr.left == null"],
+				["      return curr.right"],
+				["    else if curr.right == null"],
+				["      return curr.left"],
+				["    else"],
+				["      dummy2 ← new Node(null)"],
+				["      curr.right ← removeSuccessor(curr.right, dummy2)"],
+				["      curr.data ← dummy2.data"],
+				["  return curr"],
+				["end procedure"],
+				[""],
+				["procedure removeSuccessor(curr, dummy2)"],
+				["  if curr.left == null"],
+				["    dummy2.data ← curr.data"],
+				["    return curr.right"],
+				["  else"],
+				["    curr.left ← removeSuccessor(curr.left, dummy2)"],
+				["    return curr"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure remove(data):"],
+				["  create dummy node"],
+				["  reinforce root with removeH call on root"],
+				["  return dummy data"],
+				["end procedure"],
+				[""],
+				["procedure removeH(data, curr, dummy)"],
+				["  if (curr is null):"],
+				["    return null"],
+				["  else if (data < curr.data):"],
+				["    reinforce left child with removeH call on left child"],
+				["  else if (data > curr.data):"],
+				["    reinforce right child with removeH call on right child"],
+				["  else:"],
+				["    decrement size"],
+				["    copy data in curr to dummy"],
+				["    if (both children are null):"],
+				["      return null"],
+				["    else if (left child is null):"],
+				["      return right child"],
+				["    else if (right child is null):"],
+				["      return left child"],
+				["    else:"],
+				["      create dummy2 node"],
+				["      reinforce right child with removeSuccessor call on right child"],
+				["      copy data in dummy2 to curr"],
+				["  return curr"],
+				["end procedure"],
+				[""],
+				["procedure removeSuccessor(curr, dummy2)"],
+				["  if (left child is null):"],
+				["    copy data in curr to dummy2"],
+				["    return right child"],
+				["  else:"],
+				["    reinforce left child with removeSuccessor call on left child"],
+				["    return curr"],
+				["end procedure"]
+			]
+		},
+		"remove_predecessor": {
+			"code": [
+				["procedure remove(data)"],
+				["  dummy ← new Node(null)"],
+				["  root ← removeH(data, root, dummy)"],
+				["  return dummy.data"],
+				["end procedure"],
+				[""],
+				["procedure removeH(data, curr, dummy)"],
+				["  if curr == null"],
+				["    return null"],
+				["  else if data < curr.data"],
+				["    curr.left ← removeH(data, curr.left)"],
+				["  else if data > curr.data"],
+				["    curr.right ← removeH(data, curr.right)"],
+				["  else"],
+				["    size--"],
+				["    dummy.data ← curr.data"],
+				["    if curr.left == null && curr.right == null"],
+				["      return null"],
+				["    else if curr.left == null"],
+				["      return curr.right"],
+				["    else if curr.right == null"],
+				["      return curr.left"],
+				["    else"],
+				["      dummy2 ← new Node(null)"],
+				["      curr.right ← removePredecessor(curr.left, dummy2)"],
+				["      curr.data ← dummy2.data"],
+				["  return curr"],
+				["end procedure"],
+				[""],
+				["procedure removePredecessor(curr, dummy2)"],
+				["  if curr.right == null"],
+				["    dummy2.data ← curr.data"],
+				["    return curr.left"],
+				["  else"],
+				["    curr.right ← removePredecessor(curr.right, dummy2)"],
+				["    return curr"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure remove(data):"],
+				["  create dummy node"],
+				["  reinforce root with removeH call on root"],
+				["  return dummy data"],
+				["end procedure"],
+				[""],
+				["procedure removeH(data, curr, dummy)"],
+				["  if (curr is null):"],
+				["    return null"],
+				["  else if (data < curr.data):"],
+				["    reinforce left child with removeH call on left child"],
+				["  else if (data > curr.data):"],
+				["    reinforce right child with removeH call on right child"],
+				["  else:"],
+				["    decrement size"],
+				["    copy data in curr to dummy"],
+				["    if (both children are null):"],
+				["      return null"],
+				["    else if (left child is null):"],
+				["      return right child"],
+				["    else if (right child is null):"],
+				["      return left child"],
+				["    else:"],
+				["      create dummy2 node"],
+				["      reinforce left child with removePredecessor call on left child"],
+				["      copy data in dummy2 to curr"],
+				["  return curr"],
+				["end procedure"],
+				[""],
+				["procedure removePredecessor(curr, dummy2)"],
+				["  if (right child is null):"],
+				["    copy data in curr to dummy2"],
+				["    return left child"],
+				["  else:"],
+				["    reinforce right child with removePredecessor call on right child"],
+				["    return curr"],
+				["end procedure"]
+			]
+		},
+		"find": {
+			"code": [
+				["procedure find(data)"],
+				["  return findH(data, root)"],
+				["end procedure"],
+				[""],
+				["procedure findH(data, curr)"],
+				["  if curr == null"],
+				["    return null"],
+				["  else if data < curr.data"],
+				["    return findH(curr.left)"],
+				["  else if data > curr.data"],
+				["    return findH(curr.right)"],
+				["  else"],
+				["    return curr.data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure find(data)"],
+				["  return call to findH with root"],
+				["end procedure"],
+				[""],
+				["procedure findH(data, curr)"],
+				["  if curr is not null:"],
+				["    return null"],
+				["  else if (data < curr.data):"],
+				["    return recursive call on left child"],
+				["  else if (data > curr.data):"],
+				["    return recursive call on right child"],
+				["  else:"],
+				["    return curr.data"],
+				["end procedure"]
+			]
+		}
+	},
+	"BubbleSort": {
+		"find": {
+			"code": [
+				["procedure BubbleSort(array):"],
+				["  end ← array.length"],
+				["  start ← 0"],
+				["  while start < end:"],
+				["    swapped ← start"],
+				["    for j ← 0, end:"],
+				["      if array[j] > array[j + 1]:"],
+				["        swap array[j], array[j + 1]"],
+				["        swapped ← j"],
+				["      end if"],
+				["    end for"],
+				["    end ← swapped"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BubbleSort(array):"],
+				["  end points to last element"],
+				["  start points to first element"],
+				["  while (start < end):"],
+				["    lastSwapped points to start"],
+				["    for (j from start to end):"],
+				["      if (array[j] > array[j + 1]):"],
+				["        bubble array[j] by swapping up"],
+				["        lastSwapped points to j"],
+				["      end if"],
+				["    end for"],
+				["    end points to lastSwapped"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"CocktailSort": {
+		"find": {
+			"code": [
+				["procedure CocktailSort(array):"],
+				["  start ← 0, end ← array.length - 1"],
+				["  swapped ← start"],
+				["  while end > start:"],
+				["    swapped ← start"],
+				["    for i ← start, end:"],
+				["      if array[i] > array[i + 1]:"],
+				["        swap array[i], array[i + 1]"],
+				["        swapped ← i"],
+				["      end if"],
+				["    end for"],
+				["    end ← swapped"],
+				["    for i ← end, start:"],
+				["      if array[i] < array[i - 1]"],
+				["        swap array[i], array[i - 1]"],
+				["        swapped ← i"],
+				["      end if"],
+				["    end for"],
+				["    start ← swapped"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure CocktailSort(array):"],
+				["  end points to last element"],
+				["  start point to first element"],
+				["  while (start < end):"],
+				["    lastSwapped points to start"],
+				["    for (i from start to end):"],
+				["      if (array[i] > array[i + 1]):"],
+				["        bubble array[i] by swapping up"],
+				["        lastSwapped points to i"],
+				["      end if"],
+				["    end for"],
+				["    end points to lastSwapped"],
+				["    for (i from end to start):"],
+				["      if (array[i] < array[i - 1]):"],
+				["        bubble array[i] by swapping down"],
+				["        lastSwapped points to i"],
+				["      end if"],
+				["    end for"],
+				["    start points to lastSwapped"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"InsertionSort": {
+		"find": {
+			"code": [
+				["procedure InsertionSort(array):"],
+				["  length ← array.length"],
+				["  for i ← 1, length - 1:"],
+				["    j ← i"],
+				["    while", " ", "j > 0", ", ", "array[j - 1] > array[j]", ":"],
+				["      swap array[j - 1], array[j]"],
+				["      j ← j - 1"],
+				["    end while"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure InsertionSort(array):"],
+				["  length is array's length"],
+				["  for (i from start to end):"],
+				["    j points to i"],
+				["    while", " (", "j is positive", " and ", "array[j - 1] > array[j]", "):"],
+				["      bubble array[j] by swapping down"],
+				["      decrement j"],
+				["    end while"],
+				["  end for"],
+				["end procedure"]
+			]
+		}
+	},
+	"SelectionSort": {
+		"find": {
+			"code": [
+				["procedure SelectionSort(array):"],
+				["  length ← array.length"],
+				["  for i ← length - 1, 0:"],
+				["    max ← i"],
+				["    for j ← i - 1, length:"],
+				["      if array[j] > array[max]:"],
+				["        max ← j"],
+				["      end if"],
+				["    end for"],
+				["    swap array[max], array[i]"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure SelectionSort(array):"],
+				["  length is array's length"],
+				["  for (i from end to start):"],
+				["    initialize max value"],
+				["    for (j from i to end):"],
+				["      if (array[j] > max value):"],
+				["        max value is array[j]"],
+				["      end if"],
+				["    end for"],
+				["    swap max value with array[i]"],
+				["  end for"],
+				["end procedure"]
+			]
+		}
+	},
+	"QuickSort": {
+		"find": {
+			"code": [
+				["procedure QuickSort(array, left, right):"],
+				["  pivotIdx ← random index within region being sorted"],
+				["  pivot ← array[pivotIdx]"],
+				["  swap array[left], array[pivotIdx]"],
+				["  i ← left + 1, j ← right - 1"],
+				["  while i <= j:"],
+				["    while", " ", "i <= j", " and ", "array[i] <= pivot", ":"],
+				["      i ← i + 1"],
+				["    end while"],
+				["    while", " ", "i <= j", " and ", "array[j] >= pivot", ":"],
+				["      j ← j - 1"],
+				["    end while"],
+				["    if i <= j:"],
+				["      swap array[i], array[j]"],
+				["      i ← i + 1, j ← j - 1"],
+				["    end if"],
+				["  end while"],
+				["  swap pivot, array[j]"],
+				["  QuickSort(array, left, j)"],
+				["  QuickSort(array, j + 1, right)"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure QuickSort(array, left, right):"],
+				["  pivotIdx is some random index within partition"],
+				["  pivot is the value at pivotIdx"],
+				["  swap array[left] with the pivot"],
+				["  i points to left + 1,  j points to right - 1"],
+				["  while (j has not crossed i):"],
+				["    while", " (", "j has not crossed i", " and ", "array[i] <= pivot", "):"],
+				["      increment i"],
+				["    end while"],
+				["    while", " (", "j has not crossed i", " and ", "array[j] >= pivot", "):"],
+				["      decrement j"],
+				["    end while"],
+				["    if j and i have not crossed:"],
+				["      swap data at i and j"],
+				["      increment i, decrement j"],
+				["    end if"],
+				["  end while"],
+				["  swap the pivot and array[j]"],
+				["  recursively call QuickSort() on the left partition"],
+				["  recursively call QuickSort() on the right partition"],
+				["end procedure"]
+			]
+		}
+	},
+	"QuickSelect": {
+		"find": {
+			"code": [
+				["procedure QuickSelect(array, left, right, k):"],
+				["  pivotIdx = random index within region being sorted"],
+				["  pivot ← array[pivotIdx]"],
+				["  swap array[left], array[pivotIdx]"],
+				["  i ← left + 1, j ← right"],
+				["  while i <= j:"],
+				["    while", " ", "i <= j", " and ", "array[i] <= pivot", ":"],
+				["      i ← i + 1"],
+				["    end while"],
+				["    while", " ", "i <= j", " and ", "array[j] >= pivot", ":"],
+				["      j ← j - 1"],
+				["    end while"],
+				["    if i <= j:"],
+				["      swap array[i], array[j]"],
+				["      i ← i + 1, j ← j - 1"],
+				["    end if"],
+				["  end while"],
+				["  swap pivot, array[j]"],
+				["  if j == k - 1:"],
+				["    return array[j]"],
+				["  else if j > k - 1:"],
+				["    QuickSelect(array, left, j - 1, k)"],
+				["  else:"],
+				["    QuickSelect(array, j + 1, right, k)"],
+				["  end if"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure QuickSelect(array, left, right, k):"],
+				["  pivotIdx is some random index within partition"],
+				["  pivot is the value at pivotIdx"],
+				["  swap array[left] with the pivot"],
+				["  i points to left + 1, j points to right"],
+				["  while (j has not crossed i):"],
+				["    while", " (", "j has not crossed i", " and ", "array[i] <= pivot", "):"],
+				["      increment i"],
+				["    end while"],
+				["    while", " (", "j has not crossed i", " and ", "array[j] >= pivot", "):"],
+				["      decrement j"],
+				["    end while"],
+				["    if j and i have not crossed:"],
+				["      swap data at i and j"],
+				["      increment i, decrement j"],
+				["    end if"],
+				["  end while"],
+				["  swap the pivot and array[j]"],
+				["  if (j == k - 1):"],
+				["    return the value at j"],
+				["  else if (j > k - 1):"],
+				["    recursively call QuickSort() on the left partition"],
+				["  else:"],
+				["    recursively call QuickSort() on the right partition"],
+				["  end if"],
+				["end procedure"]
+			]
+		}
+	},
+	"MergeSort": {
+		"find": {
+			"code": [
+				["procedure MergeSort(array):"],
+				["  length ← array.length, midIdx ← length / 2"],
+				["  leftArray ← array[0...midIdx - 1]"],
+				["  rightArray ← array[midIdx...length - 1]"],
+				["  MergeSort(leftArray)"],
+				["  MergeSort(rightArray)"],
+				["  leftIdx, rightIdx, currIdx ← 0"],
+				["  while leftIdx < midIdx and rightIdx < length - midIdx:"],
+				["    if leftArray[leftIdx] <= rightArray[rightIdx]:"],
+				["      array[currIdx] ← leftArray[leftIdx]"],
+				["      leftIdx ← leftIdx + 1"],
+				["    else:"],
+				["      array[currIdx] ← rightArray[rightIdx]"],
+				["      rightIdx ← rightIdx + 1"],
+				["    end if"],
+				["    currIdx ← currIdx + 1"],
+				["  end while"],
+				["  while leftIdx < midIdx:"],
+				["    array[currIdx] ← leftArray[leftIdx]"],
+				["    currIdx ← currIdx + 1"],
+				["    leftIdx ← leftIdx + 1"],
+				["  end while"],
+				["  while rightIdx < length - midIdx:"],
+				["    array[currIdx] ← rightArray[rightIdx]"],
+				["    currIdx ← currIdx + 1"],
+				["    rightIdx ← rightIdx + 1"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure MergeSort(array):"],
+				["  length is array's length, midIdx is half of length"],
+				["  leftArray is a new Array with left half of array"],
+				["  rightArray is a new Array with right half of array"],
+				["  recursively call MergeSort() on leftArray"],
+				["  recursively call MergeSort() on rightArray"],
+				["  leftIdx, rightIdx, currIdx start at 0"],
+				["  while (leftIdx < midIdx and rightIdx < length - midIdx):"],
+				["    if (leftArray[leftIdx] <= rightArray[rightIdx]):"],
+				["      put leftArray[leftIdx] into array at currIdx"],
+				["      increment leftIdx"],
+				["    else:"],
+				["      put rightArray[rightIdx] into array at currIdx"],
+				["      increment rightIdx"],
+				["    end if"],
+				["    increment currIdx"],
+				["  end while"],
+				["  while (leftIdx < midIdx):"],
+				["    put leftArray[leftIdx] into array at currIdx"],
+				["    increment currIdx"],
+				["    increment leftIdx"],
+				["  end while"],
+				["  while (rightIdx < length - midIdx):"],
+				["    put rightArray[rightIdx] into array at currIdx"],
+				["    increment currIdx"],
+				["    increment rightIdx"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"LSDRadixSort": {
+		"find": {
+			"code": [
+				["procedure LSDRadixSort(array):"],
+				["  buckets ← array of 19 lists"],
+				["  k ← length of largest number by magnitude"],
+				["  length ← array.length"],
+				["  div ← 1"],
+				["  for i ← 1, k:"],
+				["    for j ← 0, length - 1:"],
+				["      b ← array[j] / div % 10 + 9"],
+				["      buckets[b].addLast(array[j])"],
+				["    end for"],
+				["    index ← 0"],
+				["    for b ← 0, 18:"],
+				["      while buckets[b].size > 0:"],
+				["        array[index] ← buckets[b].removeFirst()"],
+				["        index ← index + 1"],
+				["      end while"],
+				["    end for"],
+				["    div ← div * 10"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure LSDRadixSort(array):"],
+				["  buckets is an array containing 19 lists"],
+				["  k is the length of largest number by magnitude"],
+				["  length is array's length"],
+				["  base starts at 1"],
+				["  for (i from 1 to k):"],
+				["    for (j from 0 to length):"],
+				["      b is (num at array[j] / base % 10 + 9)"],
+				["      enqueue array[j] into buckets[b]"],
+				["    end for"],
+				["    index starts at 0"],
+				["    for each bucket:"],
+				["      while (bucket is not empty):"],
+				["        dequeue from bucket into array at index"],
+				["        increment index"],
+				["      end while"],
+				["    end for"],
+				["    multiply base by 10"],
+				["  end for"],
+				["end procedure"]
+			]
+		}
+	},
+	"HeapSort": {
+		"find": {
+			"code": [
+				["procedure HeapSort(array):"],
+				["  heap ← new PriorityQueue(array)"],
+				["  for i ← 0, array.length -1:"],
+				["    add heap.remove() to array[i]"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure HeapSort(array):"],
+				["  create heap from array with BuildHeap"],
+				["  for (i from 0 to array.length):"],
+				["    pop from heap into array at i"],
+				["  end for"],
+				["end procedure"]
+			]
+		}
+	},
+	"BruteForce": {
+		"find": {
+			"code": [
+				["procedure BruteForce(text, pattern):"],
+				["  n ← text.length, m ← pattern.length"],
+				["  for i ← 0, n - m:"],
+				["    j ← 0"],
+				["    while j < m and pattern[j] = text[i + j]:"],
+				["      j ← j + 1"],
+				["    end while"],
+				["    if j = m:"],
+				["      // match found at i"],
+				["    end if"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BruteForce(text, pattern):"],
+				["  n is text's length, m is pattern's length"],
+				["  for (i from 0 to n - m):"],
+				["    j starts at 0"],
+				["    while (j < m and pattern[j] matches text[i + j]):"],
+				["      move j forward"],
+				["    end while"],
+				["    if (j == m):"],
+				["      // match found at i"],
+				["    end if"],
+				["  end for"],
+				["end procedure"]
+			]
+		}
+	},
+	"BoyerMoore": {
+		"lastTable": {
+			"code": [
+				["procedure BuildLastOccurrenceTable(pattern):"],
+				["  lastTable ← new HashMap<Character, Integer>"],
+				["  for i ← 0, pattern.length:"],
+				["    lastTable[pattern[i]] ← i"],
+				["  end for"],
+				["  return lastTable"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BuildLastOccurrenceTable(pattern):"],
+				["  lastTable is a map from Characters to Integers"],
+				["  for (i from 0 to pattern.length):"],
+				["    set lastTable for pattern[i] to i"],
+				["  end for"],
+				["  return lastTable"],
+				["end procedure"]
+			]
+		},
+		"find": {
+			"code": [
+				["procedure BoyerMoore(text, pattern):"],
+				["  lastTable ← BuildLastOccurrenceTable(pattern)"],
+				["  m ← pattern.length, n ← text.length"],
+				["  i ← 0"],
+				["  while i <= n - m:"],
+				["    j ← m - 1"],
+				["    while j >= 0 and text[i + j] == pattern[j]:"],
+				["      j ← j - 1"],
+				["    end while"],
+				["    if j == -1:"],
+				["      // match found at i"],
+				["      i ← i + 1"],
+				["    else:"],
+				["      shift ← lastTable[text[i + j]]"],
+				["      if shift < j:"],
+				["        i ← i + (j - shift)"],
+				["      else:"],
+				["        i ← i + 1"],
+				["      end if"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BoyerMoore(text, pattern):"],
+				["  lastTable is pattern's last occurrence table"],
+				["  m is pattern's length, n is text's length"],
+				["  i starts at 0"],
+				["  while (i <= n - m):"],
+				["    j starts at m - 1"],
+				["    while (j >= 0 and text[i + j] matches pattern[j]):"],
+				["      decrement j"],
+				["    end while"],
+				["    if (j == -1):"],
+				["      // match found at i"],
+				["      move i forward"],
+				["    else:"],
+				["      shift is the lastTable index for text[i + j]"],
+				["      if (shift < j):"],
+				["        add j - shift to i"],
+				["      else:"],
+				["        move i forward"],
+				["      end if"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			]
+		},
+		"galil": {
+			"code": [
+				["procedure BoyerMooreGalil(text, pattern):"],
+				["  initialize lastTable, failureTable"],
+				["  m ← length of pattern, n ← length of text"],
+				["  k ← m - failureTable[m - 1]"],
+				["  i ← 0, w ← 0"],
+				["  while i <= n - m"],
+				["    j ← m - 1"],
+				["    while j >= w and text[i + j] = pattern[j]"],
+				["      j -> j - 1"],
+				["    end while"],
+				["    if j < w"],
+				["      match found at i"],
+				["      i ← i + k"],
+				["      w ← m - k"],
+				["    else"],
+				["      shift ← lastTable[text[i + j]]"],
+				["      if shift < j"],
+				["        i ← i + (j - shift)"],
+				["      else"],
+				["        i ← i + 1"],
+				["      end if"],
+				["      w ← 0"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BoyerMooreGalilRule(text, pattern):"],
+				["  create lastTable and failureTable for pattern"],
+				["  m is pattern's length, n is text's length"],
+				["  periodicity is the last failureTable entry subtracted from m"],
+				["  i and lowBound start at 0"],
+				["  while (i <= n - m):"],
+				["    j starts at m - 1"],
+				["    while (j >= lowBound and text[i + j] matches pattern[j]):"],
+				["      move j backward"],
+				["    end while"],
+				["    if (j < lowBound):"],
+				["      // match found at i"],
+				["      add periodicity to i"],
+				["      set lowBound to periodicity subtracted from m"],
+				["    else:"],
+				["      shift is the lastTable index for text[i + j]"],
+				["      if (shift < j):"],
+				["        move i forward by j - shift"],
+				["      else:"],
+				["        move i forward"],
+				["      end if"],
+				["      set lowBound to 0"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"KMP": {
+		"failureTable": {
+			"code": [
+				["procedure BuildFailureTable(pattern):"],
+				["  m ← pattern.length"],
+				["  failureTable ← new array of length m"],
+				["  i ← 0, j ← 1"],
+				["  failureTable[0] ← 0"],
+				["  while j < m:"],
+				["    if pattern[i] == pattern[j]:"],
+				["      failureTable[j] ← i + 1"],
+				["      i ← i + 1, j ← j + 1"],
+				["    else:"],
+				["      if i == 0:"],
+				["        failureTable[j] ← 0"],
+				["        j ← j + 1"],
+				["      else:"],
+				["        i ← failureTable[i - 1]"],
+				["      end if"],
+				["    end if"],
+				["  end while"],
+				["  return failureTable"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BuildFailureTable(pattern):"],
+				["  m is pattern's length"],
+				["  failureTable is an array of length m"],
+				["  i starts at 0, j starts at 1"],
+				["  set the first failureTable value to 0"],
+				["  while (j < m):"],
+				["    if (pattern[i] matches pattern[j]):"],
+				["      set failureTable at index j to i + 1"],
+				["      move i and j forward"],
+				["    else:"],
+				["      if (i is 0):"],
+				["        set failureTable at index j to 0"],
+				["        move j forward"],
+				["      else:"],
+				["        move i to previous value in failureTable"],
+				["      end if"],
+				["    end if"],
+				["  end while"],
+				["  return failureTable"],
+				["end procedure"]
+			]
+		},
+		"find": {
+			"code": [
+				["procedure KMP(text, pattern):"],
+				["  failureTable ← BuildFailureTable(pattern)"],
+				["  m ← pattern.length, n ← text.length"],
+				["  i ← 0, j ← 0"],
+				["  while i <= n - m:"],
+				["    while j < m and text[i + j] == pattern[j]:"],
+				["      j ← j + 1"],
+				["    end while"],
+				["    if j == 0:"],
+				["      i ← i + 1"],
+				["    else:"],
+				["      if j == m:"],
+				["        // match found at i"],
+				["      end if"],
+				["      shift ← failureTable[j - 1]"],
+				["      i ← i + j - shift"],
+				["      j ← shift"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure KMP(text, pattern):"],
+				["  failureTable is pattern's failure table"],
+				["  m is pattern's length, n is text's length"],
+				["  i and j start at 0"],
+				["  while (i <= n - m):"],
+				["    while (j < m and text[i+j] matches pattern[j]):"],
+				["      move j forward"],
+				["    end while"],
+				["    if (j is 0):"],
+				["      move i forward"],
+				["    else:"],
+				["      if (j is m):"],
+				["        // match found at i"],
+				["      end if"],
+				["      shift is the failureTable value at j - 1"],
+				["      move i forward by j - shift"],
+				["      set j to shift"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"RabinKarp": {
+		"find": {
+			"code": [
+				["procedure RabinKarp(text, pattern):"],
+				["  m ← pattern.length, n ← text.length"],
+				["  patternHash ← hash of pattern"],
+				["  textHash ← hash of text[0...m - 1]"],
+				["  i ← 0"],
+				["  while i <= n - m:"],
+				["    if patternHash == textHash:"],
+				["      j ← 0"],
+				["      while j < m and text[i + j] == pattern[j]:"],
+				["        j ← j + 1"],
+				["      end while"],
+				["      if j == m:"],
+				["        // match found at i"],
+				["      end if"],
+				["    end if"],
+				["    if i < n - m:"],
+				["      textHash ← rolled hash of text[i to i + m]"],
+				["    end if"],
+				["    i ← i + 1"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure RabinKarp(text, pattern):"],
+				["  m is pattern's length, n is text's length"],
+				["  patternHash is a hash of the pattern"],
+				["  textHash is a hash of the first m chars in the text"],
+				["  i starts at 0"],
+				["  while (i <= n - m):"],
+				["    if (patternHash equals textHash):"],
+				["      j starts at 0"],
+				["      while (j < m and text[i + j] matches pattern[i]):"],
+				["        move j forward"],
+				["      end while"],
+				["      if (j is m):"],
+				["        // match found at i"],
+				["      end if"],
+				["    end if"],
+				["    if (i < n - m):"],
+				["      roll textHash forward one"],
+				["    end if"],
+				["    move i forward"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"BFS": {
+		"run": {
+			"code": [
+				["procedure BFS(Vertex s):"],
+				["  initialize VisitedSet VS"],
+				["  initialize Queue Q"],
+				["  initialize List L"],
+				["  Q.enqueue(s)"],
+				["  VS.add(s)"],
+				["  while Q.size > 0:"],
+				["    v ← Q.dequeue()"],
+				["    L.add(v)"],
+				["    for all w adjacent to v:"],
+				["      if w not in VS:"],
+				["        Q.enqueue(w)"],
+				["        VS.add(w)"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure BFS(Vertex start):"],
+				["  initialize a visited set"],
+				["  initialize a queue"],
+				["  initialize a traversal list"],
+				["  enqueue start"],
+				["  add start to visited set"],
+				["  while (queue is not empty):"],
+				["    dequeue vertex"],
+				["    add vertex to traversal list"],
+				["    for each adjacent vertex:"],
+				["      if (adjacent vertex is not visited):"],
+				["        enqueue adjacent vertex"],
+				["        add adjacent vertex to visited set"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"DFS": {
+		"recursive": {
+			"code": [
+				["procedure DFS(Vertex s, Set VS, List L):"],
+				["  VS.add(s)"],
+				["  L.add(s)"],
+				["  for all v adjacent to s:"],
+				["    if v not in VS:"],
+				["      DFS(v, VS, L)"],
+				["    end if"],
+				["  end for"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure DFS(Vertex start, Set visited, List traversal):"],
+				["  add start to visited set"],
+				["  add start to traversal list"],
+				["  for each adjacent vertex:"],
+				["    if (adjacent vertex is not visited):"],
+				["      recursively call DFS on adjacent vertex"],
+				["    end if"],
+				["  end for"],
+				["end procedure"]
+			]
+		},
+		"iterative": {
+			"code": [
+				["procedure DFS(Vertex s, Set VS, List L):"],
+				["  initialize Stack K"],
+				["  add s to K, VS"],
+				["  while K is not empty:"],
+				["    v ← remove from K"],
+				["    add v to L"],
+				["    for all w adjacent to v:"],
+				["      if w not in VS:"],
+				["        add w to K, VS"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure DFS(Vertex start, Set visited, List traversal):"],
+				["  initialize a stack"],
+				["  push start vertex onto the stack and add it to visited set"],
+				["  while (stack is not empty):"],
+				["    pop vertex from stack"],
+				["    add vertex to traversal list"],
+				["    for each adjacent vertex:"],
+				["      if (adjacent vertex is not visited):"],
+				["        add adjacent vertex to stack and visited set"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	},
+	"Dijkstras": {
+		"run": {
+			"code": [
+				["procedure Dijkstras(Vertex s, Graph G):"],
+				["  initialize VisitedSet VS"],
+				["  initialize DistanceMap DM"],
+				["  initialize PriorityQueue PQ"],
+				["  for all v in G:"],
+				["    DM.put(v, ∞)"],
+				["  end for"],
+				["  PQ.enqueue((s, 0))"],
+				["  DM.put(s, 0)"],
+				["  while PQ.size > 0 and VS.size < G.vertices.size:"],
+				["    (u, d1) ← PQ.dequeue()"],
+				["    if u not in VS:"],
+				["      VS.add(u)"],
+				["      DM.put(w, d1)"],
+				["      for all (w, d2) adjacent to u:"],
+				["        if w not in VS:"],
+				["          PQ.enqueue((w, d1 + d2))"],
+				["        end if"],
+				["      end for"],
+				["    end if"],
+				["  end while"],
+				["  return DM"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure Dijkstras(Vertex start, Graph graph):"],
+				["  initialize a visited set"],
+				["  initialize a distance map"],
+				["  initialize a priority queue"],
+				["  for each vertex in the graph:"],
+				["    put vertex in distance map with infinite distance"],
+				["  end for"],
+				["  enqueue the start vertex with distance 0"],
+				["  put start vertex in distance map with distance 0"],
+				["  while (queue is not empty and visited set is not full):"],
+				["    dequeue vertex and its distance"],
+				["    if (vertex is not visited):"],
+				["      add vertex to visited set"],
+				["      put vertex and distance into distance map"],
+				["      for each adjacent vertex and distance:"],
+				["        if (adjacent vertex is not visited):"],
+				["          enqueue adjacent vertex and cumulative distance"],
+				["        end if"],
+				["      end for"],
+				["    end if"],
+				["  end while"],
+				["  return distance map"],
+				["end procedure"]
+			]
+		}
+	},
+	"Prims": {
+		"run": {
+			"code": [
+				["procedure Prims(Vertex s, Graph G):"],
+				["  initialize VisitedSet VS"],
+				["  initialize EdgeSet MST"],
+				["  initialize PriorityQueue PQ"],
+				["  VS.add(s)"],
+				["  for all edge(s, v) in G:"],
+				["    PQ.enqueue(edge(s, v))"],
+				["  end for"],
+				["  while PQ.size > 0 and VS.size < G.vertices.size:"],
+				["    edge(u, w) ← PQ.dequeue()"],
+				["    MST.add(edge(u, w))"],
+				["    VS.add(w)"],
+				["    for all edge(w, x) adjacent to w:"],
+				["      if x not in VS:"],
+				["        PQ.enqueue(edge(w, x))"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["  return MST"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure Prims(Vertex start, Graph graph):"],
+				["  initialize a visited set"],
+				["  initialize an edge set MST"],
+				["  initialize a priority queue"],
+				["  add start to visited set"],
+				["  for each edge adjacent to start vertex in the graph:"],
+				["    enqueue edge"],
+				["  end for"],
+				["  while (queue is not empty and visited set is not full):"],
+				["    dequeue edge between vertices V, W"],
+				["    add edge to MST"],
+				["    add W to visited set"],
+				["    for each edge adjacent to W:"],
+				["      if (other endpoint vertex is not visited):"],
+				["        enqueue edge between W and other endpoint vertex"],
+				["      end if"],
+				["    end for"],
+				["  end while"],
+				["  return MST"],
+				["end procedure"]
+			]
+		}
+	},
+	"Kruskals": {
+		"run": {
+			"code": [
+				["procedure Kruskals(Graph g):"],
+				["  initialize DisjointSet, DS, with all vertices in G"],
+				["  initialize MST EdgeSet, MST"],
+				["  initialize PriorityQueue, PQ with all edges in G"],
+				["  while PQ is not empty and MST has fewer than n-1 edges:"],
+				["    edge(u, v) ← PQ.dequeue()"],
+				["    if u and v are not in the same cluster:"],
+				["      add edge(u, v) to MST"],
+				["      merge u's cluster with v's cluster"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure Kruskals(Graph g):"],
+				["  initialize a disjoint set with all vertices in graph"],
+				["  initialize an edge set MST"],
+				["  initialize a priority queue with all edges in graph"],
+				["  while (queue is not empty and MST has fewer than n-1 edges):"],
+				["    dequeue edge between vertices V, W"],
+				["    if (V and W are not in the same set):"],
+				["      add edge to MST"],
+				["      merge V's set with W's set in the disjoint set structure"],
+				["    end if"],
+				["  end while"],
+				["end procedure"]
+			]
+		}
+	}
+}

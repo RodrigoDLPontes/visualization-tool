@@ -32,6 +32,7 @@ import Algorithm, {
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -167,35 +168,14 @@ export default class QuickSelect extends Algorithm {
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
-		this.code = [
-			['procedure QuickSelect(array, left, right, k):'],
-			['  pivotIdx ← selected index within [left, right]'],
-			['  pivot ← array[pivotIdx]'],
-			['  swap array[left] and array[pivotIdx]'],
-			['  i ← left + 1, j ← right'],
-			['  while i <= j do'],
-			['    while ', 'i <= j', ' and ', 'array[i] <= pivot'],
-			['      i ← i + 1'],
-			['    end while'],
-			['    while ', 'i <= j', ' and ', 'array[j] >= pivot'],
-			['      j ← j - 1'],
-			['    end while'],
-			['    if i <= j then'],
-			['      swap array[i] and array[j]'],
-			['      i ← i + 1, j ← j - 1'],
-			['    end if'],
-			['  end while'],
-			['  swap pivot and array[j]'],
-			['  if j equals k - 1 then'],
-			['    return array[j]'],
-			['  if j > k - 1 then'],
-			['    QuickSelect on array, left, j - 1, k'],
-			['  else'],
-			['    QuickSelect on array, j + 1, right, k'],
-			['end procedure'],
-		];
-
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.pseudocode = pseudocodeText.QuickSelect;
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -203,20 +183,15 @@ export default class QuickSelect extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.displayData = [];
 		this.arrayID = [];
-		this.removeCode(this.codeID);
 		this.iPointerID = 0;
 		this.jPointerID = 0;
 		this.pPointerID = 0;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
 		this.compCount = 0;
-		this.swapCountID = this.nextIndex++;
 		this.swapCount = 0;
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	runCallback() {
@@ -241,6 +216,7 @@ export default class QuickSelect extends Algorithm {
 			}
 		}
 		this.listField.value = values;
+		this.kField.value = Math.floor(Math.random() * RANDOM_ARRAY_SIZE + 1);
 	}
 
 	clearCallback() {
@@ -358,7 +334,7 @@ export default class QuickSelect extends Algorithm {
 	helper(left, right) {
 		if (left > right) return;
 
-		this.highlight(0, 0);
+		this.highlight(0, 0, this.codeID);
 
 		// Hightlight cells in the current sub-array
 		for (let i = left; i <= right; i++) {
@@ -369,16 +345,16 @@ export default class QuickSelect extends Algorithm {
 		if (left === right) {
 			this.cmd(act.setBackgroundColor, this.arrayID[left], '#2ECC71');
 			this.cmd(act.step);
-			this.unhighlight(0, 0);
+			this.unhighlight(0, 0, this.codeID);
 			return;
 		}
-		this.unhighlight(0, 0);
+		this.unhighlight(0, 0, this.codeID);
 
 		// Create pivot pointer and swap with left-most element
 		// To make things more interesting (and clearer), we don't pick the left-most element as pivot
 		let pivot;
-		this.highlight(1, 0);
-		this.highlight(2, 0);
+		this.highlight(1, 0, this.codeID);
+		this.highlight(2, 0, this.codeID);
 		if (this.pivotType === 'min') {
 			let min = left;
 			for (let i = left + 1; i <= right; i++) {
@@ -400,13 +376,13 @@ export default class QuickSelect extends Algorithm {
 		const pXPos = pivot * ARRAY_ELEM_WIDTH + ARRAY_START_X;
 		this.cmd(act.createHighlightCircle, this.pPointerID, '#FFFF00', pXPos, ARRAY_START_Y);
 		this.cmd(act.step);
-		this.unhighlight(1, 0);
-		this.unhighlight(2, 0);
-		this.highlight(3, 0);
+		this.unhighlight(1, 0, this.codeID);
+		this.unhighlight(2, 0, this.codeID);
+		this.highlight(3, 0, this.codeID);
 		this.swapPivot(pivot, left);
 		this.cmd(act.step);
-		this.unhighlight(3, 0);
-		this.highlight(4, 0);
+		this.unhighlight(3, 0, this.codeID);
+		this.highlight(4, 0, this.codeID);
 		// Partition
 		let i = left + 1;
 		let j = right;
@@ -415,21 +391,19 @@ export default class QuickSelect extends Algorithm {
 		this.cmd(act.createHighlightCircle, this.iPointerID, '#0000FF', iXPos, ARRAY_START_Y);
 		this.cmd(act.createHighlightCircle, this.jPointerID, '#0000FF', jXPos, ARRAY_START_Y);
 		this.cmd(act.step);
-		this.unhighlight(4, 0);
-		this.highlight(5, 0);
+		this.unhighlight(4, 0, this.codeID);
+		this.highlight(5, 0, this.codeID);
 		while (i <= j) {
 			this.cmd(act.step);
-			this.highlight(6, 0);
-			this.unhighlight(5, 0);
-			this.highlight(6, 1);
+			this.highlight(6, 0, this.codeID);
+			this.highlight(6, 2, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(6, 0);
-			this.unhighlight(6, 1);
-			this.highlight(6, 3);
+			this.unhighlight(6, 2, this.codeID);
+			this.highlight(6, 4, this.codeID);
 			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] >= this.arrayData[i]) {
-				this.unhighlight(6, 3);
-				this.highlight(7, 0);
+				this.unhighlight(6, 4, this.codeID);
+				this.highlight(7, 0, this.codeID);
 				i++;
 				this.cmd(
 					act.setText,
@@ -437,17 +411,18 @@ export default class QuickSelect extends Algorithm {
 					'Comparison Count: ' + ++this.compCount,
 				);
 				this.movePointers(i, j);
-				this.unhighlight(7, 0);
-				this.highlight(6, 1);
+				this.unhighlight(7, 0, this.codeID);
+				this.highlight(6, 2, this.codeID);
 				if (i <= j) {
 					this.cmd(act.step);
-					this.unhighlight(6, 1);
-					this.highlight(6, 3);
+					this.unhighlight(6, 2, this.codeID);
+					this.highlight(6, 4, this.codeID);
 				}
 				this.cmd(act.step);
 			}
-			this.unhighlight(6, 1);
-			this.unhighlight(6, 3);
+			this.unhighlight(6, 0, this.codeID);
+			this.unhighlight(6, 2, this.codeID);
+			this.unhighlight(6, 4, this.codeID);
 			if (i <= j) {
 				this.cmd(
 					act.setText,
@@ -458,20 +433,19 @@ export default class QuickSelect extends Algorithm {
 				this.cmd(act.step);
 			}
 
-			this.highlight(9, 0);
+			this.highlight(9, 0, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(9, 0);
-			this.highlight(9, 1);
+			this.highlight(9, 2, this.codeID);
 			if (i <= j) {
 				this.cmd(act.step);
-				this.unhighlight(9, 1);
-				this.highlight(9, 3);
+				this.unhighlight(9, 2, this.codeID);
+				this.highlight(9, 4, this.codeID);
 			}
 
 			this.cmd(act.step);
 			while (i <= j && this.arrayData[left] <= this.arrayData[j]) {
-				this.unhighlight(9, 3);
-				this.highlight(10, 0);
+				this.unhighlight(9, 4, this.codeID);
+				this.highlight(10, 0, this.codeID);
 				j--;
 				this.cmd(
 					act.setText,
@@ -479,17 +453,18 @@ export default class QuickSelect extends Algorithm {
 					'Comparison Count: ' + ++this.compCount,
 				);
 				this.movePointers(i, j);
-				this.unhighlight(10, 0);
-				this.highlight(9, 1);
+				this.unhighlight(10, 0, this.codeID);
+				this.highlight(9, 2, this.codeID);
 				if (i <= j) {
 					this.cmd(act.step);
-					this.unhighlight(9, 1);
-					this.highlight(9, 3);
+					this.unhighlight(9, 2, this.codeID);
+					this.highlight(9, 4, this.codeID);
 				}
 				this.cmd(act.step);
 			}
-			this.unhighlight(9, 1);
-			this.unhighlight(9, 3);
+			this.unhighlight(9, 0, this.codeID);
+			this.unhighlight(9, 2, this.codeID);
+			this.unhighlight(9, 4, this.codeID);
 			if (i <= j) {
 				this.cmd(
 					act.setText,
@@ -500,21 +475,22 @@ export default class QuickSelect extends Algorithm {
 				this.cmd(act.step);
 			}
 			if (i <= j) {
-				this.highlight(13, 0);
+				this.highlight(13, 0, this.codeID);
 				this.swap(i, j);
-				this.unhighlight(13, 0);
-				this.highlight(14, 0);
+				this.unhighlight(13, 0, this.codeID);
+				this.highlight(14, 0, this.codeID);
 				i++;
 				j--;
 				this.movePointers(i, j);
-				this.unhighlight(14, 0);
+				this.unhighlight(14, 0, this.codeID);
 			}
 		}
+		this.unhighlight(5, 0, this.codeID);
 
-		this.highlight(17, 0);
+		this.highlight(17, 0, this.codeID);
 		// Move pivot back and delete pivot pointer
 		this.swapPivot(left, j, true);
-		this.unhighlight(17, 0);
+		this.unhighlight(17, 0, this.codeID);
 
 		// Delete i and j pointers
 		this.cmd(act.delete, this.iPointerID);
@@ -526,31 +502,31 @@ export default class QuickSelect extends Algorithm {
 		for (let i = left; i <= right; i++) {
 			this.cmd(act.setBackgroundColor, this.arrayID[i], '#FFFFFF');
 		}
-		this.highlight(18, 0);
+		this.highlight(18, 0, this.codeID);
 		this.cmd(act.step);
 		if (this.k - 1 === j) {
-			this.unhighlight(18, 0);
-			this.highlight(19, 0);
+			this.unhighlight(18, 0, this.codeID);
+			this.highlight(19, 0, this.codeID);
 			this.cmd(act.setBackgroundColor, this.arrayID[j], '#2ECC71');
 			this.cmd(act.step);
-			this.unhighlight(19, 0);
+			this.unhighlight(19, 0, this.codeID);
 		} else {
-			this.unhighlight(18, 0);
-			this.highlight(20, 0);
+			this.unhighlight(18, 0, this.codeID);
+			this.highlight(20, 0, this.codeID);
 			this.cmd(act.setBackgroundColor, this.arrayID[j], '#4DA6ff');
 			this.cmd(act.step);
 
 			if (this.k - 1 < j) {
-				this.unhighlight(20, 0);
-				this.highlight(21, 0);
+				this.unhighlight(20, 0, this.codeID);
+				this.highlight(21, 0, this.codeID);
 				this.cmd(act.step);
-				this.unhighlight(21, 0);
+				this.unhighlight(21, 0, this.codeID);
 				this.helper(left, j - 1);
 			} else {
-				this.unhighlight(20, 0);
-				this.highlight(23, 0);
+				this.unhighlight(20, 0, this.codeID);
+				this.highlight(23, 0, this.codeID);
 				this.cmd(act.step);
-				this.unhighlight(23, 0);
+				this.unhighlight(23, 0, this.codeID);
 				this.helper(j + 1, right);
 			}
 		}

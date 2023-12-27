@@ -31,6 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
+import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
 
@@ -129,20 +130,14 @@ export default class InsertionSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
-		this.code = [
-			['procedure InsertionSort(array):'],
-			['  length ← length of array'],
-			['  for i ← 1, length - 1 do'],
-			['    j ← i'],
-			['    while ', 'j > 0, ', 'array[j - 1] > array[j]', ' do'],
-			['      swap array[j-1], array[j] '],
-			['      j ← j - 1'],
-			['    end while'],
-			['  end for'],
-			['end procedure'],
-		];
-
-		this.codeID = this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
+		this.pseudocode = pseudocodeText.InsertionSort;
+		this.codeID = this.addCodeToCanvasBaseAll(
+			this.pseudocode,
+			'find',
+			CODE_START_X,
+			CODE_START_Y,
+		);
+		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
 		this.animationManager.skipForward();
@@ -150,19 +145,12 @@ export default class InsertionSort extends Algorithm {
 	}
 
 	reset() {
-		this.nextIndex = 0;
+		this.nextIndex = this.resetIndex;
 		this.arrayData = [];
 		this.arrayID = [];
 		this.displayData = [];
-		this.removeCode(this.codeID);
-		this.iPointerID = this.nextIndex++;
-		this.jPointerID = this.nextIndex++;
-		this.comparisonCountID = this.nextIndex++;
-		this.infoLabelID = this.nextIndex++;
-		this.swapCountID = this.nextIndex++;
 		this.compCount = 0;
 		this.swapCount = 0;
-		this.addCodeToCanvasBase(this.code, CODE_START_X, CODE_START_Y);
 	}
 
 	randomCallback() {
@@ -291,54 +279,52 @@ export default class InsertionSort extends Algorithm {
 			ARRAY_START_Y,
 		);
 		this.cmd(act.setHighlight, this.jPointerID, 1);
-		this.highlight(0, 0);
+		this.highlight(0, 0, this.codeID);
 		this.cmd(act.step);
-		this.unhighlight(0, 0);
-		this.highlight(2, 0);
+		this.unhighlight(0, 0, this.codeID);
+		this.highlight(2, 0, this.codeID);
 
 		for (let i = 1; i < this.arrayData.length; i++) {
 			this.cmd(act.step);
-			this.unhighlight(2, 0);
-			this.highlight(3, 0);
+			this.highlight(3, 0, this.codeID);
 			this.cmd(act.step);
-			this.unhighlight(3, 0);
-			this.highlight(4, 0);
+			this.unhighlight(3, 0, this.codeID);
+			this.highlight(4, 0, this.codeID);
 			for (let j = i; j >= 1; j--) {
 				this.movePointers(j - 1, j);
-				this.unhighlight(3, 0);
-				this.unhighlight(4, 0);
-				this.unhighlight(6, 0);
-				this.highlight(4, 1);
+				this.unhighlight(3, 0, this.codeID);
+				this.unhighlight(6, 0, this.codeID);
+				this.highlight(4, 2, this.codeID);
 				this.cmd(act.step);
-				this.unhighlight(4, 1);
-				this.highlight(4, 2);
+				this.unhighlight(4, 2, this.codeID);
+				this.highlight(4, 4, this.codeID);
 				this.cmd(
 					act.setText,
 					this.comparisonCountID,
 					'Comparison Count: ' + ++this.compCount,
 				);
 				this.cmd(act.step);
-				this.unhighlight(4, 2);
+				this.unhighlight(4, 4, this.codeID);
 				if (this.arrayData[j] < this.arrayData[j - 1]) {
-					this.highlight(5, 0);
+					this.highlight(5, 0, this.codeID);
 					this.swap(j, j - 1);
 					this.cmd(act.step);
-					this.unhighlight(5, 0);
-					this.highlight(6, 0);
+					this.unhighlight(5, 0, this.codeID);
+					this.highlight(6, 0, this.codeID);
 					this.cmd(act.step);
 				} else {
 					break;
 				}
 			}
 			this.cmd(act.step);
-			this.unhighlight(3, 0);
-			this.unhighlight(4, 0);
-			this.unhighlight(6, 0);
+			this.unhighlight(3, 0, this.codeID);
+			this.unhighlight(4, 0, this.codeID);
+			this.unhighlight(6, 0, this.codeID);
 			if (i === 1) this.cmd(act.setBackgroundColor, this.arrayID[0], '#2ECC71');
 			this.cmd(act.setBackgroundColor, this.arrayID[i], '#2ECC71');
 			this.cmd(act.step);
 		}
-		this.unhighlight(2, 0);
+		this.unhighlight(2, 0, this.codeID);
 
 		this.cmd(act.delete, this.iPointerID);
 		this.cmd(act.delete, this.jPointerID);

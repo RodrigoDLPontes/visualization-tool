@@ -176,15 +176,20 @@ em {
 	height: 35px;
 	margin-right: 20px;
 	cursor: pointer;
+	transition: 0.2s;
 	color: var(--primary);
 }
 
 .menu-modal:hover {
 	filter: var(--filter);
+	scale: 125%;
 }
-
 .pseudocode-toggle {
 	cursor: pointer;
+	transition: 0.2s;
+}
+.pseudocode-toggle:hover {
+	scale: 125%;
 }
 .VisualizationMainPage .modal {
 	position: absolute;

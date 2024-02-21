@@ -14,6 +14,7 @@ const Blob = () => {
 	return (
 		<Draggable>
 			<div className="wrapper">
+				<img src="./blob_icon.png" alt="cs" className="blobLogo" />
 				<svg
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"

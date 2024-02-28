@@ -60,6 +60,16 @@
 	cursor: default;
 }
 
+.blobLogo {
+    width: 100px;
+    position: relative;
+    left: 130px;
+    bottom: 30px;
+    z-index: 2;
+    pointer-events: none;
+    -webkit-pointer-events: none; /* Safari */
+}
+
 @keyframes banner-ease {
 	from {
 		transform: translateY(-7vw);
@@ -93,6 +103,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	transform: translateY(40px);
 }
 
 body {

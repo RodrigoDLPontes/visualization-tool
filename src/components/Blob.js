@@ -14,12 +14,13 @@ const Blob = () => {
 	return (
 		<Draggable>
 			<div className="wrapper">
+				<img src="./favicon.png" alt="" className="blobLogo" />
 				<svg
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 500 500"
-					width="20%"
-					height="20%"
+					width="40%"
+					height="40%"
 					id="blobSvg"
 					transform="rotate(65)"
 					style={{ opacity: '1', cursor: 'grab' }}

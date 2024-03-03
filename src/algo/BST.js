@@ -813,20 +813,31 @@ export default class BST extends Algorithm {
 
 		this.highlight(0, 0, this.codeID);
 		this.highlight(1, 0, this.codeID);
-		this.highlight(4, 0, this.codeID);
+		this.highlight(2, 0, this.codeID);
+		this.highlight(6, 0, this.codeID);
 		this.cmd(act.setText, 0, `Deleting ${data}`);
 		this.cmd(act.step);
 		this.cmd(act.setText, 0, ' ');
 
 		this.highlightID = this.nextIndex++;
 		this.treeRoot = this.removeH(this.treeRoot, data);
-		this.cmd(act.setText, 0, '');
+		// this.cmd(act.setText, 0, '');
 		this.resizeTree();
 
-		this.unhighlight(0, 0, this.codeID);
+		this.highlight(2, 0, this.codeID);
+		this.highlight(4	, 0, this.codeID);
+		this.unhighlight(26, 0, this.codeID);
 		this.unhighlight(1, 0, this.codeID);
-		this.unhighlight(4, 0, this.codeID);
+		this.unhighlight(2, 0, this.codeID);
 		this.unhighlight(22, 0, this.codeID);
+
+
+		this.unhighlight(13, 0, this.codeID);
+
+
+		this.cmd(act.step);
+		this.unhighlight(0, 0, this.codeID);
+		this.unhighlight(4, 0, this.codeID);
 		return this.commands;
 	}
 
@@ -869,9 +880,10 @@ export default class BST extends Algorithm {
 			}
 		} else {
 			this.cmd(act.setText, 0, `Found node with data ${data}`);
-			this.highlight(11, 0, this.codeID);
-			this.highlight(12, 0, this.codeID);
+			this.highlight(13, 0, this.codeID);
 			this.cmd(act.step);
+
+
 
 			this.unhighlight(12, 0, this.codeID);
 			if (curr.left == null && curr.right == null) {
@@ -909,13 +921,14 @@ export default class BST extends Algorithm {
 				this.deleteNode(curr);
 				this.cmd(act.step);
 
+
 				this.unhighlight(11, 0, this.codeID);
 				this.unhighlight(17, 0, this.codeID);
 				this.unhighlight(18, 0, this.codeID);
 				return curr.left;
 			} else {
-				this.highlight(19, 0, this.codeID);
-				this.highlight(20, 0, this.codeID);
+				this.highlight(22, 0, this.codeID);
+				this.highlight(23, 0, this.codeID);
 				const dummy = [];
 				if (this.predSucc === 'succ') {
 					this.cmd(act.setText, 0, `Two-child case, replace data with successor`);
@@ -933,7 +946,6 @@ export default class BST extends Algorithm {
 				this.unhighlight(20, 0, this.codeID);
 				this.unhighlight(24, 0, this.codeID);
 				this.unhighlight(29, 0, this.codeID);
-				this.highlight(21, 0, this.codeID);
 				curr.data = dummy[0];
 				this.cmd(act.setText, curr.graphicID, curr.data);
 				this.cmd(act.step);
@@ -942,9 +954,9 @@ export default class BST extends Algorithm {
 		this.unhighlight(5, 0, this.codeID);
 		this.unhighlight(6, 0, this.codeID);
 		this.unhighlight(11, 0, this.codeID);
-		this.unhighlight(21, 0, this.codeID);
-		this.unhighlight(24, 0, this.codeID);
-		this.highlight(22, 0, this.codeID);
+		this.unhighlight(22, 0, this.codeID);
+		this.unhighlight(25, 0, this.codeID);
+		this.highlight(26, 0, this.codeID);
 		this.cmd(act.setHighlight, curr.graphicID, 0, this.codeID);
 		this.cmd(act.setText, 0, '');
 		return curr;
@@ -953,29 +965,44 @@ export default class BST extends Algorithm {
 	removeSucc(curr, dummy) {
 		this.unhighlight(27, 0, this.codeID);
 		this.unhighlight(28, 0, this.codeID);
+		this.unhighlight(23, 0, this.codeID);
+
 		this.highlight(24, 0, this.codeID);
+		this.highlight(29, 0, this.codeID);
+		this.highlight(30, 0, this.codeID);
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
 
 		if (curr.left == null) {
-			this.highlight(25, 0, this.codeID);
+			this.highlight(31, 0, this.codeID);
+
 			this.cmd(act.setText, 0, 'No left child, replace with right child');
 			this.cmd(act.step);
 
 			dummy.push(curr.data);
-			this.highlight(26, 0, this.codeID);
+			this.unhighlight(31, 0, this.codeID);
+			this.highlight(32, 0, this.codeID);
 			this.deleteNode(curr);
 			this.cmd(act.step);
 
-			this.unhighlight(25, 0, this.codeID);
-			this.unhighlight(26, 0, this.codeID);
+			this.unhighlight(30, 0, this.codeID);
+			this.unhighlight(32, 0, this.codeID);
+			this.unhighlight(24, 0, this.codeID);
+			this.unhighlight(29, 0, this.codeID);
+			this.highlight(25, 0, this.codeID);
 			this.cmd(act.setText, 0, '');
 			return curr.right;
 		}
-		this.highlight(27, 0, this.codeID);
-		this.highlight(28, 0, this.codeID);
+
+		this.unhighlight(30, 0, this.codeID);
+
+		this.highlight(33, 0, this.codeID);
+		this.highlight(34, 0, this.codeID);
 		this.cmd(act.setText, 0, 'Left child exists, look left');
 		this.cmd(act.step);
+
+		this.unhighlight(33, 0, this.codeID);
+		this.unhighlight(34, 0, this.codeID);
 
 		curr.left = this.removeSucc(curr.left, dummy);
 		if (curr.left != null) {
@@ -983,37 +1010,52 @@ export default class BST extends Algorithm {
 			this.connectSmart(curr.graphicID, curr.left.graphicID);
 			this.resizeTree();
 		}
-		this.highlight(29, 0, this.codeID);
-		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
+
+
 		return curr;
 	}
 
 	removePred(curr, dummy) {
 		this.unhighlight(27, 0, this.codeID);
 		this.unhighlight(28, 0, this.codeID);
+		this.unhighlight(23, 0, this.codeID);
+
 		this.highlight(24, 0, this.codeID);
+		this.highlight(29, 0, this.codeID);
+		this.highlight(30, 0, this.codeID);
 		this.cmd(act.setHighlight, curr.graphicID, 1, '#0000ff');
 		this.cmd(act.step);
 
 		if (curr.right == null) {
-			this.highlight(25, 0, this.codeID);
+			this.highlight(31, 0, this.codeID);
 			this.cmd(act.setText, 0, 'No right child, replace with right child');
 			this.cmd(act.step);
 
 			dummy.push(curr.data);
-			this.highlight(26, 0, this.codeID);
+			this.unhighlight(31, 0, this.codeID);
+			this.highlight(32, 0, this.codeID);
 			this.deleteNode(curr);
 			this.cmd(act.step);
 
-			this.unhighlight(25, 0, this.codeID);
-			this.unhighlight(26, 0, this.codeID);
+
+			this.unhighlight(30, 0, this.codeID);
+			this.unhighlight(32, 0, this.codeID);
+			this.unhighlight(24, 0, this.codeID);
+			this.unhighlight(29, 0, this.codeID);
+			this.highlight(25, 0, this.codeID);
 			this.cmd(act.setText, 0, '');
 			return curr.left;
 		}
-		this.highlight(27, 0, this.codeID);
-		this.highlight(28, 0, this.codeID);
+
+		this.unhighlight(30, 0, this.codeID);
+
+		this.highlight(33, 0, this.codeID);
+		this.highlight(34, 0, this.codeID);
 		this.cmd(act.setText, 0, 'Right child exists, look right');
 		this.cmd(act.step);
+
+		this.unhighlight(33, 0, this.codeID);
+		this.unhighlight(34, 0, this.codeID);
 
 		curr.right = this.removePred(curr.right, dummy);
 		if (curr.right != null) {
@@ -1021,8 +1063,6 @@ export default class BST extends Algorithm {
 			this.connectSmart(curr.graphicID, curr.right.graphicID);
 			this.resizeTree();
 		}
-		this.highlight(29, 0, this.codeID);
-		this.cmd(act.setHighlight, curr.graphicID, 0, '#0000ff');
 		return curr;
 	}
 

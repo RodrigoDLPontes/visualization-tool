@@ -821,19 +821,16 @@ export default class BST extends Algorithm {
 
 		this.highlightID = this.nextIndex++;
 		this.treeRoot = this.removeH(this.treeRoot, data);
-		// this.cmd(act.setText, 0, '');
 		this.resizeTree();
 
 		this.highlight(2, 0, this.codeID);
-		this.highlight(4	, 0, this.codeID);
+		this.highlight(4, 0, this.codeID);
 		this.unhighlight(26, 0, this.codeID);
 		this.unhighlight(1, 0, this.codeID);
 		this.unhighlight(2, 0, this.codeID);
 		this.unhighlight(22, 0, this.codeID);
 
-
 		this.unhighlight(13, 0, this.codeID);
-
 
 		this.cmd(act.step);
 		this.unhighlight(0, 0, this.codeID);
@@ -883,8 +880,6 @@ export default class BST extends Algorithm {
 			this.highlight(13, 0, this.codeID);
 			this.cmd(act.step);
 
-
-
 			this.unhighlight(12, 0, this.codeID);
 			if (curr.left == null && curr.right == null) {
 				this.highlight(13, 0, this.codeID);
@@ -920,7 +915,6 @@ export default class BST extends Algorithm {
 
 				this.deleteNode(curr);
 				this.cmd(act.step);
-
 
 				this.unhighlight(11, 0, this.codeID);
 				this.unhighlight(17, 0, this.codeID);
@@ -1011,7 +1005,6 @@ export default class BST extends Algorithm {
 			this.resizeTree();
 		}
 
-
 		return curr;
 	}
 
@@ -1036,7 +1029,6 @@ export default class BST extends Algorithm {
 			this.highlight(32, 0, this.codeID);
 			this.deleteNode(curr);
 			this.cmd(act.step);
-
 
 			this.unhighlight(30, 0, this.codeID);
 			this.unhighlight(32, 0, this.codeID);

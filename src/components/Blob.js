@@ -2,19 +2,20 @@ import React, { useEffect } from 'react';
 import Draggable from 'react-draggable';
 
 const Blob = () => {
+	const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 	useEffect(() => {
-		const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+		const svgElement = document.getElementById('blobSvg');
 		if (isSafari) {
-			const svgElement = document.getElementById('blobSvg');
-			svgElement.setAttribute('width', '100%');
-			svgElement.setAttribute('height', '100%');
+			svgElement.setAttribute('width', '200%');
+			svgElement.setAttribute('height', '200%');
 		}
-	}, []);
+	}, [isSafari]);
 
 	return (
 		<Draggable>
 			<div className="wrapper">
-				<img src="./favicon.png" alt="" className="blobLogo" />
+				<img src="./favicon.png" alt="" className={isSafari ? "blobLogoSafari" : "blobLogo"}  id="blobLogo" />
 				<svg
 					version="1.1"
 					xmlns="http://www.w3.org/2000/svg"

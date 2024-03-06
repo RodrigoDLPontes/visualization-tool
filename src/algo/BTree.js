@@ -44,7 +44,7 @@ const PRINT_HORIZONTAL_GAP = 50;
 const MIN_MAX_DEGREE = 4;
 
 const HEIGHT_DELTA = 50;
-const NODE_SPACING = 3;
+const NODE_SPACING = 15;
 const STARTING_Y = 30;
 const WIDTH_PER_ELEM = 40;
 const NODE_HEIGHT = 20;

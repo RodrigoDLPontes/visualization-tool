@@ -7,6 +7,7 @@ import {
 	BsMoonFill,
 } from 'react-icons/bs';
 import Blob from './Blob';
+import Draggable from 'react-draggable';
 import { IconContext } from 'react-icons';
 import { Link } from 'react-router-dom';
 import React from 'react';
@@ -35,9 +36,11 @@ class Header extends React.Component {
 						<h1>CS 1332 Data Structures and Algorithms Visualization Tool</h1>
 					</div>
 					<div className="gimmicks">
-						<div id="blob-container">
-							<Blob />
-						</div>
+						<Draggable>
+							<div id="blob-container">
+								<Blob />
+							</div>
+						</Draggable>
 						<div id="theme">
 							{theme === 'light' ? (
 								<BsFillSunFill

@@ -87,7 +87,6 @@ export default class OpenHash extends Hash {
 		this.probeTypeDropDown.style.width = '132px';
 		this.probeTypeDropDown.onchange = this.checkProbeType.bind(this);
 
-
 		addDivisorToAlgorithmBar();
 
 		this.hashTypeParentGroup = addGroupToAlgorithmBar(false);
@@ -96,7 +95,11 @@ export default class OpenHash extends Hash {
 
 		this.hashTypeLabel = addLabelToAlgorithmBar('Hash Type:', this.hashTypeLabelGroup);
 		this.hashTypeDropDown = addDropDownGroupToAlgorithmBar(
-			[['Integers', 'Hash Integers'], ['Strings', 'Hash Strings'], ['True', 'True Hash Function']],
+			[
+				['Integers', 'Hash Integers'],
+				['Strings', 'Hash Strings'],
+				['True', 'True Hash Function'],
+			],
 			'Hash Type',
 			this.hashTypedropDownGroup,
 		);
@@ -195,7 +198,7 @@ export default class OpenHash extends Hash {
 		} catch (e) {
 			this.shake(this.insertButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 
 		index = this.getEmptyIndex(index, key);
@@ -415,7 +418,7 @@ export default class OpenHash extends Hash {
 		} catch (e) {
 			this.shake(this.deleteButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 
 		index = this.getElemIndex(index, key);
@@ -451,7 +454,7 @@ export default class OpenHash extends Hash {
 		} catch (e) {
 			this.shake(this.findButton);
 			this.cmd(act.setText, this.ExplainLabel, e.message);
-			return;
+			return this.commands;
 		}
 
 		const found = this.getElemIndex(index, key);

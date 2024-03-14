@@ -262,21 +262,14 @@ export default class Hash extends Algorithm {
 	clearCallback() {
 		this.implementAction(this.clear.bind(this));
 	}
-	
-	doHash(input, resetHash) {
-		const desiredMode = (isNaN(parseInt(input))) ? 'strings' : 'integers';
 
-		if ((desiredMode !== this.hashType) && !resetHash) {
-			throw new Error("The type of Key can not change with this operation!");
+	doHash(input, resetHash) {
+		const desiredMode = isNaN(parseInt(input)) ? 'strings' : 'integers';
+
+		if (desiredMode !== this.hashType) {
+			throw new Error(`That key is not a valid input for the hash type "${this.hashType}"`);
 		}
-		const labelInfo = this.nextIndex++;
-		if (!isNaN(parseInt(input)) && resetHash) {
-			this.implementAction(this.changeHashType.bind(this), 'integers');
-			this.hashTypeDropDown.value = 'Integers';
-		} else if (isNaN(parseInt(input)) && resetHash) {
-			this.implementAction(this.changeHashType.bind(this), 'strings');
-			this.hashTypeDropDown.value = 'Strings';
-		}
+
 		if (this.hashType === 'integers') {
 			const labelID1 = this.nextIndex++;
 			const labelID2 = this.nextIndex++;

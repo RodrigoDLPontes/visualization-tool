@@ -60,6 +60,88 @@
 	cursor: default;
 }
 
+@keyframes text-bubble-bounce {
+	0%, 50%, 100% {
+	  transform: translateY(315px) scale(.95); /* Scale remains constant */
+	}
+	50% {
+	  transform: translateY(310px) scale(1.05); /* Adjust the scale as needed */
+	}
+	100% {
+	  transform: translateY(315px) scale(1); /* Adjust the scale as needed */
+	}
+  }
+
+#text-bubble {
+	text-align: center;
+	animation: text-bubble-bounce ease-in-out .3s forwards;
+	background-color: white;
+	color: black;
+	padding: 5px;
+	border-radius: 10px;
+	border: 2px solid black;
+	min-width: 100%;
+}
+
+#text-bubble::before {
+	content: '';
+	position: absolute;
+	top: -60%;
+	left: 10px; /* Position of the triangle */
+	border-width: 15px; /* Size of the triangle */
+	border-style: solid;
+	border-color: transparent transparent black transparent;
+}
+
+#text-bubble::after {
+	content: '';
+	position: absolute;
+	top: -54%;
+	left: 11px; /* Position of the triangle */
+	border-width: 14px; /* Size of the triangle */
+	border-style: solid;
+	border-color: transparent transparent white transparent;
+}
+
+#blob-container {
+	/* background-color: rebeccapurple; */
+	text-align: left;
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	cursor: grab;
+	opacity: 1;
+	width: 160px;
+	height: 160px;
+	margin-bottom: -90px;
+	transition: 0.2s;
+}
+
+#blob-container:hover {
+	width: 165px;
+	height: 165px;
+}
+
+.blobLogo {
+    width: 100px;
+    position: relative;
+    top: 130px;
+	left: 30px;
+    z-index: 2;
+    pointer-events: none;
+    -webkit-pointer-events: none; /* Safari */
+}
+
+.blobLogoSafari {
+    width: 85px;
+    position: relative;
+    left: 95px;
+    bottom: -110px;
+    z-index: 2;
+    pointer-events: none;
+    -webkit-pointer-events: none; /* Safari */
+}
+
 @keyframes banner-ease {
 	from {
 		transform: translateY(-7vw);
@@ -87,12 +169,6 @@
 	justify-content: center;
 	align-items: center;
 	margin-right: 25px;
-}
-
-#blob-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
 }
 
 body {

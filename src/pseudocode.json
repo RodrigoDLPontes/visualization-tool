@@ -1070,7 +1070,7 @@
 				["end procedure"],
 				[""],
 				["procedure findH(data, curr)"],
-				["  if curr is not null:"],
+				["  if curr is null:"],
 				["    return null"],
 				["  else if (data < curr.data):"],
 				["    return recursive call on left child"],

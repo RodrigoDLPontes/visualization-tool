@@ -236,7 +236,7 @@ export default class SelectionSort extends Algorithm {
 
 			this.cmd(act.setText, this.codeID.english[2][0], '  for (i from end to start):');
 			this.cmd(act.setText, this.codeID.english[3][0], '    initialize max value');
-			this.cmd(act.setText, this.codeID.english[4][0], '    for (j from i to start):');
+			this.cmd(act.setText, this.codeID.english[4][0], '    for (j from start to i):');
 			this.cmd(act.setText, this.codeID.english[5][0], '      if (array[j] > max value):');
 			this.cmd(act.setText, this.codeID.english[6][0], '        max value is array[j]');
 			this.cmd(act.setText, this.codeID.english[9][0], '    swap max value with array[i]');

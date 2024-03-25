@@ -1,20 +1,50 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import blobSound from './bark.mp3'; // Import the sound file
 
 const Blob = () => {
 	const [showTextBubble, setShowTextBubble] = useState(false);
+	const [tipIndex, setTipIndex] = useState(0);
+	const [shouldPlaySound, setShouldPlaySound] = useState(false);
+	
+	const imgRef = useRef(null); // Create a ref for the image element
+	const blobTips = [
+        "Welcome to CS 1332's visualization tool!",
+        "Click a data structure or algorithm to go to its visualization page!",
+        "Pause the animation and Step Forward/Back to explore operations.",
+        "Reference the pseudo-code to see how each step is implemented.",
+        "Click the top-right icons to change the pseudo-code or see more info.",
+        "Some pages have additional settings and modes. Play around!",
+		"Keep clicking me for a surprise!",
+		"...",
+		"",
+    ];
 
 	const handleClick = () => {
 		setShowTextBubble(!showTextBubble);
+		if (showTextBubble) {
+			setTipIndex((tipIndex + 1) % blobTips.length);
+			imgRef.current.classList.remove('blobLogo-animate');
+		}
+		if (!blobTips[tipIndex]) {
+			if (imgRef.current) {
+				imgRef.current.src = imgRef.current.src.replace('favicon', 'jack');
+				imgRef.current.classList.add('blobLogo-animate');
+			}
+			setTipIndex((tipIndex + 1) % blobTips.length);
+			setShowTextBubble(false);
+			setShouldPlaySound(true);
+		}
 	};
 
 	return (
 		<div onMouseDown={handleClick}>
+            {shouldPlaySound && <audio src={blobSound} autoPlay onEnded={() => setShouldPlaySound(false)} />}
 			{showTextBubble && (
 				<div id="text-bubble">
-					<div>Welcome to CS 1332's visualization tool!</div>
+					<div>{blobTips[tipIndex]}</div>
 				</div>
 			)}
-			<img src="./favicon.png" alt="" className="blobLogo"  id="blobLogo" />
+			<img src="./favicon.png" alt="" className="blobLogo"  id="blobLogo" ref={imgRef} />
 			<svg
 				version="1.1"
 				xmlns="http://www.w3.org/2000/svg"

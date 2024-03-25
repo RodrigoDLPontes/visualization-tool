@@ -9,6 +9,8 @@ import {
 	BsMoonFill,
 } from 'react-icons/bs';
 import AnimationManager from '../anim/AnimationMain';
+// import Blob from '../components/Blob';
+// import Draggable from 'react-draggable';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import { Link } from 'react-router-dom';
@@ -180,6 +182,11 @@ class AlgoScreen extends React.Component {
 
 						<div id="generalAnimationControlSection">
 							<table id="GeneralAnimationControls" ref={this.animBarRef}></table>
+							{/* <Draggable>
+								<div id="blob-container" className="blob-container-algo">
+									<Blob />
+								</div>
+							</Draggable> */}
 						</div>
 					</div>
 

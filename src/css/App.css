@@ -62,15 +62,15 @@
 
 @keyframes text-bubble-bounce {
 	0%, 50%, 100% {
-	  transform: translateY(315px) scale(.95); /* Scale remains constant */
+	  transform: translateY(335px) scale(.95);
 	}
 	50% {
-	  transform: translateY(310px) scale(1.05); /* Adjust the scale as needed */
+	  transform: translateY(330px) scale(1.05);
 	}
 	100% {
-	  transform: translateY(315px) scale(1); /* Adjust the scale as needed */
+	  transform: translateY(335px) scale(1);
 	}
-  }
+}
 
 #text-bubble {
 	text-align: center;
@@ -81,14 +81,16 @@
 	border-radius: 10px;
 	border: 2px solid black;
 	min-width: 100%;
+	min-height: 60px;
+	align-content: center;
 }
 
 #text-bubble::before {
 	content: '';
 	position: absolute;
-	top: -60%;
-	left: 10px; /* Position of the triangle */
-	border-width: 15px; /* Size of the triangle */
+	top: -44%;
+	left: 10px;
+	border-width: 15px;
 	border-style: solid;
 	border-color: transparent transparent black transparent;
 }
@@ -96,15 +98,14 @@
 #text-bubble::after {
 	content: '';
 	position: absolute;
-	top: -54%;
-	left: 11px; /* Position of the triangle */
-	border-width: 14px; /* Size of the triangle */
+	top: -38%;
+	left: 11px;
+	border-width: 14px;
 	border-style: solid;
 	border-color: transparent transparent white transparent;
 }
 
 #blob-container {
-	/* background-color: rebeccapurple; */
 	text-align: left;
 	display: flex;
 	justify-content: center;
@@ -115,6 +116,13 @@
 	height: 160px;
 	margin-bottom: -90px;
 	transition: 0.2s;
+}
+
+.blob-container-algo {
+	position: absolute;
+	bottom: 20%;
+	right: 80px;
+	z-index: 1;
 }
 
 #blob-container:hover {
@@ -130,6 +138,22 @@
     z-index: 2;
     pointer-events: none;
     -webkit-pointer-events: none; /* Safari */
+}
+
+.blobLogo-animate {
+	animation: blob-logo-bounce ease-in-out .3s forwards;
+}
+
+@keyframes blob-logo-bounce {
+	0%, 50%, 100% {
+	  transform: scale(.8);
+	}
+	50% {
+	  transform: scale(1.4);
+	}
+	100% {
+	  transform: scale(1);
+	}
 }
 
 @keyframes banner-ease {

@@ -1,16 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const Blob = () => {
-	const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 	const [showTextBubble, setShowTextBubble] = useState(false);
-
-	useEffect(() => {
-		const svgElement = document.getElementById('blobSvg');
-		if (isSafari) {
-			svgElement.setAttribute('width', '200%');
-			svgElement.setAttribute('height', '200%');
-		}
-	}, [isSafari]);
 
 	const handleClick = () => {
 		setShowTextBubble(!showTextBubble);
@@ -23,7 +14,7 @@ const Blob = () => {
 					<div>Welcome to CS 1332's visualization tool!</div>
 				</div>
 			)}
-			<img src="./favicon.png" alt="" className={isSafari ? "blobLogoSafari" : "blobLogo"}  id="blobLogo" />
+			<img src="./favicon.png" alt="" className="blobLogo"  id="blobLogo" />
 			<svg
 				version="1.1"
 				xmlns="http://www.w3.org/2000/svg"

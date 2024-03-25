@@ -132,16 +132,6 @@
     -webkit-pointer-events: none; /* Safari */
 }
 
-.blobLogoSafari {
-    width: 85px;
-    position: relative;
-    left: 95px;
-    bottom: -110px;
-    z-index: 2;
-    pointer-events: none;
-    -webkit-pointer-events: none; /* Safari */
-}
-
 @keyframes banner-ease {
 	from {
 		transform: translateY(-7vw);

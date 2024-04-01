@@ -75,13 +75,21 @@ class Header extends React.Component {
 							</Link>
 						</li>
 						<li>
-							<a href="https://github.com/RodrigoDLPontes/visualization-tool" target="_blank" rel="noreferrer">
+							<a
+								href="https://github.com/RodrigoDLPontes/visualization-tool"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<BsGithub size={20} />
 								&nbsp;&nbsp;Source Code
 							</a>
 						</li>
 						<li>
-							<a href="https://forms.gle/j9iMhFi8drjf2PU86" target="_blank" rel="noreferrer">
+							<a
+								href="https://forms.gle/j9iMhFi8drjf2PU86"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<BsEnvelopeFill size={20} />
 								&nbsp;&nbsp;Feedback
 							</a>

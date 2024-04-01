@@ -3,6 +3,9 @@ import * as algos from './algo';
 // After adding the export in algos/index.js, add new algorithms in the following format:
 // AlgorithmName: ['Menu Display Name', algos.ClassName, hasPseudoCode, 'Verbose Display Name (optional)']
 export const algoMap = {
+	NonLinearProbing: ['Non-Linear Probing', algos.NonLinearProbing],
+	LVA: ['LVA', algos.LVA],
+	BogoSort: ['Bogo Sort', algos.BogoSort],
 	ArrayList: ['ArrayList', algos.ArrayList, true],
 	LinkedList: ['Singly LinkedList', algos.LinkedList],
 	DoublyLinkedList: ['Doubly LinkedList', algos.DoublyLinkedList, true],
@@ -60,13 +63,16 @@ export const algoList = [
 	'BST',
 	'Heap',
 	'AVL',
+	'LVA',
 	'BTree',
 	'SplayTree',
 	'SkipList',
 	'HashMaps',
 	'ClosedHash',
 	'OpenHash',
+	'NonLinearProbing',
 	'Sorting and QuickSelect',
+	'BogoSort',
 	'BubbleSort',
 	'CocktailSort',
 	'InsertionSort',

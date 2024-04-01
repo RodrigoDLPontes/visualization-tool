@@ -61,20 +61,22 @@
 }
 
 @keyframes text-bubble-bounce {
-	0%, 50%, 100% {
-	  transform: translateY(335px) scale(.95);
+	0%,
+	50%,
+	100% {
+		transform: translateY(335px) scale(0.95);
 	}
 	50% {
-	  transform: translateY(330px) scale(1.05);
+		transform: translateY(330px) scale(1.05);
 	}
 	100% {
-	  transform: translateY(335px) scale(1);
+		transform: translateY(335px) scale(1);
 	}
 }
 
 #text-bubble {
 	text-align: center;
-	animation: text-bubble-bounce ease-in-out .3s forwards;
+	animation: text-bubble-bounce ease-in-out 0.3s forwards;
 	background-color: white;
 	color: black;
 	padding: 5px;
@@ -131,28 +133,30 @@
 }
 
 .blobLogo {
-    width: 100px;
-    position: relative;
-    top: 130px;
+	width: 100px;
+	position: relative;
+	top: 130px;
 	left: 30px;
-    z-index: 2;
-    pointer-events: none;
-    -webkit-pointer-events: none; /* Safari */
+	z-index: 2;
+	pointer-events: none;
+	-webkit-pointer-events: none; /* Safari */
 }
 
 .blobLogo-animate {
-	animation: blob-logo-bounce ease-in-out .3s forwards;
+	animation: blob-logo-bounce ease-in-out 0.3s forwards;
 }
 
 @keyframes blob-logo-bounce {
-	0%, 50%, 100% {
-	  transform: scale(.8);
+	0%,
+	50%,
+	100% {
+		transform: scale(0.8);
 	}
 	50% {
-	  transform: scale(1.4);
+		transform: scale(1.4);
 	}
 	100% {
-	  transform: scale(1);
+		transform: scale(1);
 	}
 }
 

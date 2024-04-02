@@ -1758,7 +1758,7 @@
 				["  while (i <= n - m):"],
 				["    if (patternHash equals textHash):"],
 				["      j starts at 0"],
-				["      while (j < m and text[i + j] matches pattern[i]):"],
+				["      while (j < m and text[i + j] matches pattern[j]):"],
 				["        move j forward"],
 				["      end while"],
 				["      if (j is m):"],

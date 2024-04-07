@@ -87,7 +87,7 @@ class AlgoScreen extends React.Component {
 			);
 		}
 
-		const isQuickSelect = algoMap[algoName][0] === 'QuickSelect / kᵗʰ Select';
+		const isQuickselect = algoMap[algoName][0] === 'Quickselect / kᵗʰ Select';
 
 		// check for verbose name in algoMap
 		const header = algoMap[algoName][3] ? algoMap[algoName][3] : algoMap[algoName][0];
@@ -98,9 +98,9 @@ class AlgoScreen extends React.Component {
 					<div id="header">
 						<h1>
 							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;
-							{isQuickSelect ? (
+							{isQuickselect ? (
 								<>
-									QuickSelect / k<sup>th</sup> Select
+									Quickselect / k<sup>th</sup> Select
 								</>
 							) : (
 								<>{header}</>

@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
-import { act } from '../anim/AnimationMain';
+import { act } from '../anim/AnimationMain.js';
 import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
@@ -50,7 +50,7 @@ const COMP_COUNT_Y = 50;
 const CODE_START_X = 50;
 const CODE_START_Y = 180;
 
-export default class QuickSort extends Algorithm {
+export default class Quicksort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
 		this.addControls();
@@ -160,7 +160,7 @@ export default class QuickSort extends Algorithm {
 			COMP_COUNT_Y,
 		);
 
-		this.pseudocode = pseudocodeText.QuickSort;
+		this.pseudocode = pseudocodeText.Quicksort;
 		this.codeID = this.addCodeToCanvasBaseAll(
 			this.pseudocode,
 			'find',

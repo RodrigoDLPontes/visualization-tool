@@ -158,7 +158,7 @@ const Modals = {
 			</li>
 		</ul>
 	),
-	QuickSelect: (
+	Quickselect: (
 		<ul>
 			<li>
 				The worst case occurs when we pick a bad pivot everytime (for example, the smallest
@@ -166,7 +166,7 @@ const Modals = {
 			</li>
 		</ul>
 	),
-	QuickSort: (
+	Quicksort: (
 		<ul>
 			<li>
 				The worst case occurs when we pick a bad pivot everytime (for example, the smallest

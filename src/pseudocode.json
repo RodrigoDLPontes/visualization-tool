@@ -1228,10 +1228,10 @@
 			]
 		}
 	},
-	"QuickSort": {
+	"Quicksort": {
 		"find": {
 			"code": [
-				["procedure QuickSort(array, left, right):"],
+				["procedure Quicksort(array, left, right):"],
 				["  pivotIdx ← random index within region being sorted"],
 				["  pivot ← array[pivotIdx]"],
 				["  swap array[left], array[pivotIdx]"],
@@ -1249,12 +1249,12 @@
 				["    end if"],
 				["  end while"],
 				["  swap pivot, array[j]"],
-				["  QuickSort(array, left, j)"],
-				["  QuickSort(array, j + 1, right)"],
+				["  Quicksort(array, left, j)"],
+				["  Quicksort(array, j + 1, right)"],
 				["end procedure"]
 			],
 			"english": [
-				["procedure QuickSort(array, left, right):"],
+				["procedure Quicksort(array, left, right):"],
 				["  pivotIdx is some random index within partition"],
 				["  pivot is the value at pivotIdx"],
 				["  swap array[left] with the pivot"],
@@ -1272,16 +1272,16 @@
 				["    end if"],
 				["  end while"],
 				["  swap the pivot and array[j]"],
-				["  recursively call QuickSort() on the left partition"],
-				["  recursively call QuickSort() on the right partition"],
+				["  recursively call Quicksort() on the left partition"],
+				["  recursively call Quicksort() on the right partition"],
 				["end procedure"]
 			]
 		}
 	},
-	"QuickSelect": {
+	"Quickselect": {
 		"find": {
 			"code": [
-				["procedure QuickSelect(array, left, right, k):"],
+				["procedure Quickselect(array, left, right, k):"],
 				["  pivotIdx = random index within region being sorted"],
 				["  pivot ← array[pivotIdx]"],
 				["  swap array[left], array[pivotIdx]"],
@@ -1302,14 +1302,14 @@
 				["  if j == k - 1:"],
 				["    return array[j]"],
 				["  else if j > k - 1:"],
-				["    QuickSelect(array, left, j - 1, k)"],
+				["    Quickselect(array, left, j - 1, k)"],
 				["  else:"],
-				["    QuickSelect(array, j + 1, right, k)"],
+				["    Quickselect(array, j + 1, right, k)"],
 				["  end if"],
 				["end procedure"]
 			],
 			"english": [
-				["procedure QuickSelect(array, left, right, k):"],
+				["procedure Quickselect(array, left, right, k):"],
 				["  pivotIdx is some random index within partition"],
 				["  pivot is the value at pivotIdx"],
 				["  swap array[left] with the pivot"],
@@ -1330,9 +1330,9 @@
 				["  if (j == k - 1):"],
 				["    return the value at j"],
 				["  else if (j > k - 1):"],
-				["    recursively call QuickSelect() on the left partition"],
+				["    recursively call Quickselect() on the left partition"],
 				["  else:"],
-				["    recursively call QuickSelect() on the right partition"],
+				["    recursively call Quickselect() on the right partition"],
 				["  end if"],
 				["end procedure"]
 			]

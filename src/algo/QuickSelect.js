@@ -31,7 +31,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 	addRadioButtonGroupToAlgorithmBar,
 } from './Algorithm.js';
-import { act } from '../anim/AnimationMain';
+import { act } from '../anim/AnimationMain.js';
 import pseudocodeText from '../pseudocode.json';
 
 const MAX_ARRAY_SIZE = 18;
@@ -50,7 +50,7 @@ const COMP_COUNT_Y = 50;
 const CODE_START_X = 50;
 const CODE_START_Y = 100;
 
-export default class QuickSelect extends Algorithm {
+export default class Quickselect extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
 		this.addControls();
@@ -168,7 +168,7 @@ export default class QuickSelect extends Algorithm {
 		this.infoLabelID = this.nextIndex++;
 		this.cmd(act.createLabel, this.infoLabelID, '', INFO_MSG_X, INFO_MSG_Y, 0);
 
-		this.pseudocode = pseudocodeText.QuickSelect;
+		this.pseudocode = pseudocodeText.Quickselect;
 		this.codeID = this.addCodeToCanvasBaseAll(
 			this.pseudocode,
 			'find',

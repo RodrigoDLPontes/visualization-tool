@@ -161,17 +161,26 @@ const Modals = {
 	Quickselect: (
 		<ul>
 			<li>
-				The worst case occurs when we pick a bad pivot everytime (for example, the smallest
-				or largest element), since we can no longer subvide the array
+				The worst case occurs when we pick a bad pivot every time, such as the mininum or
+				maximum element. Then, one partition will be empty and the other will have all of
+				the remaining data, causing Quickselect to degenerate into a Selection Sort.
+			</li>
+			<li>
+				The best case is with a perfect pivot. This is when the median element is chosen as
+				the pivot, because then each partition will have half of the remaining data.
 			</li>
 		</ul>
 	),
 	Quicksort: (
 		<ul>
 			<li>
-				The worst case occurs when we pick a bad pivot everytime (for example, the smallest
-				or largest element), since we can no longer subvide the array and the algorithms
-				becomes similar to Selection Sort
+				The worst case occurs when we pick a bad pivot every time, such as the mininum or
+				maximum element. Then, one partition will be empty and the other will have all of
+				the remaining data, causing Quicksort to degenerate into a Selection Sort.
+			</li>
+			<li>
+				The best case is with a perfect pivot. This is when the median element is chosen as
+				the pivot, because then each partition will have half of the remaining data.
 			</li>
 		</ul>
 	),

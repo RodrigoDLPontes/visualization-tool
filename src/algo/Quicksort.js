@@ -50,6 +50,9 @@ const COMP_COUNT_Y = 50;
 const CODE_START_X = 50;
 const CODE_START_Y = 180;
 
+let definedPivotIndex = 0;
+let setPivotVerticalGroup;
+
 export default class Quicksort extends Algorithm {
 	constructor(am, w, h) {
 		super(am, w, h);
@@ -103,27 +106,52 @@ export default class Quicksort extends Algorithm {
 
 		// Toggles
 		const pivotButtonList = addRadioButtonGroupToAlgorithmBar(
-			['Random pivot', 'Min element', 'First element', 'Perfect pivot'],
+			['Random pivot', 'Perfect pivot', 'Min element', 'Set index'],
 			'Traversals',
 		);
 
+		// Set Pivot Index field
+		setPivotVerticalGroup = addGroupToAlgorithmBar(false);
+		this.loadFieldLabel = addLabelToAlgorithmBar('Pivot Index', setPivotVerticalGroup);
+		const setPivotVerticalTop = addGroupToAlgorithmBar(true, setPivotVerticalGroup);
+		const setPivotPercentGroup = addGroupToAlgorithmBar(true, setPivotVerticalTop);
+		this.setPivotField = addControlToAlgorithmBar('Text', '', setPivotPercentGroup);
+		this.setPivotField.setAttribute('value', '0');
+		this.setPivotField.size = 1;
+		setPivotVerticalGroup.setAttribute('style', 'display:none');
+		this.setPivotField.addEventListener('input', function() {
+			let value = parseInt(this.value.trim());
+			value = isNaN(value) ? 0 : Math.min(Math.max(value, 0), 17);
+			this.value = value;
+			definedPivotIndex = value;
+		});
+		
+		// Choose Pivot Type
 		this.randomPivotSelect = pivotButtonList[0];
-		this.minPivotSelect = pivotButtonList[1];
-		this.firstPivotSelect = pivotButtonList[2];
-		this.perfectPivotSelect = pivotButtonList[3];
-		this.randomPivotSelect.onclick = () => (this.pivotType = 'random');
-		this.minPivotSelect.onclick = () => (this.pivotType = 'min');
-		this.firstPivotSelect.onclick = () => (this.pivotType = 'first');
-		this.perfectPivotSelect.onclick = () => (this.pivotType = 'perfect');
+		this.perfectPivotSelect = pivotButtonList[1];
+		this.minPivotSelect = pivotButtonList[2];
+		this.setPivotSelect = pivotButtonList[3];
+		this.randomPivotSelect.onclick = () => (this.setPivotType('random'));
+		this.perfectPivotSelect.onclick = () => (this.setPivotType('perfect'));
+		this.minPivotSelect.onclick = () => (this.setPivotType('min'));
+		this.setPivotSelect.onclick = () => (this.setPivotType('set'));
 		this.randomPivotSelect.checked = true;
-		this.pivotType = 'random';
+		this.setPivotType('random');
 
 		this.controls.push(this.randomPivotSelect);
 		this.controls.push(this.perfectPivotSelect);
-		this.controls.push(this.firstPivotSelect);
 		this.controls.push(this.minPivotSelect);
+		this.controls.push(this.setPivotSelect);
 
 		addDivisorToAlgorithmBar();
+	}
+
+	setPivotType (type) {
+		this.pivotType = type;
+		setPivotVerticalGroup.setAttribute('style', 'display:none');
+		if (this.pivotType === 'set') {
+			setPivotVerticalGroup.setAttribute('style', 'display:block');
+		}
 	}
 
 	setup() {
@@ -342,8 +370,8 @@ export default class Quicksort extends Algorithm {
 				}
 			}
 			pivot = min;
-		} else if (this.pivotType === 'first') {
-			pivot = left;
+		} else if (this.pivotType === 'set') {
+			pivot = Math.min(left + definedPivotIndex, right);
 		} else if (this.pivotType === 'perfect') {
 			const sorted = this.arrayData.slice(left, right + 1);
 			sorted.sort((a, b) => a - b);
@@ -610,22 +638,6 @@ export default class Quicksort extends Algorithm {
 		this.cmd(act.setForegroundColor, this.jPointerID, '#0000FF');
 		this.cmd(act.step);
 	}
-
-	// toggleWorstPivot() {
-	// 	worstPivotEnabled = !worstPivotEnabled;
-	// 	if (firstPivotEnabled) {
-	// 		firstPivotEnabled = false;
-	// 		this.firstPivotToggle.checked = false;
-	// 	}
-	// }
-
-	// toggleFirstPivot() {
-	// 	firstPivotEnabled = !firstPivotEnabled;
-	// 	if (worstPivotEnabled) {
-	// 		worstPivotEnabled = false;
-	// 		this.worstPivotToggle.checked = false;
-	// 	}
-	// }
 
 	disableUI() {
 		for (let i = 0; i < this.controls.length; i++) {

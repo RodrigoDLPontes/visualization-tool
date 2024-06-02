@@ -28,6 +28,7 @@ import Algorithm, {
 	addCheckboxToAlgorithmBar,
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addDropDownGroupToAlgorithmBar,
 	addGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
@@ -97,15 +98,22 @@ export default class LSDRadix extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		const verticalGroup2 = addGroupToAlgorithmBar(false);
-
-		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random', verticalGroup2);
-		this.randomButton.onclick = this.randomCallback.bind(this);
-		this.controls.push(this.randomButton);
+		// Exanmples dropdown
+		this.exampleDropdown = addDropDownGroupToAlgorithmBar(
+			[
+				['', 'Select Example'],
+				['603,509,701,404,307,909,102,800,401', 'Zero in 10\'s Place'],
+				['362980,46,99,76,69,80,35,28,11', 'One Long Number'],
+				['191,225,326,421,537,676,760,845,924', 'Sorted'],
+				['Random', 'Random'],
+			],
+			'Example'
+		);
+		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
+		this.controls.push(this.exampleDropdown);
 
 		// Clear button
-		this.clearButton = addControlToAlgorithmBar('Button', 'Clear', verticalGroup2);
+		this.clearButton = addControlToAlgorithmBar('Button', 'Clear');
 		this.clearButton.onclick = this.clearCallback.bind(this);
 		this.controls.push(this.clearButton);
 
@@ -161,23 +169,34 @@ export default class LSDRadix extends Algorithm {
 		this.implementAction(this.sort.bind(this), list);
 	}
 
-	randomCallback() {
-		//Generate between 5 and 15 random values
-		const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
-		let MIN_DATA_VALUE = 1;
-		if (negativeNumbersEnabled) {
-			MIN_DATA_VALUE = -500;
+	exampleCallback() {
+		const selection = this.exampleDropdown.value
+		if (!selection) {
+			return;
 		}
-		const MAX_DATA_VALUE = 500;
+
 		let values = '';
-		for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
-			values += (
-				Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
-			).toString();
-			if (i < RANDOM_ARRAY_SIZE - 1) {
-				values += ',';
+		if (selection === 'Random') {
+			//Generate between 5 and 15 random values
+			const RANDOM_ARRAY_SIZE = Math.floor(Math.random() * 9) + 5;
+			let MIN_DATA_VALUE = 1;
+			if (negativeNumbersEnabled) {
+				MIN_DATA_VALUE = -500;
 			}
+			const MAX_DATA_VALUE = 500;
+			values = '';
+			for (let i = 0; i < RANDOM_ARRAY_SIZE; i++) {
+				values += (
+					Math.floor(Math.random() * (MAX_DATA_VALUE - MIN_DATA_VALUE)) + MIN_DATA_VALUE
+				).toString();
+				if (i < RANDOM_ARRAY_SIZE - 1) {
+					values += ',';
+				}
+			}
+		} else {
+			values = selection;
 		}
+		this.exampleDropdown.value = ''
 		this.listField.value = values;
 	}
 

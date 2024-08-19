@@ -91,7 +91,7 @@ export default class Quicksort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		// Exanmples dropdown
+		// Examples dropdown
 		this.exampleDropdown = addDropDownGroupToAlgorithmBar(
 			[
 				['', 'Select Example'],
@@ -100,7 +100,7 @@ export default class Quicksort extends Algorithm {
 				['2,3,4,5,6,7,8,9,1', 'Almost Sorted'],
 				['Random', 'Random'],
 			],
-			'Example'
+			'Example',
 		);
 		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
 		this.controls.push(this.exampleDropdown);
@@ -127,22 +127,22 @@ export default class Quicksort extends Algorithm {
 		this.setPivotField.setAttribute('value', '0');
 		this.setPivotField.size = 1;
 		setPivotVerticalGroup.setAttribute('style', 'display:none');
-		this.setPivotField.addEventListener('input', function() {
+		this.setPivotField.addEventListener('input', function () {
 			let value = parseInt(this.value.trim());
 			value = isNaN(value) ? 0 : Math.min(Math.max(value, 0), 17);
 			this.value = value;
 			definedPivotIndex = value;
 		});
-		
+
 		// Choose Pivot Type
 		this.randomPivotSelect = pivotButtonList[0];
 		this.perfectPivotSelect = pivotButtonList[1];
 		this.minPivotSelect = pivotButtonList[2];
 		this.setPivotSelect = pivotButtonList[3];
-		this.randomPivotSelect.onclick = () => (this.setPivotType('random'));
-		this.perfectPivotSelect.onclick = () => (this.setPivotType('perfect'));
-		this.minPivotSelect.onclick = () => (this.setPivotType('min'));
-		this.setPivotSelect.onclick = () => (this.setPivotType('set'));
+		this.randomPivotSelect.onclick = () => this.setPivotType('random');
+		this.perfectPivotSelect.onclick = () => this.setPivotType('perfect');
+		this.minPivotSelect.onclick = () => this.setPivotType('min');
+		this.setPivotSelect.onclick = () => this.setPivotType('set');
 		this.randomPivotSelect.checked = true;
 		this.setPivotType('random');
 
@@ -154,7 +154,7 @@ export default class Quicksort extends Algorithm {
 		addDivisorToAlgorithmBar();
 	}
 
-	setPivotType (type) {
+	setPivotType(type) {
 		this.pivotType = type;
 		setPivotVerticalGroup.setAttribute('style', 'display:none');
 		if (this.pivotType === 'set') {
@@ -231,7 +231,7 @@ export default class Quicksort extends Algorithm {
 	}
 
 	exampleCallback() {
-		const selection = this.exampleDropdown.value
+		const selection = this.exampleDropdown.value;
 		if (!selection) {
 			return;
 		}
@@ -253,7 +253,7 @@ export default class Quicksort extends Algorithm {
 		} else {
 			values = selection;
 		}
-		this.exampleDropdown.value = ''
+		this.exampleDropdown.value = '';
 		this.listField.value = values;
 	}
 

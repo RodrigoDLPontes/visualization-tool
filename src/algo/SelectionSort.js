@@ -103,7 +103,7 @@ export default class SelectionSort extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		// Exanmples dropdown
+		// Examples dropdown
 		this.exampleDropdown = addDropDownGroupToAlgorithmBar(
 			[
 				['', 'Select Example'],
@@ -112,7 +112,7 @@ export default class SelectionSort extends Algorithm {
 				['2,3,4,5,6,7,8,9,1', 'Almost Sorted'],
 				['Random', 'Random'],
 			],
-			'Example'
+			'Example',
 		);
 		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
 		this.controls.push(this.exampleDropdown);
@@ -195,7 +195,7 @@ export default class SelectionSort extends Algorithm {
 	}
 
 	exampleCallback() {
-		const selection = this.exampleDropdown.value
+		const selection = this.exampleDropdown.value;
 		if (!selection) {
 			return;
 		}
@@ -217,7 +217,7 @@ export default class SelectionSort extends Algorithm {
 		} else {
 			values = selection;
 		}
-		this.exampleDropdown.value = ''
+		this.exampleDropdown.value = '';
 		this.listField.value = values;
 	}
 

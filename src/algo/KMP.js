@@ -27,6 +27,7 @@
 import Algorithm, {
 	addControlToAlgorithmBar,
 	addDivisorToAlgorithmBar,
+	addDropDownGroupToAlgorithmBar,
 	addLabelToAlgorithmBar,
 } from './Algorithm.js';
 import { act } from '../anim/AnimationMain';
@@ -96,10 +97,24 @@ export default class KMP extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		// Random data button
-		this.randomButton = addControlToAlgorithmBar('Button', 'Random');
-		this.randomButton.onclick = this.randomCallback.bind(this);
-		this.controls.push(this.randomButton);
+		// Examples dropdown
+		this.exampleDropdown = addDropDownGroupToAlgorithmBar(
+			[
+				['', 'Select Example'],
+				['Random', 'Random'],
+				['aaaa in aaaaaaaaaaaaa', 'aaaa in aaaaaaaaaaaaa'],
+				['aaab in aaaaaaaaaaaaa', 'aaab in aaaaaaaaaaaaa'],
+				['baaa in aaaaaaaaaaaaa', 'baaa in aaaaaaaaaaaaa'],
+				['aaaa in aaabaaabaaaba', 'aaaa in aaabaaabaaaba'],
+				['aaab in aaabaaabaaaba', 'aaab in aaabaaabaaaba'],
+				['baaa in aaabaaabaaaba', 'baaa in aaabaaabaaaba'],
+				['abab in abacabacababa', 'abab in abacabacababa'],
+				['lack in sphinxofblackquartz', 'lack in sphinxofblackquartz'],
+			],
+			'Example'
+		);
+		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
+		this.controls.push(this.exampleDropdown);
 
 		addDivisorToAlgorithmBar();
 
@@ -155,35 +170,49 @@ export default class KMP extends Algorithm {
 		this.implementAction(this.find.bind(this), text, pattern);
 	}
 
-	randomCallback() {
-		// The array indices correspond to each other
-		const textValues = [
-			'THISISATESTTEXT',
-			'ABABABABABABABABABABA',
-			'GGACTGA',
-			'BBBBAABBBAB',
-			'Machine Learning',
-			'Sphinxofblackquartz',
-			'BBBBBBBBBBBBBBBBBBBBA',
-			'AAAAABAAABA',
-			'AABCCAADDEE',
-		];
-		const patternValues = [
-			'TEST',
-			'ABABAB',
-			'ACT',
-			'BAB',
-			'in',
-			'quartz',
-			'BBBBBA',
-			'AAAA',
-			'FAA',
-		];
+	exampleCallback() {
+		const selection = this.exampleDropdown.value
+		if (!selection) {
+			return;
+		}
 
-		const randomIndex = Math.floor(Math.random() * textValues.length);
+		let textValue;
+		let patternValue;
+		
+		if (selection === 'Random') {
+			patternValue = this.generateRandomString(3, 'abc');
+			textValue = this.generateRandomString(15, 'abc', patternValue);
+		} else {
+			const values = selection.split(' in ');
+			textValue = values[1];
+			patternValue = values[0];
+		}
 
-		this.textField.value = textValues[randomIndex];
-		this.patternField.value = patternValues[randomIndex];
+		this.textField.value = textValue;
+		this.patternField.value = patternValue;
+		this.exampleDropdown.value = '';
+	}
+
+	// Create a random text or pattern string provided length, character set, and optionally force-include given string
+	generateRandomString(length, characters, mustInclude) {
+		let result = '';
+		if (mustInclude) {
+			const randomPosition = Math.floor(Math.random() * (length - mustInclude.length + 1));
+			for (let i = 0; i < length; i++) {
+				if (i >= randomPosition && i < randomPosition + mustInclude.length) {
+					result += mustInclude[i - randomPosition];
+				} else {
+					const randomIndex = Math.floor(Math.random() * characters.length);
+					result += characters[randomIndex];
+				}
+			}
+		} else {
+			for (let i = 0; i < length; i++) {
+				const randomIndex = Math.floor(Math.random() * characters.length);
+				result += characters[randomIndex];
+			}
+		}
+		return result;
 	}
 
 	buildFailureTableCallback() {

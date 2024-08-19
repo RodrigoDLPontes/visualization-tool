@@ -98,16 +98,16 @@ export default class LSDRadix extends Algorithm {
 
 		addDivisorToAlgorithmBar();
 
-		// Exanmples dropdown
+		// Examples dropdown
 		this.exampleDropdown = addDropDownGroupToAlgorithmBar(
 			[
 				['', 'Select Example'],
-				['603,509,701,404,307,909,102,800,401', 'Zero in 10\'s Place'],
+				['603,509,701,404,307,909,102,800,401', "Zero in 10's Place"],
 				['362980,46,99,76,69,80,35,28,11', 'One Long Number'],
 				['191,225,326,421,537,676,760,845,924', 'Sorted'],
 				['Random', 'Random'],
 			],
-			'Example'
+			'Example',
 		);
 		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
 		this.controls.push(this.exampleDropdown);
@@ -170,7 +170,7 @@ export default class LSDRadix extends Algorithm {
 	}
 
 	exampleCallback() {
-		const selection = this.exampleDropdown.value
+		const selection = this.exampleDropdown.value;
 		if (!selection) {
 			return;
 		}
@@ -196,7 +196,7 @@ export default class LSDRadix extends Algorithm {
 		} else {
 			values = selection;
 		}
-		this.exampleDropdown.value = ''
+		this.exampleDropdown.value = '';
 		this.listField.value = values;
 	}
 

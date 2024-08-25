@@ -100,6 +100,190 @@
 			]
 		}
 	},
+	"SinglyLinkedList": {
+		"addFront": {
+			"code": [
+				["procedure addFront(data)"],
+				["  if size == 0"],
+				["    head ← new Node(data)"],
+				["  else"],
+				["    Node newHead ← new Node(data)"],
+				["    newHead.next ← head"],
+				["    head ← newHead"],
+				["  end if"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addFront(data)"],
+				["  if size == 0"],
+				["    head ← new Node(data)"],
+				["  else"],
+				["    Node newHead ← new Node(data)"],
+				["    newHead.next ← head"],
+				["    head ← newHead"],
+				["  end if"],
+				["  size++"],
+				["end procedure"]
+			]
+		},
+		"addBack": {
+			"code": [
+				["procedure addBack(data)"],
+				["  if size == 0"],
+				["    head ← new Node(data)"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to size - 2, i++:"],
+				["      curr = curr.next"],
+				["    curr.next ← new Node(data)"],
+				["  end if"],
+				["  size++"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addBack(data)"],
+				["  if (list is empty):"],
+				["    head points to new node with data"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before back):"],
+				["      curr moves to next node"],
+				["    curr.next points to new node with data"],
+				["  end if"],
+				["  increment size"],
+				["end procedure"]
+			]
+		},
+		"addIndex": {
+			"code": [
+				["procedure addAtIndex(index, data)"],
+				["  if index == 0"],
+				["    addFront(data)"],
+				["  else if index == size"],
+				["    addBack(data)"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to index - 2, i++:"],
+				["      curr = curr.next"],
+				["    end for"],
+				["    Node newNode ← new Node(data)"],
+				["    newNode.next ← curr.next"],
+				["    curr ← newNode"],
+				["    size++"],
+				["  end if"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure addAtIndex(index, data)"],
+				["  if (index is at the front):"],
+				["    call addFront with data"],
+				["  else (index is at the back):"],
+				["    call addBack with data"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before index):"],
+				["      curr moves to next node"],
+				["    end for"],
+				["    create newNode node with data"],
+				["    newNode.next points to curr.next"],
+				["    curr points to newNode"],
+				["    increment size"],
+				["  end if"],
+				["end procedure"]
+			]
+		},
+		"removeFront": {
+			"code": [
+				["procedure removeFront()"],
+				["  T data ← head.data"],
+				["  head ← head.next"],
+				["  size--"],
+				["  return data"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFront()"],
+				["  copy data at head to temp"],
+				["  head moves to next node"],
+				["  decrement size"],
+				["  return temp"],
+				["end procedure"]
+			]
+		},
+		"removeBack": {
+			"code": [
+				["procedure removeBack()"],
+				["  if size == 1:"],
+				["    removeFront()"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to size - 2"],
+				["      curr ← curr.next"],
+				["    end for"],
+				["    T data ← curr.next.data"],
+				["    curr.next ← null"],
+				["    size--"],
+				["    return data"],
+				["  end if"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeBack()"],
+				["  if (list has 1 node):"],
+				["    call removeFront"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before back):"],
+				["      curr moves to next node"],
+				["    end for"],
+				["    copy data at curr.next to temp"],
+				["    null out curr.next"],
+				["    decrement size"],
+				["    return temp"],
+				["  end if"],
+				["end procedure"]
+			]
+		},
+		"removeIndex":{
+			"code": [
+				["procedure removeFromIndex(index)"],
+				["  if index == 0"],
+				["    removeFront()"],
+				["  else if index == size - 1"],
+				["    removeBack()"],
+				["  else"],
+				["    Node curr ← head"],
+				["    for i ← 0 to index - 2, i++"],
+				["      curr ← curr.next"],
+				["    end for"],
+				["    T data ← curr.next.data"],
+				["    curr.next ← curr.next.next"],
+				["    size--"],
+				["    return data"],
+				["  end if"],
+				["end procedure"]
+			],
+			"english": [
+				["procedure removeFromIndex(index)"],
+				["  if (index is at the front):"],
+				["    call removeFront"],
+				["  else if (index is at the back):"],
+				["    call removeBack"],
+				["  else:"],
+				["    curr points to head"],
+				["    for (i from front to node before index):"],
+				["      curr moves to next node"],
+				["    end for"],
+				["    copy data at curr to temp"],
+				["    curr.next points to curr.next.next"],
+				["    decrement size"],
+				["    return temp"],
+				["  end if"],
+			    ["end procedure"]
+			]
+		}
+	},
 	"DoublyLinkedList": {
 		"addFront": {
 			"code": [
@@ -1941,13 +2125,15 @@
 				["  end for"],
 				["  while PQ.size > 0 and VS.size < G.vertices.size:"],
 				["    edge(u, w) ← PQ.dequeue()"],
-				["    MST.add(edge(u, w))"],
-				["    VS.add(w)"],
-				["    for all edge(w, x) adjacent to w:"],
-				["      if x not in VS:"],
-				["        PQ.enqueue(edge(w, x))"],
-				["      end if"],
-				["    end for"],
+				["    if w not in VS:"],
+				["      MST.add(edge(u, w))"],
+				["      VS.add(w)"],
+				["      for all edge(w, x) adjacent to w:"],
+				["        if x not in VS:"],
+				["          PQ.enqueue(edge(w, x))"],
+				["        end if"],
+				["      end for"],
+				["    end if"],
 				["  end while"],
 				["  return MST"],
 				["end procedure"]
@@ -1963,13 +2149,15 @@
 				["  end for"],
 				["  while (queue is not empty and visited set is not full):"],
 				["    dequeue edge between vertices V, W"],
-				["    add edge to MST"],
-				["    add W to visited set"],
-				["    for each edge adjacent to W:"],
-				["      if (other endpoint vertex is not visited):"],
-				["        enqueue edge between W and other endpoint vertex"],
-				["      end if"],
-				["    end for"],
+				["    if (W is not visited):"],
+				["      add edge to MST"],
+				["      add W to visited set"],
+				["      for each edge adjacent to W:"],
+				["        if (other endpoint vertex is not visited):"],
+				["          enqueue edge between W and other endpoint vertex"],
+				["        end if"],
+				["      end for"],
+				["    end if"],
 				["  end while"],
 				["  return MST"],
 				["end procedure"]

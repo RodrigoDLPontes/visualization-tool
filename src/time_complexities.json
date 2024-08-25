@@ -1,22 +1,23 @@
 {
     "ArrayList": {
-        "addToFront": {
-            "name": "Add to Front",
+        "Add to Front": {
             "best": {
                 "big_o": "O(n)",
-                "explanation": "You always have to shift every element to the left."
+                "explanation": "You always have to shift $n$ elements to the right.",
+                "example": "[null, null, null, null] add 0"
             },
             "average": {
                 "big_o": "O(n)",
-                "explanation": "You always have to shift every element to the left."
+                "explanation": "You always have to shift $n$ elements to the right.",
+                "example": "[1, 2, 3, null] add 0"
             },
             "worst": {
                 "big_o": "O(n)",
-                "explanation": "Resizing the array and shifting every element are each $O(n)$."
+                "explanation": "Resizing the array and shifting $n$ elements are each $O(n)$.",
+                "example": "[1, 2, 3, 4] add 0"
             }
         },
-        "addToBack": {
-            "name": "Add to Back",
+        "Add to Back": {
             "best": {
                 "big_o": "O(1)",
                 "explanation": "No shifting is needed because the array is not full."
@@ -30,8 +31,33 @@
                 "explanation": "If the array is full, you have to resize it by making a new array."
             }
         },
-        "removeAtIndex": {
-            "name": "Remove at Index",
+        "Add at Index": {
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Adding to the back of the array."
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "Some elements will be shifted to the right; on average, $n/2$ will."
+            },
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Resizing the array and shifting every element are each $O(n)$."
+            }
+        },
+        "Remove from Front": {
+            "all cases": {
+                "big_o": "O(n)",
+                "explanation": "You always have to shift every element to the left."
+            }
+        },
+        "Remove from Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "No shifting or resize is ever needed."
+            }
+        },
+        "Remove at Index": {
             "best": {
                 "big_o": "O(1)",
                 "explanation": "If you remove the last element, you don't have to shift anything."
@@ -48,7 +74,7 @@
     },
 
     "Quicksort": {
-        "run": {
+        "Quicksort": {
             "best": {
                 "big_o": "O(nlog(n))",
                 "explanation": "The pivot is perfect (the median) in every partition.",
@@ -56,11 +82,13 @@
             },
             "average": {
                 "big_o": "O(nlog(n))",
-                "explanation": "On average, the data is split roughly in half each partition."
+                "explanation": "On average, the data is split roughly in half each partition.",
+                "example": "[3, 2, 4, 1, 5, 6] with 3 as the pivot"
             },
             "worst": {
                 "big_o": "O(n²)",
-                "explanation": "The worst pivot (min or max) is chosen each partition, devolving into a selection sort."
+                "explanation": "The worst pivot (min or max) is chosen each partition, devolving into a selection sort.",
+                "example": "[3, 2, 4, 1, 5] with 5 as the pivot"
             }
         }
     }

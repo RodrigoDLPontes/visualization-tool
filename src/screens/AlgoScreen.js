@@ -1,243 +1,395 @@
-import '../css/AlgoScreen.css';
-import '../css/App.css';
-import {
-	BsBookHalf,
-	BsClock,
-	BsFileEarmarkCodeFill,
-	BsFileEarmarkFill,
-	BsFileEarmarkFontFill,
-	BsFillSunFill,
-	BsMoonFill,
-} from 'react-icons/bs';
-import AnimationManager from '../anim/AnimationMain';
-// import Blob from '../components/Blob';
-// import Draggable from 'react-draggable';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import React from 'react';
-import ReactGA from 'react-ga4';
-import { algoMap } from '../AlgoList';
-import bigOModals from '../modals/BigOModals';
-import infoModals from '../modals/InfoModals';
-
-class AlgoScreen extends React.Component {
-	constructor(props) {
-		super(props);
-
-		const algoName = props.location.pathname.slice(1);
-		this.canvasRef = React.createRef();
-		this.animBarRef = React.createRef();
-
-		this.state = {
-			algoName: algoName,
-			moreInfoEnabled: false,
-			bigOEnabled: false,
-			width: 0,
-			theme: 'light',
-			pseudocodeType: 'english',
-		};
-		ReactGA.send({ hitType: 'pageview', page: algoName });
-	}
-
-	getState() {
-		return this.state;
-	}
-
-	componentDidMount() {
-		if (algoMap[this.state.algoName]) {
-			this.animManag = new AnimationManager(this.canvasRef, this.animBarRef);
-
-			this.currentAlg = new algoMap[this.state.algoName][1](
-				this.animManag,
-				this.canvasRef.current.width,
-				this.canvasRef.current.height,
-			);
-			window.addEventListener('resize', this.updateDimensions);
-		}
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.updateDimensions);
-	}
-
-	updateDimensions = () => {
-		this.animManag.changeSize(document.body.clientWidth);
-	};
-
-	render() {
-		const algoName = this.state.algoName;
-		const theme = this.props.theme;
-		const toggleTheme = this.props.toggleTheme;
-		const pseudocode = this.state.pseudocodeType;
-
-		if (!algoMap[algoName]) {
-			return (
-				<div className="container">
-					<Header />
-					<div className="content">
-						<div className="four-o-four">
-							<h1>404!</h1>
-							<h3>
-								Algorithm not found! Click <Link to="/">here</Link> to return to the
-								home screen and choose another algorithm.
-							</h3>
-						</div>
-					</div>
-					<Footer />
-				</div>
-			);
-		}
-
-		const isQuickselect = algoMap[algoName][0] === 'Quickselect / kᵗʰ Select';
-
-		// check for verbose name in algoMap
-		const header = algoMap[algoName][3] ? algoMap[algoName][3] : algoMap[algoName][0];
-
-		return (
-			<div className="VisualizationMainPage">
-				<div id="container">
-					<div id="header">
-						<h1>
-							<Link to="/">&#x3008;</Link>&nbsp;&nbsp;
-							{isQuickselect ? (
-								<>
-									Quickselect / k<sup>th</sup> Select
-								</>
-							) : (
-								<>{header}</>
-							)}
-							<div id="toggle">
-								{theme === 'light' ? (
-									<BsFillSunFill
-										size={31}
-										onClick={toggleTheme}
-										color="#f9c333"
-										className="rotate-effect"
-									/>
-								) : (
-									<BsMoonFill
-										size={29}
-										onClick={toggleTheme}
-										color="#d4f1f1"
-										className="rotate-effect"
-									/>
-								)}
-							</div>
-						</h1>
-					</div>
-
-					<div id="mainContent">
-						<div id="algoControlSection">
-							<table id="AlgorithmSpecificControls"></table>
-							<div id="toggles">
-								{algoMap[algoName][2] && pseudocode === 'none' && (
-									<BsFileEarmarkFill
-										className="pseudocode-toggle"
-										size={32}
-										onClick={this.togglePseudocode}
-										opacity={'40%'}
-										title="Code: Hidden"
-									/>
-								)}
-								{algoMap[algoName][2] && pseudocode === 'english' && (
-									<BsFileEarmarkFontFill
-										className="pseudocode-toggle"
-										size={32}
-										onClick={this.togglePseudocode}
-										title="Code: English"
-									/>
-								)}
-								{algoMap[algoName][2] && pseudocode === 'code' && (
-									<BsFileEarmarkCodeFill
-										className="pseudocode-toggle"
-										size={32}
-										onClick={this.togglePseudocode}
-										title="Code: Pseudo"
-									/>
-								)}
-								{bigOModals(algoName) && (
-									<BsClock
-										className="menu-modal"
-										size={30}
-										onClick={this.toggleBigO}
-										opacity={this.state.bigOEnabled ? '100%' : '40%'}
-										title="Time Complexities"
-									/>
-								)}
-								{infoModals[algoName] && (
-									<BsBookHalf
-										className="menu-modal"
-										size={30}
-										onClick={this.toggleMoreInfo}
-										opacity={this.state.moreInfoEnabled ? '100%' : '40%'}
-										title="More Information"
-									/>
-								)}
-								
-							</div>
-						</div>
-
-						<div className="viewport">
-							<canvas
-								id="canvas"
-								width={this.state.width}
-								height="505"
-								ref={this.canvasRef}
-							></canvas>
-							{this.state.moreInfoEnabled && (
-								<div className="modal">
-									<div className="modal-content">{infoModals[algoName]}</div>
-								</div>
-							)}
-							{this.state.bigOEnabled && (
-								<div className="modal bigo">
-									<div className="modal-content">{bigOModals(algoName)}</div>
-								</div>
-							)}
-						</div>
-
-						<div id="generalAnimationControlSection">
-							<table id="GeneralAnimationControls" ref={this.animBarRef}></table>
-							{/* <Draggable>
-								<div id="blob-container" className="blob-container-algo">
-									<Blob />
-								</div>
-							</Draggable> */}
-						</div>
-					</div>
-
-					<div id="footer">
-						<p>
-							<Link to="/">Return to Home Page</Link>
-						</p>
-					</div>
-				</div>
-			</div>
-		);
-	}
-
-	toggleMoreInfo = () => {
-		this.setState(state => ({ bigOEnabled: false }));
-		this.setState(state => ({ moreInfoEnabled: !state.moreInfoEnabled }));
-	} 
-
-	toggleBigO = () => {
-		this.setState(state => ({ moreInfoEnabled: false }));
-		this.setState(state => ({ bigOEnabled: !state.bigOEnabled }));
-	}
-
-	togglePseudocode = () => {
-		const pseudocodeMap = { none: 'english', english: 'code', code: 'none' };
-		this.animManag.updateLayer(32, this.state.pseudocodeType === 'none');
-		this.animManag.updateLayer(33, this.state.pseudocodeType === 'english');
-		this.setState(state => ({ pseudocodeType: pseudocodeMap[state.pseudocodeType] }));
-	};
+[data-theme='light'] {
+	--primary: #282828;
+	--control: #f2f2f2;
+	--border: #282828;
+	--button: #f2f2f2;
+	--header: #012f57;
+	--filter: brightness(85%);
+	--shadow: rgba(0, 0, 0, 0.75);
+	--slider: #f9c333;
 }
 
-AlgoScreen.propTypes = {
-	location: PropTypes.object,
-};
+[data-theme='dark'] {
+	--primary: #f2f2f2;
+	--control: #282828;
+	--border: #f2f2f2;
+	--button: #282828;
+	--header: #282828;
+	--filter: brightness(185%);
+	--shadow: rgba(242, 242, 242, 0.1);
+	--slider: #d4f1f1;
+}
 
-export default AlgoScreen;
+* {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+}
+
+.VisualizationMainPage body {
+	font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.VisualizationMainPage #mainContent {
+	/* padding: 0 20px; /* remember that padding is the space inside the div box and margin is the space outside the div box */
+	background: #ffffff;
+	font-family: 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+.VisualizationMainPage #container {
+	background: #ffffff;
+	/* margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	text-align: left; /* this overrides the text-align: center on the body element. */
+}
+
+.VisualizationMainPage #toggle {
+	margin-top: 8px;
+	margin-right: 24px;
+	float: right;
+	position: relative;
+	transition: 0.2s ease-out;
+}
+
+.VisualizationMainPage #toggle:hover {
+	cursor: pointer;
+}
+
+.VisualizationMainPage #algoControlSection {
+	background: var(--control);
+	color: #000000;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: var(--border) 2px solid;
+	transition: all 0.4s ease 0s;
+	padding: 5px 5px;
+}
+
+.VisualizationMainPage #toggles * {
+	margin: 0 10px;
+	color: var(--primary);
+}
+
+.VisualizationMainPage #AlgorithmSpecificControls {
+	color: var(--primary);
+	font-size: 18px;
+	transition: all 0.4s ease 0s;
+	vertical-align: middle;
+	padding: 5px 5px;
+}
+
+.VisualizationMainPage .viewport {
+	position: relative;
+}
+
+.VisualizationMainPage #generalAnimationControlSection {
+	background: var(--control);
+	border-top: 2px var(--border) solid;
+	transition: all 0.4s ease 0s;
+}
+
+.VisualizationMainPage #GeneralAnimationControls {
+	padding: 2px 5px;
+}
+
+.VisualizationMainPage #header {
+	background: var(--header);
+	border-bottom: 1.5px var(--border) solid;
+	color: #fffff0;
+	padding: 0 10px 0 5px;
+	transition: all 0.4s ease 0s;
+	font-family: 'Cabin', 'Roboto', Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-weight: 400;
+}
+
+.VisualizationMainPage #header a:visited {
+	text-decoration: none;
+	color: #fffff0;
+}
+
+.VisualizationMainPage #header a:focus {
+	outline: none;
+}
+
+.VisualizationMainPage #header h1 {
+	margin: 0;
+	padding: 10px 0;
+}
+
+.VisualizationMainPage #header a:link {
+	text-decoration: none;
+	color: white;
+}
+
+.VisualizationMainPage #container {
+	background: #ffffff;
+	margin: 0 auto; /* the auto margins (in conjunction with a width) center the page */
+	text-align: left; /* this overrides the text-align: center on the body element. */
+}
+
+.VisualizationMainPage #footer a:visited {
+	text-decoration: none;
+	color: white;
+}
+
+.VisualizationMainPage #footer a:link {
+	text-decoration: none;
+	color: white;
+}
+
+.VisualizationMainPage #mainContent h1 {
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
+}
+
+.VisualizationMainPage #mainContent h2 {
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
+}
+
+.VisualizationMainPage #mainContent h3 {
+	padding: 0 20px;
+	background: #ffffff;
+	color: #4277bb;
+}
+
+.VisualizationMainPage #footer {
+	padding: 0 10px;
+	background: var(--header);
+	border-top: 1.5px var(--border) solid;
+	border-bottom: 1.5px var(--border) solid;
+	color: #f7c245;
+}
+
+.VisualizationMainPage #footer p {
+	margin: 0;
+	padding: 10px 0;
+}
+
+em {
+	text-decoration: bold;
+}
+
+.menu-modal {
+	width: 35px;
+	height: 35px;
+	margin-right: 20px;
+	cursor: pointer;
+	transition: 0.2s;
+	color: var(--primary);
+}
+
+.menu-modal:hover {
+	filter: var(--filter);
+	scale: 125%;
+}
+.pseudocode-toggle {
+	cursor: pointer;
+	transition: 0.2s;
+}
+.pseudocode-toggle:hover {
+	scale: 125%;
+}
+.VisualizationMainPage .modal {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	width: 20%;
+	height: 90%;
+}
+
+.VisualizationMainPage .bigo {
+	border-collapse: collapse; /* Ensures borders are not doubled */
+	position: absolute;
+	min-width: 35%;
+}
+
+.bigo th,
+.bigo td {
+	padding: 5px;
+	min-width: 50px;
+	color: black;
+	border: 1px solid gray; /* Adds border to table cells */
+}
+
+.bigo table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.bigo h4 {
+	margin: 0;
+	font-size: large;
+}
+
+.bigo .blur {
+	filter: blur(5px);
+	transition: filter 0.3s ease; /* Smooth transition */
+}
+
+.VisualizationMainPage .modal-content {
+	max-height: 100%;
+	overflow-y: auto; /* Adds a vertical scrollbar when content exceeds max height */
+	padding: 15px 30px 15px 30px;
+	border-radius: 20px;
+	background-color: var(--control);
+	transition: all 0.4s ease 0s;
+	box-shadow: 0px 0px 5px var(--shadow);
+}
+
+.VisualizationMainPage .modal-content ul {
+	list-style-type: none; /* Makes bullet points invisible */
+	padding-left: 0; /* Removes default padding */
+}
+
+.VisualizationMainPage .modal-content li {
+	line-height: 1.4em;
+	margin: 0px 0px 15px 0px;
+}
+
+.VisualizationMainPage .equation {
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-style: italic;
+	text-align: center;
+	margin: -5px 0px 5px 0px;
+}
+
+.VisualizationMainPage .inline-eq {
+	font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.VisualizationMainPage .vgroup {
+	display: flex;
+	flex-direction: column;
+}
+
+.VisualizationMainPage .hgroup {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.VisualizationMainPage .groupChild {
+	margin: 5px 5px 5px 5px;
+}
+
+.VisualizationMainPage .divisorLeft {
+	width: 15px;
+}
+
+.VisualizationMainPage .divisorRight {
+	border-left: 2px var(--border) solid;
+	width: 15px;
+}
+
+.VisualizationMainPage input[type='button'] {
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 8px 20px;
+	color: var(--primary);
+	margin: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 550;
+}
+
+.VisualizationMainPage input[type='button']:hover {
+	filter: var(--filter);
+}
+
+.VisualizationMainPage input[type='button']::-moz-focus-inner {
+	border: 0;
+}
+
+.VisualizationMainPage input[type='button']:focus {
+	outline: none;
+}
+
+.VisualizationMainPage input[type='button']:active:not([disabled]) {
+	background: linear-gradient(#ccc, #ddd);
+}
+
+.VisualizationMainPage input[type='text'] {
+	background: white;
+	border: var(--border) 1px solid;
+	border-radius: 5px;
+	padding: 6px;
+	font-size: 14px;
+}
+
+.VisualizationMainPage select {
+	appearance: menulist-button;
+	-moz-appearance: menulist-button;
+	-webkit-appearance: menulist-button;
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 10px 10px 10px 8px;
+	color: var(--primary);
+	margin: 6px;
+	cursor: pointer;
+}
+
+.txt-node {
+	color: var(--primary);
+}
+
+.slider .MuiSlider-root {
+	color: var(--slider);
+}
+
+.shake {
+	animation: shake 0.75s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+	border-color: #e32524 !important;
+	box-shadow: 0 0 4px rgba(227, 37, 36, 0.7) !important;
+	filter: brightness(100%) !important;
+	pointer-events: none !important;
+}
+
+input[type='radio'] {
+	appearance: radio;
+	-moz-appearance: radio;
+	-webkit-appearance: radio;
+	margin-right: 2px;
+}
+
+input[type='radio'] + label {
+	color: var(--primary);
+}
+
+input[type='radio']:checked + label {
+	padding: 1px 3px 1px 1px;
+	background-color: rgba(176, 179, 184, 0.8);
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
+	border-radius: 5px;
+	color: #ffffff;
+	font-size: 17px;
+}
+
+input[type='checkbox'] {
+	appearance: checkbox;
+	-moz-appearance: checkbox;
+	-webkit-appearance: checkbox;
+}
+
+@keyframes shake {
+	10%,
+	90% {
+		transform: translate3d(-1px, 0, 0);
+	}
+	20%,
+	80% {
+		transform: translate3d(2px, 0, 0);
+	}
+	30%,
+	50%,
+	70% {
+		transform: translate3d(-4px, 0, 0);
+	}
+	40%,
+	60% {
+		transform: translate3d(4px, 0, 0);
+	}
+}

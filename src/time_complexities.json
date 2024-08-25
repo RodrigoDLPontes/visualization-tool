@@ -1,0 +1,67 @@
+{
+    "ArrayList": {
+        "addToFront": {
+            "name": "Add to Front",
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "You always have to shift every element to the left."
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "You always have to shift every element to the left."
+            },
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Resizing the array and shifting every element are each $O(n)$."
+            }
+        },
+        "addToBack": {
+            "name": "Add to Back",
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "No shifting is needed because the array is not full."
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "No shifting is needed except for an occasional array resize."
+            },
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "If the array is full, you have to resize it by making a new array."
+            }
+        },
+        "removeAtIndex": {
+            "name": "Remove at Index",
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "If you remove the last element, you don't have to shift anything."
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "You have to shift elements after the index to the left."
+            },
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "You have to shift every element to the left."
+            }
+        }
+    },
+
+    "Quicksort": {
+        "run": {
+            "best": {
+                "big_o": "O(nlog(n))",
+                "explanation": "The pivot is perfect (the median) in every partition.",
+                "example": "[3, 2, 4, 1, 5] with 3 as the pivot"
+            },
+            "average": {
+                "big_o": "O(nlog(n))",
+                "explanation": "On average, the data is split roughly in half each partition."
+            },
+            "worst": {
+                "big_o": "O(n²)",
+                "explanation": "The worst pivot (min or max) is chosen each partition, devolving into a selection sort."
+            }
+        }
+    }
+}

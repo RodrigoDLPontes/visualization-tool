@@ -7,7 +7,7 @@ export const algoMap = {
 	LVA: ['LVA', algos.LVA],
 	BogoSort: ['Bogo Sort', algos.BogoSort],
 	ArrayList: ['ArrayList', algos.ArrayList, true],
-	LinkedList: ['Singly LinkedList', algos.LinkedList],
+	LinkedList: ['Singly LinkedList', algos.LinkedList, true],
 	DoublyLinkedList: ['Doubly LinkedList', algos.DoublyLinkedList, true],
 	CircularlyLinkedList: ['Circularly LinkedList', algos.CircularlyLinkedList, true],
 	StackArray: ['Stack (Array)', algos.StackArray, true],

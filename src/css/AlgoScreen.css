@@ -195,21 +195,50 @@ em {
 	position: absolute;
 	right: 20px;
 	top: 10px;
-	width: 350px;
-	height: 500px;
+	width: 20%;
+	max-height: 90%;
+}
+
+.VisualizationMainPage .bigo {
+	border-collapse: collapse; /* Ensures borders are not doubled */
+    position: absolute;
+    min-width: 35%;
+}
+
+.bigo th, .bigo td {
+    padding: 5px;
+	min-width: 50px;
+	color: black;
+	border: 1px solid gray; /* Adds border to table cells */
+}
+
+.bigo table { 
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.bigo h4 {
+	margin: 0;
+	font-size: large;
+}
+
+.bigo .blur {
+	filter: blur(5px);
+	transition: filter 0.3s ease; /* Smooth transition */
 }
 
 .VisualizationMainPage .modal-content {
-	padding: 15px 30px 0px 0px;
-	height: 100%;
-	border-radius: 20px;
-	background-color: var(--control);
-	transition: all 0.4s ease 0s;
-	box-shadow: 0px 0px 5px var(--shadow);
+    padding: 15px 30px 15px 30px;
+    height: 100%;
+    border-radius: 20px;
+    background-color: var(--control);
+    transition: all 0.4s ease 0s;
+    box-shadow: 0px 0px 5px var(--shadow);
 }
 
 .VisualizationMainPage .modal-content ul {
-	margin: 0;
+    list-style-type: none; /* Makes bullet points invisible */
+    padding-left: 0; /* Removes default padding */
 }
 
 .VisualizationMainPage .modal-content li {

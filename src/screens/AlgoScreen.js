@@ -2,6 +2,7 @@ import '../css/AlgoScreen.css';
 import '../css/App.css';
 import {
 	BsBookHalf,
+	BsClock,
 	BsFileEarmarkCodeFill,
 	BsFileEarmarkFill,
 	BsFileEarmarkFontFill,
@@ -18,7 +19,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactGA from 'react-ga4';
 import { algoMap } from '../AlgoList';
-import modals from '../examples/ExampleModals';
+import bigOModals from '../modals/BigOModals';
+import infoModals from '../modals/InfoModals';
 
 class AlgoScreen extends React.Component {
 	constructor(props) {
@@ -30,7 +32,8 @@ class AlgoScreen extends React.Component {
 
 		this.state = {
 			algoName: algoName,
-			examplesEnabled: false,
+			moreInfoEnabled: false,
+			bigOEnabled: false,
 			width: 0,
 			theme: 'light',
 			pseudocodeType: 'english',
@@ -154,15 +157,25 @@ class AlgoScreen extends React.Component {
 										title="Code: Pseudo"
 									/>
 								)}
-								{modals[algoName] && (
+								{bigOModals(algoName) && (
+									<BsClock
+										className="menu-modal"
+										size={30}
+										onClick={this.toggleBigO}
+										opacity={this.state.bigOEnabled ? '100%' : '40%'}
+										title="Time Complexities"
+									/>
+								)}
+								{infoModals[algoName] && (
 									<BsBookHalf
 										className="menu-modal"
 										size={30}
-										onClick={this.toggleExamples}
-										opacity={this.state.examplesEnabled ? '100%' : '40%'}
+										onClick={this.toggleMoreInfo}
+										opacity={this.state.moreInfoEnabled ? '100%' : '40%'}
 										title="More Information"
 									/>
 								)}
+								
 							</div>
 						</div>
 
@@ -173,9 +186,14 @@ class AlgoScreen extends React.Component {
 								height="505"
 								ref={this.canvasRef}
 							></canvas>
-							{this.state.examplesEnabled && (
+							{this.state.moreInfoEnabled && (
 								<div className="modal">
-									<div className="modal-content">{modals[algoName]}</div>
+									<div className="modal-content">{infoModals[algoName]}</div>
+								</div>
+							)}
+							{this.state.bigOEnabled && (
+								<div className="modal bigo">
+									<div className="modal-content">{bigOModals(algoName)}</div>
 								</div>
 							)}
 						</div>
@@ -200,7 +218,15 @@ class AlgoScreen extends React.Component {
 		);
 	}
 
-	toggleExamples = () => this.setState(state => ({ examplesEnabled: !state.examplesEnabled }));
+	toggleMoreInfo = () => {
+		this.setState(state => ({ bigOEnabled: false }));
+		this.setState(state => ({ moreInfoEnabled: !state.moreInfoEnabled }));
+	} 
+
+	toggleBigO = () => {
+		this.setState(state => ({ moreInfoEnabled: false }));
+		this.setState(state => ({ bigOEnabled: !state.bigOEnabled }));
+	}
 
 	togglePseudocode = () => {
 		const pseudocodeMap = { none: 'english', english: 'code', code: 'none' };

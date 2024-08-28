@@ -245,7 +245,7 @@
 				["end procedure"]
 			]
 		},
-		"removeIndex":{
+		"removeIndex": {
 			"code": [
 				["procedure removeFromIndex(index)"],
 				["  if index == 0"],
@@ -280,7 +280,7 @@
 				["    decrement size"],
 				["    return temp"],
 				["  end if"],
-			    ["end procedure"]
+				["end procedure"]
 			]
 		}
 	},

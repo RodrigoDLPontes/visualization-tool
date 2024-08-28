@@ -32,7 +32,7 @@ import Algorithm, {
 	addLabelToAlgorithmBar,
 } from './Algorithm';
 import { act } from '../anim/AnimationMain';
-import pseudocodeText from '../pseudocode.json'
+import pseudocodeText from '../pseudocode.json';
 
 const INFO_MSG_X = 25;
 const INFO_MSG_Y = 15;
@@ -298,7 +298,7 @@ export default class LinkedList extends Algorithm {
 
 		// Pseudocode
 		this.pseudocode = pseudocodeText.SinglyLinkedList;
-		
+
 		this.resetIndex = this.nextIndex;
 
 		this.animationManager.startNewAnimation(this.commands);
@@ -441,7 +441,7 @@ export default class LinkedList extends Algorithm {
 			this.unhighlight(6, 0, this.addBackCodeID);
 			this.unhighlight(8, 0, this.addIndexCodeID);
 			this.cmd(act.step);
-		
+
 			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
 			if (i > 0) {
 				this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
@@ -493,7 +493,7 @@ export default class LinkedList extends Algorithm {
 		const runningAddFront = isAddFront || (isAddIndex && index === 0); // addfront is called directly or addindex
 		const runningAddBack = isAddBack || (isAddIndex && index === this.size && !runningAddFront); // addback is called directly or addindex
 		const runningAddIndexOnly = !runningAddFront && !runningAddBack; // addindex is called directly
-		
+
 		if (isAddIndex) {
 			if (runningAddFront) {
 				this.cmd(act.step);
@@ -522,7 +522,7 @@ export default class LinkedList extends Algorithm {
 		}
 
 		this.cmd(act.step);
-		
+
 		if (runningAddBack && this.size > 0) {
 			this.unhighlight(1, 0, this.addBackCodeID);
 			this.highlight(3, 0, this.addBackCodeID);
@@ -659,7 +659,7 @@ export default class LinkedList extends Algorithm {
 			this.unhighlight(5, 0, this.addFrontCodeID);
 			this.unhighlight(6, 0, this.addFrontCodeID);
 			this.highlight(8, 0, this.addFrontCodeID);
-		} else if (runningAddBack) { 
+		} else if (runningAddBack) {
 			this.unhighlight(1, 0, this.addBackCodeID);
 			this.unhighlight(2, 0, this.addBackCodeID);
 			this.unhighlight(3, 0, this.addBackCodeID);

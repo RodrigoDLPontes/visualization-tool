@@ -53,8 +53,23 @@ const ToggleBlurCell = ({ text }) => {
 	);
 };
 
+// Function to unblur all cells with the blur class
+function unblurAll() {
+    const blurredElements = document.querySelectorAll('.blur');
+    blurredElements.forEach(element => {
+        element.classList.remove('blur');
+    });
+}
+
 const Modals = page => {
-	return renderRows(timeComplexities[page]);
+	return (
+		<div>
+			<div class="button-container">
+				<button onClick={unblurAll}>Reveal All Big-O</button>
+			</div>
+			{renderRows(timeComplexities[page])}
+		</div>
+	);
 };
 
 export default Modals;

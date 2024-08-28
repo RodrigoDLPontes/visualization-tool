@@ -283,6 +283,29 @@ em {
 	width: 15px;
 }
 
+.modal-content button {
+	background: var(--button);
+	border: var(--border) 2px solid;
+	border-radius: 6px;
+	padding: 4px 10px;
+	color: var(--primary);
+	margin: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 550;
+}
+
+.modal-content .button-container {
+	display: flex;
+	justify-content: right;
+	margin-top: -1%;
+	margin-bottom: -5%;
+}
+
+.modal-content button:hover {
+	filter: var(--filter);
+}
+
 .VisualizationMainPage input[type='button'] {
 	background: var(--button);
 	border: var(--border) 2px solid;

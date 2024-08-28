@@ -42,13 +42,13 @@
             },
             "worst": {
                 "big_o": "O(n)",
-                "explanation": "Resizing the array and shifting every element are each $O(n)$."
+                "explanation": "Resizing the array and shifting $n$ elements are each $O(n)$."
             }
         },
         "Remove from Front": {
             "all cases": {
                 "big_o": "O(n)",
-                "explanation": "You always have to shift every element to the left."
+                "explanation": "You always have to shift $n$ elements to the left."
             }
         },
         "Remove from Back": {
@@ -60,15 +60,15 @@
         "Remove at Index": {
             "best": {
                 "big_o": "O(1)",
-                "explanation": "If you remove the last element, you don't have to shift anything."
+                "explanation": "If you remove the last element, you don't have to shift any elements."
             },
             "average": {
                 "big_o": "O(n)",
-                "explanation": "You have to shift elements after the index to the left."
+                "explanation": "You have to shift all elements after the index to the left."
             },
             "worst": {
                 "big_o": "O(n)",
-                "explanation": "You have to shift every element to the left."
+                "explanation": "If you remove the first element, You have to shift $n$ elements to the left."
             }
         }
     },

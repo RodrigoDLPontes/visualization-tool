@@ -125,7 +125,7 @@ export default class RabinKarp extends Algorithm {
 				['abab in abacabacababa', 'abab in abacabacababa'],
 				['lack in sphinxofblackquartz', 'lack in sphinxofblackquartz'],
 			],
-			'Example'
+			'Example',
 		);
 		this.exampleDropdown.onclick = this.exampleCallback.bind(this);
 		this.controls.push(this.exampleDropdown);
@@ -197,14 +197,14 @@ export default class RabinKarp extends Algorithm {
 	}
 
 	exampleCallback() {
-		const selection = this.exampleDropdown.value
+		const selection = this.exampleDropdown.value;
 		if (!selection) {
 			return;
 		}
 
 		let textValue;
 		let patternValue;
-		
+
 		if (selection === 'Random') {
 			patternValue = this.generateRandomString(3, 'abc');
 			textValue = this.generateRandomString(15, 'abc', patternValue);

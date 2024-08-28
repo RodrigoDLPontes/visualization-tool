@@ -62,14 +62,14 @@ function unblurAll() {
 }
 
 const Modals = page => {
-	return (
+	return timeComplexities[page] ? (
 		<div>
 			<div class="button-container">
 				<button onClick={unblurAll}>Reveal All Big-O</button>
 			</div>
 			{renderRows(timeComplexities[page])}
 		</div>
-	);
+	) : null;
 };
 
 export default Modals;

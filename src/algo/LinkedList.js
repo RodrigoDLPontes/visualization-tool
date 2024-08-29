@@ -369,10 +369,10 @@ export default class LinkedList extends Algorithm {
 
 	removeIndexCallback() {
 		if (this.removeField.value !== '') {
-			const index = this.removeField.value;
+			const index = parseInt(this.removeField.value);
 			if (index >= 0 && index < this.size) {
 				this.removeField.value = '';
-				this.implementAction(this.remove.bind(this), index, false, false, true);
+				this.implementAction(this.remove.bind(this), (index), false, false, true);
 			} else {
 				let errorMsg = 'Cannot remove from an empty list.';
 				if (this.size === 1) {
@@ -434,12 +434,16 @@ export default class LinkedList extends Algorithm {
 		this.implementAction(this.clearAll.bind(this));
 	}
 
-	traverse(startIndex, endIndex, runningAddBack) {
+	traverse(startIndex, endIndex, runningBack, runningRemove) {
 		this.unhighlight(4, 0, this.addBackCodeID);
 		this.unhighlight(6, 0, this.addIndexCodeID);
+		this.unhighlight(4, 0, this.removeBackCodeID);
+		this.unhighlight(6, 0, this.removeIndexCodeID);
 		for (let i = startIndex; i <= endIndex; i++) {
 			this.unhighlight(6, 0, this.addBackCodeID);
 			this.unhighlight(8, 0, this.addIndexCodeID);
+			this.unhighlight(6, 0, this.removeBackCodeID);
+			this.unhighlight(8, 0, this.removeIndexCodeID);
 			this.cmd(act.step);
 
 			this.cmd(act.setHighlight, this.linkedListElemID[i], 1);
@@ -447,10 +451,10 @@ export default class LinkedList extends Algorithm {
 				this.cmd(act.setHighlight, this.linkedListElemID[i - 1], 0);
 			}
 
-			if (runningAddBack) {
-				this.highlight(6, 0, this.addBackCodeID);
+			if (runningBack) {
+				runningRemove ?	this.highlight(6, 0, this.removeBackCodeID) : this.highlight(6, 0, this.addBackCodeID);
 			} else {
-				this.highlight(8, 0, this.addIndexCodeID);
+				runningRemove ?	this.highlight(8, 0, this.removeIndexCodeID) : this.highlight(8, 0, this.addIndexCodeID);
 			}
 			this.cmd(act.step);
 		}
@@ -546,9 +550,9 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
 		if (this.tailEnabled && index === this.size) {
-			this.traverse(this.size - 1, this.size, runningAddBack);
+			this.traverse(this.size - 1, this.size, runningAddBack, false);
 		} else {
-			this.traverse(0, index - 1, runningAddBack);
+			this.traverse(0, index - 1, runningAddBack, false);
 		}
 
 		this.cmd(
@@ -710,13 +714,75 @@ export default class LinkedList extends Algorithm {
 			CODE_START_Y,
 		);
 
+		if (isRemoveFront) {
+			this.highlight(0, 0, this.removeFrontCodeID);
+		} else if (isRemoveBack) {
+			this.highlight(0, 0, this.removeBackCodeID);
+		} else if (isRemoveIndex) {
+			this.highlight(0, 0, this.removeIndexCodeID);
+		}
+
+		const runningRemoveFront = isRemoveFront || (isRemoveIndex && index === 0); // removefront is called directly or removeindex
+		const runningRemoveBack = isRemoveBack || (isRemoveIndex && index === this.size - 1 && !runningRemoveFront); // removeback is called directly or removeindex
+		const runningRemoveIndexOnly = !runningRemoveFront && !runningRemoveBack; // removeindex is called directly
+
+		if (isRemoveIndex) {
+			if (runningRemoveFront) {
+				this.cmd(act.step);
+				this.highlight(1, 0, this.removeIndexCodeID);
+				this.highlight(2, 0, this.removeIndexCodeID);
+				this.highlight(0, 0, this.removeFrontCodeID);
+			} else if (runningRemoveBack) {
+				this.cmd(act.step);
+				this.highlight(3, 0, this.removeIndexCodeID);
+				this.highlight(4, 0, this.removeIndexCodeID);
+				this.highlight(0, 0, this.removeBackCodeID);
+			}
+		}
+
+		this.cmd(act.step);
+
 		index = parseInt(index);
 		const labPopID = this.nextIndex++;
 		const labPopValID = this.nextIndex++;
 
 		this.cmd(act.setText, this.leftoverLabelID, '');
 
-		this.traverse(0, index - 1);
+		if (runningRemoveFront) {
+			this.highlight(1, 0, this.removeFrontCodeID);
+		} else if (runningRemoveBack) {
+			this.highlight(1, 0, this.removeBackCodeID);
+		} else {
+			this.highlight(5, 0, this.removeIndexCodeID);
+		}
+
+		this.cmd(act.step);
+
+		if (runningRemoveBack && this.size > 0) {
+			this.unhighlight(1, 0, this.removeBackCodeID);
+			this.highlight(3, 0, this.removeBackCodeID);
+			this.cmd(act.step);
+			this.highlight(4, 0, this.removeBackCodeID);
+			this.cmd(act.step);
+			this.unhighlight(4, 0, this.removeBackCodeID);
+			this.highlight(5, 0, this.removeBackCodeID);
+		} else if (runningRemoveIndexOnly) {
+			this.highlight(6, 0, this.removeIndexCodeID);
+			this.cmd(act.step);
+			this.highlight(7, 0, this.removeIndexCodeID);
+		}
+
+		this.traverse(0, index - 1, runningRemoveBack, true);
+
+		if (runningRemoveIndexOnly) {
+			this.unhighlight(7, 0, this.removeIndexCodeID);
+			this.unhighlight(8, 0, this.removeIndexCodeID);
+			this.highlight(10, 0, this.removeIndexCodeID);
+		} else if (runningRemoveBack) {
+			this.unhighlight(5, 0, this.removeBackCodeID);
+			this.unhighlight(6, 0, this.removeBackCodeID);
+			this.highlight(8, 0, this.removeBackCodeID);
+		}
 
 		const nodePosX = LINKED_LIST_START_X + LINKED_LIST_ELEM_SPACING * index;
 		const nodePosY = LINKED_LIST_START_Y;
@@ -726,14 +792,21 @@ export default class LinkedList extends Algorithm {
 		this.cmd(act.setTextColor, this.linkedListElemID[index], '#FF0000');
 		this.cmd(act.step);
 
+		if (runningRemoveFront) {
+			this.unhighlight(1, 0, this.removeFrontCodeID);
+		}
+
 		if (this.size !== 1) {
 			if (index === 0) {
+				this.highlight(2, 0, this.removeFrontCodeID);
 				this.cmd(act.disconnect, this.topID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.topID, this.linkedListElemID[index + 1]);
 				this.cmd(act.step);
 				this.cmd(act.disconnect, this.linkedListElemID[0], this.linkedListElemID[1]);
 				this.cmd(act.setNull, this.linkedListElemID[0], 1);
 			} else if (index === this.size - 1) {
+				this.unhighlight(8, 0, this.removeBackCodeID);
+				this.highlight(9, 0, this.removeBackCodeID);
 				this.cmd(act.disconnect, this.tailID, this.linkedListElemID[index]);
 				this.cmd(act.connect, this.tailID, this.linkedListElemID[index - 1]);
 				this.cmd(act.step);
@@ -745,6 +818,8 @@ export default class LinkedList extends Algorithm {
 				this.cmd(act.setNull, this.linkedListElemID[index - 1], 1);
 				this.cmd(act.step);
 			} else {
+				this.unhighlight(10, 0, this.removeIndexCodeID);
+				this.highlight(11, 0, this.removeIndexCodeID);
 				const xPos =
 					(index % LINKED_LIST_ELEMS_PER_LINE) * LINKED_LIST_ELEM_SPACING +
 					LINKED_LIST_START_X;
@@ -769,6 +844,11 @@ export default class LinkedList extends Algorithm {
 				);
 			}
 		}
+		this.unhighlight(2, 0, this.removeFrontCodeID);
+		this.unhighlight(9, 0, this.removeBackCodeID);
+		this.unhighlight(11, 0, this.removeIndexCodeID);
+		runningRemoveIndexOnly ? this.highlight(12, 0, this.removeIndexCodeID) : runningRemoveBack ? this.highlight(10, 0, this.removeBackCodeID) : this.highlight(3, 0, this.removeFrontCodeID);
+		
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
 
@@ -783,6 +863,17 @@ export default class LinkedList extends Algorithm {
 
 		this.cmd(act.delete, labPopValID);
 		this.cmd(act.delete, labPopID);
+
+		this.cmd(act.step);
+		this.unhighlight(3, 0, this.removeFrontCodeID);
+		this.unhighlight(10, 0, this.removeBackCodeID);
+		this.unhighlight(12, 0, this.removeIndexCodeID);
+		runningRemoveIndexOnly ? this.highlight(13, 0, this.removeIndexCodeID) : runningRemoveBack ? this.highlight(11, 0, this.removeBackCodeID) : this.highlight(4, 0, this.removeFrontCodeID);
+		this.cmd(act.step);
+
+		this.removeCode(this.removeFrontCodeID);
+		this.removeCode(this.removeBackCodeID);
+		this.removeCode(this.removeIndexCodeID);
 
 		return this.commands;
 	}

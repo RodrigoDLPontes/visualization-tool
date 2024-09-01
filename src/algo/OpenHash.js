@@ -39,7 +39,7 @@ const ARRAY_ELEM_HEIGHT = 30;
 const ARRAY_ELEM_START_Y = 110;
 const ARRAY_VERTICAL_SEPARATION = 70;
 
-const CLOSED_HASH_TABLE_SIZE = 10;
+const CLOSED_HASH_TABLE_SIZE = 7;
 
 const ARRAY_ELEM_START_X = 100;
 // If you want to center the array:

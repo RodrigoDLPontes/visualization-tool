@@ -167,7 +167,7 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 						)}
 						{bigOEnabled && (
 							<div className="modal bigo">
-								<div className="modal-content">{bigOModals[algoName]}</div>
+								<div className="modal-content">{bigOModals(algoName)}</div>
 							</div>
 						)}
 					</div>

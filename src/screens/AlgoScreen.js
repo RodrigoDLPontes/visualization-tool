@@ -11,9 +11,8 @@ import {
 } from 'react-icons/bs';
 import { Link, useLocation } from 'react-router-dom';
 import React, { useEffect, useRef, useState } from 'react';
+import AlgorithmNotFound404 from '../components/AlgorithmNotFound404';
 import AnimationManager from '../anim/AnimationMain';
-import Footer from '../components/Footer';
-import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import ReactGA from 'react-ga4';
 import { algoMap } from '../AlgoList';
@@ -23,6 +22,7 @@ import infoModals from '../modals/InfoModals';
 const AlgoScreen = ({ theme, toggleTheme }) => {
 	const location = useLocation();
 	const algoName = location.pathname.slice(1);
+	const algoDetails = algoMap[algoName];
 	const canvasRef = useRef(null);
 	const animBarRef = useRef(null);
 
@@ -33,14 +33,12 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 	useEffect(() => {
 		ReactGA.send({ hitType: 'pageview', page: algoName });
 
-		if (algoMap[algoName]) {
+		if (algoDetails) {
+			const [menuDisplayName, AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
+
 			const animManag = new AnimationManager(canvasRef, animBarRef);
 
-			const currentAlg = new algoMap[algoName][1](
-				animManag,
-				canvasRef.current.width,
-				canvasRef.current.height,
-			);
+			new AlgoClass(animManag, canvasRef.current.width, canvasRef.current.height);
 
 			const updateDimensions = () => {
 				animManag.changeSize(document.body.clientWidth);
@@ -69,26 +67,13 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 		setPseudocodeType(prev => pseudocodeMap[prev]);
 	};
 
-	if (!algoMap[algoName]) {
-		return (
-			<div className="container">
-				<Header />
-				<div className="content">
-					<div className="four-o-four">
-						<h1>404!</h1>
-						<h3>
-							Algorithm not found! Click <Link to="/">here</Link> to return to the
-							home screen and choose another algorithm.
-						</h3>
-					</div>
-				</div>
-				<Footer />
-			</div>
-		);
+	if (!algoDetails) {
+		return <AlgorithmNotFound404 />;
 	}
 
-	const isQuickselect = algoMap[algoName][0] === 'Quickselect / kᵗʰ Select';
-	const header = algoMap[algoName][3] ? algoMap[algoName][3] : algoMap[algoName][0];
+	const [menuDisplayName, AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
+	const isQuickselect = menuDisplayName === 'Quickselect / kᵗʰ Select';
+	const header = verboseDisplayName || menuDisplayName;
 
 	return (
 		<div className="VisualizationMainPage">
@@ -127,7 +112,7 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 					<div id="algoControlSection">
 						<table id="AlgorithmSpecificControls"></table>
 						<div id="toggles">
-							{algoMap[algoName][2] && pseudocodeType === 'none' && (
+							{hasPseudoCode && pseudocodeType === 'none' && (
 								<BsFileEarmarkFill
 									className="pseudocode-toggle"
 									size={32}
@@ -136,7 +121,7 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 									title="Code: Hidden"
 								/>
 							)}
-							{algoMap[algoName][2] && pseudocodeType === 'english' && (
+							{hasPseudoCode && pseudocodeType === 'english' && (
 								<BsFileEarmarkFontFill
 									className="pseudocode-toggle"
 									size={32}
@@ -144,7 +129,7 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 									title="Code: English"
 								/>
 							)}
-							{algoMap[algoName][2] && pseudocodeType === 'code' && (
+							{hasPseudoCode && pseudocodeType === 'code' && (
 								<BsFileEarmarkCodeFill
 									className="pseudocode-toggle"
 									size={32}

@@ -25,6 +25,7 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 	const algoDetails = algoMap[algoName];
 	const canvasRef = useRef(null);
 	const animBarRef = useRef(null);
+	const animManagRef = useRef(null);
 
 	const [moreInfoEnabled, setMoreInfoEnabled] = useState(false);
 	const [bigOEnabled, setBigOEnabled] = useState(false);
@@ -36,12 +37,12 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 		if (algoDetails) {
 			const [menuDisplayName, AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
 
-			const animManag = new AnimationManager(canvasRef, animBarRef);
+			animManagRef.current = new AnimationManager(canvasRef, animBarRef);
 
-			new AlgoClass(animManag, canvasRef.current.width, canvasRef.current.height);
+			new AlgoClass(animManagRef.current, canvasRef.current.width, canvasRef.current.height);
 
 			const updateDimensions = () => {
-				animManag.changeSize(document.body.clientWidth);
+				animManagRef.current.changeSize(document.body.clientWidth);
 			};
 
 			window.addEventListener('resize', updateDimensions);
@@ -50,7 +51,20 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 				window.removeEventListener('resize', updateDimensions);
 			};
 		}
-	}, [algoName]);
+	}, [algoName, algoDetails]);
+
+	useEffect(() => {
+		if (animManagRef.current) {
+			animManagRef.current.updateLayer(32, false); // Hide English
+			animManagRef.current.updateLayer(33, false); // Hide Pseudocode
+
+			if (pseudocodeType === 'english') {
+				animManagRef.current.updateLayer(32, true);
+			} else if (pseudocodeType === 'code') {
+				animManagRef.current.updateLayer(33, true);
+			}
+		}
+	}, [pseudocodeType]);
 
 	const toggleMoreInfo = () => {
 		setBigOEnabled(false);

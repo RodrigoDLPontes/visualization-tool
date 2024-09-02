@@ -450,6 +450,12 @@ div.content {
 	border-radius: 15px;
 }
 
+.no-results {
+	display: block;
+	margin: 1rem auto;
+	font-size: large;
+}
+
 @media screen and (min-width: 1280px) {
 	.content a {
 		width: 25%;

@@ -50,41 +50,49 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 						/>
 						<div className="outer-flex">
 							<div className="inner-flex">
-								{filteredAlgoList.map((name, idx) =>
-									algoMap[name] ? (
-										<Link
-											to={`/${name}`}
-											key={idx}
-											style={{ textDecoration: 'none' }}
-										>
-											<button
-												className="button"
-												style={
-													algoMap[name][0] === 'Bogo Sort' ||
-													algoMap[name][0] === 'LVA' ||
-													algoMap[name][0] === 'Non-Linear Probing'
-														? {
-																background:
-																	'linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 90%, rgba(255,0,0,1) 100%)',
-																color: 'white',
-																filter: 'none',
-														  }
-														: {}
-												}
+								{filteredAlgoList.length ? (
+									filteredAlgoList.map((name, idx) =>
+										algoMap[name] ? (
+											<Link
+												to={`/${name}`}
+												key={idx}
+												style={{ textDecoration: 'none' }}
 											>
-												<div className="algo-name">{algoMap[name][0]}</div>
-												{algoMap[name][2] && (
-													<span className="pseudocode-icon">
-														<DiCodeBadge size={36} />
-													</span>
-												)}
-											</button>
-										</Link>
-									) : (
-										<div key={idx} className="divider">
-											<span>{name}</span>
-										</div>
-									),
+												<button
+													className="button"
+													style={
+														algoMap[name][0] === 'Bogo Sort' ||
+														algoMap[name][0] === 'LVA' ||
+														algoMap[name][0] === 'Non-Linear Probing'
+															? {
+																	background:
+																		'linear-gradient(90deg, rgba(255,0,0,1) 0%, rgba(255,154,0,1) 10%, rgba(208,222,33,1) 20%, rgba(79,220,74,1) 30%, rgba(63,218,216,1) 40%, rgba(47,201,226,1) 50%, rgba(28,127,238,1) 60%, rgba(95,21,242,1) 70%, rgba(186,12,248,1) 80%, rgba(251,7,217,1) 90%, rgba(255,0,0,1) 100%)',
+																	color: 'white',
+																	filter: 'none',
+															  }
+															: {}
+													}
+												>
+													<div className="algo-name">
+														{algoMap[name][0]}
+													</div>
+													{algoMap[name][2] && (
+														<span className="pseudocode-icon">
+															<DiCodeBadge size={36} />
+														</span>
+													)}
+												</button>
+											</Link>
+										) : (
+											<div key={idx} className="divider">
+												<span>{name}</span>
+											</div>
+										),
+									)
+								) : (
+									<span className="no-results">
+										No results found. Please try a different search term.
+									</span>
 								)}
 							</div>
 						</div>

@@ -35,7 +35,8 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 		ReactGA.send({ hitType: 'pageview', page: algoName });
 
 		if (algoDetails) {
-			const [_menuDisplayName, AlgoClass, _hasPseudoCode, _verboseDisplayName] = algoDetails;
+			// eslint-disable-next-line no-unused-vars
+			const [menuDisplayName, AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
 
 			animManagRef.current = new AnimationManager(canvasRef, animBarRef);
 
@@ -85,7 +86,8 @@ const AlgoScreen = ({ theme, toggleTheme }) => {
 		return <AlgorithmNotFound404 />;
 	}
 
-	const [menuDisplayName, _AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
+	// eslint-disable-next-line no-unused-vars
+	const [menuDisplayName, AlgoClass, hasPseudoCode, verboseDisplayName] = algoDetails;
 	const isQuickselect = menuDisplayName === 'Quickselect / kᵗʰ Select';
 	const header = verboseDisplayName || menuDisplayName;
 

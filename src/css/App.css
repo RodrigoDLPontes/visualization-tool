@@ -441,6 +441,21 @@ div.content {
 	box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
 }
 
+.dsa-filter {
+	width: 20rem;
+	display: block;
+	margin: 0 auto;
+	font-size: large;
+	padding: 0.8rem 1rem;
+	border-radius: 15px;
+}
+
+.no-results {
+	display: block;
+	margin: 1rem auto;
+	font-size: large;
+}
+
 @media screen and (min-width: 1280px) {
 	.content a {
 		width: 25%;

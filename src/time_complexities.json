@@ -73,6 +73,160 @@
         }
     },
 
+    "DoublyLinkedList": {
+        "Add to Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Accessing the head and adjusting pointers always takes constant time.",
+                "example": "[1, 2, 3, 4, 5] add 0"
+            }
+        },
+        "Add to Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Accessing the tail and adjusting pointers always takes constant time.",
+                "example": "[1, 2, 3, 4, 5] add 6"
+            }
+        },
+        "Add at Index": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "You have to iterate up to n/2 times to reach the node if the index is not at the head or tail.",
+                "example": "[1, 2, 3, 4, 5] index = 2"
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "On average, the index to add is in between the head and tail.",
+                "example": "[1, 2, 3, 4, 5] index = 2"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Adding to the front or back.",
+                "example": "[1, 2, 3, 4, 5] index = 5"
+            }
+        },
+        "Remove from Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Accessing the head and adjusting pointers always takes constant time.",
+                "example": "[1, 2, 3, 4, 5] remove 1"
+            }
+        },
+        "Remove from Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Accessing the tail and adjusting pointers always takes constant time.",
+                "example": "[1, 2, 3, 4, 5] remove 5"
+            }
+        },
+        "Remove at Index": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "You have to iterate up to n/2 times to reach the node if the index is not at the head or tail.",
+                "example": "[1, 2, 3, 4, 5] index = 2"
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "On average, the index to remove is in between the head and tail.",
+                "example": "[1, 2, 3, 4, 5] index = 2"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Removing the head or tail.",
+                "example": "[1, 2, 3, 4, 5] index = 0"
+            }
+        }
+    },
+
+    "StackArray": {
+        "Push": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "If a resize is triggered $n$ elements must be copied to the new backing array.",
+                "example": "[1, 2, 3] add 4"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "No elements need to be shifted when adding to back.",
+                "example": "[1, 2, null] add 3"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "No elements need to be shifted when adding to back.",
+                "example": "[1, 2, null] add 3"
+            }
+        },
+        "Pop": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "No elements need to be shifted when removing from back.",
+                "example": "[1, 2, 3] remove 3"
+            }
+        }
+    },
+
+    "StackLL": {
+        "Push": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "We just create and link a new node, no shifting occurs.",
+                "example": "1 -> 2 -> 3 add 0 at head"
+            }
+        },
+        "Pop": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "We just remove the head node, no shifting occurs.",
+                "example": "1 -> 2 -> 3 remove 1"
+            }
+        }
+    },
+
+    
+    "QueueArray": {
+        "Push": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "If a resize is triggered $n$ elements must be copied to the new backing array.",
+                "example": "[1, 2, 3] add 4"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "No elements need to be shifted when adding to back.",
+                "example": "[1, 2, null] add 3"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "No elements need to be shifted when adding to back.",
+                "example": "[1, 2, null] add 3"
+            }
+        },
+        "Pop": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Due to the circular array implementation, no shifting is needed.",
+                "example": "[1, 2, 3] remove 1"
+            }
+        }
+    },
+
+    "QueueLL": {
+        "Push": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "We just create and link a new node using the tail, no traversal or shifting needed.",
+                "example": "1 -> 2 -> 3 add 4 at end"
+            }
+        },
+        "Pop": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "We just remove the head node, no shifting occurs.",
+                "example": "1 -> 2 -> 3 remove 1"
+            }
+        }
+    },
+
     "Quicksort": {
         "Quicksort": {
             "best": {

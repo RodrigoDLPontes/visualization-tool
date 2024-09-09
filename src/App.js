@@ -1,6 +1,6 @@
 import './css/App.css';
 import React, { useEffect, useState } from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AlgoScreen from './screens/AlgoScreen';
 import Cookies from 'js-cookie';
 import HomeScreen from './screens/HomeScreen';
@@ -35,7 +35,7 @@ const App = () => {
 
 	return (
 		<Router basename={process.env.PUBLIC_URL + '/'}>
-			<Switch>
+			<Routes>
 				<Route
 					exact
 					path={['/', '/about']}
@@ -48,7 +48,7 @@ const App = () => {
 						<AlgoScreen {...props} theme={theme} toggleTheme={toggleTheme} />
 					)}
 				/>
-			</Switch>
+			</Routes>
 		</Router>
 	);
 };

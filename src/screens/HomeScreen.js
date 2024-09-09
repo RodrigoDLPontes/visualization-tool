@@ -1,5 +1,5 @@
 import '../css/App.css';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import React, { useState } from 'react';
 import { algoList, algoMap } from '../AlgoList';
 import AboutScreen from './AboutScreen';
@@ -25,7 +25,7 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 		<div className="container">
 			<Header theme={theme} toggleTheme={toggleTheme} />
 			<div className="content">
-				<Switch>
+				<Routes>
 					<Route exact path="/">
 						{/* <div className="banner-container">
 							<div className="banner">
@@ -100,7 +100,7 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 					<Route path="/about">
 						<AboutScreen />
 					</Route>
-				</Switch>
+				</Routes>
 			</div>
 			<Footer />
 		</div>

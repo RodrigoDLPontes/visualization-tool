@@ -73,6 +73,81 @@
         }
     },
 
+    "LinkedList": {
+        "Add to Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Create a new node, set its next pointer to the current head, and make the new node the head",
+                "example": "1->2->3->null addToFront(0)"
+            }
+        },
+        "Add to Back with Tail": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Create a new node, set the tail's next pointer to the new node, and make the new node the tail",
+                "example": "1->2->3->null addToBack(4)"
+            }
+        },
+        "Add at Index": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the index is $O(n)$, and initializing and inserting the new node is $O(1)$",
+                "example": "1->2->3->4->5->null addAtIndex(element: 5, index: 4)"
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the index is $O(n)$ (unless head or tail), and initializing and inserting the new node is $O(1)$",
+                "example": "1->2->3->4->5->null addAtIndex(element: 6, index: 2)"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Adding at the tail or head is an $O(1)$ operation",
+                "example": "1->2->3->4->null addAtIndex(0, 0)"
+            }
+        },
+        "Remove from Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Set head equal to head.next",
+                "example": "1->2->3->4 removeFromFront()"
+            }
+        },
+        "Remove from Back": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "You have to traverse to the end of the list to make the second-to-last node the tail",
+                "example": "1->2->3->4->null removeFromBack()"
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "You have to traverse to the end of the list to make the second-to-last node the tail",
+                "example": "1->2->3->4->null removeFromBack()"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "If the head is equal to the tail, set head and tail to null",
+                "example": "1->null removeFromBack()"
+            }
+        },
+        "Remove at Index": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the index is $O(n)$, while altering the pointers to remove the node is $O(1)$",
+                "example": "1->2->3->4->5->null removeAtIndex(4)"
+            },
+            "average": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the index is $O(n)$, while altering the pointers to remove the node is $O(1)$",
+                "example": "1->2->3->4->null removeAtIndex(2)"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "If index is 0 or head equals tail, time complexity is the same as removeFromFront()",
+                "example": "1->2->3->4->null removeAtIndex(0)"
+            }
+        }
+    },
+
     "DoublyLinkedList": {
         "Add to Front": {
             "all cases": {
@@ -226,6 +301,213 @@
             }
         }
     },
+   
+    "DequeArray": {
+        "Add to Front": {
+            "worst": {
+                "big_o": "O(1)*",
+                "explanation": "Rarely, the array needs to be resized.",
+                "example": "[1, 2, 3, 4] add 0"
+            },
+            "worst (unamortized)": {
+                "big_o": "O(n)",
+                "explanation": "In this case, the array is being resized because the array is full.",
+                "example": "[1, 2, 3, 4] add 0"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "Have a front pointer, and do not need to resize unless the array is full.",
+                "example": "[null, 1, 2, 3] add 0"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Do not need to shift elements because you have a front pointer.",
+                "example": "[null, 1, 2, 3] add 0"
+            }
+        },
+        "Add to Back": {
+            "worst": {
+                "big_o": "O(1)*",
+                "explanation": "Rarely, the array needs to be resized.",
+                "example": "[1, 2, 3, 4] add 5"
+            },
+            "worst (unamortized)": {
+                "big_o": "O(n)",
+                "explanation": "In this case, the array is being resized because the array is full.",
+                "example": "[1, 2, 3, 4] add 5"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "Do not need to resize unless the array is full.",
+                "example": "[1, 2, 3, null] add 4"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "Do not need to resize because the array is not full.",
+                "example": "[1, 2, 3, null] add 4"
+            }
+        },
+        "Remove from Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Never need to resize when removing from an array.",
+                "example": "[1, 2, 3, 4] remove 1"
+            }
+        },
+        "Remove from Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Never need to resize when removing from an array.",
+                "example": "[1, 2, 3, 4] remove 4"
+            }
+        }
+    },
+    
+    "DequeLL": {
+        "Add to Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Have access to the head.",
+                "example": "1 <--> 2 <--> 3, add 0"
+            }
+        },
+        "Add to Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Have access to the tail.",
+                "example": "1 <--> 2 <--> 3, add 4"
+            }
+        },
+        "Remove from Front": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Have access to the head.",
+                "example": "1 <--> 2 <--> 3, remove 1"
+            }
+        },
+        "Remove from Back": {
+            "all cases": {
+                "big_o": "O(1)",
+                "explanation": "Have access to the tail, which has a previous pointer.",
+                "example": "1 <--> 2 <--> 3, remove 3"
+            }
+        }
+    },
+
+    "BTree": {
+        "Add": {
+            "worst": {
+                "big_o": "O(logn)",
+                "explanation": "Each level requires a promotion, therefore $O(logn)$ promotions in addition to $O(logn)$ add.",
+                "example": "20,26,33|12,16|21|27,29,32|36,37 add 31 promote second"
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "Some promotions may be required after adding the element, but doing a promotion is $O(1)$ in addition to the $O(logn)$ addition.",
+                "example": "20,33|12,16|21,26,29|36,37 add 32 promote second"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "No promotions required, just adding the element to a node.",
+                "example": "20,33|12,16|26,29|36,37 add 21 promote second"
+            }
+        },
+        "Remove": {
+            "worst": {
+                "big_o": "O(logn)",
+                "explanation": "A transfer and/or fusion is required at each level, which is $O(logn)$ extra work on top of the $O(logn)$ remove.",
+                "example": "26|20|36|12|21|27,29|37 remove 26 with predecessor"
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "Some transfers and/or fusions may be required, but either is $O(1)$ in addition to the $O(logn)$ remove.",
+                "example": "26|20|29,36|12|21|27|32|37 remove 32 with predecessor"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "No transfer or fusions required, just removing the element from a node.",
+                "example": "26|20|29,33|12,16|21|27|31,32|36,37 remove 31 with predecessor"
+            }
+        },
+        "Find": {
+            "worst": {
+                "big_o": "O(logn)",
+                "explanation": "Element doesn't exist in tree, so we only traverse to $logn$ nodes before not finding element.",
+                "example": "26|20|29,33|12,16|21|27|31,32|36,37 find 28"
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "Most elements will exist at the bottom of the tree.",
+                "example": "26|20|29,33|12,16|21|27|31,32|36,37 find 21"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "Element exists near top of tree.",
+                "example": "26|20|29,33|12,16|21|27|31,32|36,37 find 29"
+            }
+        },
+        "Calculate Height": {
+            "all cases": {
+                "big_o": "O(logn)",
+                "explanation": "All leaf nodes will exist at depth of $logn$.",
+                "example": "26|20|29,33|12,16|21|27|31,32|36,37 height=2"
+            }
+        }
+    },
+
+    "SkipList": {
+        "Add": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "With a bad coin flip probability, the SkipList can look like a LinkedList stacked multiple times, so you have to traverse it like a LinkedList.",
+                "example": "3,7,15,22|3,7,15,22|3,7,15,22|3,7,15,22 add 11 with 4 heads."
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList may not be perfectly symmetric, but on average traversing takes $O(logn)$.",
+                "example": "null,7,null,null|null,7,null,22|null,7,15,null|3,7,15,22 add 10 with random coin flip"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList is perfectly symmetric, so traversing is $O(logn)$.",
+                "example": "null,null,10,null,null|3,null,10,null,22|3,7,10,15,22 add 19 with random coin flip"
+            }
+        },
+        "Remove": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "With a bad coin flip probability, the SkipList can look like a LinkedList stacked multiple times, so you have to traverse it like a LinkedList.",
+                "example": "3,7,15,22|3,7,15,22|3,7,15,22|3,7,15,22 remove 15"
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList may not be perfectly symmetric, but on average traversing takes $O(logn)$.",
+                "example": "null,7,null,null|null,7,null,22|null,7,15,null|3,7,15,22 remove 15"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList is perfectly symmetric, so traversing is $O(logn)$.",
+                "example": "null,null,10,null,null|3,null,10,null,22|3,7,10,15,22 remove 15"
+            }
+        },
+        "Find": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "With a bad coin flip probability, the SkipList can look like a LinkedList stacked multiple times, so you have to traverse it like a LinkedList.",
+                "example": "3,7,15,22|3,7,15,22|3,7,15,22|3,7,15,22 find 22"
+            },
+            "average": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList may not be perfectly symmetric, but on average traversing takes $O(logn)$.",
+                "example": "null,7,null,null|null,7,null,22|null,7,15,null|3,7,15,22 find 22"
+            },
+            "best": {
+                "big_o": "O(logn)",
+                "explanation": "With random coin probability, SkipList is perfectly symmetric, so traversing is $O(logn)$.",
+                "example": "null,null,10,null,null|3,null,10,null,22|3,7,10,15,22 find 22"
+            }
+        }
+    },
 
     "Quicksort": {
         "Quicksort": {
@@ -243,6 +525,15 @@
                 "big_o": "O(n²)",
                 "explanation": "The worst pivot (min or max) is chosen each partition, devolving into a selection sort.",
                 "example": "[3, 2, 4, 1, 5] with 5 as the pivot"
+            }
+        }
+    },
+   
+    "LCS": {
+        "Longest Common Subsequence": {
+            "all cases": {
+                "big_o": "O(mn)",
+                "explanation": "Each letter in the first string is compared to each letter of the second string."
             }
         }
     }

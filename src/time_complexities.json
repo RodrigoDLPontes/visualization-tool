@@ -456,9 +456,9 @@
     },
     
     "OpenHash": {
-        "Double Hash Add": {
+        "Add": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "Resize by adding $n$ entries and $n$ probes are needed each",
                 "example": "[null, 0, 1, 2, 3, null, null] add 4, h1 always returns 1, q = 2"
             },
@@ -473,7 +473,7 @@
                 "example": "[0, 1, null, 10, null, null, 6] find 10, q = 11"
             }
         },
-        "Double Hash Remove": {
+        "Remove": {
             "worst": {
                 "big_o": "O(n)",
                 "explanation": "Collisions cause $n$ probings",
@@ -490,7 +490,7 @@
                 "example": "[0, 1, null, 10, null, null, 6] find 10, q = 11"
             }
         },
-        "Double Hash Find": {
+        "Find": {
             "worst": {
                 "big_o": "O(n)",
                 "explanation": "Collisions cause $n$ probings",
@@ -627,12 +627,12 @@
     "BubbleSort": {
         "BubbleSort without Last Swap Optimization": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "must swap n data n times each",
                 "example": "[5, 4, 3, 2, 1]"
             },
             "average": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "on average, half data is unsorted thus n/2 swaps for n items",
                 "example": "[1, 4, 3, 5, 2]"
             },
@@ -644,12 +644,12 @@
         },
         "BubbleSort with Last Swap Optimization": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "Optimization has not effect on worst case runtime",
                 "example": "[5, 4, 3, 2, 1]"
             },
             "average": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "While optimization does increase average runtime efficiency, it is not enough to affect Big O.",
                 "example": "[1, 4, 3, 5, 2]"
             },
@@ -664,12 +664,12 @@
     "CocktailSort": {
         "CocktailSort without Last Swap Optimization": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "Must check n times for n items",
                 "example": "[5, 4, 3, 2, 1]"
             },
             "average": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "Must check on average n/2 times for n items",
                 "example": "[1, 4, 3, 5, 2]"
             },
@@ -681,12 +681,12 @@
         },
         "CocktailSort with Last Swap Optimization": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "Optimization has no effect on the worst-case runtime",
                 "example": "[5, 4, 3, 2, 1]"
             },
             "average": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "While optimization increases average runtime it is not enough to effect Big O",
                 "example": "[1, 4, 3, 5, 2]"
             },
@@ -701,12 +701,12 @@
     "InsertionSort": {
         "InsertionSort": {
             "worst": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "n checks for each item where there are n items",
                 "example": "[6, 5, 4, 3, 2, 1]"
             },
             "average": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "n/2 checks for each item where there are n items",
                 "example": "[6, 1, 4, 2, 5, 3]"
             },
@@ -717,11 +717,11 @@
             }
         }
     },
-    
+
     "SelectionSort": {
         "SelectionSort": {
             "all cases": {
-                "big_o": "O(n^2)",
+                "big_o": "O(n²)",
                 "explanation": "select largest element which is linear time n times",
                 "example": "[7, 1, 8, 3, 5]"
             }

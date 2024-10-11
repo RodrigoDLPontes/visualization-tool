@@ -394,6 +394,121 @@
         }
     },
 
+    "ClosedHash": {
+        "Add": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Resize and call addFront() on $n$ elements",
+	            "example": "[0, 1, 2, 3, null, null, null] add 5"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to the index and few or no collision",
+                "example": "[0, 1, 2, null, null, null, null] add 4"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collision",
+                "example": "[0, 1, null, 3, null, null, null] add 2"
+            }
+        },
+        "Remove": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the end of a linked list is $O(n)$",
+                "example": "[[0, 7, 14, 21], null, null, null, null, null, null] remove 21"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and few or no collisions",
+                "example": "[0, 1, 2, null, null, null, null] remove 1"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collisions",
+                "example": "[0, 1, 2, null, null] remove 1"
+            }
+        },
+        "Find": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Traversing to the end of a linked list is $O(n)$",
+                "example": "[null, [1, 8, 15], null, null, null, null, null] find 15"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and few or no collisions",
+                "example": "[0, 1, 2, null, null] find 0"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collisions",
+                "example": "[0, 1, 2, null, null] find 1"
+            }
+        },
+        "Resize": {
+            "all cases": {
+                "big_o": "O(n)",
+                "explanation": "Resize by using addFront() on $n$ elements, which is $O(1)$ each",
+                "example": "[0, 1, 2, 3, null, null, null] add 5"
+            }
+        }
+    },
+    
+    "OpenHash": {
+        "Double Hash Add": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "Resize by adding $n$ entries and $n$ probes are needed each",
+                "example": "[null, 0, 1, 2, 3, null, null] add 4, h1 always returns 1, q = 2"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and few or no collisions",
+                "example": "[0, 1, 2, null, null, null, null] add 3, q = 11"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collisions",
+                "example": "[0, 1, null, 10, null, null, 6] find 10, q = 11"
+            }
+        },
+        "Double Hash Remove": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Collisions cause $n$ probings",
+                "example": "[0, 14, 21, 28, null, null, null] remove 28, q = 11"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and few or no collisions",
+                "example": "[0, 1, 2, null, null, null, null] remove 1, q = 11"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collisions",
+                "example": "[0, 1, null, 10, null, null, 6] find 10, q = 11"
+            }
+        },
+        "Double Hash Find": {
+            "worst": {
+                "big_o": "O(n)",
+                "explanation": "Collisions cause $n$ probings",
+                "example": "[0, 14, 21, 28, null, null, null] find 28, q = 11"
+            },
+            "average": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and few or no collisions",
+                "example": "[0, 1, 2, null, null, null, null] find 1, q = 11"
+            },
+            "best": {
+                "big_o": "O(1)",
+                "explanation": "$O(1)$ access to index and no collisions",
+                "example": "[0, 1, null, 10, null, null, 6] find 10, q = 11"
+            }
+        }
+    },
+
     "BTree": {
         "Add": {
             "worst": {
@@ -505,6 +620,110 @@
                 "big_o": "O(logn)",
                 "explanation": "With random coin probability, SkipList is perfectly symmetric, so traversing is $O(logn)$.",
                 "example": "null,null,10,null,null|3,null,10,null,22|3,7,10,15,22 find 22"
+            }
+        }
+    },
+
+    "BubbleSort": {
+        "BubbleSort without Last Swap Optimization": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "must swap n data n times each",
+                "example": "[5, 4, 3, 2, 1]"
+            },
+            "average": {
+                "big_o": "O(n^2)",
+                "explanation": "on average, half data is unsorted thus n/2 swaps for n items",
+                "example": "[1, 4, 3, 5, 2]"
+            },
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "already sorted list with 1 check for n items",
+                "example": "[1, 2, 3, 4, 5]"
+            }
+        },
+        "BubbleSort with Last Swap Optimization": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "Optimization has not effect on worst case runtime",
+                "example": "[5, 4, 3, 2, 1]"
+            },
+            "average": {
+                "big_o": "O(n^2)",
+                "explanation": "While optimization does increase average runtime efficiency, it is not enough to affect Big O.",
+                "example": "[1, 4, 3, 5, 2]"
+            },
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "Already sorted list thus 1 check for n items",
+                "example": "[1, 2, 3, 4, 5]"
+            }
+        }
+    },
+
+    "CocktailSort": {
+        "CocktailSort without Last Swap Optimization": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "Must check n times for n items",
+                "example": "[5, 4, 3, 2, 1]"
+            },
+            "average": {
+                "big_o": "O(n^2)",
+                "explanation": "Must check on average n/2 times for n items",
+                "example": "[1, 4, 3, 5, 2]"
+            },
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "must check 1 time for n items",
+                "example": "[1, 2, 3, 4, 5]"
+            }
+        },
+        "CocktailSort with Last Swap Optimization": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "Optimization has no effect on the worst-case runtime",
+                "example": "[5, 4, 3, 2, 1]"
+            },
+            "average": {
+                "big_o": "O(n^2)",
+                "explanation": "While optimization increases average runtime it is not enough to effect Big O",
+                "example": "[1, 4, 3, 5, 2]"
+            },
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "1 check for n items in already sorted list",
+                "example": "[1, 2, 3, 4, 5]"
+            }
+        }
+    },
+
+    "InsertionSort": {
+        "InsertionSort": {
+            "worst": {
+                "big_o": "O(n^2)",
+                "explanation": "n checks for each item where there are n items",
+                "example": "[6, 5, 4, 3, 2, 1]"
+            },
+            "average": {
+                "big_o": "O(n^2)",
+                "explanation": "n/2 checks for each item where there are n items",
+                "example": "[6, 1, 4, 2, 5, 3]"
+            },
+            "best": {
+                "big_o": "O(n)",
+                "explanation": "one check for each item where there are n items",
+                "example": "[1, 2, 3, 4, 5, 6]"
+            }
+        }
+    },
+    
+    "SelectionSort": {
+        "SelectionSort": {
+            "all cases": {
+                "big_o": "O(n^2)",
+                "explanation": "select largest element which is linear time n times",
+                "example": "[7, 1, 8, 3, 5]"
             }
         }
     },

@@ -372,7 +372,7 @@ export default class LinkedList extends Algorithm {
 			const index = parseInt(this.removeField.value);
 			if (index >= 0 && index < this.size) {
 				this.removeField.value = '';
-				this.implementAction(this.remove.bind(this), (index), false, false, true);
+				this.implementAction(this.remove.bind(this), index, false, false, true);
 			} else {
 				let errorMsg = 'Cannot remove from an empty list.';
 				if (this.size === 1) {
@@ -452,9 +452,13 @@ export default class LinkedList extends Algorithm {
 			}
 
 			if (runningBack) {
-				runningRemove ?	this.highlight(6, 0, this.removeBackCodeID) : this.highlight(6, 0, this.addBackCodeID);
+				runningRemove
+					? this.highlight(6, 0, this.removeBackCodeID)
+					: this.highlight(6, 0, this.addBackCodeID);
 			} else {
-				runningRemove ?	this.highlight(8, 0, this.removeIndexCodeID) : this.highlight(8, 0, this.addIndexCodeID);
+				runningRemove
+					? this.highlight(8, 0, this.removeIndexCodeID)
+					: this.highlight(8, 0, this.addIndexCodeID);
 			}
 			this.cmd(act.step);
 		}
@@ -723,7 +727,8 @@ export default class LinkedList extends Algorithm {
 		}
 
 		const runningRemoveFront = isRemoveFront || (isRemoveIndex && index === 0); // removefront is called directly or removeindex
-		const runningRemoveBack = isRemoveBack || (isRemoveIndex && index === this.size - 1 && !runningRemoveFront); // removeback is called directly or removeindex
+		const runningRemoveBack =
+			isRemoveBack || (isRemoveIndex && index === this.size - 1 && !runningRemoveFront); // removeback is called directly or removeindex
 		const runningRemoveIndexOnly = !runningRemoveFront && !runningRemoveBack; // removeindex is called directly
 
 		if (isRemoveIndex) {
@@ -847,8 +852,12 @@ export default class LinkedList extends Algorithm {
 		this.unhighlight(2, 0, this.removeFrontCodeID);
 		this.unhighlight(9, 0, this.removeBackCodeID);
 		this.unhighlight(11, 0, this.removeIndexCodeID);
-		runningRemoveIndexOnly ? this.highlight(12, 0, this.removeIndexCodeID) : runningRemoveBack ? this.highlight(10, 0, this.removeBackCodeID) : this.highlight(3, 0, this.removeFrontCodeID);
-		
+		runningRemoveIndexOnly
+			? this.highlight(12, 0, this.removeIndexCodeID)
+			: runningRemoveBack
+			? this.highlight(10, 0, this.removeBackCodeID)
+			: this.highlight(3, 0, this.removeFrontCodeID);
+
 		this.cmd(act.step);
 		this.cmd(act.delete, this.linkedListElemID[index]);
 
@@ -868,7 +877,11 @@ export default class LinkedList extends Algorithm {
 		this.unhighlight(3, 0, this.removeFrontCodeID);
 		this.unhighlight(10, 0, this.removeBackCodeID);
 		this.unhighlight(12, 0, this.removeIndexCodeID);
-		runningRemoveIndexOnly ? this.highlight(13, 0, this.removeIndexCodeID) : runningRemoveBack ? this.highlight(11, 0, this.removeBackCodeID) : this.highlight(4, 0, this.removeFrontCodeID);
+		runningRemoveIndexOnly
+			? this.highlight(13, 0, this.removeIndexCodeID)
+			: runningRemoveBack
+			? this.highlight(11, 0, this.removeBackCodeID)
+			: this.highlight(4, 0, this.removeFrontCodeID);
 		this.cmd(act.step);
 
 		this.removeCode(this.removeFrontCodeID);

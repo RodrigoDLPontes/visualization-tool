@@ -7,9 +7,7 @@ import { DiCodeBadge } from 'react-icons/di';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 
-{
-	/* Side Panel Buttons */
-}
+/* Side Panel Buttons */
 const allCategories = ['All', ...new Set(algoFilter.map(item => item.category))];
 
 function SideButton({ button, filter }) {
@@ -26,9 +24,7 @@ function SideButton({ button, filter }) {
 	);
 }
 
-{
-	/* Buttons for DSA pages */
-}
+/* Buttons for DSA pages */
 function SearchFilter({ filteredAlgoList }) {
 	return filteredAlgoList.length ? (
 		filteredAlgoList.map(
@@ -50,12 +46,18 @@ function SearchFilter({ filteredAlgoList }) {
 									: {}
 							}
 						>
-							<div className="algo-name">{algoMap[name][0]}</div>
-							{algoMap[name][2] && (
-								<span className="pseudocode-icon">
-									<DiCodeBadge size={36} />
-								</span>
-							)}
+							<div class="algo-container">
+								<div className="algo-name">{algoMap[name][0]}</div>
+								{algoMap[name][0] && (
+									<div className="algo-picture">
+										<img
+											alt={algoMap[name][0]}
+											src={`./algo_buttons/${algoMap[name][0]}.png`}
+											onError={(e) => (e.target.style.display = 'none')}
+										/>
+									</div>
+								)}
+							</div>
 						</button>
 					</Link>
 				),
@@ -65,9 +67,8 @@ function SearchFilter({ filteredAlgoList }) {
 	);
 }
 
-{
-	/* Survey for Finals */
-}
+/* Survey for Finals */
+// eslint-disable-next-line no-unused-vars
 function FinalsBanner() {
 	return (
 		<div className="banner-container">
@@ -85,9 +86,7 @@ function FinalsBanner() {
 }
 
 const HomeScreen = ({ theme, toggleTheme }) => {
-	{
-		/* Search Bar Functionality */
-	}
+	/* Search Bar Functionality */
 	const [dsaFilter, setDsaFilter] = useState('');
 	const [filterList, setFilteredList] = useState(algoList);
 
@@ -102,9 +101,7 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 		return true;
 	});
 
-	{
-		/* Side Panel Functionality */
-	}
+	/* Side Panel Functionality */
 	const [sideButtons] = useState(allCategories);
 
 	const sidefilter = button => {

@@ -1,28 +1,29 @@
 [data-theme='light'] {
-	--background: #f2f2f2;
-	--primary: #282828;
+	--background: #e2e4f6;
 	--shadow: rgba(0, 0, 0, 5);
-	--buttons: #012f57;
-	--text: #f9c333;
+	--buttons: #5d7eab;
+	--text: #5d7eab;
+	--text-primary: #e2e4f6;
 	--filter: brightness(70%);
-	--borders: #012f57;
-	--hover-text: #f9c333;
+	--borders: #325778;
+	--hover-text: #d7ac37;
 }
 
 [data-theme='dark'] {
-	--background: #282828;
-	--primary: #f2f2f2;
-	--shadow: rgba(242, 242, 242, 0.1);
-	--buttons: #282828;
-	--text: #f2f2f2;
-	--filter: brightness(185%);
-	--borders: #f2f2f2;
-	--hover-text: #8dd3dd;
+	--background: #011228;
+	--shadow: rgba(0, 0, 0, 5);
+	--buttons: #1c375d;
+	--text: #e2e4f6;
+	--text-primary: #e2e4f6;
+	--filter: brightness(70%);
+	--borders: #172d4f;
+	--hover-text: #d7ac37;
 }
 
 * {
 	-webkit-appearance: none;
 	-moz-appearance: none;
+	appearance: none;
 	z-index: 0;
 }
 
@@ -333,18 +334,18 @@ div.container {
 }
 
 div.header {
+	background-color: var(--background);
 	color: var(--text);
-	background: var(--buttons);
 	text-align: center;
 	border-bottom: 1.5px var(--borders) solid;
 }
 
 div.footer {
-	color: var(--text);
+	color: var(--text-primary);
 	background: var(--buttons);
 	text-align: center;
 	border-top: 1.5px var(--borders) solid;
-	border-bottom: 1.5px var(--borders) solid;
+	border-bottom: 1.5px var(--borders);
 }
 
 .footer {
@@ -352,7 +353,7 @@ div.footer {
 }
 
 .footer a {
-	color: var(--text);
+	color: var(--text-primary);
 }
 
 div.content {
@@ -370,13 +371,14 @@ div.content {
 	align-items: center;
 	justify-content: space-between;
 	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
-	font-size: 1.5em;
+	font-size: 1.4em;
 	font-weight: 700;
-	color: var(--text);
+	color: var(--text-primary);
 	background: var(--buttons);
-	width: 90%;
+	width: 85%;
+	height: 80%;
 	padding: 10px;
-	margin: 15px;
+	margin: 5% 5% 0% 15%;
 	cursor: pointer;
 	border: 1.5px var(--borders) solid;
 	border-radius: 15px;
@@ -385,9 +387,28 @@ div.content {
 	pointer-events: auto;
 }
 
+.algo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+	padding: 10% 5% 5% 5%;
+}
+
 .algo-name {
-	flex-grow: 1;
-	text-align: center;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.algo-picture {
+	width: 50px;
+	height: auto;
+	margin: 5%;
+	scale: 0.8;
+	transform: translateX(-200%);
 }
 
 .pseudocode-icon {
@@ -414,15 +435,17 @@ div.content {
 
 .outer-flex {
 	display: flex;
-	align-items: center;
-	flex-direction: column;
+	align-items: flex-start;
+	flex-direction: row;
 	pointer-events: none;
+	margin-left: 3%;
+	margin-right: 3%;
 }
 
 .inner-flex {
 	display: flex;
 	flex-wrap: wrap;
-	width: 90%;
+	width: 80%;
 }
 
 .divider {
@@ -442,27 +465,72 @@ div.content {
 }
 
 .dsa-filter {
-	width: 20rem;
+	width: 90%;
 	display: block;
-	margin: 0 auto;
-	font-size: large;
+	margin: 5% auto;
+	font-size: 1em;
 	padding: 0.8rem 1rem;
 	border-radius: 15px;
+	background-color: var(--background);
+	color: var(--buttons);
+}
+
+input::placeholder {
+	color: var(--text);
 }
 
 .no-results {
 	display: block;
 	margin: 1rem auto;
-	font-size: large;
+	font-size: 1.5em;
+}
+
+.side-panel {
+	align-items: center;
+	justify-content: center;
+	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: 700;
+	background: var(--buttons);
+	width: 20%;
+	padding: 5px;
+	margin: 15px;
+	border: 1.5px var(--borders) solid;
+	border-radius: 15px;
+	box-shadow: 0px 4px 12px var(--shadow);
+	transition: all 0.4s ease 0s;
+	pointer-events: auto;
+}
+
+.Side-Buttons button {
+	display: block;
+	align-items: center;
+	justify-content: space-between;
+	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
+	cursor: pointer;
+	color: var(--text-primary);
+	font-size: 1em;
+	margin: auto;
+	padding: 5%;
+	background-color: var(--buttons);
+	border: var(--buttons);
+}
+
+.Side-Buttons button:hover {
+	display: block;
+	align-items: center;
+	justify-content: space-between;
+	font-family: 'Cabin', Cantarell, Helvetica Neue, Helvetica, Arial, sans-serif;
+	cursor: pointer;
+	color: var(--hover-text);
+	font-size: 1em;
+	margin: auto;
+	padding: 5%;
+	background-color: var(--buttons);
+	border: var(--buttons);
 }
 
 @media screen and (min-width: 1280px) {
-	.content a {
-		width: 25%;
-	}
-}
-
-@media screen and (min-width: 1020px) and (max-width: 1280px) {
 	.content a {
 		width: 33.3%;
 	}

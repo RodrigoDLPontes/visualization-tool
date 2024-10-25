@@ -46,7 +46,7 @@ class Header extends React.Component {
 								<BsFillSunFill
 									size={31}
 									onClick={toggleTheme}
-									color="#f9c333"
+									color="#e7c114"
 									className="rotate-effect"
 								/>
 							) : (

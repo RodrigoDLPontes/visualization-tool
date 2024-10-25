@@ -10,10 +10,6 @@ import Header from '../components/Header';
 const HomeScreen = ({ theme, toggleTheme }) => {
 	const [dsaFilter, setDsaFilter] = useState('');
 
-	// useEffect(() => {
-
-	// }, [setDsaFilter]);
-
 	const filteredAlgoList = useMemo(() => {
 		return algoList.filter(name => {
 			if (dsaFilter) {
@@ -26,8 +22,6 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 			return true;
 		});
 	}, [dsaFilter]);
-
-	console.log(filteredAlgoList);
 
 	const relatedSearchesList = useMemo(() => {
 		const relatedSet = new Set();
@@ -45,8 +39,6 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 
 		return ['Related Searches', ...Array.from(relatedSet)];
 	}, [filteredAlgoList]);
-
-	console.log(relatedSearchesList);
 
 	return (
 		<div className="container">

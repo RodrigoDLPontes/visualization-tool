@@ -1,7 +1,7 @@
 import '../css/App.css';
 import { Link, Route, Switch } from 'react-router-dom';
-import React, { useState } from 'react';
-import { algoList, algoMap } from '../AlgoList';
+import React, { useMemo, useState } from 'react';
+import { algoList, algoMap, relatedSearches } from '../AlgoList';
 import AboutScreen from './AboutScreen';
 import { DiCodeBadge } from 'react-icons/di';
 import Footer from '../components/Footer';
@@ -10,16 +10,43 @@ import Header from '../components/Header';
 const HomeScreen = ({ theme, toggleTheme }) => {
 	const [dsaFilter, setDsaFilter] = useState('');
 
-	const filteredAlgoList = algoList.filter(name => {
+	// useEffect(() => {
+
+	// }, [setDsaFilter]);
+
+	const filteredAlgoList = useMemo(() => {
+		return algoList.filter(name => {
+			if (dsaFilter) {
+				return (
+					algoMap[name] &&
+					(name.toLowerCase().includes(dsaFilter.toLowerCase()) ||
+						algoMap[name][0].toLowerCase().includes(dsaFilter.toLowerCase()))
+				);
+			}
+			return true;
+		});
+	}, [dsaFilter]);
+
+	console.log(filteredAlgoList);
+
+	const relatedSearchesSet = useMemo(() => {
+		const relatedSet = new Set();
+
 		if (dsaFilter) {
-			return (
-				algoMap[name] &&
-				(name.toLowerCase().includes(dsaFilter.toLowerCase()) ||
-					algoMap[name][0].toLowerCase().includes(dsaFilter.toLowerCase()))
-			);
+			filteredAlgoList.forEach(name => {
+				const related = relatedSearches[name];
+				related.forEach(algo => {
+					if (!filteredAlgoList.includes(algo)) {
+						relatedSet.add(algo);
+					}
+				});
+			});
 		}
-		return true;
-	});
+
+		return Array.from(relatedSet);
+	}, [filteredAlgoList]);
+
+	console.log(relatedSearchesSet);
 
 	return (
 		<div className="container">

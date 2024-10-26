@@ -37,8 +37,8 @@ const HomeScreen = ({ theme, toggleTheme }) => {
 			});
 		}
 
-		return ['Related Searches', ...Array.from(relatedSet)];
-	}, [filteredAlgoList]);
+		return ['Related Pages', ...Array.from(relatedSet)];
+	}, [filteredAlgoList, dsaFilter]);
 
 	return (
 		<div className="container">

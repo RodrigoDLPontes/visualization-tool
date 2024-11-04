@@ -1,3 +1,7 @@
+### 🚨 THIS REPO IS NO LONGER BEING MAINTAINED. 🚨
+### **If you wish to contribute, please visit the new repository [HERE](https://github.com/csvistool/visualization-tool).**
+---
+
 # Visualization Tool
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->

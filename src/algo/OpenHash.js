@@ -191,7 +191,14 @@ export default class OpenHash extends Hash {
 		this.cmd(act.setText, this.ExplainLabel, 'Inserting element: ' + elem);
 		this.cmd(act.step);
 
-		let index = this.doHash(key);
+		let index;
+		try {
+			index = this.doHash(key, true);
+		} catch (e) {
+			this.shake(this.insertButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return this.commands;
+		}
 
 		index = this.getEmptyIndex(index, key);
 
@@ -406,7 +413,14 @@ export default class OpenHash extends Hash {
 	deleteElement(key) {
 		this.commands = [];
 		this.cmd(act.setText, this.ExplainLabel, 'Deleting element with key: ' + key);
-		let index = this.doHash(key);
+		let index;
+		try {
+			index = this.doHash(key, false);
+		} catch (e) {
+			this.shake(this.deleteButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return this.commands;
+		}
 
 		index = this.getElemIndex(index, key);
 
@@ -435,7 +449,14 @@ export default class OpenHash extends Hash {
 		this.commands = [];
 
 		this.cmd(act.setText, this.ExplainLabel, 'Finding Key: ' + key);
-		const index = this.doHash(key);
+		let index;
+		try {
+			index = this.doHash(key, false);
+		} catch (e) {
+			this.shake(this.findButton);
+			this.cmd(act.setText, this.ExplainLabel, e.message);
+			return this.commands;
+		}
 
 		const found = this.getElemIndex(index, key);
 		if (found !== -1) {
@@ -552,8 +573,14 @@ export default class OpenHash extends Hash {
 
 			if (!this.oldempty[i] && !this.olddeleted[i]) {
 				const oldElement = this.oldHashTableValues[i];
-
-				let index = this.doHash(oldElement.key);
+				let index;
+				try {
+					index = this.doHash(oldElement.key, false);
+				} catch (e) {
+					this.shake(this.insertButton);
+					this.cmd(act.setText, this.ExplainLabel, e.message);
+					return;
+				}
 
 				index = this.getEmptyIndex(index, oldElement.key);
 

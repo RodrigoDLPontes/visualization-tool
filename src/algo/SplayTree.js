@@ -570,7 +570,9 @@ export default class SplayTree extends Algorithm {
 				this.cmd(act.setText, 0, 'No right tree, make left tree the root.');
 				this.cmd(act.step);
 				this.treeRoot = this.treeRoot.left;
-				this.treeRoot.parent = null;
+				if (this.treeRoot != null) {
+					this.treeRoot.parent = null;
+				}
 				this.resizeTree();
 			} else if (this.treeRoot.left == null) {
 				this.cmd(act.delete, this.treeRoot.graphicID);

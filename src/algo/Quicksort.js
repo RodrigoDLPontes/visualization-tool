@@ -394,7 +394,7 @@ export default class Quicksort extends Algorithm {
 			const sorted = this.arrayData.slice(left, right + 1);
 			sorted.sort((a, b) => a - b);
 			const midIndex = Math.floor(sorted.length / 2);
-			pivot = this.arrayData.indexOf(sorted[midIndex]);
+			pivot = this.arrayData.indexOf(sorted[midIndex], left);
 		} else if (this.pivotType === 'random') {
 			pivot = Math.floor(Math.random() * (right - left)) + left + 1;
 		}
